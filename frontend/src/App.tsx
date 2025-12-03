@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { Home, Login, Register, Lobby, Game, Results } from '@/pages'
+import { ArenaTest } from '@/pages/ArenaTest'
 
 function App() {
   // Initialize auth check on app load
@@ -44,6 +45,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* Test route - no auth required */}
+        <Route path="/arena-test" element={<ArenaTest />} />
       </Routes>
     </BrowserRouter>
   )
