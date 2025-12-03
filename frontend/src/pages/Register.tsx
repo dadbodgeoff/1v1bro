@@ -1,0 +1,121 @@
+import { useState, type FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button, Input } from '@/components/ui'
+import { authAPI } from '@/services/api'
+import { useAuthStore } from '@/stores/authStore'
+
+export function Register() {
+  const navigate = useNavigate()
+  const setUser = useAuthStore((s) => s.setUser)
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      const response = await authAPI.register({
+        email,
+        password,
+        display_name: displayName || undefined,
+      })
+      setUser(response.user, response.access_token)
+      navigate('/')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-indigo-500 mb-2">1v1 Bro</h1>
+          <p className="text-slate-400">Create your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+
+          <Input
+            label="Display Name (optional)"
+            type="text"
+            name="displayName"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="Your nickname"
+            autoComplete="username"
+          />
+
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            required
+            autoComplete="email"
+          />
+
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+            autoComplete="new-password"
+          />
+
+          <Input
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+            autoComplete="new-password"
+          />
+
+          <Button type="submit" className="w-full" isLoading={isLoading}>
+            Create Account
+          </Button>
+        </form>
+
+        <p className="mt-6 text-center text-slate-400">
+          Already have an account?{' '}
+          <Link to="/login" className="text-indigo-400 hover:text-indigo-300">
+            Sign in
+          </Link>
+        </p>
+      </div>
+    </div>
+  )
+}

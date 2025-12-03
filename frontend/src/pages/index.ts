@@ -1,0 +1,6 @@
+export { Home } from './Home'
+export { Login } from './Login'
+export { Register } from './Register'
+export { Lobby } from './Lobby'
+export { Game } from './Game'
+export { Results } from './Results'
