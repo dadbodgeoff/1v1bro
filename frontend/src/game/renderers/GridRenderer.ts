@@ -1,12 +1,16 @@
 /**
- * Renders the arena floor grid
+ * Renders the arena floor with tiled texture
  */
 
 import { BaseRenderer } from './BaseRenderer'
 import { ARENA_SIZE, GRID_SIZE, RENDER_CONFIG } from '../config'
 import { COLORS } from '../config/colors'
+import { getAssets } from '../assets'
 
 export class GridRenderer extends BaseRenderer {
+  private pattern: CanvasPattern | null = null
+  private patternCreated = false
+
   render(): void {
     if (!this.ctx) return
 
@@ -16,8 +20,36 @@ export class GridRenderer extends BaseRenderer {
 
   private drawBackground(): void {
     if (!this.ctx) return
-    this.ctx.fillStyle = COLORS.background
-    this.ctx.fillRect(0, 0, ARENA_SIZE.width, ARENA_SIZE.height)
+    const ctx = this.ctx
+    const assets = getAssets()
+
+    // Try to use tiled floor texture
+    if (assets?.tiles.floor && assets.tiles.floor.complete) {
+      if (!this.patternCreated) {
+        this.pattern = ctx.createPattern(assets.tiles.floor, 'repeat')
+        this.patternCreated = true
+      }
+
+      if (this.pattern) {
+        ctx.save()
+        ctx.fillStyle = this.pattern
+        ctx.globalAlpha = 0.8
+        ctx.fillRect(0, 0, ARENA_SIZE.width, ARENA_SIZE.height)
+        ctx.restore()
+
+        // Add dark overlay for better contrast
+        ctx.save()
+        ctx.fillStyle = COLORS.background
+        ctx.globalAlpha = 0.4
+        ctx.fillRect(0, 0, ARENA_SIZE.width, ARENA_SIZE.height)
+        ctx.restore()
+        return
+      }
+    }
+
+    // Fallback to solid color
+    ctx.fillStyle = COLORS.background
+    ctx.fillRect(0, 0, ARENA_SIZE.width, ARENA_SIZE.height)
   }
 
   private drawGridLines(): void {

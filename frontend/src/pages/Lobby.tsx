@@ -1,10 +1,15 @@
+/**
+ * Lobby - Waiting room with enterprise design
+ */
+
 import { useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Button } from '@/components/ui'
 import { LobbyCode, PlayerCard } from '@/components/lobby'
 import { useLobby } from '@/hooks/useLobby'
+import { useFriends } from '@/hooks/useFriends'
 import { lobbyAPI } from '@/services/api'
 import { useLobbyStore } from '@/stores/lobbyStore'
+import { FriendsPanel, FriendsButtonCompact, FriendsNotifications } from '@/components/friends'
 
 export function Lobby() {
   const { code: urlCode } = useParams<{ code: string }>()
@@ -20,15 +25,18 @@ export function Lobby() {
     setReady,
     startGame,
   } = useLobby(urlCode)
-  
-  // Check if current user is ready
+  const { fetchFriends, isPanelOpen, openPanel, closePanel } = useFriends()
+
+  useEffect(() => {
+    fetchFriends()
+  }, [fetchFriends])
+
   const currentPlayer = useMemo(
-    () => players.find(p => p.id === userId),
+    () => players.find((p) => p.id === userId),
     [players, userId]
   )
   const isReady = currentPlayer?.is_ready ?? false
 
-  // Fetch lobby data on mount
   useEffect(() => {
     if (!urlCode) {
       navigate('/')
@@ -50,62 +58,104 @@ export function Lobby() {
 
   if (!code) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4">
-      <h1 className="text-2xl font-bold text-white mb-8">Waiting Room</h1>
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
+      {/* Header */}
+      <header className="border-b border-white/[0.06] px-6 py-4">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <button
+            onClick={leaveLobby}
+            className="text-sm text-neutral-500 hover:text-white transition-colors"
+          >
+            ← Leave
+          </button>
+          <span className="text-xs text-neutral-600">Lobby</span>
+          <FriendsButtonCompact onClick={openPanel} />
+        </div>
+      </header>
 
-      <LobbyCode code={code} />
-
-      <div className="w-full max-w-md mt-8 space-y-3">
-        <h2 className="text-slate-400 text-sm mb-2">Players</h2>
-        {players.map((player) => (
-          <PlayerCard
-            key={player.id}
-            player={player}
-            isCurrentUser={player.id === userId}
-          />
-        ))}
-
-        {players.length < 2 && (
-          <div className="p-4 rounded-lg border-2 border-dashed border-slate-700 text-center text-slate-500">
-            Waiting for opponent...
+      {/* Main */}
+      <main className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md">
+          {/* Code */}
+          <div className="text-center mb-10">
+            <p className="text-xs text-neutral-500 uppercase tracking-wider mb-2">
+              Share this code
+            </p>
+            <LobbyCode code={code} />
           </div>
-        )}
-      </div>
 
-      <div className="mt-8 flex gap-4">
-        {/* Non-host players see Ready button */}
-        {!isHost && !isReady && (
-          <Button size="lg" onClick={setReady}>
-            Ready Up
-          </Button>
-        )}
-        {!isHost && isReady && (
-          <Button size="lg" disabled className="bg-green-600 cursor-default">
-            Ready!
-          </Button>
-        )}
-        {/* Host sees Start button when opponent is ready */}
-        {isHost && canStart && (
-          <Button size="lg" onClick={startGame}>
-            Start Game
-          </Button>
-        )}
-        {isHost && !canStart && players.length === 2 && (
-          <Button size="lg" disabled className="opacity-50 cursor-not-allowed">
-            Waiting for opponent to ready...
-          </Button>
-        )}
-        <Button variant="secondary" onClick={leaveLobby}>
-          Leave Lobby
-        </Button>
-      </div>
+          {/* Players */}
+          <div className="mb-8">
+            <p className="text-xs text-neutral-500 uppercase tracking-wider mb-3">
+              Players
+            </p>
+            <div className="space-y-2">
+              {players.map((player) => (
+                <PlayerCard
+                  key={player.id}
+                  player={player}
+                  isCurrentUser={player.id === userId}
+                />
+              ))}
+
+              {players.length < 2 && (
+                <div className="p-4 border border-dashed border-white/[0.1] rounded-lg text-center">
+                  <p className="text-sm text-neutral-500">Waiting for opponent...</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="space-y-3">
+            {!isHost && !isReady && (
+              <button
+                onClick={setReady}
+                className="w-full py-3.5 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors"
+              >
+                Ready Up
+              </button>
+            )}
+
+            {!isHost && isReady && (
+              <div className="w-full py-3.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium rounded-lg text-center">
+                Ready
+              </div>
+            )}
+
+            {isHost && canStart && (
+              <button
+                onClick={startGame}
+                className="w-full py-3.5 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors"
+              >
+                Start Game
+              </button>
+            )}
+
+            {isHost && !canStart && players.length === 2 && (
+              <div className="w-full py-3.5 bg-white/[0.02] border border-white/[0.06] text-neutral-500 font-medium rounded-lg text-center">
+                Waiting for opponent...
+              </div>
+            )}
+
+            {isHost && players.length < 2 && (
+              <div className="w-full py-3.5 bg-white/[0.02] border border-white/[0.06] text-neutral-500 font-medium rounded-lg text-center">
+                Waiting for player to join...
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+      <FriendsPanel isOpen={isPanelOpen} onClose={closePanel} lobbyCode={code} />
+      <FriendsNotifications />
     </div>
   )
 }

@@ -1,10 +1,11 @@
 /**
- * Renders barriers and arena boundary
+ * Renders barriers with texture and arena boundary
  */
 
 import { BaseRenderer } from './BaseRenderer'
 import { ARENA_SIZE, BARRIERS, RENDER_CONFIG } from '../config'
 import { COLORS } from '../config/colors'
+import { getAssets } from '../assets'
 
 export class BarrierRenderer extends BaseRenderer {
   render(): void {
@@ -13,20 +14,49 @@ export class BarrierRenderer extends BaseRenderer {
   }
 
   private drawBarriers(): void {
-    BARRIERS.forEach(barrier => {
-      this.drawRect(
-        barrier.x,
-        barrier.y,
-        barrier.width,
-        barrier.height,
-        COLORS.barrier,
-        {
-          strokeColor: COLORS.barrierGlow,
-          strokeWidth: 2,
-          glowColor: COLORS.barrierGlow,
-          glowBlur: RENDER_CONFIG.glowBlur,
-        }
-      )
+    if (!this.ctx) return
+    const ctx = this.ctx
+    const assets = getAssets()
+
+    BARRIERS.forEach((barrier) => {
+      // Draw barrier image if available
+      if (assets?.tiles.barrier) {
+        ctx.save()
+
+        // Add glow effect
+        ctx.shadowColor = COLORS.barrierGlow
+        ctx.shadowBlur = RENDER_CONFIG.glowBlur * 2
+
+        // Enable smooth scaling
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = 'high'
+
+        // Draw the barrier image stretched to fit the barrier area
+        ctx.drawImage(
+          assets.tiles.barrier,
+          barrier.x,
+          barrier.y,
+          barrier.width,
+          barrier.height
+        )
+
+        ctx.restore()
+      } else {
+        // Fallback to solid color
+        this.drawRect(
+          barrier.x,
+          barrier.y,
+          barrier.width,
+          barrier.height,
+          COLORS.barrier,
+          {
+            strokeColor: COLORS.barrierGlow,
+            strokeWidth: 2,
+            glowColor: COLORS.barrierGlow,
+            glowBlur: RENDER_CONFIG.glowBlur,
+          }
+        )
+      }
     })
   }
 

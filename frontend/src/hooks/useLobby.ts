@@ -4,7 +4,7 @@ import { useLobbyStore } from '@/stores/lobbyStore'
 import { useAuthStore } from '@/stores/authStore'
 import { lobbyAPI } from '@/services/api'
 import { wsService } from '@/services/websocket'
-import type { PlayerJoinedPayload, LobbyStatePayload } from '@/types/websocket'
+import type { PlayerJoinedPayload, LobbyStatePayload, GameStartPayload } from '@/types/websocket'
 
 export function useLobby(lobbyCode?: string) {
   const navigate = useNavigate()
@@ -21,6 +21,7 @@ export function useLobby(lobbyCode?: string) {
     setCanStart,
     setIsHost,
     setStatus,
+    setPlayerAssignment,
     reset,
   } = useLobbyStore()
 
@@ -83,7 +84,13 @@ export function useLobby(lobbyCode?: string) {
         setCanStart(data.can_start)
       })
 
-      unsubGameStart = wsService.on('game_start', () => {
+      unsubGameStart = wsService.on('game_start', (payload) => {
+        const data = payload as GameStartPayload
+        console.log('[Lobby] Game start:', data)
+        // Store player assignment so ArenaGame knows who is player1/player2
+        if (data.player1_id && data.player2_id) {
+          setPlayerAssignment(data.player1_id, data.player2_id)
+        }
         setStatus('in_progress')
         navigate(`/game/${lobbyCode}`)
       })
@@ -100,7 +107,7 @@ export function useLobby(lobbyCode?: string) {
       unsubPlayerReady?.()
       unsubGameStart?.()
     }
-  }, [lobbyCode, navigate, setPlayers, setCanStart, setIsHost, setStatus]) // Include all used functions
+  }, [lobbyCode, navigate, setPlayers, setCanStart, setIsHost, setStatus, setPlayerAssignment])
 
   const createLobby = useCallback(async () => {
     try {

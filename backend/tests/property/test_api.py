@@ -27,7 +27,7 @@ class TestRequestValidation:
             min_size=1,
             max_size=20,
             alphabet="abcdefghijklmnopqrstuvwxyz0123456789._-",
-        ).filter(lambda x: x and x[0].isalnum() and not x.endswith('.')),
+        ).filter(lambda x: x and x[0].isalnum() and not x.endswith('.') and '..' not in x),
         domain=st.text(
             min_size=2,
             max_size=10,

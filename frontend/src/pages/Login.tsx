@@ -1,6 +1,9 @@
+/**
+ * Login - Clean authentication page
+ */
+
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Input } from '@/components/ui'
 import { authAPI } from '@/services/api'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -30,50 +33,63 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-indigo-500 mb-2">1v1 Bro</h1>
-          <p className="text-slate-400">Sign in to your account</p>
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-6">
+      <div className="w-full max-w-sm">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-2xl font-semibold text-white tracking-tight mb-2">
+            Welcome back
+          </h1>
+          <p className="text-sm text-neutral-500">Sign in to continue</p>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
-              {error}
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+              <p className="text-red-400 text-sm text-center">{error}</p>
             </div>
           )}
 
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-            autoComplete="email"
-          />
+          <div>
+            <label className="block text-xs text-neutral-500 mb-2">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+              autoComplete="email"
+              className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white placeholder:text-neutral-600 focus:outline-none focus:border-white/[0.2] transition-colors"
+            />
+          </div>
 
-          <Input
-            label="Password"
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            required
-            autoComplete="current-password"
-          />
+          <div>
+            <label className="block text-xs text-neutral-500 mb-2">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+              autoComplete="current-password"
+              className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white placeholder:text-neutral-600 focus:outline-none focus:border-white/[0.2] transition-colors"
+            />
+          </div>
 
-          <Button type="submit" className="w-full" isLoading={isLoading}>
-            Sign In
-          </Button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-3.5 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-50 mt-2"
+          >
+            {isLoading ? 'Signing in...' : 'Sign In'}
+          </button>
         </form>
 
-        <p className="mt-6 text-center text-slate-400">
+        {/* Footer */}
+        <p className="mt-8 text-center text-sm text-neutral-500">
           Don't have an account?{' '}
-          <Link to="/register" className="text-indigo-400 hover:text-indigo-300">
+          <Link to="/register" className="text-white hover:underline">
             Sign up
           </Link>
         </p>

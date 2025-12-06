@@ -77,6 +77,10 @@ async def websocket_endpoint(
     WebSocket endpoint for real-time game communication.
     
     Connect with: ws://host/ws/{lobby_code}?token={jwt_token}
+    
+    Close codes:
+    - 4001: Authentication required/invalid
+    - 4003: Server full or lobby full
     """
     # Validate token
     user_id = None
@@ -94,6 +98,13 @@ async def websocket_endpoint(
         return
     
     lobby_code = lobby_code.upper()
+    
+    # Check connection limits before accepting
+    can_connect, reason = manager.can_accept_connection(lobby_code)
+    if not can_connect:
+        await websocket.accept()  # Must accept before closing with custom code
+        await websocket.close(code=4003, reason=reason)
+        return
     
     # Create services
     client = get_supabase_client()

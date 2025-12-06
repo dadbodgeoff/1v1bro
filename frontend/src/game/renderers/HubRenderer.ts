@@ -4,7 +4,6 @@
 
 import { BaseRenderer } from './BaseRenderer'
 import { HUB_CONFIG } from '../config'
-import { COLORS } from '../config/colors'
 
 export class HubRenderer extends BaseRenderer {
   render(): void {
@@ -20,12 +19,13 @@ export class HubRenderer extends BaseRenderer {
     const ctx = this.ctx
     const { center, outerRadius, pulseSpeed } = HUB_CONFIG
 
-    const pulseAlpha = 0.1 + this.getPulse(pulseSpeed) * 0.05
+    const pulseAlpha = 0.15 + this.getPulse(pulseSpeed) * 0.1
 
     ctx.save()
     ctx.beginPath()
     ctx.arc(center.x, center.y, outerRadius, 0, Math.PI * 2)
-    ctx.strokeStyle = COLORS.hub
+    // Purple to match space theme
+    ctx.strokeStyle = '#9933ff'
     ctx.globalAlpha = pulseAlpha
     ctx.lineWidth = 2
     ctx.stroke()
@@ -40,8 +40,9 @@ export class HubRenderer extends BaseRenderer {
     ctx.save()
     ctx.beginPath()
     ctx.arc(center.x, center.y, innerRadius, 0, Math.PI * 2)
-    ctx.strokeStyle = COLORS.hub
-    ctx.globalAlpha = 0.3
+    // Purple/magenta ring
+    ctx.strokeStyle = '#aa44ff'
+    ctx.globalAlpha = 0.4
     ctx.lineWidth = 3
     ctx.stroke()
     ctx.restore()
@@ -52,12 +53,18 @@ export class HubRenderer extends BaseRenderer {
     const ctx = this.ctx
     const { center, innerRadius } = HUB_CONFIG
 
+    // Purple/magenta glow to match space theme
     const gradient = ctx.createRadialGradient(
-      center.x, center.y, 0,
-      center.x, center.y, innerRadius
+      center.x,
+      center.y,
+      0,
+      center.x,
+      center.y,
+      innerRadius
     )
-    gradient.addColorStop(0, 'rgba(0, 212, 255, 0.1)')
-    gradient.addColorStop(1, 'rgba(0, 212, 255, 0)')
+    gradient.addColorStop(0, 'rgba(150, 50, 200, 0.15)')
+    gradient.addColorStop(0.5, 'rgba(100, 0, 150, 0.08)')
+    gradient.addColorStop(1, 'rgba(50, 0, 100, 0)')
 
     ctx.save()
     ctx.beginPath()

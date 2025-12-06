@@ -24,18 +24,37 @@ export const HUB_CONFIG = {
   pulseSpeed: 2, // seconds per cycle
 }
 
+// Multi-lane layout: 4 barriers creating 3 lanes (top, mid, bottom)
+// Each barrier is 1 tile wide (80px) x 3 tiles tall (240px)
 export const BARRIERS: Rectangle[] = [
-  { x: 240, y: 80, width: 60, height: 560 },   // Left
-  { x: 980, y: 80, width: 60, height: 560 },   // Right
+  // Left side barriers (column 4 = x:320)
+  { x: 320, y: 80, width: 80, height: 240 },   // Top-left (rows 1-3)
+  { x: 320, y: 400, width: 80, height: 240 },  // Bottom-left (rows 5-7)
+
+  // Right side barriers (column 10 = x:800)
+  { x: 800, y: 80, width: 80, height: 240 },   // Top-right (rows 1-3)
+  { x: 800, y: 400, width: 80, height: 240 },  // Bottom-right (rows 5-7)
 ]
 
+// Fair spawn points - 8 positions accessible from all lanes
+// Distributed around the hub and in lane corridors
+export const POWERUP_SPAWN_POSITIONS: Vector2[] = [
+  { x: 640, y: 40 },    // Top lane center
+  { x: 640, y: 680 },   // Bottom lane center
+  { x: 480, y: 160 },   // Upper-left quadrant
+  { x: 800, y: 160 },   // Upper-right quadrant
+  { x: 480, y: 360 },   // Mid-left (hub area)
+  { x: 800, y: 360 },   // Mid-right (hub area)
+  { x: 480, y: 560 },   // Lower-left quadrant
+  { x: 800, y: 560 },   // Lower-right quadrant
+]
+
+// Legacy - keeping for backwards compatibility
 export const POWERUP_SPAWNS: Array<{ id: number; position: Vector2 }> = [
-  { id: 1, position: { x: 280, y: 180 } },   // NW
-  { id: 2, position: { x: 1000, y: 180 } },  // NE
-  { id: 3, position: { x: 120, y: 360 } },   // W
-  { id: 4, position: { x: 1160, y: 360 } },  // E
-  { id: 5, position: { x: 280, y: 540 } },   // SW
-  { id: 6, position: { x: 1000, y: 540 } },  // SE
+  { id: 1, position: { x: 640, y: 40 } },
+  { id: 2, position: { x: 640, y: 680 } },
+  { id: 3, position: { x: 480, y: 360 } },
+  { id: 4, position: { x: 800, y: 360 } },
 ]
 
 export const PLAYER_CONFIG = {
@@ -45,10 +64,10 @@ export const PLAYER_CONFIG = {
 }
 
 export const POWERUP_CONFIG = {
-  radiusInactive: 20,
-  radiusActive: 30,
+  radiusInactive: 30,
+  radiusActive: 40,
   pulseSpeed: 1.5,
-  collectionRadius: 40,
+  collectionRadius: 50,
 }
 
 export const RENDER_CONFIG = {

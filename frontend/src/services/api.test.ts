@@ -17,7 +17,8 @@ describe('API Client', () => {
       const mockResponse = {
         success: true,
         data: {
-          token: 'jwt-token',
+          access_token: 'jwt-token',
+          token_type: 'bearer',
           user: { id: '123', email: 'test@test.com', display_name: 'Test', games_played: 0, games_won: 0 },
           expires_in: 86400,
         },
@@ -35,7 +36,7 @@ describe('API Client', () => {
           body: JSON.stringify({ email: 'test@test.com', password: 'password' }),
         })
       )
-      expect(result.token).toBe('jwt-token')
+      expect(result.access_token).toBe('jwt-token')
     })
 
     it('throws APIError on failure', async () => {

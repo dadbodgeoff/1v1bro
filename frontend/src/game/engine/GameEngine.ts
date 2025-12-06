@@ -1,0 +1,318 @@
+/**
+ * GameEngine - Facade coordinating all game systems
+ * Single responsibility: Wire up and coordinate subsystems
+ * 
+ * Delegates to:
+ * - GameLoop: Timing and animation frame
+ * - PlayerController: Movement and physics
+ * - RenderPipeline: All rendering
+ * - ServerSync: Server-authoritative updates
+ * - TelemetryManager: Recording and replays
+ * - CombatWiring: Combat event connections
+ */
+
+import { ARENA_SIZE, PLAYER_CONFIG, PLAYER_SPAWNS } from '../config'
+import { NEXUS_ARENA } from '../config/maps'
+import { InputSystem } from '../systems'
+import { CombatSystem, BuffManager } from '../combat'
+import { BackdropSystem } from '../backdrop'
+import { ArenaManager } from '../arena'
+import { loadGameAssets } from '../assets'
+import { arenaAssets } from '../assets/ArenaAssetLoader'
+
+import { GameLoop } from './GameLoop'
+import { PlayerController } from './PlayerController'
+import { RenderPipeline } from './RenderPipeline'
+import { ServerSync } from './ServerSync'
+import { TelemetryManager } from './TelemetryManager'
+import { wireCombatCallbacks } from './CombatWiring'
+import type { GameEngineCallbacks, PlayerState, PowerUpState, Vector2, Projectile } from './types'
+
+export class GameEngine {
+  private canvas: HTMLCanvasElement
+  private scale = 1
+
+  // Modules
+  private gameLoop: GameLoop
+  private playerController: PlayerController
+  private renderPipeline: RenderPipeline
+  private serverSync: ServerSync
+  private telemetryManager: TelemetryManager
+
+  // Systems
+  private backdropSystem: BackdropSystem
+  private arenaManager: ArenaManager
+  private inputSystem: InputSystem
+  private combatSystem: CombatSystem
+  private buffManager: BuffManager
+
+  // State
+  private assetsLoaded = false
+  private combatEnabled = false
+  private mousePosition: Vector2 = { x: 0, y: 0 }
+  private localPlayer: PlayerState | null = null
+  private opponent: PlayerState | null = null
+  private powerUps: PowerUpState[] = []
+  private callbacks: GameEngineCallbacks = {}
+
+  constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas
+    const ctx = canvas.getContext('2d')
+    if (!ctx) throw new Error('Could not get 2d context')
+
+    // Initialize systems
+    this.backdropSystem = new BackdropSystem(ARENA_SIZE.width, ARENA_SIZE.height)
+    this.arenaManager = new ArenaManager()
+    this.inputSystem = new InputSystem()
+    this.combatSystem = new CombatSystem()
+    this.buffManager = new BuffManager()
+    this.telemetryManager = new TelemetryManager()
+
+    // Initialize modules
+    this.gameLoop = new GameLoop()
+    this.playerController = new PlayerController(this.inputSystem, this.arenaManager)
+    this.renderPipeline = new RenderPipeline(ctx, this.backdropSystem, this.arenaManager, this.combatSystem)
+    this.renderPipeline.setBuffManager(this.buffManager)
+    this.serverSync = new ServerSync(
+      this.combatSystem,
+      this.renderPipeline.getCombatEffectsRenderer(),
+      this.arenaManager,
+      () => this.localPlayer,
+      () => this.opponent,
+      (v, d) => this.playerController.setLaunch(v, d),
+      (v) => this.playerController.setLaunchFromKnockback(v)
+    )
+
+    this.wireCallbacks()
+    this.loadMap()
+    this.resize()
+    this.loadAssets()
+  }
+
+  private wireCallbacks(): void {
+    this.gameLoop.setCallbacks(
+      (dt) => this.update(dt),
+      () => this.render()
+    )
+    this.playerController.setCallbacks(
+      (pos) => this.callbacks.onPositionUpdate?.(pos),
+      (opponentId, pos) => this.handleLaunchCollision(opponentId, pos)
+    )
+  }
+
+  private loadMap(): void {
+    this.arenaManager.loadMap(NEXUS_ARENA)
+    this.arenaManager.setCallbacks({
+      onBarrierDestroyed: (_id, pos) => this.renderPipeline.getCombatEffectsRenderer().addDeathEffect(pos),
+      onTrapTriggered: () => this.handleTrapEffects(),
+      onPlayerTeleported: (_playerId, _from, to) => this.renderPipeline.getCombatEffectsRenderer().addRespawnEffect(to),
+      onPlayerLaunched: (playerId, velocity) => {
+        if (this.localPlayer && playerId === this.localPlayer.id) {
+          this.playerController.setLaunch(velocity)
+        }
+      },
+      onHazardDamage: (playerId, damage) => this.combatSystem.applyDamage(playerId, damage, 'hazard'),
+    })
+  }
+
+  private handleTrapEffects(): void {
+    const results = this.arenaManager.getTrapEffectResults()
+    for (const result of results) {
+      if (result.type === 'damage_burst') {
+        this.combatSystem.applyDamage(result.playerId, result.value, 'trap')
+      }
+      this.renderPipeline.getCombatEffectsRenderer().addHitMarker(result.position)
+      this.renderPipeline.getCombatEffectsRenderer().addDamageNumber(result.position, result.value)
+    }
+  }
+
+  private async loadAssets(): Promise<void> {
+    try {
+      await Promise.all([loadGameAssets(), arenaAssets.load()])
+      this.assetsLoaded = true
+      this.callbacks.onAssetsLoaded?.()
+    } catch {
+      this.assetsLoaded = true
+    }
+  }
+
+  private handleLaunchCollision(opponentId: string, position: Vector2): void {
+    this.combatSystem.applyDamage(opponentId, 15, 'launch_collision')
+    this.renderPipeline.getCombatEffectsRenderer().addHitMarker(position)
+    this.renderPipeline.getCombatEffectsRenderer().addDamageNumber(position, 15)
+  }
+
+
+  // Public API
+  areAssetsLoaded(): boolean { return this.assetsLoaded }
+
+  setCallbacks(callbacks: GameEngineCallbacks): void {
+    this.callbacks = callbacks
+    wireCombatCallbacks(
+      {
+        combatSystem: this.combatSystem,
+        effectsRenderer: this.renderPipeline.getCombatEffectsRenderer(),
+        arenaManager: this.arenaManager,
+        telemetryManager: this.telemetryManager,
+        getLocalPlayer: () => this.localPlayer,
+        getOpponent: () => this.opponent,
+        getPlayerPositions: () => this.getPlayerPositions(),
+      },
+      callbacks,
+      (replay) => {
+        callbacks.onDeathReplayReady?.(replay)
+      }
+    )
+    this.serverSync.setCallbacks({
+      onCombatDeath: callbacks.onCombatDeath,
+      onCombatRespawn: callbacks.onCombatRespawn,
+    })
+  }
+
+  initLocalPlayer(playerId: string, isPlayer1: boolean): void {
+    const spawn = isPlayer1 ? PLAYER_SPAWNS.player1 : PLAYER_SPAWNS.player2
+    this.localPlayer = { id: playerId, position: { ...spawn }, trail: [], isLocal: true, isPlayer1 }
+    this.combatSystem.setLocalPlayer(playerId)
+  }
+
+  setCombatEnabled(enabled: boolean): void { this.combatEnabled = enabled }
+
+  handleMouseMove(clientX: number, clientY: number): void {
+    const rect = this.canvas.getBoundingClientRect()
+    this.mousePosition = { x: (clientX - rect.left) / this.scale, y: (clientY - rect.top) / this.scale }
+  }
+
+  handleFire(): boolean {
+    if (!this.combatEnabled || !this.localPlayer) return false
+    return this.combatSystem.tryFire(this.localPlayer.position)
+  }
+
+  setMobileVelocity(velocity: Vector2): void { this.playerController.setMobileVelocity(velocity) }
+
+  setOpponent(opponent: PlayerState | null, isOpponentPlayer1?: boolean): void {
+    if (opponent) {
+      this.opponent = { ...opponent, isPlayer1: isOpponentPlayer1 ?? opponent.isPlayer1 ?? false }
+      this.combatSystem.setOpponent(opponent.id)
+    } else {
+      this.opponent = null
+    }
+  }
+
+  updateOpponentPosition(position: Vector2): void {
+    if (this.opponent) this.opponent.position = position
+  }
+
+  setPowerUps(powerUps: PowerUpState[]): void { this.powerUps = powerUps }
+  getMapConfig(): unknown { return NEXUS_ARENA }
+
+  // Server-authoritative methods (delegate to ServerSync)
+  setServerProjectiles(projectiles: Projectile[]): void { this.serverSync.setServerProjectiles(projectiles) }
+  setServerHealth(playerId: string, health: number, maxHealth: number): void { this.serverSync.setServerHealth(playerId, health, maxHealth) }
+  handleServerDeath(playerId: string, killerId: string): void { this.serverSync.handleServerDeath(playerId, killerId) }
+  handleServerRespawn(playerId: string, x: number, y: number): void { this.serverSync.handleServerRespawn(playerId, x, y) }
+  handleServerTeleport(playerId: string, toX: number, toY: number): void { this.serverSync.handleServerTeleport(playerId, toX, toY) }
+  handleServerJumpPad(playerId: string, vx: number, vy: number): void { this.serverSync.handleServerJumpPad(playerId, vx, vy) }
+  handleServerHazardDamage(playerId: string, damage: number): void { this.serverSync.handleServerHazardDamage(playerId, damage) }
+  handleServerTrapTriggered(trapId: string, effect: string, value: number, affectedPlayers: string[], position: { x: number; y: number }, knockbacks?: Record<string, { dx: number; dy: number }>): void {
+    this.serverSync.handleServerTrapTriggered(trapId, effect, value, affectedPlayers, position, knockbacks)
+  }
+
+  // Buff state from server
+  setServerBuffs(buffs: Record<string, Array<{ type: string; value: number; remaining: number; source: string }>>): void {
+    this.buffManager.setFromServer(buffs)
+  }
+
+  // Get buff manager for external access
+  getBuffManager(): BuffManager {
+    return this.buffManager
+  }
+
+  // Lifecycle
+  resize(): void {
+    const container = this.canvas.parentElement
+    if (!container) return
+    const { clientWidth, clientHeight } = container
+    const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height
+    let width = clientWidth, height = clientWidth / aspectRatio
+    if (height > clientHeight) { height = clientHeight; width = clientHeight * aspectRatio }
+    this.canvas.width = width
+    this.canvas.height = height
+    this.scale = width / ARENA_SIZE.width
+    this.renderPipeline.setScale(this.scale)
+  }
+
+  start(): void { this.gameLoop.start() }
+  stop(): void { this.gameLoop.stop() }
+  destroy(): void { this.stop(); this.playerController.destroy() }
+
+  // Update and render
+  private update(deltaTime: number): void {
+    this.backdropSystem.update(deltaTime)
+    this.arenaManager.update(deltaTime, this.getPlayerPositions())
+    this.playerController.update(deltaTime, this.localPlayer, this.opponent)
+    this.updateTrails()
+    this.checkPowerUpCollisions()
+    if (this.combatEnabled) this.updateCombat(deltaTime)
+    this.renderPipeline.setPlayers(this.localPlayer, this.opponent)
+    this.renderPipeline.updateAnimations(deltaTime)
+  }
+
+  private render(): void {
+    this.renderPipeline.render(this.gameLoop.getAnimationTime(), this.powerUps, this.combatEnabled, this.localPlayer, this.opponent)
+  }
+
+  private getPlayerPositions(): Map<string, Vector2> {
+    const players = new Map<string, Vector2>()
+    if (this.localPlayer) players.set(this.localPlayer.id, this.localPlayer.position)
+    if (this.opponent) players.set(this.opponent.id, this.opponent.position)
+    return players
+  }
+
+  private updateCombat(deltaTime: number): void {
+    if (this.localPlayer) this.combatSystem.updateAim(this.mousePosition, this.localPlayer.position, this.getPlayerPositions())
+    this.combatSystem.update(deltaTime, this.getPlayerPositions())
+    const players = new Map<string, PlayerState>()
+    if (this.localPlayer) players.set(this.localPlayer.id, this.localPlayer)
+    if (this.opponent) players.set(this.opponent.id, this.opponent)
+    this.telemetryManager.captureFrame(players, this.combatSystem.getAllHealthStates(), this.combatSystem.getProjectiles(), this.combatSystem.getAimDirections(), this.combatSystem.getRespawningPlayers())
+  }
+
+  private updateTrails(): void {
+    [this.localPlayer, this.opponent].forEach(player => {
+      if (!player) return
+      player.trail.unshift({ ...player.position, alpha: 1 })
+      player.trail = player.trail.map(p => ({ ...p, alpha: p.alpha - 0.05 })).filter(p => p.alpha > 0).slice(0, PLAYER_CONFIG.trailLength)
+    })
+  }
+
+  private checkPowerUpCollisions(): void {
+    if (!this.localPlayer) return
+    this.powerUps.forEach(powerUp => {
+      if (powerUp.collected || !powerUp.active) return
+      const dx = this.localPlayer!.position.x - powerUp.position.x
+      const dy = this.localPlayer!.position.y - powerUp.position.y
+      if (Math.sqrt(dx * dx + dy * dy) < PLAYER_CONFIG.radius + 30) this.callbacks.onPowerUpCollect?.(powerUp.id)
+    })
+  }
+
+  // Combat state getters
+  isLocalPlayerRespawning(): boolean { return this.localPlayer ? this.combatSystem.isPlayerRespawning(this.localPlayer.id) : false }
+  getLocalPlayerRespawnTime(): number { return this.localPlayer ? this.combatSystem.getRespawnTimeRemaining(this.localPlayer.id) : 0 }
+  isLocalPlayerAlive(): boolean { return this.localPlayer ? this.combatSystem.isPlayerAlive(this.localPlayer.id) : true }
+
+  // Question broadcast (in-arena display)
+  setQuestionBroadcast(question: { qNum: number; text: string; options: string[]; startTime: number; totalTime: number } | null, selectedAnswer: string | null, answerSubmitted: boolean, visible: boolean): void {
+    this.renderPipeline.setQuestionBroadcast({
+      question,
+      selectedAnswer,
+      answerSubmitted,
+      visible,
+    })
+  }
+
+  // Telemetry
+  setLobbyId(lobbyId: string): void { this.telemetryManager.setLobbyId(lobbyId) }
+  updateNetworkStats(stats: { rttMs?: number; serverTick?: number; jitterMs?: number }): void { this.telemetryManager.updateNetworkStats(stats) }
+  getLastDeathReplay() { return this.telemetryManager.getLastDeathReplay() }
+  clearLastDeathReplay(): void { this.telemetryManager.clearLastDeathReplay() }
+}

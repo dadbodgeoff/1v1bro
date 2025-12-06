@@ -3,6 +3,9 @@
  * Single source of truth for all game-related types
  */
 
+// Re-export combat types
+export * from './combat'
+
 export interface Vector2 {
   x: number
   y: number
@@ -24,6 +27,7 @@ export interface PlayerState {
   position: Vector2
   trail: TrailPoint[]
   isLocal: boolean
+  isPlayer1?: boolean // Explicit player assignment for consistent sprite colors
 }
 
 export interface PowerUpState {

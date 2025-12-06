@@ -28,6 +28,36 @@ class WSEventType(str, Enum):
     READY = "ready"
     ANSWER = "answer"
     START_GAME = "start_game"
+    
+    # Position sync (bidirectional)
+    POSITION_UPDATE = "position_update"
+    
+    # Combat events (Client -> Server)
+    COMBAT_KILL = "combat_kill"
+    COMBAT_DAMAGE = "combat_damage"
+    COMBAT_SHOT = "combat_shot"
+    
+    # Power-up events
+    POWERUP_SPAWN = "powerup_spawn"
+    POWERUP_COLLECTED = "powerup_collected"
+    POWERUP_USE = "powerup_use"
+    SHIELD_ACTIVATED = "shield_activated"
+    DOUBLE_POINTS_ACTIVATED = "double_points_activated"
+    
+    # Friend events (Server -> Client)
+    FRIEND_REQUEST = "friend_request"
+    FRIEND_ACCEPTED = "friend_accepted"
+    FRIEND_ONLINE = "friend_online"
+    FRIEND_OFFLINE = "friend_offline"
+    GAME_INVITE = "game_invite"
+    
+    # Matchmaking events
+    QUEUE_JOIN = "queue_join"
+    QUEUE_LEAVE = "queue_leave"
+    QUEUE_JOINED = "queue_joined"
+    QUEUE_STATUS = "queue_status"
+    QUEUE_CANCELLED = "queue_cancelled"
+    MATCH_FOUND = "match_found"
 
 
 def build_message(event_type: WSEventType, payload: Optional[Dict] = None) -> Dict:
@@ -61,11 +91,18 @@ def build_player_left(player_id: str, players: List[Dict]) -> Dict:
     })
 
 
-def build_game_start(total_questions: int, players: List[Dict]) -> Dict:
-    """Build game_start message."""
+def build_game_start(
+    total_questions: int,
+    players: List[Dict],
+    player1_id: str,
+    player2_id: str,
+) -> Dict:
+    """Build game_start message with explicit player assignments."""
     return build_message(WSEventType.GAME_START, {
         "total_questions": total_questions,
         "players": players,
+        "player1_id": player1_id,
+        "player2_id": player2_id,
     })
 
 
@@ -90,14 +127,16 @@ def build_round_result(
     scores: Dict[str, int],
     answers: Dict[str, Optional[str]],
     total_scores: Dict[str, int],
+    rewards: Optional[Dict[str, Dict]] = None,
 ) -> Dict:
-    """Build round_result message."""
+    """Build round_result message with optional quiz rewards."""
     return build_message(WSEventType.ROUND_RESULT, {
         "q_num": q_num,
         "correct_answer": correct_answer,
         "scores": scores,
         "answers": answers,
         "total_scores": total_scores,
+        "rewards": rewards or {},
     })
 
 

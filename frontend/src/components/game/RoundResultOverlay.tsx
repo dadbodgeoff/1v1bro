@@ -1,0 +1,94 @@
+/**
+ * RoundResultOverlay - Minimal, non-intrusive result notification
+ * Small toast at top of screen instead of blocking center overlay
+ */
+
+import { useEffect, useState } from 'react'
+import { useGameStore } from '@/stores/gameStore'
+
+interface RoundResultOverlayProps {
+  visible: boolean
+}
+
+export function RoundResultOverlay({ visible }: RoundResultOverlayProps) {
+  const { roundResult } = useGameStore()
+  const [show, setShow] = useState(false)
+
+  // Animate in/out
+  useEffect(() => {
+    if (visible && roundResult) {
+      setShow(true)
+    } else {
+      const timer = setTimeout(() => setShow(false), 300)
+      return () => clearTimeout(timer)
+    }
+  }, [visible, roundResult])
+
+  if (!show || !roundResult) return null
+
+  const localCorrect = roundResult.localAnswer === roundResult.correctAnswer
+  const opponentCorrect = roundResult.opponentAnswer === roundResult.correctAnswer
+  const localWon = roundResult.localScore > roundResult.opponentScore
+
+  return (
+    <div
+      className={`absolute top-4 left-1/2 -translate-x-1/2 z-30 transition-all duration-300 ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+      }`}
+    >
+      <div className="bg-[#0a0a0a]/95 backdrop-blur-sm border border-white/[0.1] rounded-lg px-5 py-3 shadow-2xl">
+        <div className="flex items-center gap-6">
+          {/* Your result */}
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 rounded-full ${
+                localCorrect ? 'bg-emerald-400' : 'bg-red-400'
+              }`}
+            />
+            <span className="text-xs text-neutral-500">You</span>
+            <span
+              className={`text-sm font-semibold tabular-nums ${
+                localWon ? 'text-white' : 'text-neutral-400'
+              }`}
+            >
+              +{roundResult.localScore}
+            </span>
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-4 bg-white/[0.1]" />
+
+          {/* Opponent result */}
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 rounded-full ${
+                opponentCorrect ? 'bg-emerald-400' : 'bg-red-400'
+              }`}
+            />
+            <span className="text-xs text-neutral-500">Opp</span>
+            <span
+              className={`text-sm font-semibold tabular-nums ${
+                !localWon && roundResult.opponentScore > 0
+                  ? 'text-white'
+                  : 'text-neutral-400'
+              }`}
+            >
+              +{roundResult.opponentScore}
+            </span>
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-4 bg-white/[0.1]" />
+
+          {/* Correct answer */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-neutral-500">Answer:</span>
+            <span className="text-sm text-emerald-400 font-medium truncate max-w-[120px]">
+              {roundResult.correctAnswer}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

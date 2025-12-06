@@ -4,11 +4,12 @@ Handles connection lifecycle and message broadcasting.
 """
 
 import json
-from typing import Dict, Optional, Set
+from typing import Dict, Optional, Set, Tuple
 
 from fastapi import WebSocket
 
 from app.core.logging import get_logger
+from app.services.presence_service import presence_service
 
 logger = get_logger("websocket")
 
@@ -18,15 +19,75 @@ class ConnectionManager:
     Manages WebSocket connections for game lobbies.
     
     Tracks connections by lobby code and provides broadcast capabilities.
+    Includes connection limits for graceful degradation under load.
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        max_connections: int = 500,
+        max_per_lobby: int = 10,
+    ):
+        """
+        Initialize connection manager.
+        
+        Args:
+            max_connections: Maximum total WebSocket connections
+            max_per_lobby: Maximum connections per lobby
+        """
+        # Connection limits
+        self.max_connections = max_connections
+        self.max_per_lobby = max_per_lobby
+        
         # lobby_code -> set of websockets
         self.active_connections: Dict[str, Set[WebSocket]] = {}
         # websocket -> (lobby_code, user_id)
         self.connection_info: Dict[WebSocket, tuple] = {}
         # user_id -> websocket (for reconnection)
         self.user_connections: Dict[str, WebSocket] = {}
+    
+    def can_accept_connection(self, lobby_code: str) -> Tuple[bool, str]:
+        """
+        Check if we can accept a new connection.
+        
+        Args:
+            lobby_code: Target lobby code
+            
+        Returns:
+            Tuple of (can_accept, reason_if_rejected)
+        """
+        # Check total connections
+        total = sum(len(conns) for conns in self.active_connections.values())
+        if total >= self.max_connections:
+            logger.warning(f"Server full: {total}/{self.max_connections} connections")
+            return False, "server_full"
+        
+        # Check per-lobby limit
+        lobby_count = len(self.active_connections.get(lobby_code, set()))
+        if lobby_count >= self.max_per_lobby:
+            logger.warning(f"Lobby {lobby_code} full: {lobby_count}/{self.max_per_lobby}")
+            return False, "lobby_full"
+        
+        return True, ""
+    
+    def get_stats(self) -> dict:
+        """
+        Get connection statistics for monitoring.
+        
+        Returns:
+            Dict with connection metrics
+        """
+        total = sum(len(conns) for conns in self.active_connections.values())
+        return {
+            "total_connections": total,
+            "max_connections": self.max_connections,
+            "capacity_percent": round(total / self.max_connections * 100, 1) if self.max_connections > 0 else 0,
+            "active_lobbies": len(self.active_connections),
+            "max_per_lobby": self.max_per_lobby,
+            "connections_by_lobby": {
+                code: len(conns) 
+                for code, conns in self.active_connections.items()
+            }
+        }
 
     async def connect(
         self,
@@ -52,6 +113,9 @@ class ConnectionManager:
         # Track connection info
         self.connection_info[websocket] = (lobby_code, user_id)
         self.user_connections[user_id] = websocket
+        
+        # Update presence service
+        presence_service.user_connected(user_id, lobby_code)
         
         logger.info(f"User {user_id} connected to lobby {lobby_code}")
 
@@ -80,6 +144,9 @@ class ConnectionManager:
             if user_id in self.user_connections:
                 del self.user_connections[user_id]
             
+            # Update presence service
+            presence_service.user_disconnected(user_id)
+            
             logger.info(f"User {user_id} disconnected from lobby {lobby_code}")
             return info
         
@@ -102,10 +169,12 @@ class ConnectionManager:
             exclude_user_id: Optional user ID to exclude from broadcast
         """
         if lobby_code not in self.active_connections:
+            logger.warning(f"No connections for lobby {lobby_code}")
             return
         
         data = json.dumps(message)
         disconnected = []
+        sent_count = 0
         
         for connection in self.active_connections[lobby_code]:
             if exclude and connection == exclude:
@@ -114,9 +183,16 @@ class ConnectionManager:
                 continue
             try:
                 await connection.send_text(data)
+                sent_count += 1
             except Exception as e:
                 logger.warning(f"Failed to send to connection: {e}")
                 disconnected.append(connection)
+        
+        # Log for position updates to debug
+        msg_type = message.get("type", "unknown")
+        if msg_type == "position_update":
+            total_conns = len(self.active_connections[lobby_code])
+            logger.debug(f"Broadcast {msg_type} to {sent_count}/{total_conns} connections in {lobby_code} (excluded: {exclude_user_id})")
         
         # Clean up failed connections
         for conn in disconnected:

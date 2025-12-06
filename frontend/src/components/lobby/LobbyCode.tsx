@@ -1,5 +1,8 @@
+/**
+ * LobbyCode - Clean code display with copy functionality
+ */
+
 import { useState } from 'react'
-import { cn } from '@/utils/helpers'
 
 interface LobbyCodeProps {
   code: string
@@ -14,7 +17,6 @@ export function LobbyCode({ code }: LobbyCodeProps) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      // Fallback for older browsers
       const input = document.createElement('input')
       input.value = code
       document.body.appendChild(input)
@@ -27,21 +29,16 @@ export function LobbyCode({ code }: LobbyCodeProps) {
   }
 
   return (
-    <div className="text-center">
-      <p className="text-slate-400 text-sm mb-2">Lobby Code</p>
-      <button
-        onClick={handleCopy}
-        className={cn(
-          'text-4xl font-mono font-bold tracking-widest px-6 py-3 rounded-lg transition-colors',
-          'bg-slate-800 hover:bg-slate-700',
-          copied ? 'text-green-400' : 'text-white'
-        )}
-      >
+    <button
+      onClick={handleCopy}
+      className="group relative px-8 py-4 bg-white/[0.02] border border-white/[0.08] rounded-lg hover:bg-white/[0.04] hover:border-white/[0.12] transition-all"
+    >
+      <span className="text-3xl font-mono font-semibold tracking-[0.4em] text-white">
         {code}
-      </button>
-      <p className="text-slate-500 text-xs mt-2">
+      </span>
+      <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-neutral-500">
         {copied ? 'Copied!' : 'Click to copy'}
-      </p>
-    </div>
+      </span>
+    </button>
   )
 }

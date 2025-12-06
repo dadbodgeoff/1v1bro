@@ -101,4 +101,126 @@ export const gameAPI = {
   get: (id: string) => request<GameHistory>(`/games/${id}`),
 }
 
+// Leaderboard API
+import type { LeaderboardResponse, UserRankResponse, LeaderboardCategory } from '@/types/leaderboard'
+
+export const leaderboardAPI = {
+  getLeaderboard: (category: LeaderboardCategory, limit = 10, offset = 0) =>
+    request<LeaderboardResponse>(`/leaderboards/${category}?limit=${limit}&offset=${offset}`),
+
+  getMyRank: (category: LeaderboardCategory) =>
+    request<UserRankResponse>(`/leaderboards/${category}/rank/me`),
+
+  getUserRank: (category: LeaderboardCategory, userId: string) =>
+    request<UserRankResponse>(`/leaderboards/${category}/rank/${userId}`),
+}
+
+// Friends API
+import type { FriendsListResponse, UserSearchResponse, GameInvite } from '@/types/friend'
+
+export const friendsAPI = {
+  // Friends list
+  getFriends: () => request<FriendsListResponse>('/friends'),
+
+  // Friend requests
+  sendRequest: (userId: string) =>
+    request<{ friendship_id: string; status: string; message: string }>('/friends/request', {
+      method: 'POST',
+      body: JSON.stringify({ user_id: userId }),
+    }),
+
+  acceptRequest: (friendshipId: string) =>
+    request<{ friendship_id: string; status: string; message: string }>(
+      `/friends/${friendshipId}/accept`,
+      { method: 'POST' }
+    ),
+
+  declineRequest: (friendshipId: string) =>
+    request<{ message: string }>(`/friends/${friendshipId}/decline`, { method: 'POST' }),
+
+  // Friend management
+  removeFriend: (friendshipId: string) =>
+    request<{ message: string }>(`/friends/${friendshipId}`, { method: 'DELETE' }),
+
+  // Blocking
+  blockUser: (userId: string) =>
+    request<{ message: string }>(`/friends/block/${userId}`, { method: 'POST' }),
+
+  unblockUser: (userId: string) =>
+    request<{ message: string }>(`/friends/block/${userId}`, { method: 'DELETE' }),
+
+  getBlockedUsers: () => request<Array<{ user_id: string; display_name: string | null; avatar_url: string | null; blocked_at: string }>>('/friends/blocked'),
+
+  // Game invites
+  sendGameInvite: (friendId: string, lobbyCode: string) =>
+    request<{ invite_id: string; expires_at: string; message: string }>(
+      `/friends/${friendId}/invite`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ lobby_code: lobbyCode }),
+      }
+    ),
+
+  getPendingInvites: () =>
+    request<{ invites: GameInvite[] }>('/friends/invites'),
+
+  acceptInvite: (inviteId: string) =>
+    request<{ lobby_code: string; message: string }>(`/friends/invites/${inviteId}/accept`, {
+      method: 'POST',
+    }),
+
+  declineInvite: (inviteId: string) =>
+    request<{ message: string }>(`/friends/invites/${inviteId}/decline`, { method: 'POST' }),
+
+  // User search
+  searchUsers: (query: string, limit = 10) =>
+    request<UserSearchResponse>(`/friends/search?q=${encodeURIComponent(query)}&limit=${limit}`),
+
+  // Settings
+  updateOnlineStatus: (showOnline: boolean) =>
+    request<{ show_online_status: boolean }>('/friends/settings/online-status', {
+      method: 'PUT',
+      body: JSON.stringify({ show_online_status: showOnline }),
+    }),
+
+  // Presence heartbeat
+  heartbeat: () =>
+    request<{ status: string }>('/friends/heartbeat', { method: 'POST' }),
+}
+
+// Messages API
+import type {
+  ConversationListResponse,
+  MessageHistoryResponse,
+  Message,
+} from '@/types/message'
+
+export const messagesAPI = {
+  // Conversations
+  getConversations: () =>
+    request<ConversationListResponse>('/messages/conversations'),
+
+  // Messages
+  getMessages: (friendId: string, limit = 50, beforeId?: string) => {
+    const params = new URLSearchParams({ limit: String(limit) })
+    if (beforeId) params.append('before_id', beforeId)
+    return request<MessageHistoryResponse>(`/messages/${friendId}?${params}`)
+  },
+
+  sendMessage: (friendId: string, content: string) =>
+    request<Message>(`/messages/${friendId}`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    }),
+
+  markAsRead: (friendId: string) =>
+    request<{ marked_count: number }>(`/messages/${friendId}/read`, {
+      method: 'POST',
+    }),
+
+  // Unread count
+  getUnreadCount: () =>
+    request<{ unread_count: number }>('/messages/unread/count'),
+}
+
 export { APIError }

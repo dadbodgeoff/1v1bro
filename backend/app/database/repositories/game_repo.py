@@ -26,6 +26,8 @@ class GameRepository(BaseRepository):
         questions_data: list[dict],
         answers_data: Optional[dict[str, list]] = None,
         winner_id: Optional[str] = None,
+        player1_combat_stats: Optional[dict] = None,
+        player2_combat_stats: Optional[dict] = None,
     ) -> dict:
         """
         Create a completed game record.
@@ -39,6 +41,8 @@ class GameRepository(BaseRepository):
             questions_data: List of questions used in the game
             answers_data: Dict mapping player_id to their answers
             winner_id: Winner UUID (None for tie)
+            player1_combat_stats: Combat stats for player 1
+            player2_combat_stats: Combat stats for player 2
             
         Returns:
             Created game record
@@ -52,6 +56,8 @@ class GameRepository(BaseRepository):
             "questions_data": questions_data,
             "answers_data": answers_data,
             "winner_id": winner_id,
+            "player1_combat_stats": player1_combat_stats or {},
+            "player2_combat_stats": player2_combat_stats or {},
         }
         result = self._table().insert(data).execute()
         return result.data[0]

@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     JWT_EXPIRATION_HOURS: int = 24
 
     # Game Settings
-    QUESTIONS_PER_GAME: int = 15
+    QUESTIONS_PER_GAME: int = 10
     QUESTION_TIME_SECONDS: int = 30
     QUESTION_TIME_MS: int = 30000  # Computed from QUESTION_TIME_SECONDS
     RECONNECT_TIMEOUT_SECONDS: int = 30
@@ -62,6 +62,11 @@ class Settings(BaseSettings):
     
     # Transition delay
     TRANSITION_DELAY_SECONDS: int = 3
+    
+    # Scaling settings
+    MAX_WEBSOCKET_CONNECTIONS: int = 500
+    MAX_CONNECTIONS_PER_LOBBY: int = 10
+    LOBBY_CACHE_TTL_SECONDS: float = 5.0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

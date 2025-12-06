@@ -18,6 +18,7 @@ from app.database.repositories.user_repo import UserRepository
 from app.services.base import BaseService
 from app.utils.helpers import generate_lobby_code
 from app.utils.constants import LobbyStatus
+from app.utils.lobby_cache import lobby_cache
 
 
 class LobbyService(BaseService):
@@ -25,6 +26,9 @@ class LobbyService(BaseService):
     
     # Track ready state in memory (lobby_code -> set of ready user_ids)
     _ready_states: dict[str, set[str]] = {}
+    
+    # Use shared cache instance
+    _cache = lobby_cache
 
     def __init__(self, client: Client):
         super().__init__(client)
@@ -91,7 +95,8 @@ class LobbyService(BaseService):
             LobbyFullError: If lobby already has 2 players
             ValidationError: If trying to join own lobby
         """
-        lobby = await self.lobby_repo.get_by_code(code.upper())
+        code = code.upper()
+        lobby = await self.lobby_repo.get_by_code(code)
         if not lobby:
             raise NotFoundError("Lobby", code)
         
@@ -104,11 +109,14 @@ class LobbyService(BaseService):
         # Add opponent
         updated = await self.lobby_repo.add_opponent(lobby["id"], player_id)
         
+        # Invalidate cache - lobby state changed
+        self._cache.invalidate(code)
+        
         # Get player profiles
         host_profile = await self.user_repo.get_by_id(lobby["host_id"])
         opponent_profile = await self.user_repo.get_by_id(player_id)
         
-        return {
+        result = {
             **updated,
             "players": [
                 {
@@ -126,13 +134,19 @@ class LobbyService(BaseService):
             ],
             "can_start": True,
         }
+        
+        # Cache the new state
+        self._cache.set(code, result)
+        
+        return result
 
-    async def get_lobby(self, code: str) -> dict:
+    async def get_lobby(self, code: str, use_cache: bool = True) -> dict:
         """
         Get lobby by code.
         
         Args:
             code: 6-character lobby code
+            use_cache: Whether to use cached data (default True)
             
         Returns:
             Lobby dict with player info
@@ -141,6 +155,14 @@ class LobbyService(BaseService):
             NotFoundError: If lobby not found
         """
         code = code.upper()
+        
+        # Check cache first (for high-frequency calls like position updates)
+        if use_cache:
+            cached = self._cache.get(code)
+            if cached is not None:
+                return cached
+        
+        # Cache miss - fetch from database
         lobby = await self.lobby_repo.get_active_by_code(code)
         if not lobby:
             raise NotFoundError("Lobby", code)
@@ -173,11 +195,16 @@ class LobbyService(BaseService):
             lobby["opponent_id"] in ready_users
         )
         
-        return {
+        result = {
             **lobby,
             "players": players,
             "can_start": can_start,
         }
+        
+        # Cache the result
+        self._cache.set(code, result)
+        
+        return result
     
     async def set_player_ready(self, code: str, user_id: str) -> dict:
         """
@@ -199,7 +226,10 @@ class LobbyService(BaseService):
         # Add user to ready set
         self._ready_states[code].add(user_id)
         
-        # Return updated lobby
+        # Invalidate cache - ready state changed
+        self._cache.invalidate(code)
+        
+        # Return updated lobby (will re-cache)
         return await self.get_lobby(code)
 
     async def start_game(self, lobby_id: str, host_id: str) -> dict:
@@ -233,6 +263,11 @@ class LobbyService(BaseService):
         
         # Update status
         updated = await self.lobby_repo.update_status(lobby_id, LobbyStatus.IN_PROGRESS.value)
+        
+        # Invalidate cache - game started
+        if lobby.get("code"):
+            self._cache.invalidate(lobby["code"])
+        
         return updated
 
     async def leave_lobby(self, lobby_id: str, player_id: str) -> Optional[dict]:
@@ -249,6 +284,10 @@ class LobbyService(BaseService):
         lobby = await self.lobby_repo.get_by_id(lobby_id)
         if not lobby:
             return None
+        
+        # Invalidate cache - lobby state changing
+        if lobby.get("code"):
+            self._cache.invalidate(lobby["code"])
         
         if lobby["host_id"] == player_id:
             # Host leaving - abandon lobby
@@ -270,4 +309,9 @@ class LobbyService(BaseService):
         Returns:
             Updated lobby
         """
+        # Get lobby to find code for cache invalidation
+        lobby = await self.lobby_repo.get_by_id(lobby_id)
+        if lobby and lobby.get("code"):
+            self._cache.invalidate(lobby["code"])
+        
         return await self.lobby_repo.update_status(lobby_id, LobbyStatus.COMPLETED.value)

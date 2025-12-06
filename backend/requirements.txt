@@ -22,3 +22,6 @@ httpx>=0.26.0,<0.29.0
 
 # Utilities
 python-dotenv>=1.0.0
+
+# Image processing
+Pillow>=10.0.0

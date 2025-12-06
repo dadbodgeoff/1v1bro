@@ -1,0 +1,169 @@
+/**
+ * useArenaGame - Main hook composing all arena game functionality
+ * Single responsibility: Coordinate sub-hooks and manage player state
+ * 
+ * Delegates to:
+ * - useQuizEvents: Quiz question/answer flow
+ * - useCombatEvents: Combat state sync
+ * - useArenaEvents: Hazards, traps, transport
+ * - useInterpolation: Smooth opponent movement
+ * - usePowerUpEvents: Power-up spawn/collection
+ */
+
+import { useEffect, useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useGameStore } from '@/stores/gameStore'
+import { useAuthStore } from '@/stores/authStore'
+import { useLobbyStore } from '@/stores/lobbyStore'
+import { wsService } from '@/services/websocket'
+import type { PositionUpdatePayload } from '@/types/websocket'
+
+import { useQuizEvents } from './useQuizEvents'
+import { useCombatEvents } from './useCombatEvents'
+import { useArenaEvents } from './useArenaEvents'
+import { useInterpolation } from './useInterpolation'
+import { usePowerUpEvents } from './usePowerUpEvents'
+import type { Vector2 } from './types'
+
+export function useArenaGame(lobbyCode?: string) {
+  const navigate = useNavigate()
+  const userId = useAuthStore((s) => s.user?.id)
+  const userName = useAuthStore((s) => s.user?.display_name)
+  const { players, player1Id, player2Id } = useLobbyStore()
+  const { setLocalPlayer, setOpponent, reset } = useGameStore()
+
+  // Player state
+  const [isPlayer1, setIsPlayer1] = useState(true)
+  const [opponentId, setOpponentId] = useState<string | null>(null)
+
+  // Compose sub-hooks
+  const quiz = useQuizEvents(lobbyCode)
+  const combat = useCombatEvents(lobbyCode, userId)
+  const arena = useArenaEvents(lobbyCode)
+  const interpolation = useInterpolation(lobbyCode)
+  const { powerUps } = usePowerUpEvents(lobbyCode)
+
+  // Initialize players from lobby
+  useEffect(() => {
+    if (userId && players.length > 0) {
+      setLocalPlayer(userId, userName || null)
+
+      const opponent = players.find((p) => p.id !== userId)
+      if (opponent) {
+        setOpponent(opponent.id, opponent.display_name)
+        setOpponentId(opponent.id)
+      }
+
+      // Use explicit player assignment from game_start if available
+      if (player1Id && player2Id) {
+        setIsPlayer1(userId === player1Id)
+      } else {
+        const playerIndex = players.findIndex((p) => p.id === userId)
+        setIsPlayer1(playerIndex === 0)
+      }
+    }
+  }, [userId, userName, players, player1Id, player2Id, setLocalPlayer, setOpponent])
+
+
+  // Connect to WebSocket and subscribe to position updates
+  useEffect(() => {
+    if (!lobbyCode) return
+
+    const connectAndSubscribe = async () => {
+      if (!wsService.isConnected) {
+        try {
+          await wsService.connect(lobbyCode)
+        } catch (err) {
+          console.error('Failed to connect:', err)
+          navigate('/')
+          return
+        }
+      }
+
+      // Position updates feed into interpolation
+      const unsubPosition = wsService.on('position_update', (payload) => {
+        const data = payload as PositionUpdatePayload
+        const localId = useAuthStore.getState().user?.id
+        if (data.player_id !== localId) {
+          interpolation.addPositionSnapshot({ x: data.x, y: data.y })
+        }
+      })
+
+      return () => {
+        unsubPosition()
+      }
+    }
+
+    const cleanup = connectAndSubscribe()
+    return () => {
+      cleanup.then((fn) => fn?.())
+    }
+  }, [lobbyCode, navigate, interpolation])
+
+  // Wire combat position updates to interpolation
+  useEffect(() => {
+    combat.setOpponentPositionCallback((pos) => {
+      interpolation.addPositionSnapshot(pos)
+    })
+  }, [combat, interpolation])
+
+  // Send position update
+  const sendPosition = useCallback((position: Vector2) => {
+    wsService.sendPosition(position.x, position.y)
+  }, [])
+
+  // Leave game
+  const leaveGame = useCallback(() => {
+    wsService.disconnect()
+    reset()
+    navigate('/')
+  }, [reset, navigate])
+
+  return {
+    // Quiz state
+    status: quiz.status,
+    currentQuestion: quiz.currentQuestion,
+    localScore: quiz.localScore,
+    opponentScore: quiz.opponentScore,
+    roundResult: quiz.roundResult,
+    finalResult: quiz.finalResult,
+    sendAnswer: quiz.sendAnswer,
+
+    // Player state
+    isPlayer1,
+    opponentId,
+    opponentPosition: interpolation.opponentPosition,
+    powerUps,
+
+    // Position
+    sendPosition,
+    setOpponentPositionCallback: interpolation.setOpponentPositionCallback,
+
+    // Combat
+    sendFire: combat.sendFire,
+    sendCombatEvent: combat.sendCombatEvent,
+    setServerProjectilesCallback: combat.setServerProjectilesCallback,
+    setServerHealthCallback: combat.setServerHealthCallback,
+    setServerDeathCallback: combat.setServerDeathCallback,
+    setServerRespawnCallback: combat.setServerRespawnCallback,
+    setBuffUpdateCallback: combat.setBuffUpdateCallback,
+
+    // Arena
+    sendArenaConfig: arena.sendArenaConfig,
+    setHazardSpawnCallback: arena.setHazardSpawnCallback,
+    setHazardDespawnCallback: arena.setHazardDespawnCallback,
+    setHazardEnterCallback: arena.setHazardEnterCallback,
+    setHazardExitCallback: arena.setHazardExitCallback,
+    setHazardDamageCallback: arena.setHazardDamageCallback,
+    setTrapSpawnCallback: arena.setTrapSpawnCallback,
+    setTrapDespawnCallback: arena.setTrapDespawnCallback,
+    setTrapWarningCallback: arena.setTrapWarningCallback,
+    setTrapTriggeredCallback: arena.setTrapTriggeredCallback,
+    setTrapArmedCallback: arena.setTrapArmedCallback,
+    setTeleportCallback: arena.setTeleportCallback,
+    setJumpPadCallback: arena.setJumpPadCallback,
+
+    // Lifecycle
+    leaveGame,
+  }
+}

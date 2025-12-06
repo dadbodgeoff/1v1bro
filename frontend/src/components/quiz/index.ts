@@ -1,0 +1,5 @@
+export { QuizCard } from './QuizCard'
+export { QuizSetup } from './QuizSetup'
+export { QuizGame } from './QuizGame'
+export { QuizResults } from './QuizResults'
+export { PersonalityQuiz } from './PersonalityQuiz'

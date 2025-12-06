@@ -16,15 +16,16 @@ class MockWebSocket {
   onerror: ((error: unknown) => void) | null = null
 
   send = vi.fn()
-  close = vi.fn(() => {
-    this.readyState = MockWebSocket.CLOSED
-  })
+  close = vi.fn()
 
   constructor() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     mockWsInstance = this
+    this.close.mockImplementation(() => {
+      this.readyState = MockWebSocket.CLOSED
+    })
   }
 
-  // Helper to simulate connection
   simulateOpen() {
     this.readyState = MockWebSocket.OPEN
     this.onopen?.()

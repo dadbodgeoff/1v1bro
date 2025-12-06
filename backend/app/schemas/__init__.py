@@ -12,6 +12,33 @@ from app.schemas.ws_messages import (
     RoundResultPayload,
     GameEndPayload,
 )
+from app.schemas.stats import (
+    TriviaStats,
+    CombatStats,
+    StreakStats,
+    PlayerStats,
+    GameCombatSummary,
+    TriviaStatsDelta,
+    StatsUpdateRequest,
+)
+from app.schemas.leaderboard import (
+    LeaderboardCategory,
+    LeaderboardEntry,
+    LeaderboardResponse,
+    UserRankResponse,
+    LeaderboardQueryParams,
+)
+from app.schemas.profile import (
+    SocialLinks,
+    PrivacySettings,
+    ProfileUpdate,
+    Profile,
+    PublicProfile,
+    SignedUploadUrl,
+    UploadConfirmRequest,
+    UploadConfirmResponse,
+    PrivacySettingsUpdate,
+)
 
 __all__ = [
     "BaseSchema",
@@ -37,4 +64,28 @@ __all__ = [
     "AnswerPayload",
     "RoundResultPayload",
     "GameEndPayload",
+    # Stats schemas
+    "TriviaStats",
+    "CombatStats",
+    "StreakStats",
+    "PlayerStats",
+    "GameCombatSummary",
+    "TriviaStatsDelta",
+    "StatsUpdateRequest",
+    # Leaderboard schemas
+    "LeaderboardCategory",
+    "LeaderboardEntry",
+    "LeaderboardResponse",
+    "UserRankResponse",
+    "LeaderboardQueryParams",
+    # Profile schemas
+    "SocialLinks",
+    "PrivacySettings",
+    "ProfileUpdate",
+    "Profile",
+    "PublicProfile",
+    "SignedUploadUrl",
+    "UploadConfirmRequest",
+    "UploadConfirmResponse",
+    "PrivacySettingsUpdate",
 ]

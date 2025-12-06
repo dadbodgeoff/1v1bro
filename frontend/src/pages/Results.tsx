@@ -5,7 +5,7 @@ import { useLobbyStore } from '@/stores/lobbyStore'
 import { Button } from '@/components/ui'
 
 export function Results() {
-  const { code: _code } = useParams<{ code: string }>()
+  useParams<{ code: string }>()
   const navigate = useNavigate()
   const userId = useAuthStore((s) => s.user?.id)
   const { finalResult, localPlayerName, opponentName, reset: resetGame } = useGameStore()

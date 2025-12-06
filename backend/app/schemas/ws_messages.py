@@ -33,6 +33,11 @@ class WSEventType(str, Enum):
     # Position sync
     POSITION_UPDATE = "position_update"
     
+    # Combat events (Client -> Server for stats tracking)
+    COMBAT_KILL = "combat_kill"
+    COMBAT_DAMAGE = "combat_damage"
+    COMBAT_SHOT = "combat_shot"
+    
     # Power-up system
     POWERUP_SPAWN = "powerup_spawn"
     POWERUP_COLLECTED = "powerup_collected"
