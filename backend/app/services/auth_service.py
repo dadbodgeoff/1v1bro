@@ -32,6 +32,10 @@ _reset_tokens: dict = {}
 
 def get_private_key() -> str:
     """Get RS256 private key from environment or file."""
+    from app.core.config import get_settings
+    settings = get_settings()
+    
+    # First check for RS256 keys
     key = os.getenv("JWT_PRIVATE_KEY")
     if key:
         return key.replace("\\n", "\n")
@@ -39,12 +43,15 @@ def get_private_key() -> str:
     if os.path.exists(key_path):
         with open(key_path, "r") as f:
             return f.read()
-    # Fallback for development - generate a simple key
-    return os.getenv("JWT_SECRET", "dev-secret-key-change-in-production")
+    # Fallback to JWT_SECRET_KEY from settings (HS256 mode)
+    return settings.JWT_SECRET_KEY
 
 
 def get_public_key() -> str:
     """Get RS256 public key from environment or file."""
+    from app.core.config import get_settings
+    settings = get_settings()
+    
     key = os.getenv("JWT_PUBLIC_KEY")
     if key:
         return key.replace("\\n", "\n")
@@ -52,7 +59,8 @@ def get_public_key() -> str:
     if os.path.exists(key_path):
         with open(key_path, "r") as f:
             return f.read()
-    return os.getenv("JWT_SECRET", "dev-secret-key-change-in-production")
+    # Fallback to JWT_SECRET_KEY from settings (HS256 mode)
+    return settings.JWT_SECRET_KEY
 
 
 def hash_password(password: str) -> str:

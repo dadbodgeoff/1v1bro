@@ -155,7 +155,7 @@ function FriendCard({ friend, lobbyCode, isOffline, onMessage }: FriendCardProps
         {/* Message button */}
         <button
           onClick={onMessage}
-          className="p-1.5 text-neutral-500 hover:text-purple-400 hover:bg-purple-500/10 rounded transition-colors"
+          className="p-1.5 text-neutral-500 hover:text-indigo-400 hover:bg-indigo-500/10 rounded transition-colors"
           title="Send message"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

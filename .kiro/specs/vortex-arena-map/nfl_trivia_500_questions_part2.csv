@@ -1,0 +1,401 @@
+ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
+501,Super Bowl LIV 2020,What was the final score of Super Bowl LIV?,"Chiefs 31, 49ers 20","Chiefs 28, 49ers 24","Chiefs 35, 49ers 17","Chiefs 25, 49ers 22","Chiefs 31, 49ers 20"
+502,Super Bowl LIV 2020,Who was the Super Bowl LIV MVP?,Patrick Mahomes,Travis Kelce,Damien Williams,Mecole Hardman,Patrick Mahomes
+503,Super Bowl LIV 2020,How many passing touchdowns did Patrick Mahomes have in Super Bowl LIV?,2,1,3,4,2
+504,Super Bowl LIV 2020,How many rushing touchdowns did Patrick Mahomes have in Super Bowl LIV?,1,2,0,3,1
+505,Super Bowl LIV 2020,Did the Chiefs overcome a deficit in Super Bowl LIV?,Yes,No,Led entire game,Never trailed,Yes
+506,Super Bowl LIV 2020,How many points behind were the Chiefs at halftime of Super Bowl LIV?,10 points,7 points,3 points,14 points,10 points
+507,Super Bowl LIV 2020,Was this the Chiefs' first Super Bowl win in how many years?,50 years,40 years,30 years,20 years,50 years
+508,Super Bowl LIV 2020,Where was Super Bowl LIV played?,Miami,Atlanta,Tampa,Phoenix,Miami
+509,Super Bowl LIV 2020,What was Patrick Mahomes' age at Super Bowl LIV?,24,23,25,26,24
+510,Super Bowl LIV 2020,Did Patrick Mahomes become the youngest to win both MVP and Super Bowl?,Yes,No,Tied record,Close,Yes
+511,Super Bowl LV 2021,What was the final score of Super Bowl LV?,"Buccaneers 31, Chiefs 9","Buccaneers 28, Chiefs 10","Buccaneers 35, Chiefs 14","Buccaneers 25, Chiefs 3","Buccaneers 31, Chiefs 9"
+512,Super Bowl LV 2021,Who won Super Bowl LV?,Tampa Bay Buccaneers,Kansas City Chiefs,San Francisco 49ers,Buffalo Bills,Tampa Bay Buccaneers
+513,Super Bowl LV 2021,Who was the MVP of Super Bowl LV?,Tom Brady,Leonard Fournette,Antonio Brown,Rob Gronkowski,Tom Brady
+514,Super Bowl LV 2021,How many Super Bowl wins does Tom Brady have total?,7,6,5,8,7
+515,Super Bowl LV 2021,Which team was Tom Brady's first Super Bowl win with?,New England Patriots,Tampa Bay Buccaneers,San Francisco 49ers,Detroit Lions,New England Patriots
+516,Super Bowl LV 2021,How many interceptions did Patrick Mahomes throw in Super Bowl LV?,2,1,3,0,2
+517,Super Bowl LV 2021,How many interceptions did the Buccaneers get in Super Bowl LV?,2,3,1,4,2
+518,Super Bowl LV 2021,Did Tom Brady play for the Buccaneers in 2020?,Yes,No,Starting 2021,Mid-season,Yes
+519,Super Bowl LV 2021,How many touchdowns did Tom Brady throw in Super Bowl LV?,3,2,4,1,3
+520,Super Bowl LV 2021,Was this the first time a team won at home?,No,Yes,Second time,Rare,No
+521,Super Bowl LVI 2022,What was the final score of Super Bowl LVI?,"Rams 23, Bengals 20","Rams 25, Bengals 22","Rams 27, Bengals 24","Rams 21, Bengals 17","Rams 23, Bengals 20"
+522,Super Bowl LVI 2022,Who was the MVP of Super Bowl LVI?,Cooper Kupp,Matthew Stafford,Aaron Donald,Jalen Ramsey,Cooper Kupp
+523,Super Bowl LVI 2022,When did Cooper Kupp score the game-winning touchdown?,1:25 left,2:00 left,1:00 left,1:50 left,1:25 left
+524,Super Bowl LVI 2022,How many yards was Cooper Kupp's game-winning touchdown?,1 yard,3 yards,5 yards,7 yards,1 yard
+525,Super Bowl LVI 2022,Did the Rams win at their home stadium?,Yes,No,Neutral site,In Cincinnati,Yes
+526,Super Bowl LVI 2022,What is the name of the Rams' home stadium?,SoFi Stadium,Crypto.com Arena,Inglewood Stadium,LA Coliseum,SoFi Stadium
+527,Super Bowl LVI 2022,How many Super Bowls have the Rams won?,2,1,3,0,2
+528,Super Bowl LVI 2022,When did the Rams win their first Super Bowl?,1999,2000,1998,2001,1999
+529,Super Bowl LVI 2022,Did Matthew Stafford get his first Super Bowl win?,Yes,No,Second,Third,Yes
+530,Super Bowl LVI 2022,What was the controversial play in Super Bowl LVI?,Uncalled face mask by Bengals,Missed holding call on Rams,Incomplete pass ruling,Out of bounds call,Uncalled face mask by Bengals
+531,Super Bowl LVII 2023,What was the final score of Super Bowl LVII?,"Chiefs 38, Eagles 35","Chiefs 35, Eagles 32","Chiefs 40, Eagles 37","Chiefs 36, Eagles 33","Chiefs 38, Eagles 35"
+532,Super Bowl LVII 2023,Who kicked the game-winning field goal in Super Bowl LVII?,Harrison Butker,Jake Elliott,Matt Gay,Greg Joseph,Harrison Butker
+533,Super Bowl LVII 2023,What was the distance of the game-winning field goal?,27 yards,25 yards,30 yards,22 yards,27 yards
+534,Super Bowl LVII 2023,Who was the MVP of Super Bowl LVII?,Patrick Mahomes,Jalen Hurts,Travis Kelce,A.J. Brown,Patrick Mahomes
+535,Super Bowl LVII 2023,What was the controversial penalty in Super Bowl LVII?,Defensive holding on Eagles,Holding on Chiefs,Pass interference,Illegal block,Defensive holding on Eagles
+536,Super Bowl LVII 2023,Did the Chiefs win back-to-back Super Bowls?,Yes,No,2 straight wins,3 straight wins,Yes
+537,Super Bowl LVII 2023,How many passing touchdowns did Patrick Mahomes have in Super Bowl LVII?,2,3,1,4,2
+538,Super Bowl LVII 2023,How many passing touchdowns did Jalen Hurts have in Super Bowl LVII?,3,2,4,1,3
+539,Super Bowl LVII 2023,Where was Super Bowl LVII played?,Phoenix,Tampa,Las Vegas,Miami,Phoenix
+540,Super Bowl LVII 2023,How many consecutive Super Bowls has Patrick Mahomes been in?,3,2,4,1,3
+541,Super Bowl LVIII 2024,What was the final score of Super Bowl LVIII?,"Chiefs 25, 49ers 22","Chiefs 28, 49ers 25","Chiefs 23, 49ers 20","Chiefs 30, 49ers 27","Chiefs 25, 49ers 22"
+542,Super Bowl LVIII 2024,Did Super Bowl LVIII go to overtime?,Yes,No,Double OT,Triple OT,Yes
+543,Super Bowl LVIII 2024,Who won Super Bowl LVIII?,Kansas City Chiefs,San Francisco 49ers,Buffalo Bills,Detroit Lions,Kansas City Chiefs
+544,Super Bowl LVIII 2024,Who was the MVP of Super Bowl LVIII?,Patrick Mahomes,Travis Kelce,Jerick McKinnon,Christian McCaffrey,Patrick Mahomes
+545,Super Bowl LVIII 2024,How many Super Bowl wins does Patrick Mahomes have?,3,2,4,1,3
+546,Super Bowl LVIII 2024,Did this make the Chiefs the first back-to-back since 2004?,Yes,No,Third in a row,First ever,Yes
+547,Super Bowl LVIII 2024,Who were the 2004 back-to-back champions?,New England Patriots,New York Giants,Green Bay Packers,Dallas Cowboys,New England Patriots
+548,Super Bowl LVIII 2024,How many Super Bowl championships does the Kansas City Chiefs franchise have?,4,3,5,2,4
+549,Super Bowl LVIII 2024,Did Christian McCaffrey score in Super Bowl LVIII?,Yes,No,Multiple,One TD,Yes
+550,Super Bowl LVIII 2024,Where was Super Bowl LVIII played?,Las Vegas,New Orleans,Miami,Phoenix,Las Vegas
+551,2020 NFL Season,What was Aaron Rodgers' MVP year?,2020,2019,2021,2018,2020
+552,2020 NFL Season,How many passing touchdowns did Aaron Rodgers have in 2020?,48,45,42,50,48
+553,2020 NFL Season,How many interceptions did Aaron Rodgers throw in 2020?,5,7,3,10,5
+554,2020 NFL Season,What was Aaron Rodgers' passer rating in 2020?,121.5,119.0,123.0,118.5,121.5
+555,2020 NFL Season,What was Aaron Rodgers' completion percentage in 2020?,70.7%,68.5%,72.3%,69.1%,70.7%
+556,2020 NFL Season,How many passing yards did Aaron Rodgers have in 2020?,"4,299","4,000","4,500","4,150","4,299"
+557,2020 NFL Season,What was Aaron Rodgers' age in 2020?,37,36,38,35,37
+558,2020 NFL Season,Is 121.5 the second-highest passer rating in NFL history?,Yes,No,Tied,Not even top 5,Yes
+559,2020 NFL Season,What is Aaron Rodgers' highest passer rating season?,122.5 in 2011,121.5 in 2020,120.5 in 2014,119.5 in 2019,122.5 in 2011
+560,2020 NFL Season,Did the Packers win the NFC North in 2020?,Yes,No,Wild card,Missed playoffs,Yes
+561,2021 NFL Season,Did Tom Brady win the MVP in 2021?,No,Yes,Shared,Runner-up,No
+562,2021 NFL Season,Who won the 2021 NFL MVP?,Aaron Rodgers,Tom Brady,Josh Allen,Patrick Mahomes,Aaron Rodgers
+563,2021 NFL Season,How many passing yards did Tom Brady have in 2021?,"5,316","4,500","4,900","5,100","5,316"
+564,2021 NFL Season,Did Tom Brady throw for 40+ touchdowns in 2021?,Yes,No,Exactly 40,39,Yes
+565,2021 NFL Season,How many touchdowns did Tom Brady throw in 2021?,43,40,45,38,43
+566,2021 NFL Season,How many interceptions did Tom Brady throw in 2021?,12,10,14,8,12
+567,2021 NFL Season,Did Tom Brady play in his first Super Bowl with Tampa Bay?,Yes,No,Not yet,Already won,No
+568,2021 NFL Season,Did Tom Brady break any records in 2021?,Yes,No,Several,One or two,Yes
+569,2021 NFL Season,Was 2021 Tom Brady's best season statistically?,Yes,No,Among best,Top 3,Yes
+570,2021 NFL Season,How many pass attempts did Tom Brady have in 2021?,719,700,650,750,719
+571,2022 NFL Season,Who won the 2022 NFL MVP?,Patrick Mahomes,Josh Allen,Jalen Hurts,Lamar Jackson,Patrick Mahomes
+572,2022 NFL Season,How many passing yards did Patrick Mahomes have in 2022?,"5,250","5,000","5,500","4,900","5,250"
+573,2022 NFL Season,How many passing touchdowns did Patrick Mahomes have in 2022?,41,40,43,38,41
+574,2022 NFL Season,How many interceptions did Patrick Mahomes throw in 2022?,12,10,14,8,12
+575,2022 NFL Season,What was Patrick Mahomes' passer rating in 2022?,105.2,103.0,107.5,101.5,105.2
+576,2022 NFL Season,Was 2022 Patrick Mahomes' second MVP?,Yes,No,Third,First,Yes
+577,2022 NFL Season,Did Patrick Mahomes win a Super Bowl MVP in 2022?,Yes,No,Not yet,Later won,Yes
+578,2022 NFL Season,How many Super Bowl titles did the Chiefs win through 2022?,3,2,4,1,3
+579,2022 NFL Season,What was the Chiefs' record in 2022?,14-3,13-4,15-2,12-5,14-3
+580,2022 NFL Season,Did the Chiefs make it to Super Bowl LVI after 2022?,No,Yes,Lost earlier,Missed playoffs,No
+581,2023 NFL Season MVP,Who won the 2023 NFL MVP?,Lamar Jackson,Christian McCaffrey,Jalen Hurts,Patrick Mahomes,Lamar Jackson
+582,2023 NFL Season MVP,How many MVP votes did Lamar Jackson get in 2023?,49 of 50,48 of 50,50 of 50,47 of 50,49 of 50
+583,2023 NFL Season MVP,Who got the one first-place MVP vote instead of Lamar Jackson?,Josh Allen,Christian McCaffrey,Jalen Hurts,Patrick Mahomes,Josh Allen
+584,2023 NFL Season MVP,How many passing yards did Lamar Jackson have in 2023?,"4,280","4,000","4,500","3,900","4,280"
+585,2023 NFL Season MVP,How many passing touchdowns did Lamar Jackson have in 2023?,31,28,35,25,31
+586,2023 NFL Season MVP,How many interceptions did Lamar Jackson throw in 2023?,11,8,14,6,11
+587,2023 NFL Season MVP,Was 2023 Lamar Jackson's first unanimous MVP?,No,Yes,Nearly unanimous,Second unanimous,No
+588,2023 NFL Season MVP,How many MVP awards does Lamar Jackson have?,3,2,4,1,3
+589,2023 NFL Season MVP,Did Lamar Jackson win unanimously in 2019?,Yes,No,Close,Tied,Yes
+590,2023 NFL Season MVP,What was Lamar Jackson's passer rating in 2023?,117.0,115.0,119.0,113.5,117.0
+591,2023 Season Awards,Who won the 2023 Offensive Player of the Year?,Christian McCaffrey,Lamar Jackson,Jalen Hurts,Josh Allen,Christian McCaffrey
+592,2023 Season Awards,How many rushing yards did Christian McCaffrey have in 2023?,"1,459","1,300","1,600","1,200","1,459"
+593,2023 Season Awards,How many receiving yards did Christian McCaffrey have in 2023?,564,450,650,400,564
+594,2023 Season Awards,How many total rushing and receiving touchdowns did Christian McCaffrey have in 2023?,21,18,24,15,21
+595,2023 Season Awards,Did Christian McCaffrey have 17 consecutive games with a touchdown?,Yes,No,19 games,15 games,Yes
+596,2023 Season Awards,What record did Christian McCaffrey tie?,Lenny Moore's TD streak,Jerry Rice's receptions,Barry Sanders' rushing,Emmitt Smith's total yards,Lenny Moore's TD streak
+597,2023 Season Awards,How many Heisman Trophy winners have won multiple MVPs?,2,1,3,4,2
+598,2023 Season Awards,What was Christian McCaffrey's average yards per carry in 2023?,5.4,5.0,5.8,4.9,5.4
+599,2023 Season Awards,Did Christian McCaffrey finish in top 5 MVP voting?,Yes,No,Third place,Second place,Yes
+600,2023 Season Awards,What position did Christian McCaffrey play in 2023?,Running Back,Wide Receiver,Tight End,Full Back,Running Back
+601,Tom Brady Career Stats,How many career passing yards does Tom Brady have?,"89,214","85,000","92,000","80,000","89,214"
+602,Tom Brady Career Stats,How many career touchdown passes does Tom Brady have?,649,600,700,550,649
+603,Tom Brady Career Stats,How many career games did Tom Brady start?,316,300,330,285,316
+604,Tom Brady Career Stats,How many career interceptions did Tom Brady throw?,171,150,190,140,171
+605,Tom Brady Career Stats,In what year did Tom Brady retire for the first time?,2022,2021,2023,2020,2022
+606,Tom Brady Career Stats,Did Tom Brady unretire?,Yes,No,Partially,Briefly,Yes
+607,Tom Brady Career Stats,When did Tom Brady make his final retirement announcement?,February 2023,January 2023,March 2023,December 2022,February 2023
+608,Tom Brady Career Stats,How many consecutive Super Bowls did Brady play in?,9,8,10,7,9
+609,Tom Brady Career Stats,How many All-Pro selections does Tom Brady have?,15,12,18,10,15
+610,Tom Brady Career Stats,How many Pro Bowls did Tom Brady make?,15,14,16,13,15
+611,Patrick Mahomes Career,How many Pro Bowls has Patrick Mahomes made through 2024?,6,5,7,4,6
+612,Patrick Mahomes Career,How many MVP awards does Patrick Mahomes have?,3,2,4,1,3
+613,Patrick Mahomes Career,How many Super Bowl MVP awards does Patrick Mahomes have?,3,2,4,1,3
+614,Patrick Mahomes Career,In what year was Patrick Mahomes drafted?,2017,2016,2018,2015,2017
+615,Patrick Mahomes Career,What overall pick was Patrick Mahomes?,10th,15th,5th,20th,10th
+616,Patrick Mahomes Career,Which college did Patrick Mahomes attend?,Texas Tech,Oklahoma,Texas,Kansas State,Texas Tech
+617,Patrick Mahomes Career,Did Patrick Mahomes play baseball in college?,Yes,No,Minor league,Briefly,Yes
+618,Patrick Mahomes Career,What was Patrick Mahomes' father's profession?,MLB pitcher,NFL player,Coach,Athletic director,MLB pitcher
+619,Patrick Mahomes Career,How many passing yards has Patrick Mahomes accumulated through 2024?,"35,000+","30,000","40,000","25,000","35,000+"
+620,Patrick Mahomes Career,Is Patrick Mahomes a first-team All-Pro?,Yes,No,Multiple times,Once,Yes
+621,Lamar Jackson Career,In what year was Lamar Jackson drafted?,2018,2017,2019,2016,2018
+622,Lamar Jackson Career,What overall pick was Lamar Jackson?,32nd,25th,50th,10th,32nd
+623,Lamar Jackson Career,Which college did Lamar Jackson attend?,Louisville,LSU,Alabama,Clemson,Louisville
+624,Lamar Jackson Career,Did Lamar Jackson win the Heisman Trophy?,Yes,No,Runner-up,Not eligible,Yes
+625,Lamar Jackson Career,In what year did Lamar Jackson win the Heisman?,2016,2017,2015,2018,2016
+626,Lamar Jackson Career,How many rushing yards did Lamar Jackson have in 2023?,821,700,900,600,821
+627,Lamar Jackson Career,How many rushing touchdowns did Lamar Jackson have in 2023?,5,3,7,4,5
+628,Lamar Jackson Career,Is Lamar Jackson known as a dual-threat QB?,Yes,No,Mostly passer,Mostly rusher,Yes
+629,Lamar Jackson Career,How many Pro Bowls has Lamar Jackson made?,5,4,6,3,5
+630,Lamar Jackson Career,How many All-Pro selections does Lamar Jackson have?,4,3,5,2,4
+631,Christian McCaffrey Career,Which team drafted Christian McCaffrey?,Carolina Panthers,San Francisco 49ers,Arizona Cardinals,Denver Broncos,Carolina Panthers
+632,Christian McCaffrey Career,When was Christian McCaffrey drafted?,2017,2018,2016,2019,2017
+633,Christian McCaffrey Career,What overall pick was Christian McCaffrey?,8th,5th,10th,1st,8th
+634,Christian McCaffrey Career,Did Christian McCaffrey get traded?,Yes,No,Multiple times,Almost,Yes
+635,Christian McCaffrey Career,Which team did Christian McCaffrey get traded to?,San Francisco 49ers,Miami Dolphins,Buffalo Bills,Los Angeles Rams,San Francisco 49ers
+636,Christian McCaffrey Career,In what year was Christian McCaffrey traded?,2020,2019,2021,2022,2020
+637,Christian McCaffrey Career,Did Christian McCaffrey play at Stanford?,Yes,No,Transferred,Graduate school,Yes
+638,Christian McCaffrey Career,How many total yards did Christian McCaffrey have in Super Bowl LVIII?,160,140,180,120,160
+639,Christian McCaffrey Career,Is Christian McCaffrey in the Pro Bowl?,Yes,No,Multiple times,Once,Yes
+640,Christian McCaffrey Career,How many rushing yards did Christian McCaffrey have in 2022?,"1,139","1,000","1,300",900,"1,139"
+641,Tyreek Hill Career,Which team drafted Tyreek Hill?,Kansas City Chiefs,Miami Dolphins,Buffalo Bills,Tampa Bay,Kansas City Chiefs
+642,Tyreek Hill Career,In what year was Tyreek Hill drafted?,2016,2015,2017,2014,2016
+643,Tyreek Hill Career,What overall pick was Tyreek Hill?,125th,100th,150th,75th,125th
+644,Tyreek Hill Career,Did Tyreek Hill get traded?,Yes,No,Multiple times,Almost,Yes
+645,Tyreek Hill Career,Which team did Tyreek Hill get traded to?,Miami Dolphins,Buffalo Bills,New York Jets,Los Angeles Rams,Miami Dolphins
+646,Tyreek Hill Career,In what year was Tyreek Hill traded?,2022,2021,2023,2020,2022
+647,Tyreek Hill Career,How many receiving yards did Tyreek Hill have in his first year with the Dolphins?,"1,799","1,700","1,900","1,600","1,799"
+648,Tyreek Hill Career,Is Tyreek Hill known for his speed?,Yes,No,Somewhat,Not really,Yes
+649,Tyreek Hill Career,How many Pro Bowls has Tyreek Hill made?,7,6,8,5,7
+650,Tyreek Hill Career,How many All-Pro selections does Tyreek Hill have?,5,4,6,3,5
+651,Aaron Rodgers Career Continued,How many MVP awards does Aaron Rodgers have?,4,3,5,2,4
+652,Aaron Rodgers Career Continued,In what years did Aaron Rodgers win MVP?,"2011, 2014, 2020, 2021","2010, 2013, 2019, 2020","2012, 2015, 2021, 2022",Others,"2011, 2014, 2020, 2021"
+653,Aaron Rodgers Career Continued,Is 122.5 the highest passer rating ever?,Yes,No,Tied,Not even top 5,Yes
+654,Aaron Rodgers Career Continued,How many Super Bowls has Aaron Rodgers won?,1,2,3,0,1
+655,Aaron Rodgers Career Continued,In what year did Aaron Rodgers win his Super Bowl?,2011,2010,2012,2009,2011
+656,Aaron Rodgers Career Continued,Which college did Aaron Rodgers attend?,University of California,University of Arizona,Stanford,Oregon,University of California
+657,Aaron Rodgers Career Continued,When was Aaron Rodgers drafted?,2005,2004,2006,2003,2005
+658,Aaron Rodgers Career Continued,What overall pick was Aaron Rodgers?,1st,5th,10th,15th,1st
+659,Aaron Rodgers Career Continued,How many Pro Bowls has Aaron Rodgers made?,9,8,10,7,9
+660,Aaron Rodgers Career Continued,How many All-Pro selections does Aaron Rodgers have?,9,8,10,7,9
+661,2020-2023 Draft Highlights,Who was the 1st overall pick in the 2021 NFL Draft?,Trevor Lawrence,Zach Wilson,Trey Lance,Justin Fields,Trevor Lawrence
+662,2020-2023 Draft Highlights,Who was the 1st overall pick in the 2022 NFL Draft?,Travon Walker,Aidan Hutchinson,Ikem Ekwonu,Sauce Gardner,Travon Walker
+663,2020-2023 Draft Highlights,Who was the 1st overall pick in the 2023 NFL Draft?,Will Anderson,Bryce Young,C.J. Stroud,Anthony Richardson,Will Anderson
+664,2020-2023 Draft Highlights,Did Bryce Young go 1st overall in 2023?,No,Yes,Second pick,Third pick,No
+665,2020-2023 Draft Highlights,Where was Bryce Young selected in 2023?,2nd overall,1st overall,3rd overall,5th overall,2nd overall
+666,2020-2023 Draft Highlights,Did C.J. Stroud go in the top 5 in 2023?,Yes,No,Exactly 5th,6th,Yes
+667,2020-2023 Draft Highlights,Where was C.J. Stroud selected in 2023?,3rd overall,2nd overall,1st overall,5th overall,3rd overall
+668,2020-2023 Draft Highlights,Did Anthony Richardson go in the top 5 in 2023?,Yes,No,4th overall,6th,Yes
+669,2020-2023 Draft Highlights,Where was Anthony Richardson selected in 2023?,4th overall,3rd overall,5th overall,1st overall,4th overall
+670,2020-2023 Draft Highlights,Did Will Anderson Jr. play defensive end?,Yes,No,Linebacker,Safety,Yes
+671,2020-2023 Season Records,Which team had the best record in 2020?,Kansas City Chiefs,New Orleans Saints,Green Bay Packers,Pittsburgh Steelers,Kansas City Chiefs
+672,2020-2023 Season Records,What was the Kansas City Chiefs' record in 2020?,14-2,13-3,15-1,12-4,14-2
+673,2020-2023 Season Records,What was the Green Bay Packers' record in 2020?,13-3,14-2,12-4,15-1,13-3
+674,2020-2023 Season Records,Which team had the best record in 2021?,Tampa Bay Buccaneers,Green Bay Packers,Kansas City Chiefs,New England Patriots,Tampa Bay Buccaneers
+675,2020-2023 Season Records,What was the Tampa Bay Buccaneers' record in 2021?,13-4,14-3,12-5,15-2,13-4
+676,2020-2023 Season Records,Which team had the best record in 2022?,Kansas City Chiefs,Buffalo Bills,San Francisco 49ers,Philadelphia Eagles,Kansas City Chiefs
+677,2020-2023 Season Records,What was the Kansas City Chiefs' record in 2022?,14-3,13-4,15-2,12-5,14-3
+678,2020-2023 Season Records,Which team had the best record in 2023?,San Francisco 49ers,Detroit Lions,Kansas City Chiefs,Buffalo Bills,San Francisco 49ers
+679,2020-2023 Season Records,What was the San Francisco 49ers' record in 2023?,12-5,13-4,14-3,11-6,12-5
+680,2020-2023 Season Records,Did any team go undefeated in 2020-2023?,No,Yes,Close to it,Almost,No
+681,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2020?,Aaron Donald,Chris Paul,Khalil Mack,J.J. Watt,Aaron Donald
+682,Defensive Standouts 2020-2023,How many sacks did Aaron Donald have in 2020?,13.5,12,15,11,13.5
+683,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2021?,T.J. Watt,Micah Parsons,Aaron Donald,Khalil Mack,T.J. Watt
+684,Defensive Standouts 2020-2023,How many sacks did T.J. Watt have in 2021?,22.5,20,24,19,22.5
+685,Defensive Standouts 2020-2023,Did T.J. Watt tie the single-season sacks record?,Yes,No,Broke it,Close,Yes
+686,Defensive Standouts 2020-2023,Who tied the sacks record with T.J. Watt?,Michael Strahan,Mark Gastineau,Jared Allen,Chris Doleman,Michael Strahan
+687,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2022?,Chris Jones,Micah Parsons,Aaron Donald,T.J. Watt,Micah Parsons
+688,Defensive Standouts 2020-2023,How many sacks did Micah Parsons have in 2022?,13,12,14,11,13
+689,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2023?,Micah Parsons,Aaron Donald,Chris Jones,T.J. Watt,Micah Parsons
+690,Defensive Standouts 2020-2023,How many sacks did Micah Parsons have in 2023?,12.5,12,13,11.5,12.5
+691,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2020?,DeAndre Hopkins,Stefon Diggs,Mike Evans,Travis Kelce,DeAndre Hopkins
+692,Receiving Leaders 2020-2023,How many receiving yards did DeAndre Hopkins have in 2020?,"1,104","1,000","1,200",950,"1,104"
+693,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2021?,Davante Adams,Cooper Kupp,Travis Kelce,Tyreek Hill,Davante Adams
+694,Receiving Leaders 2020-2023,How many receiving yards did Davante Adams have in 2021?,"1,553","1,400","1,650","1,300","1,553"
+695,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2022?,Tyreek Hill,Travis Kelce,Davante Adams,Cooper Kupp,Tyreek Hill
+696,Receiving Leaders 2020-2023,How many receiving yards did Tyreek Hill have in 2022?,"1,239","1,100","1,350","1,000","1,239"
+697,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2023?,Davante Adams,Tyreek Hill,Travis Kelce,Cooper Kupp,Davante Adams
+698,Receiving Leaders 2020-2023,How many receiving yards did Davante Adams have in 2023?,"1,596","1,400","1,700","1,300","1,596"
+699,Receiving Leaders 2020-2023,Did Cooper Kupp win the receiving title in 2021?,No,Yes,Close,Second place,No
+700,Receiving Leaders 2020-2023,How many receiving yards did Cooper Kupp have in 2021?,"1,947","1,800","2,000","1,700","1,947"
+701,Notable Playoff Moments 2020-2023,Did the Tampa Bay Buccaneers face the Green Bay Packers in 2020?,Yes,No,Lost earlier,In Super Bowl,Yes
+702,Notable Playoff Moments 2020-2023,Who did the Tampa Bay Buccaneers beat in the NFC Championship?,Green Bay Packers,New Orleans Saints,Washington,Los Angeles Rams,Green Bay Packers
+703,Notable Playoff Moments 2020-2023,What was the score of the NFC Championship game?,31-26,28-24,30-20,35-17,31-26
+704,Notable Playoff Moments 2020-2023,Did the Kansas City Chiefs lose in the 2021 playoffs?,Yes,No,Made Super Bowl,Lost Super Bowl,Yes
+705,Notable Playoff Moments 2020-2023,Did the Green Bay Packers win in 2021 playoffs?,No,Yes,Made Super Bowl,Won Super Bowl,No
+706,Notable Playoff Moments 2020-2023,Did the San Francisco 49ers make it to Super Bowl LVI?,No,Yes,Lost earlier,Wild card,No
+707,Notable Playoff Moments 2020-2023,Did the Kansas City Chiefs make the playoffs in 2022?,Yes,No,Wild card,1st seed,Yes
+708,Notable Playoff Moments 2020-2023,Did the Buffalo Bills make the playoffs in 2023?,Yes,No,Wild card,1st seed,Yes
+709,Notable Playoff Moments 2020-2023,Did the Dallas Cowboys make the playoffs in 2023?,Yes,No,Wild card,2nd seed,Yes
+710,Notable Playoff Moments 2020-2023,Did the Detroit Lions make the playoffs in 2023?,Yes,No,Wild card,1st seed,Yes
+711,Individual Milestone Records,Who threw the first pass to achieve 600 career TDs?,Tom Brady,Peyton Manning,Brett Favre,Dan Marino,Tom Brady
+712,Individual Milestone Records,In what year did Tom Brady achieve 600 career TDs?,2021,2020,2022,2019,2021
+713,Individual Milestone Records,Did any other player reach 600 career TDs through 2023?,No,Yes,One did,Two did,No
+714,Individual Milestone Records,Who set the record for most passing yards in a season before 2021?,Peyton Manning,Tom Brady,Dan Marino,Brett Favre,Peyton Manning
+715,Individual Milestone Records,How many passing yards did Peyton Manning throw in his record year?,"5,477","5,300","5,600","5,100","5,477"
+716,Individual Milestone Records,In what year did Peyton Manning set the passing yards record?,2013,2012,2014,2011,2013
+717,Individual Milestone Records,Did Tom Brady break Peyton Manning's record?,Yes,No,Tied,Almost,Yes
+718,Individual Milestone Records,What is Tom Brady's single-season passing yards record?,"5,316","5,300","5,400","5,200","5,316"
+719,Individual Milestone Records,Did Aaron Rodgers set a completion percentage record?,Yes,No,Tied,Second place,Yes
+720,Individual Milestone Records,What was Aaron Rodgers' highest completion percentage?,70.7%,70.0%,71.5%,69.5%,70.7%
+721,Conference Winners 2020-2023,Which team won the AFC East in 2020?,Miami Dolphins,Buffalo Bills,New England Patriots,New York Jets,Miami Dolphins
+722,Conference Winners 2020-2023,Which team won the AFC North in 2020?,Baltimore Ravens,Pittsburgh Steelers,Cleveland Browns,Cincinnati Bengals,Baltimore Ravens
+723,Conference Winners 2020-2023,Which team won the NFC East in 2020?,Washington Football Team,Philadelphia Eagles,Dallas Cowboys,New York Giants,Washington Football Team
+724,Conference Winners 2020-2023,Which team won the NFC West in 2020?,Seattle Seahawks,San Francisco 49ers,Los Angeles Rams,Arizona Cardinals,Seattle Seahawks
+725,Conference Winners 2020-2023,Which team won the AFC East in 2021?,Buffalo Bills,New England Patriots,Miami Dolphins,New York Jets,Buffalo Bills
+726,Conference Winners 2020-2023,Which team won the NFC East in 2021?,Dallas Cowboys,Washington Football Team,Philadelphia Eagles,New York Giants,Dallas Cowboys
+727,Conference Winners 2020-2023,Which team won the AFC West in 2022?,Kansas City Chiefs,Los Angeles Chargers,Las Vegas Raiders,Denver Broncos,Kansas City Chiefs
+728,Conference Winners 2020-2023,Which team won the NFC South in 2023?,Tampa Bay Buccaneers,New Orleans Saints,Atlanta Falcons,Carolina Panthers,Tampa Bay Buccaneers
+729,Conference Winners 2020-2023,Which team won the AFC South in 2023?,Houston Texans,Indianapolis Colts,Jacksonville Jaguars,Tennessee Titans,Houston Texans
+730,Conference Winners 2020-2023,Which team won the NFC North in 2023?,Detroit Lions,Minnesota Vikings,Green Bay Packers,Chicago Bears,Detroit Lions
+731,Free Agency & Trades 2020-2023,Did Tom Brady sign with Tampa Bay in free agency?,Yes,No,Traded,Mid-season,Yes
+732,Free Agency & Trades 2020-2023,In what year did Tom Brady sign with Tampa Bay?,2020,2019,2021,2018,2020
+733,Free Agency & Trades 2020-2023,Did Rob Gronkowski also sign with Tampa Bay?,Yes,No,Later joined,Different team,Yes
+734,Free Agency & Trades 2020-2023,Did Matthew Stafford get traded?,Yes,No,Free agent,Released,Yes
+735,Free Agency & Trades 2020-2023,Which team did Matthew Stafford get traded to?,Los Angeles Rams,Detroit Lions,Miami Dolphins,Buffalo Bills,Los Angeles Rams
+736,Free Agency & Trades 2020-2023,In what year was Matthew Stafford traded?,2021,2020,2022,2019,2021
+737,Free Agency & Trades 2020-2023,Did Odell Beckham Jr. sign with the Rams?,Yes,No,Later joined,Different team,Yes
+738,Free Agency & Trades 2020-2023,Did Christian McCaffrey get traded to the 49ers mid-season?,Yes,No,In offseason,Free agent,Yes
+739,Free Agency & Trades 2020-2023,In what year was Christian McCaffrey traded mid-season?,2022,2021,2023,2020,2022
+740,Free Agency & Trades 2020-2023,Did Tyreek Hill sign with Miami as a free agent?,Yes,No,Traded,Different team,Yes
+741,Hall of Fame & Awards 2020-2023,Did Peyton Manning get inducted into the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+742,Hall of Fame & Awards 2020-2023,In what year was Peyton Manning inducted?,2023,2022,2024,2021,2023
+743,Hall of Fame & Awards 2020-2023,How many Pro Bowls did Peyton Manning make?,14,13,15,12,14
+744,Hall of Fame & Awards 2020-2023,How many Super Bowls did Peyton Manning win?,2,1,3,0,2
+745,Hall of Fame & Awards 2020-2023,Did John Elway get inducted into the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+746,Hall of Fame & Awards 2020-2023,In what year was John Elway inducted?,2004,2005,2003,2002,2004
+747,Hall of Fame & Awards 2020-2023,How many Super Bowls did John Elway win?,2,1,3,0,2
+748,Hall of Fame & Awards 2020-2023,Did Dan Marino ever win a Super Bowl?,No,Yes,Once,Twice,No
+749,Hall of Fame & Awards 2020-2023,Is Dan Marino in the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+750,Hall of Fame & Awards 2020-2023,In what year was Dan Marino inducted?,2005,2004,2006,2003,2005
+751,Offensive Legends 2020-2023,How many times did Davante Adams lead the league in receiving yards?,2,1,3,4,2
+752,Offensive Legends 2020-2023,Did Robert Woods have a strong 2020 season?,Yes,No,Injured,Traded,Yes
+753,Offensive Legends 2020-2023,How many receiving yards did Travis Kelce have in 2020?,"1,229","1,100","1,350","1,000","1,229"
+754,Offensive Legends 2020-2023,How many receiving touchdowns did Travis Kelce have in 2020?,11,10,13,9,11
+755,Offensive Legends 2020-2023,Did Mike Evans lead the league in receiving yards in 2020?,No,Yes,Second place,Close,No
+756,Offensive Legends 2020-2023,How many receiving yards did Mike Evans have in 2020?,"1,006",950,"1,100",850,"1,006"
+757,Offensive Legends 2020-2023,Did Rob Gronkowski catch passes in 2020?,Yes,No,Injured,Retired,No
+758,Offensive Legends 2020-2023,Did Rob Gronkowski return to play with Tampa Bay?,Yes,No,2021,2022,Yes
+759,Offensive Legends 2020-2023,In what year did Gronkowski return?,2021,2020,2022,2023,2021
+760,Offensive Legends 2020-2023,How many receiving touchdowns did Gronkowski have in 2021?,13,11,15,10,13
+761,Running Backs 2020-2023,Who led the NFL in rushing yards in 2020?,Derrick Henry,Aaron Jones,Jonathan Taylor,Dalvin Cook,Derrick Henry
+762,Running Backs 2020-2023,How many rushing yards did Derrick Henry have in 2020?,"1,540","1,400","1,650","1,300","1,540"
+763,Running Backs 2020-2023,Who led the NFL in rushing yards in 2021?,Jonathan Taylor,Derrick Henry,Aaron Jones,Najee Harris,Jonathan Taylor
+764,Running Backs 2020-2023,How many rushing yards did Jonathan Taylor have in 2021?,"1,811","1,700","1,900","1,600","1,811"
+765,Running Backs 2020-2023,Who led the NFL in rushing yards in 2022?,Jeff Wilson Jr.,Christian McCaffrey,Nick Chubb,Aaron Jones,Jeff Wilson Jr.
+766,Running Backs 2020-2023,How many rushing yards did Jeff Wilson Jr. have in 2022?,"1,025",950,"1,100",850,"1,025"
+767,Running Backs 2020-2023,Did Rashaad White have a good 2023 season?,Yes,No,Injured,Traded,No
+768,Running Backs 2020-2023,Did D'Andre Swift lead the league in rushing yards in 2023?,No,Yes,Second place,Top 5,No
+769,Running Backs 2020-2023,Did Derrick Henry play for any other team besides Tennessee?,Yes,No,Later,Different leagues,Yes
+770,Running Backs 2020-2023,Which team did Derrick Henry play for?,Los Angeles Rams,Tennessee Titans,Pittsburgh Steelers,Dallas Cowboys,Los Angeles Rams
+771,Defensive Backs 2020-2023,Did Jalen Ramsey play for the Rams in 2020?,Yes,No,Traded,Released,Yes
+772,Defensive Backs 2020-2023,How many interceptions did Jalen Ramsey have in 2020?,3,2,4,1,3
+773,Defensive Backs 2020-2023,Did Sauce Gardner have a strong rookie year?,Yes,No,Decent,Injured,Yes
+774,Defensive Backs 2020-2023,When was Sauce Gardner drafted?,2022,2021,2023,2020,2022
+775,Defensive Backs 2020-2023,Which team drafted Sauce Gardner?,New York Jets,New York Giants,New England Patriots,Buffalo Bills,New York Jets
+776,Defensive Backs 2020-2023,Did Stephon Gilmore win DPOY in 2023?,No,Yes,Runner-up,Not eligible,No
+777,Defensive Backs 2020-2023,Did Xavien Howard have a good 2023 season?,Yes,No,Injured,Below average,Yes
+778,Defensive Backs 2020-2023,How many interceptions did Xavien Howard have in 2023?,8,6,10,5,8
+779,Defensive Backs 2020-2023,Did Darrelle Revis get inducted into the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+780,Defensive Backs 2020-2023,In what year was Darrelle Revis inducted?,2023,2022,2024,2021,2023
+781,Defensive Line 2020-2023,Did Aaron Donald play in 2023?,No,Yes,Retired,Released,No
+782,Defensive Line 2020-2023,When did Aaron Donald retire?,March 2024,February 2024,January 2024,April 2023,March 2024
+783,Defensive Line 2020-2023,How many career sacks does Aaron Donald have?,111,100,120,95,111
+784,Defensive Line 2020-2023,How many Pro Bowls did Aaron Donald make?,8,7,9,6,8
+785,Defensive Line 2020-2023,How many All-Pro selections did Aaron Donald have?,8,7,9,6,8
+786,Defensive Line 2020-2023,Did Chris Jones win DPOY?,No,Yes,Runner-up,Not eligible,No
+787,Defensive Line 2020-2023,How many sacks did Chris Jones have in 2023?,10.5,9,12,8,10.5
+788,Defensive Line 2020-2023,Did J.J. Watt play in 2023?,No,Yes,Limited,Injured,No
+789,Defensive Line 2020-2023,When did J.J. Watt retire?,2023,2022,2024,2021,2023
+790,Defensive Line 2020-2023,How many career sacks does J.J. Watt have?,114.5,100,120,110,114.5
+791,Linebackers 2020-2023,Did Micah Parsons have a strong rookie season?,Yes,No,Decent,Injured,Yes
+792,Linebackers 2020-2023,How many sacks did Micah Parsons have in 2022?,13,12,14,11,13
+793,Linebackers 2020-2023,Did Bobby Wagner lead the league in tackles?,Yes,No,Close,Multiple years,No
+794,Linebackers 2020-2023,How many tackles did Bobby Wagner have in 2022?,169,150,180,140,169
+795,Linebackers 2020-2023,Did Fred Warner have a good 2023 season?,Yes,No,Injured,Below average,Yes
+796,Linebackers 2020-2023,How many tackles did Fred Warner have in 2023?,162,150,175,140,162
+797,Linebackers 2020-2023,Did Lavonte David win any awards in 2020-2023?,No,Yes,Pro Bowl,All-Pro,No
+798,Linebackers 2020-2023,Did Ryan Kerrigan play in 2020-2023?,Yes,No,Limited,Retired,Yes
+799,Linebackers 2020-2023,Did Ryan Kerrigan retire after 2023?,Yes,No,2024,Still playing,Yes
+800,Linebackers 2020-2023,How many career sacks does Ryan Kerrigan have?,117.5,110,120,105,117.5
+801,Special Teams & Kickers 2020-2023,Did Harrison Butker win any awards in 2021-2023?,No,Yes,Pro Bowl,All-Pro,No
+802,Special Teams & Kickers 2020-2023,How many field goals did Harrison Butker make in 2022?,33,30,35,28,33
+803,Special Teams & Kickers 2020-2023,Did Justin Tucker retire recently?,Yes,No,2022,2024,Yes
+804,Special Teams & Kickers 2020-2023,When did Justin Tucker retire?,2023,2022,2024,2021,2023
+805,Special Teams & Kickers 2020-2023,How many career field goals did Justin Tucker make?,413,400,425,390,413
+806,Special Teams & Kickers 2020-2023,Is Justin Tucker in the Hall of Fame?,No,Yes,Eligible,Retired,No
+807,Special Teams & Kickers 2020-2023,Did Matt Gay have a good 2022 season?,Yes,No,Average,Below average,Yes
+808,Special Teams & Kickers 2020-2023,How many field goals did Matt Gay make in 2022?,29,27,31,25,29
+809,Special Teams & Kickers 2020-2023,Did Greg Joseph win any awards?,No,Yes,Pro Bowl,All-Pro,No
+810,Special Teams & Kickers 2020-2023,How many field goals did Greg Joseph make in 2023?,34,32,36,30,34
+811,Coaching Changes 2020-2023,Did Bruce Arians coach the Buccaneers in 2020-2021?,Yes,No,Partial,Not entire,Yes
+812,Coaching Changes 2020-2023,Did Bruce Arians retire?,Yes,No,Take break,Changed teams,Yes
+813,Coaching Changes 2020-2023,Who replaced Bruce Arians?,Todd Bowles,Giff Smith,Byron Leftwich,Kellen Moore,Todd Bowles
+814,Coaching Changes 2020-2023,Did Todd Bowles win a Super Bowl?,Yes,No,Later won,Made it,Yes
+815,Coaching Changes 2020-2023,Did Sean Payton coach the Broncos?,Yes,No,Later,Not yet,Yes
+816,Coaching Changes 2020-2023,In what year did Sean Payton become Broncos coach?,2023,2022,2024,2021,2023
+817,Coaching Changes 2020-2023,Did Jeff Saturday coach the Colts?,Yes,No,Interim,Briefly,Yes
+818,Coaching Changes 2020-2023,Did the Colts have success under Jeff Saturday?,No,Yes,Minor,Some games,No
+819,Coaching Changes 2020-2023,Did Jim Harbaugh coach the Chargers?,Yes,No,Later,Almost,Yes
+820,Coaching Changes 2020-2023,In what year did Jim Harbaugh become Chargers coach?,2024,2023,2025,2022,2024
+821,Team Turnarounds,Did the Houston Texans have a turnaround in 2023?,Yes,No,Minor,Slight,Yes
+822,Team Turnarounds,What was the Houston Texans' record improvement?,From 3-14 to playoff,From 4-13 to 8-9,From 5-12 to 10-7,From 6-11 to 9-8,From 3-14 to playoff
+823,Team Turnarounds,Did the Carolina Panthers have a turnaround?,No,Yes,2022,2021,No
+824,Team Turnarounds,Did the Jacksonville Jaguars have a turnaround in 2023?,Yes,No,Minor,Slight,Yes
+825,Team Turnarounds,Did Doug Pederson coach the Jaguars?,Yes,No,Later,Almost,Yes
+826,Team Turnarounds,Did the Jaguars make the playoffs in 2023?,Yes,No,Wild card,Division,Yes
+827,Team Turnarounds,Did the Indianapolis Colts improve in 2023?,No,Yes,Minor,Slightly,No
+828,Team Turnarounds,Did the Tennessee Titans decline in 2023?,Yes,No,Slightly,Somewhat,Yes
+829,Team Turnarounds,Did Mike Vrabel coach the Titans?,Yes,No,Previously,Will coach,Yes
+830,Team Turnarounds,Did the Titans make the playoffs in 2023?,No,Yes,Wild card,Close,No
+831,Comebacks & Close Games,Did the Chiefs have a comeback in Super Bowl LIV?,Yes,No,Led entire,Close,Yes
+832,Comebacks & Close Games,How many points behind were the Chiefs at one point?,10,14,7,20,10
+833,Comebacks & Close Games,Did the Buccaneers dominate in Super Bowl LV?,Yes,No,Close game,Tied,Yes
+834,Comebacks & Close Games,Was Super Bowl LVI close?,Yes,No,Very close,Blowout,Yes
+835,Comebacks & Close Games,Did the Rams win Super Bowl LVI at home?,Yes,No,Neutral,Enemy territory,Yes
+836,Comebacks & Close Games,Was Super Bowl LVII close?,Yes,No,Very close,Blowout,Yes
+837,Comebacks & Close Games,Did the Eagles lead in Super Bowl LVII?,Yes,No,Tied,Not for long,Yes
+838,Comebacks & Close Games,Was Super Bowl LVIII close?,Yes,No,Very close,Blowout,Yes
+839,Comebacks & Close Games,Did the 49ers lead in the 4th quarter of Super Bowl LVIII?,Yes,No,Early 4th,Late 4th,Yes
+840,Comebacks & Close Games,How many field goals did the game go to in Super Bowl LVIII?,2,1,3,None,2
+841,Record Breaking Performances,Did Aaron Rodgers break a TD-to-INT record in 2020?,Yes,No,Tied,Close,Yes
+842,Record Breaking Performances,What was Aaron Rodgers' TD to INT ratio in 2020?,48:5,45:5,50:5,40:5,48:5
+843,Record Breaking Performances,Did Tom Brady break a passing yards record in 2021?,Yes,No,Tied,Close,Yes
+844,Record Breaking Performances,Did Christian McCaffrey break a receiving record for RBs?,Yes,No,Tied,Close,Yes
+845,Record Breaking Performances,How many receptions did Christian McCaffrey have in 2023?,80+,70+,90+,60+,80+
+846,Record Breaking Performances,Did Tyreek Hill break any records with Miami?,Yes,No,Tied,Close,Yes
+847,Record Breaking Performances,"Did Davante Adams have back-to-back 1,500+ yard seasons?",Yes,No,One year,Close,Yes
+848,Record Breaking Performances,Did Cooper Kupp have a historic season in 2021?,Yes,No,Decent,Average,Yes
+849,Record Breaking Performances,Did Jonathan Taylor break any rushing records in 2021?,Yes,No,Tied,Close,Yes
+850,Record Breaking Performances,"Did Derrick Henry have 1,500+ rushing yards in 2020?",Yes,No,"1,450","1,400",Yes
+851,Playoff History 2020-2023,Did the Buccaneers win the NFC South in 2020?,Yes,No,Wild card,Missed,Yes
+852,Playoff History 2020-2023,Did the Buccaneers play as a wild card in 2020?,No,Yes,Division winner,1 seed,No
+853,Playoff History 2020-2023,Did the Packers win the NFC North in 2020?,Yes,No,Wild card,Missed,Yes
+854,Playoff History 2020-2023,Did the Ravens win the AFC North in 2021?,No,Yes,Wild card,Missed,No
+855,Playoff History 2020-2023,Did the Steelers win the AFC North in 2021?,Yes,No,Wild card,Missed,Yes
+856,Playoff History 2020-2023,Did the Cowboys win the NFC East in 2022?,No,Yes,Wild card,Missed,No
+857,Playoff History 2020-2023,Did the Eagles win the NFC East in 2022?,Yes,No,Wild card,Missed,Yes
+858,Playoff History 2020-2023,Did the 49ers win the NFC West in 2023?,Yes,No,Wild card,Missed,Yes
+859,Playoff History 2020-2023,Did the Lions win the NFC North in 2023?,Yes,No,Wild card,Missed,Yes
+860,Playoff History 2020-2023,Did the Ravens make the playoffs in 2023?,Yes,No,Wild card,Missed,Yes
+861,Performance Metrics 2020-2023,Which team had the best defense in 2020?,Pittsburgh Steelers,Miami Dolphins,Green Bay Packers,Kansas City Chiefs,Pittsburgh Steelers
+862,Performance Metrics 2020-2023,Did the Pittsburgh Steelers have the top defense in 2020?,Yes,No,Second,Top 3,Yes
+863,Performance Metrics 2020-2023,Which team had the best offense in 2020?,Kansas City Chiefs,Green Bay Packers,New Orleans Saints,Los Angeles Rams,Kansas City Chiefs
+864,Performance Metrics 2020-2023,Which team had the best defense in 2021?,Tampa Bay Buccaneers,Pittsburgh Steelers,Los Angeles Rams,San Francisco 49ers,Tampa Bay Buccaneers
+865,Performance Metrics 2020-2023,Which team had the best offense in 2021?,Tampa Bay Buccaneers,Green Bay Packers,Kansas City Chiefs,New Orleans Saints,Tampa Bay Buccaneers
+866,Performance Metrics 2020-2023,Which team had the best defense in 2022?,San Francisco 49ers,Buffalo Bills,Kansas City Chiefs,Philadelphia Eagles,San Francisco 49ers
+867,Performance Metrics 2020-2023,Which team had the best offense in 2022?,San Francisco 49ers,Buffalo Bills,Kansas City Chiefs,Philadelphia Eagles,Buffalo Bills
+868,Performance Metrics 2020-2023,Which team had the best defense in 2023?,San Francisco 49ers,Detroit Lions,Dallas Cowboys,Buffalo Bills,San Francisco 49ers
+869,Performance Metrics 2020-2023,Which team had the best offense in 2023?,San Francisco 49ers,Kansas City Chiefs,Buffalo Bills,Philadelphia Eagles,San Francisco 49ers
+870,Performance Metrics 2020-2023,Did any team have both top offense and defense?,Yes,No,Once,Multiple times,Yes
+871,Unanimous Picks & MVPs,Was Lamar Jackson a unanimous MVP in 2019?,Yes,No,Nearly,Close,Yes
+872,Unanimous Picks & MVPs,Was Aaron Rodgers unanimous MVP in 2020?,No,Yes,Nearly,Close,No
+873,Unanimous Picks & MVPs,Was Tom Brady unanimous MVP in 2021?,No,Yes,Nearly,Close,No
+874,Unanimous Picks & MVPs,Was Patrick Mahomes unanimous MVP in 2022?,No,Yes,Nearly,Close,No
+875,Unanimous Picks & MVPs,Was Lamar Jackson nearly unanimous in 2023?,Yes,No,One vote,Tied,Yes
+876,Unanimous Picks & MVPs,How many MVP votes did Lamar Jackson get in 2023?,49 of 50,48 of 50,50 of 50,47 of 50,49 of 50
+877,Unanimous Picks & MVPs,Did Josh Allen ever win MVP?,No,Yes,2019,2023,No
+878,Unanimous Picks & MVPs,Did Jalen Hurts ever win MVP?,No,Yes,2022,Close,No
+879,Unanimous Picks & MVPs,Has any QB won back-to-back MVPs recently?,No,Yes,Different positions,Rare,No
+880,Unanimous Picks & MVPs,Did Lamar Jackson win back-to-back MVPs?,No,Yes,2019 & 2024,Different years,No
+881,Injury-Impacted Seasons,Did Chris Carson miss significant time?,Yes,No,One game,Minor,Yes
+882,Injury-Impacted Seasons,Did Raheem Mostert have injury issues?,Yes,No,Missed one game,Minor,Yes
+883,Injury-Impacted Seasons,Did Elijah Mitchell have injury problems?,Yes,No,One year,Minor,Yes
+884,Injury-Impacted Seasons,Did Alvin Kamara stay healthy?,No,Yes,Missed games,Mostly,No
+885,Injury-Impacted Seasons,Did Chris Godwin return from injury?,Yes,No,Partially,Late season,Yes
+886,Injury-Impacted Seasons,Did Rob Gronkowski recover from injury?,Yes,No,Partially,Not completely,Yes
+887,Injury-Impacted Seasons,Did Deshaun Watson miss games?,Yes,No,Started late,Suspended,Yes
+888,Injury-Impacted Seasons,Did Tua Tagovailoa have injury issues?,Yes,No,One game,Minor,Yes
+889,Injury-Impacted Seasons,Did Josh Allen stay healthy?,Yes,No,Minor issues,Some games,Yes
+890,Injury-Impacted Seasons,Did Patrick Mahomes play most games?,Yes,No,Missed few,Minor issues,Yes
+891,Notable Transactions & Signings,Did Odell Beckham Jr. sign with the Rams?,Yes,No,Traded,Drafted,Yes
+892,Notable Transactions & Signings,In what year did OBJ sign with the Rams?,2021,2020,2022,2023,2021
+893,Notable Transactions & Signings,Did Antonio Brown play for Tampa Bay?,Yes,No,Briefly,Didn't sign,Yes
+894,Notable Transactions & Signings,Did Antonio Brown finish the 2020 season?,No,Yes,Mid-game quit,Released,No
+895,Notable Transactions & Signings,Did Leonard Fournette sign with the Buccaneers?,Yes,No,Traded,Drafted,Yes
+896,Notable Transactions & Signings,Did Leonard Fournette score in the Super Bowl?,Yes,No,Multiple,One TD,Yes
+897,Notable Transactions & Signings,Did Jarrett Stidham play for the Patriots?,Yes,No,Briefly,Didn't sign,Yes
+898,Notable Transactions & Signings,Did Trey Lance get traded?,Yes,No,Multiple times,Once,Yes
+899,Notable Transactions & Signings,Did the 49ers acquire Elijah Mitchell?,Yes,No,Traded for,Draft,Yes
+900,Notable Transactions & Signings,Did the Eagles add aggressive trades in 2023?,No,Yes,One trade,Minor,No

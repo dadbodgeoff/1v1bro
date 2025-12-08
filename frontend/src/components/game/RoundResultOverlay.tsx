@@ -10,9 +10,28 @@ interface RoundResultOverlayProps {
   visible: boolean
 }
 
+// Convert letter answer (A, B, C, D) to number (1, 2, 3, 4)
+function letterToNumber(letter: string | null): string {
+  if (!letter) return '?'
+  const index = letter.toUpperCase().charCodeAt(0) - 65 // A=0, B=1, C=2, D=3
+  if (index >= 0 && index <= 3) {
+    return String(index + 1)
+  }
+  return letter
+}
+
 export function RoundResultOverlay({ visible }: RoundResultOverlayProps) {
-  const { roundResult } = useGameStore()
+  const { roundResult, currentQuestion } = useGameStore()
   const [show, setShow] = useState(false)
+  // Store the question options when result comes in (before question changes)
+  const [savedOptions, setSavedOptions] = useState<string[] | null>(null)
+
+  // Save options when round result arrives
+  useEffect(() => {
+    if (roundResult && currentQuestion?.options) {
+      setSavedOptions(currentQuestion.options)
+    }
+  }, [roundResult, currentQuestion?.options])
 
   // Animate in/out
   useEffect(() => {
@@ -25,6 +44,17 @@ export function RoundResultOverlay({ visible }: RoundResultOverlayProps) {
   }, [visible, roundResult])
 
   if (!show || !roundResult) return null
+
+  // Get the correct answer text from options, or fall back to number
+  const getCorrectAnswerDisplay = (): string => {
+    const letter = roundResult.correctAnswer
+    const index = letter.toUpperCase().charCodeAt(0) - 65
+    const options = savedOptions || currentQuestion?.options
+    if (options && index >= 0 && index < options.length) {
+      return options[index]
+    }
+    return letterToNumber(letter)
+  }
 
   const localCorrect = roundResult.localAnswer === roundResult.correctAnswer
   const opponentCorrect = roundResult.opponentAnswer === roundResult.correctAnswer
@@ -84,7 +114,7 @@ export function RoundResultOverlay({ visible }: RoundResultOverlayProps) {
           <div className="flex items-center gap-2">
             <span className="text-xs text-neutral-500">Answer:</span>
             <span className="text-sm text-emerald-400 font-medium truncate max-w-[120px]">
-              {roundResult.correctAnswer}
+              {getCorrectAnswerDisplay()}
             </span>
           </div>
         </div>

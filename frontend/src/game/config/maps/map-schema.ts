@@ -32,6 +32,11 @@ export interface TileDefinition {
 }
 
 /**
+ * Available backdrop themes for maps
+ */
+export type MapTheme = 'space' | 'volcanic' | 'cyber' | 'void'
+
+/**
  * Map metadata
  * Requirements: 9.4
  */
@@ -41,6 +46,7 @@ export interface MapMetadata {
   version: string           // Semver format (e.g., "1.0.0")
   description: string       // Max 200 characters
   thumbnail?: string        // Optional preview image path
+  theme?: MapTheme          // Visual theme for backdrop (default: 'space')
 }
 
 /**

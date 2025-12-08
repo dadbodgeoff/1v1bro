@@ -1,6 +1,6 @@
 """
-Storage service for Cloud Storage operations.
-Handles avatar and banner uploads with signed URLs and image processing.
+Storage service for Supabase Storage operations.
+Handles avatar and banner uploads with signed URLs.
 Requirements: 10.1-10.10
 """
 
@@ -9,27 +9,24 @@ import uuid
 import logging
 from datetime import datetime, timedelta
 from typing import List, Optional, Tuple
-from io import BytesIO
 
-from PIL import Image
+from supabase import Client
+
+from app.database.supabase_client import get_supabase_service_client
 
 logger = logging.getLogger(__name__)
 
 
 class StorageService:
-    """Service for Cloud Storage operations."""
+    """Service for Supabase Storage operations."""
     
-    # Bucket configuration
-    BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "1v1bro-user-media")
-    CDN_BASE_URL = os.getenv("CDN_BASE_URL", f"https://storage.googleapis.com/{BUCKET_NAME}")
+    # Bucket names
+    AVATAR_BUCKET = "avatars"
+    BANNER_BUCKET = "banners"
     
-    # Path prefixes
-    AVATAR_PREFIX = "avatars/"
-    BANNER_PREFIX = "banners/"
-    
-    # Image size configurations
-    AVATAR_SIZES: List[Tuple[int, int]] = [(128, 128), (256, 256), (512, 512)]
-    BANNER_SIZES: List[Tuple[int, int]] = [(960, 270), (1920, 540)]
+    # Path prefixes within buckets
+    AVATAR_PREFIX = ""
+    BANNER_PREFIX = ""
     
     # File constraints
     AVATAR_MAX_SIZE = 5 * 1024 * 1024  # 5MB
@@ -38,32 +35,23 @@ class StorageService:
     ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"]
     
     # URL expiration
-    UPLOAD_URL_EXPIRATION_MINUTES = 5
+    UPLOAD_URL_EXPIRATION_SECONDS = 300  # 5 minutes
     
-    def __init__(self, project_id: Optional[str] = None):
-        """Initialize storage service."""
-        self.project_id = project_id or os.getenv("GCP_PROJECT_ID")
-        self._client = None
-        self._bucket = None
+    def __init__(self, client: Optional[Client] = None):
+        """Initialize storage service with Supabase client."""
+        self._client = client
     
     @property
-    def client(self):
-        """Lazy-load Google Cloud Storage client."""
+    def client(self) -> Client:
+        """Get Supabase client (lazy load)."""
         if self._client is None:
-            try:
-                from google.cloud import storage
-                self._client = storage.Client(project=self.project_id)
-            except ImportError:
-                logger.warning("google-cloud-storage not installed, using mock client")
-                self._client = MockStorageClient()
+            self._client = get_supabase_service_client()
         return self._client
     
-    @property
-    def bucket(self):
-        """Get storage bucket."""
-        if self._bucket is None:
-            self._bucket = self.client.bucket(self.BUCKET_NAME)
-        return self._bucket
+    def _get_supabase_url(self) -> str:
+        """Get Supabase project URL from client."""
+        # Extract from client's URL
+        return self.client.supabase_url
     
     def generate_signed_upload_url(
         self,
@@ -73,7 +61,7 @@ class StorageService:
         is_avatar: bool = True
     ) -> dict:
         """
-        Generate a signed URL for direct client upload.
+        Generate a signed URL for direct client upload to Supabase Storage.
         
         Args:
             user_id: User ID for path generation
@@ -90,179 +78,108 @@ class StorageService:
         
         # Generate unique filename
         unique_id = str(uuid.uuid4())
-        prefix = self.AVATAR_PREFIX if is_avatar else self.BANNER_PREFIX
         extension = self._get_extension_from_content_type(content_type)
-        storage_path = f"{prefix}{user_id}/{unique_id}{extension}"
+        
+        # Determine bucket and path
+        bucket = self.AVATAR_BUCKET if is_avatar else self.BANNER_BUCKET
+        storage_path = f"{user_id}/{unique_id}{extension}"
         
         # Calculate expiration
-        expires_at = datetime.utcnow() + timedelta(minutes=self.UPLOAD_URL_EXPIRATION_MINUTES)
+        expires_at = datetime.utcnow() + timedelta(seconds=self.UPLOAD_URL_EXPIRATION_SECONDS)
         
-        # Generate signed URL
         try:
-            blob = self.bucket.blob(storage_path)
-            upload_url = blob.generate_signed_url(
-                version="v4",
-                expiration=timedelta(minutes=self.UPLOAD_URL_EXPIRATION_MINUTES),
-                method="PUT",
-                content_type=content_type,
-            )
+            # Create signed upload URL using Supabase Storage
+            result = self.client.storage.from_(bucket).create_signed_upload_url(storage_path)
+            
+            # Handle different response formats from supabase-py
+            if isinstance(result, dict):
+                upload_url = result.get("signedURL") or result.get("signed_url") or result.get("signedUrl")
+                # Also check for token-based URL
+                if not upload_url and "token" in result:
+                    base_url = self._get_supabase_url()
+                    upload_url = f"{base_url}/storage/v1/object/upload/sign/{bucket}/{storage_path}?token={result['token']}"
+            elif hasattr(result, 'signed_url'):
+                upload_url = result.signed_url
+            elif hasattr(result, 'path') and hasattr(result, 'token'):
+                # New supabase-py format
+                base_url = self._get_supabase_url()
+                upload_url = f"{base_url}/storage/v1/object/upload/sign/{bucket}/{result.path}?token={result.token}"
+            else:
+                logger.warning(f"Signed URL response format unexpected: {result}")
+                upload_url = None
+            
+            if not upload_url:
+                upload_url = self._construct_upload_url(bucket, storage_path)
+                
         except Exception as e:
             logger.error(f"Failed to generate signed URL: {e}")
             # Fallback for development/testing
-            upload_url = f"{self.CDN_BASE_URL}/{storage_path}?upload=true"
+            upload_url = self._construct_upload_url(bucket, storage_path)
         
         max_size = self.AVATAR_MAX_SIZE if is_avatar else self.BANNER_MAX_SIZE
         
         return {
             "upload_url": upload_url,
             "storage_path": storage_path,
+            "bucket": bucket,
             "expires_at": expires_at,
             "max_size_bytes": max_size,
             "allowed_types": self.ALLOWED_TYPES,
         }
     
-    async def process_avatar(self, source_path: str, user_id: str) -> List[str]:
-        """
-        Resize avatar to standard sizes (128x128, 256x256, 512x512).
-        
-        Args:
-            source_path: Path to uploaded source image
-            user_id: User ID for output path
-            
-        Returns:
-            List of CDN URLs for resized variants
-        """
-        return await self._process_image(
-            source_path=source_path,
-            user_id=user_id,
-            sizes=self.AVATAR_SIZES,
-            prefix=self.AVATAR_PREFIX,
-        )
+    def _construct_upload_url(self, bucket: str, path: str) -> str:
+        """Construct a direct upload URL as fallback."""
+        base_url = self._get_supabase_url()
+        return f"{base_url}/storage/v1/object/{bucket}/{path}"
     
-    async def process_banner(self, source_path: str, user_id: str) -> List[str]:
+    def get_public_url(self, bucket: str, path: str) -> str:
         """
-        Resize banner to standard sizes (960x270, 1920x540).
+        Get public URL for a file in Supabase Storage.
         
         Args:
-            source_path: Path to uploaded source image
-            user_id: User ID for output path
+            bucket: Bucket name
+            path: File path within bucket
             
         Returns:
-            List of CDN URLs for resized variants
+            Public URL for the file
         """
-        return await self._process_image(
-            source_path=source_path,
-            user_id=user_id,
-            sizes=self.BANNER_SIZES,
-            prefix=self.BANNER_PREFIX,
-        )
-    
-    async def _process_image(
-        self,
-        source_path: str,
-        user_id: str,
-        sizes: List[Tuple[int, int]],
-        prefix: str,
-    ) -> List[str]:
-        """
-        Process and resize image to multiple sizes.
-        
-        Args:
-            source_path: Path to source image in bucket
-            user_id: User ID for output path
-            sizes: List of (width, height) tuples
-            prefix: Path prefix (avatars/ or banners/)
-            
-        Returns:
-            List of CDN URLs for resized variants
-        """
-        urls = []
-        
         try:
-            # Download source image
-            source_blob = self.bucket.blob(source_path)
-            image_data = source_blob.download_as_bytes()
-            
-            # Open with PIL
-            image = Image.open(BytesIO(image_data))
-            
-            # Convert to RGB if necessary (for JPEG output)
-            if image.mode in ('RGBA', 'P'):
-                image = image.convert('RGB')
-            
-            # Get base filename without extension
-            base_name = source_path.rsplit('/', 1)[-1].rsplit('.', 1)[0]
-            
-            for width, height in sizes:
-                # Resize image
-                resized = self._resize_image(image, width, height)
-                
-                # Save to buffer
-                buffer = BytesIO()
-                resized.save(buffer, format='WEBP', quality=85)
-                buffer.seek(0)
-                
-                # Upload resized version
-                output_path = f"{prefix}{user_id}/{base_name}_{width}x{height}.webp"
-                output_blob = self.bucket.blob(output_path)
-                output_blob.upload_from_file(buffer, content_type='image/webp')
-                
-                # Set cache headers (1 year for versioned files)
-                output_blob.cache_control = 'public, max-age=31536000'
-                output_blob.patch()
-                
-                urls.append(self.get_cdn_url(output_path))
-            
-            logger.info(f"Processed image for user {user_id}: {len(urls)} variants created")
-            
+            result = self.client.storage.from_(bucket).get_public_url(path)
+            return result
         except Exception as e:
-            logger.error(f"Failed to process image: {e}")
-            # Return source URL as fallback
-            urls = [self.get_cdn_url(source_path)]
-        
-        return urls
+            logger.error(f"Failed to get public URL: {e}")
+            # Construct URL manually
+            base_url = self._get_supabase_url()
+            return f"{base_url}/storage/v1/object/public/{bucket}/{path}"
     
-    def _resize_image(self, image: Image.Image, width: int, height: int) -> Image.Image:
+    async def process_avatar(self, storage_path: str, user_id: str) -> List[str]:
         """
-        Resize image to target dimensions with center crop.
+        Process uploaded avatar - for Supabase we just return the public URL.
+        Image resizing can be done client-side or via Supabase Image Transformations.
         
         Args:
-            image: PIL Image object
-            width: Target width
-            height: Target height
+            storage_path: Path to uploaded source image
+            user_id: User ID
             
         Returns:
-            Resized PIL Image
+            List of URLs (single URL for Supabase)
         """
-        # Calculate aspect ratios
-        target_ratio = width / height
-        image_ratio = image.width / image.height
-        
-        if image_ratio > target_ratio:
-            # Image is wider - crop width
-            new_width = int(image.height * target_ratio)
-            left = (image.width - new_width) // 2
-            image = image.crop((left, 0, left + new_width, image.height))
-        elif image_ratio < target_ratio:
-            # Image is taller - crop height
-            new_height = int(image.width / target_ratio)
-            top = (image.height - new_height) // 2
-            image = image.crop((0, top, image.width, top + new_height))
-        
-        # Resize to target dimensions
-        return image.resize((width, height), Image.Resampling.LANCZOS)
+        public_url = self.get_public_url(self.AVATAR_BUCKET, storage_path)
+        return [public_url]
     
-    def get_cdn_url(self, path: str) -> str:
+    async def process_banner(self, storage_path: str, user_id: str) -> List[str]:
         """
-        Get CDN URL for serving file.
+        Process uploaded banner - for Supabase we just return the public URL.
         
         Args:
-            path: Storage path
+            storage_path: Path to uploaded source image
+            user_id: User ID
             
         Returns:
-            Public CDN URL
+            List of URLs (single URL for Supabase)
         """
-        return f"{self.CDN_BASE_URL}/{path}"
+        public_url = self.get_public_url(self.BANNER_BUCKET, storage_path)
+        return [public_url]
     
     async def delete_old_versions(
         self,
@@ -271,11 +188,11 @@ class StorageService:
         keep_latest: int = 1
     ) -> int:
         """
-        Delete old file versions, keeping the most recent.
+        Delete old file versions for a user, keeping the most recent.
         
         Args:
             user_id: User ID
-            prefix: Path prefix (avatars/ or banners/)
+            prefix: Not used for Supabase (bucket determines type)
             keep_latest: Number of versions to keep
             
         Returns:
@@ -283,28 +200,29 @@ class StorageService:
         """
         deleted_count = 0
         
+        # Determine bucket based on prefix
+        bucket = self.AVATAR_BUCKET if "avatar" in prefix.lower() else self.BANNER_BUCKET
+        
         try:
-            # List all blobs for user
-            full_prefix = f"{prefix}{user_id}/"
-            blobs = list(self.bucket.list_blobs(prefix=full_prefix))
+            # List files for user
+            result = self.client.storage.from_(bucket).list(user_id)
             
-            # Group by base filename (without size suffix)
-            from collections import defaultdict
-            versions = defaultdict(list)
+            if not result:
+                return 0
             
-            for blob in blobs:
-                # Extract base name (remove size suffix like _128x128)
-                name = blob.name.rsplit('/', 1)[-1]
-                base = name.split('_')[0] if '_' in name else name.rsplit('.', 1)[0]
-                versions[base].append(blob)
+            # Sort by created_at (newest first)
+            files = sorted(
+                result,
+                key=lambda f: f.get("created_at", ""),
+                reverse=True
+            )
             
-            # Sort each group by time and delete old versions
-            for base, blob_list in versions.items():
-                blob_list.sort(key=lambda b: b.time_created or datetime.min, reverse=True)
-                
-                # Delete all but the latest
-                for blob in blob_list[keep_latest:]:
-                    blob.delete()
+            # Delete all but the latest
+            for file_info in files[keep_latest:]:
+                file_name = file_info.get("name")
+                if file_name:
+                    file_path = f"{user_id}/{file_name}"
+                    self.client.storage.from_(bucket).remove([file_path])
                     deleted_count += 1
             
             logger.info(f"Deleted {deleted_count} old versions for user {user_id}")
@@ -344,52 +262,3 @@ class StorageService:
             "image/webp": ".webp",
         }
         return mapping.get(content_type, ".jpg")
-
-
-class MockStorageClient:
-    """Mock storage client for development/testing."""
-    
-    def bucket(self, name: str):
-        return MockBucket(name)
-
-
-class MockBucket:
-    """Mock bucket for development/testing."""
-    
-    def __init__(self, name: str):
-        self.name = name
-        self._blobs = {}
-    
-    def blob(self, path: str):
-        if path not in self._blobs:
-            self._blobs[path] = MockBlob(path, self.name)
-        return self._blobs[path]
-    
-    def list_blobs(self, prefix: str = ""):
-        return [b for p, b in self._blobs.items() if p.startswith(prefix)]
-
-
-class MockBlob:
-    """Mock blob for development/testing."""
-    
-    def __init__(self, path: str, bucket_name: str):
-        self.name = path
-        self.bucket_name = bucket_name
-        self.cache_control = None
-        self.time_created = datetime.utcnow()
-        self._data = b""
-    
-    def generate_signed_url(self, **kwargs) -> str:
-        return f"https://storage.googleapis.com/{self.bucket_name}/{self.name}?signed=true"
-    
-    def download_as_bytes(self) -> bytes:
-        return self._data
-    
-    def upload_from_file(self, file_obj, content_type: str = None):
-        self._data = file_obj.read()
-    
-    def patch(self):
-        pass
-    
-    def delete(self):
-        pass

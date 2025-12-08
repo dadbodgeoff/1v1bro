@@ -24,33 +24,45 @@ async def get_game_history(
     limit: int = Query(default=20, ge=1, le=100, description="Max results"),
 ):
     """
-    Get current user's game history.
+    Get current user's game history with opponent details and ELO changes.
     
     Returns a list of past games with results, ordered by most recent.
+    Includes opponent name, avatar, and ELO change for each match.
+    Returns empty list if user has no games yet.
     """
-    games = await game_service.get_user_history(current_user.id, limit=limit)
+    try:
+        games = await game_service.get_user_history(current_user.id, limit=limit)
+    except Exception:
+        # If query fails (e.g., tables don't exist yet), return empty list
+        games = []
+    
+    # No games yet - return empty list
+    if not games:
+        return APIResponse.ok([])
     
     history = []
     for game in games:
         # Determine if current user was player1 or player2
-        is_player1 = game["player1_id"] == current_user.id
+        is_player1 = game.get("player1_id") == current_user.id
         
-        my_score = game["player1_score"] if is_player1 else game["player2_score"]
-        opponent_score = game["player2_score"] if is_player1 else game["player1_score"]
-        opponent_id = game["player2_id"] if is_player1 else game["player1_id"]
+        my_score = game.get("player1_score", 0) if is_player1 else game.get("player2_score", 0)
+        opponent_score = game.get("player2_score", 0) if is_player1 else game.get("player1_score", 0)
+        opponent_id = game.get("player2_id") if is_player1 else game.get("player1_id")
         
         won = game.get("winner_id") == current_user.id
         is_tie = game.get("winner_id") is None and my_score == opponent_score
         
         history.append(
             GameHistoryItem(
-                id=game["id"],
+                id=game.get("id", ""),
                 opponent_id=opponent_id,
-                opponent_name=None,  # Could fetch from user_repo if needed
+                opponent_name=game.get("opponent_name"),  # From enhanced query
+                opponent_avatar_url=game.get("opponent_avatar_url"),  # From enhanced query
                 my_score=my_score,
                 opponent_score=opponent_score,
                 won=won,
                 is_tie=is_tie,
+                elo_change=game.get("elo_change", 0),  # From match_results join
                 created_at=game.get("completed_at"),
             )
         )

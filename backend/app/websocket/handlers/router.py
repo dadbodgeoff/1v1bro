@@ -20,6 +20,7 @@ from .powerup import PowerUpHandler
 from .telemetry import TelemetryHandler
 from .lobby import LobbyHandler
 from .matchmaking import MatchmakingHandler
+from .emote import EmoteHandler
 
 logger = get_logger("websocket.handlers")
 
@@ -46,9 +47,10 @@ class GameHandler:
     - MatchmakingHandler: Queue join/leave
     """
 
-    def __init__(self, lobby_service: LobbyService, game_service: GameService):
+    def __init__(self, lobby_service: LobbyService, game_service: GameService, cosmetics_service=None):
         self.lobby_service = lobby_service
         self.game_service = game_service
+        self.cosmetics_service = cosmetics_service
 
         # Initialize domain handlers
         self.quiz = QuizHandler(lobby_service, game_service)
@@ -57,7 +59,8 @@ class GameHandler:
         self.powerup = PowerUpHandler(lobby_service, game_service)
         self.telemetry = TelemetryHandler(lobby_service, game_service)
         self.matchmaking = MatchmakingHandler(lobby_service, game_service)
-        self.lobby = LobbyHandler(lobby_service, game_service, self.quiz)
+        self.lobby = LobbyHandler(lobby_service, game_service, self.quiz, cosmetics_service)
+        self.emote = EmoteHandler(lobby_service, game_service)
 
     async def handle_message(
         self,
@@ -127,6 +130,9 @@ class GameHandler:
 
             elif msg_type == WSEventType.QUEUE_LEAVE.value:
                 await self.matchmaking.handle_queue_leave(user_id)
+
+            elif msg_type == "emote_trigger":
+                await self.emote.handle_trigger(lobby_code, user_id, payload)
 
             else:
                 await manager.send_personal(

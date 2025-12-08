@@ -42,6 +42,7 @@ class LobbyService(BaseService):
         self,
         host_id: str,
         game_mode: str = "fortnite",
+        category: str | None = None,
     ) -> dict:
         """
         Create a new lobby with a unique code.
@@ -49,10 +50,14 @@ class LobbyService(BaseService):
         Args:
             host_id: Host user UUID
             game_mode: Game mode/category
+            category: Trivia category (overrides game_mode if provided)
             
         Returns:
             Created lobby dict with code
         """
+        # Use category if provided, otherwise fall back to game_mode
+        effective_category = category or game_mode
+        
         # Generate unique code
         code = generate_lobby_code()
         while await self.lobby_repo.code_exists(code):
@@ -62,7 +67,7 @@ class LobbyService(BaseService):
         lobby = await self.lobby_repo.create_lobby(
             code=code,
             host_id=host_id,
-            game_mode=game_mode,
+            game_mode=effective_category,
         )
         
         # Get host info

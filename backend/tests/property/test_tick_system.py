@@ -81,7 +81,9 @@ class TestInputValidation:
 
     def test_valid_input(self):
         """Test that valid inputs pass validation."""
-        validator = InputValidator()
+        from app.game.config import AntiCheatConfig
+        enabled_config = AntiCheatConfig(enabled=True)
+        validator = InputValidator(anti_cheat_config=enabled_config)
         game = GameState(lobby_id="test")
         player = PlayerState(player_id="p1", x=160, y=360)
         
@@ -97,13 +99,20 @@ class TestInputValidation:
 
     def test_teleport_detection(self):
         """Test that teleportation is detected."""
-        validator = InputValidator()
+        from app.game.config import AntiCheatConfig, MovementConfig
+        enabled_config = AntiCheatConfig(enabled=True)
+        # Use a lower teleport threshold for testing
+        movement_config = MovementConfig(teleport_threshold_px=100)
+        validator = InputValidator(
+            anti_cheat_config=enabled_config,
+            movement_config=movement_config,
+        )
         game = GameState(lobby_id="test")
         player = PlayerState(player_id="p1", x=160, y=360)
         
         is_valid, reason = validator.validate(game, player, PlayerInput(
             player_id="p1",
-            x=500,  # 340px - way too far
+            x=500,  # 340px - exceeds 100px threshold
             y=360,
             sequence=1,
         ))
@@ -114,7 +123,9 @@ class TestInputValidation:
 
     def test_old_sequence_rejected(self):
         """Test that very old sequences are rejected."""
-        validator = InputValidator()
+        from app.game.config import AntiCheatConfig
+        enabled_config = AntiCheatConfig(enabled=True)
+        validator = InputValidator(anti_cheat_config=enabled_config)
         game = GameState(lobby_id="test")
         player = PlayerState(player_id="p1", last_input_sequence=100)
         

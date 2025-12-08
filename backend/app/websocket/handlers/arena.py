@@ -64,3 +64,47 @@ class ArenaHandler(BaseHandler):
         if arena_config:
             tick_system.init_arena_config(lobby_code, arena_config)
             logger.info(f"Initialized arena config for {lobby_code}")
+
+    async def broadcast_arena_state(self, lobby_code: str) -> None:
+        """
+        Broadcast full arena state to all clients in lobby.
+        
+        SERVER AUTHORITY: Send authoritative arena state.
+        Requirements: 5.1, 5.4
+        """
+        from app.websocket.events import build_arena_state
+        
+        arena_state = tick_system.get_arena_state(lobby_code)
+        if not arena_state:
+            return
+        
+        # Get buff state from tick system
+        buff_state = tick_system.get_buff_state(lobby_code)
+        
+        message = build_arena_state(
+            hazards=arena_state.get("hazards", []),
+            traps=arena_state.get("traps", []),
+            doors=arena_state.get("doors", []),
+            platforms=arena_state.get("platforms", []),
+            barriers=arena_state.get("barriers", []),
+            powerups=arena_state.get("powerups", []),
+            buffs=buff_state,
+        )
+        
+        await self.manager.broadcast_to_lobby(lobby_code, message)
+
+    async def broadcast_arena_events(self, lobby_code: str, events: list) -> None:
+        """
+        Broadcast arena events to all clients in lobby.
+        
+        SERVER AUTHORITY: Send individual arena events.
+        Requirements: 5.1, 5.2
+        """
+        from app.websocket.events import build_arena_event
+        
+        for event in events:
+            message = build_arena_event(
+                event_type=event.event_type,
+                data=event.data,
+            )
+            await self.manager.broadcast_to_lobby(lobby_code, message)

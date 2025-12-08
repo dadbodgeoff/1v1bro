@@ -59,7 +59,7 @@ export function ChatInput({ onSend, isSending }: ChatInputProps) {
             className={`w-full px-3 py-2 bg-white/[0.04] border rounded-xl text-sm text-white placeholder-neutral-500 resize-none focus:outline-none focus:ring-1 transition-colors ${
               isOverLimit
                 ? 'border-red-500/50 focus:ring-red-500/50'
-                : 'border-white/[0.06] focus:ring-purple-500/50'
+                : 'border-white/[0.06] focus:ring-indigo-500/50'
             }`}
             disabled={isSending}
           />
@@ -76,10 +76,10 @@ export function ChatInput({ onSend, isSending }: ChatInputProps) {
         <button
           onClick={handleSend}
           disabled={!message.trim() || isSending || isOverLimit}
-          className="p-2.5 bg-purple-500/20 text-purple-400 rounded-xl hover:bg-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="p-2.5 bg-indigo-500/20 text-indigo-400 rounded-xl hover:bg-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isSending ? (
-            <div className="w-5 h-5 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-indigo-400/30 border-t-indigo-400 rounded-full animate-spin" />
           ) : (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

@@ -1,0 +1,210 @@
+# Implementation Plan
+
+- [x] 1. Database schema extensions
+  - [x] 1.1 Create migration for cosmetics_catalog extensions
+    - Add sprite_sheet_url, sprite_meta_url, is_featured, available_from, rotation_group, sort_order columns
+    - Add indexes for featured and availability queries
+    - _Requirements: 2.1, 2.4, 3.1_
+  - [x] 1.2 Create asset_metadata table migration
+    - Create table with cosmetic_id, asset_type, storage_path, public_url, content_type, file_size, dimensions, frame_count
+    - Add RLS policies for admin access
+    - _Requirements: 6.3_
+  - [x] 1.3 Create shop_rotations table migration
+    - Create table with rotation_type, starts_at, ends_at, featured_cosmetic_ids, rotation_rules
+    - Add indexes for active rotation queries
+    - _Requirements: 3.3, 3.4_
+
+- [x] 2. Asset Management Service (Backend)
+  - [x] 2.1 Create Supabase Storage client wrapper
+    - Initialize Supabase storage client with cosmetics bucket
+    - Implement upload, delete, and get_public_url methods
+    - _Requirements: 1.1_
+  - [x] 2.2 Write property test for unique filename generation
+    - **Property 4: Unique filename generation**
+    - **Validates: Requirements 1.4**
+  - [x] 2.3 Implement asset upload with validation
+    - Validate content type against allowed list (image/png, image/webp, application/json)
+    - Validate file size under 10MB limit
+    - Generate unique filename using UUID
+    - Upload to Supabase Storage and return public URL
+    - _Requirements: 1.1, 1.3, 1.4_
+  - [x] 2.4 Write property test for asset upload returns valid URL
+    - **Property 1: Asset upload returns valid URL**
+    - **Validates: Requirements 1.1**
+  - [x] 2.5 Implement sprite sheet validation
+    - Load image and check dimensions are divisible by expected frame size
+    - Return validation result with error details if invalid
+    - _Requirements: 1.2_
+  - [x] 2.6 Write property test for sprite sheet validation
+    - **Property 2: Sprite sheet dimension validation**
+    - **Validates: Requirements 1.2**
+  - [x] 2.7 Write property test for upload error messages
+    - **Property 3: Upload error messages**
+    - **Validates: Requirements 1.3**
+  - [x] 2.8 Implement asset metadata storage
+    - Store content_type, file_size, upload_timestamp for each upload
+    - Store dimensions and frame_count for sprite sheets
+    - _Requirements: 6.3_
+  - [x] 2.9 Write property test for asset metadata completeness
+    - **Property 19: Asset metadata completeness**
+    - **Validates: Requirements 6.3**
+
+- [x] 3. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 4. Admin Cosmetics API (Backend)
+  - [x] 4.1 Create admin cosmetics repository methods
+    - Implement create_cosmetic, update_cosmetic, delete_cosmetic
+    - Implement get_cosmetic_with_assets for admin view
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [x] 4.2 Create admin cosmetics schemas
+    - CosmeticCreateRequest with all fields including asset URLs
+    - CosmeticUpdateRequest with optional fields for partial updates
+    - AssetUploadResponse with public_url and metadata
+    - _Requirements: 2.1, 2.2_
+  - [x] 4.3 Write property test for cosmetic serialization round-trip
+    - **Property 17: Cosmetic serialization round-trip**
+    - **Validates: Requirements 6.1**
+  - [x] 4.4 Write property test for deserialization validation
+    - **Property 18: Deserialization validation**
+    - **Validates: Requirements 6.2**
+  - [x] 4.5 Implement POST /api/v1/admin/cosmetics endpoint
+    - Validate required fields (name, type, rarity, image_url, price_coins)
+    - Create cosmetic in database
+    - Return created cosmetic with ID
+    - _Requirements: 2.1, 2.5_
+  - [x] 4.6 Write property test for cosmetic creation stores all fields
+    - **Property 5: Cosmetic creation stores all fields**
+    - **Validates: Requirements 2.1**
+  - [x] 4.7 Write property test for required field validation
+    - **Property 9: Required field validation**
+    - **Validates: Requirements 2.5**
+  - [x] 4.8 Implement PUT /api/v1/admin/cosmetics/{id} endpoint
+    - Accept partial updates
+    - Preserve unchanged fields
+    - Update only specified fields
+    - _Requirements: 2.2_
+  - [x] 4.9 Write property test for partial update preserves unchanged fields
+    - **Property 6: Partial update preserves unchanged fields**
+    - **Validates: Requirements 2.2**
+  - [x] 4.10 Implement DELETE /api/v1/admin/cosmetics/{id} endpoint
+    - Delete cosmetic from catalog
+    - Delete associated assets from storage
+    - Delete asset metadata records
+    - _Requirements: 2.3_
+  - [x] 4.11 Write property test for delete cascades to assets
+    - **Property 7: Delete cascades to assets**
+    - **Validates: Requirements 2.3**
+  - [x] 4.12 Implement POST /api/v1/admin/cosmetics/{id}/assets endpoint
+    - Accept file upload
+    - Validate and store asset
+    - Update cosmetic with asset URL
+    - _Requirements: 1.1, 1.2_
+
+- [x] 5. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 6. Shop Rotation Service (Backend)
+  - [x] 6.1 Create shop rotation repository
+    - Implement CRUD for shop_rotations table
+    - Implement get_active_rotation query
+    - _Requirements: 3.3_
+  - [x] 6.2 Implement availability window filtering
+    - Modify get_shop query to filter by available_from and available_until
+    - Exclude cosmetics outside their availability window
+    - _Requirements: 2.4, 3.2_
+  - [x] 6.3 Write property test for availability window enforcement
+    - **Property 8: Availability window enforcement**
+    - **Validates: Requirements 2.4, 3.2**
+  - [x] 6.4 Implement featured items query
+    - Query cosmetics where is_featured = true
+    - Respect availability windows
+    - _Requirements: 3.1_
+  - [x] 6.5 Write property test for featured flag behavior
+    - **Property 10: Featured flag behavior**
+    - **Validates: Requirements 3.1**
+  - [x] 6.6 Implement rotation execution logic
+    - Parse rotation_rules JSON
+    - Select items based on rules (random, by rarity, by type)
+    - Update featured flags on selected items
+    - _Requirements: 3.3, 3.4_
+  - [x] 6.7 Write property test for rotation execution
+    - **Property 11: Rotation execution**
+    - **Validates: Requirements 3.3, 3.4**
+  - [x] 6.8 Create rotation scheduling endpoint
+    - POST /api/v1/admin/rotations to create scheduled rotation
+    - GET /api/v1/admin/rotations/current to get active rotation
+    - _Requirements: 3.3_
+
+- [x] 7. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 8. Dynamic Asset Loader (Frontend)
+  - [x] 8.1 Create DynamicAssetLoader class
+    - Implement loadCosmeticImage method for shop images
+    - Implement asset cache using Map
+    - _Requirements: 4.1, 4.2_
+  - [x] 8.2 Implement sprite sheet loading
+    - Load sprite sheet image from URL
+    - Load and parse metadata JSON
+    - Return SpriteSheetData with frames and animations
+    - _Requirements: 4.4, 5.1_
+  - [x] 8.3 Write property test for sprite metadata parsing
+    - **Property 13: Sprite metadata parsing**
+    - **Validates: Requirements 4.4**
+  - [x] 8.4 Implement caching layer
+    - Cache loaded assets by URL
+    - Return cached data for duplicate requests
+    - Implement cache clearing for memory management
+    - _Requirements: 5.4_
+  - [x] 8.5 Write property test for skin loading with caching
+    - **Property 14: Skin loading with caching**
+    - **Validates: Requirements 5.1, 5.4**
+  - [x] 8.6 Implement fallback handling
+    - Return placeholder image on load failure
+    - Log errors for debugging
+    - Retry with exponential backoff before fallback
+    - _Requirements: 4.3, 5.3_
+  - [x] 8.7 Write property test for asset loading with fallback
+    - **Property 12: Asset loading with fallback**
+    - **Validates: Requirements 4.3**
+  - [x] 8.8 Write property test for skin fallback on error
+    - **Property 16: Skin fallback on error**
+    - **Validates: Requirements 5.3**
+
+- [x] 9. Game Engine Integration (Frontend)
+  - [x] 9.1 Update PlayerRenderer to use dynamic skins
+    - Load equipped skin from cosmetic's sprite_sheet_url
+    - Fall back to default skin on error
+    - _Requirements: 5.1, 5.3_
+  - [x] 9.2 Implement animation registration
+    - Parse sprite metadata animations
+    - Register animations with game engine by name
+    - _Requirements: 5.2_
+  - [x] 9.3 Write property test for animation registration
+    - **Property 15: Animation registration**
+    - **Validates: Requirements 5.2**
+  - [x] 9.4 Update ArenaAssetLoader to support dynamic assets
+    - Add method to load skin from URL instead of import
+    - Integrate with DynamicAssetLoader cache
+    - _Requirements: 5.1_
+
+- [x] 10. Shop Page Updates (Frontend)
+  - [x] 10.1 Update Shop page to use dynamic images
+    - Load cosmetic images from image_url field
+    - Show loading skeleton while images load
+    - _Requirements: 4.1, 4.2_
+  - [x] 10.2 Update ShopCard component
+    - Use DynamicAssetLoader for image loading
+    - Display placeholder on error
+    - _Requirements: 4.2, 4.3_
+  - [x] 10.3 Update FeaturedItem component
+    - Load featured item image dynamically
+    - Support preview video from preview_video_url
+    - _Requirements: 4.1_
+
+- [x] 11. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 12. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

@@ -309,6 +309,20 @@ class WebSocketService {
     }
   }
 
+  // ============================================================================
+  // Emote Methods
+  // ============================================================================
+
+  /**
+   * Send an emote trigger to the server
+   */
+  sendEmote(emoteId: string): void {
+    this.send('emote_trigger', {
+      emote_id: emoteId,
+      timestamp: Date.now(),
+    })
+  }
+
   on(type: string, handler: MessageHandler): () => void {
     if (!this.handlers.has(type)) {
       this.handlers.set(type, new Set())
@@ -331,6 +345,14 @@ class WebSocketService {
 
   get isConnected(): boolean {
     return this.ws?.readyState === WebSocket.OPEN
+  }
+
+  get currentLobby(): string | null {
+    return this.lobbyCode
+  }
+
+  isConnectedToLobby(lobbyCode: string): boolean {
+    return this.lobbyCode === lobbyCode && this.ws?.readyState === WebSocket.OPEN
   }
 }
 

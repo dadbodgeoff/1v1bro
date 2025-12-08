@@ -22,6 +22,7 @@ class SocialLinks(BaseSchema):
     twitch: Optional[str] = Field(None, description="Twitch profile URL")
     youtube: Optional[str] = Field(None, description="YouTube channel URL")
     twitter: Optional[str] = Field(None, description="Twitter/X profile URL")
+    discord: Optional[str] = Field(None, description="Discord username (e.g., username#1234)")
     
     @field_validator('twitch')
     @classmethod
@@ -95,6 +96,11 @@ class ProfileUpdate(BaseSchema):
         max_length=200,
         description="Profile bio (max 200 characters)"
     )
+    title: Optional[str] = Field(
+        None,
+        max_length=50,
+        description="Player title (max 50 characters)"
+    )
     country: Optional[str] = Field(
         None,
         min_length=2,
@@ -150,6 +156,21 @@ class Profile(BaseSchema, TimestampMixin):
     is_public: bool = Field(default=True, description="Profile visibility")
     accept_friend_requests: bool = Field(default=True, description="Accept friend requests")
     allow_messages: bool = Field(default=True, description="Allow direct messages")
+    # Game statistics
+    games_played: int = Field(default=0, description="Total games played")
+    games_won: int = Field(default=0, description="Total games won")
+    best_win_streak: int = Field(default=0, description="Best win streak")
+    # ELO statistics (unified source of truth)
+    current_elo: int = Field(default=1200, description="Current ELO rating")
+    peak_elo: int = Field(default=1200, description="Peak ELO rating achieved")
+    current_tier: str = Field(default="Gold", description="Current rank tier")
+    
+    @property
+    def win_rate(self) -> float:
+        """Calculate win rate from games_won and games_played."""
+        if self.games_played == 0:
+            return 0.0
+        return round(self.games_won / self.games_played * 100, 2)
 
 
 class PublicProfile(BaseSchema):
@@ -166,6 +187,14 @@ class PublicProfile(BaseSchema):
     # Bio and social links only shown if profile is public
     bio: Optional[str] = Field(None, description="Profile bio (if public)")
     social_links: Optional[SocialLinks] = Field(None, description="Social links (if public)")
+    # Game statistics (always public)
+    games_played: int = Field(default=0, description="Total games played")
+    games_won: int = Field(default=0, description="Total games won")
+    best_win_streak: int = Field(default=0, description="Best win streak")
+    # ELO statistics (always public)
+    current_elo: int = Field(default=1200, description="Current ELO rating")
+    peak_elo: int = Field(default=1200, description="Peak ELO rating achieved")
+    current_tier: str = Field(default="Gold", description="Current rank tier")
 
 
 # ============================================
@@ -177,6 +206,7 @@ class SignedUploadUrl(BaseSchema):
     
     upload_url: str = Field(..., description="Pre-signed URL for direct upload")
     storage_path: str = Field(..., description="Path where file will be stored")
+    bucket: Optional[str] = Field(None, description="Storage bucket name")
     expires_at: datetime = Field(..., description="URL expiration timestamp")
     max_size_bytes: int = Field(..., description="Maximum allowed file size")
     allowed_types: List[str] = Field(..., description="Allowed MIME types")

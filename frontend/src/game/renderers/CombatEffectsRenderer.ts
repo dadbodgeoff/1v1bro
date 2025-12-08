@@ -1,10 +1,18 @@
 /**
  * Combat Effects Renderer
- * Renders hit markers, damage numbers, muzzle flash, and death effects
+ * Renders hit markers, damage numbers, muzzle flash, death effects, and screen effects
+ * 
+ * Features:
+ * - Hit markers at impact points
+ * - Floating damage numbers
+ * - Muzzle flash on projectile spawn
+ * - Death explosion particles
+ * - Full-screen effects (damage vignette, stun flash)
  */
 
 import { BaseRenderer } from './BaseRenderer'
 import { COLORS } from '../config/colors'
+import { screenEffects } from '../terrain/ScreenEffects'
 import type { Vector2 } from '../types'
 
 // Effect types
@@ -157,13 +165,54 @@ export class CombatEffectsRenderer extends BaseRenderer {
 
   /**
    * Add player damage flash (red tint)
+   * Also triggers screen-wide damage vignette
    */
-  addPlayerFlash(playerId: string): void {
+  addPlayerFlash(playerId: string, isLocalPlayer: boolean = false): void {
     this.playerFlashes.set(playerId, {
       playerId,
       startTime: Date.now(),
       duration: PLAYER_FLASH_DURATION,
     })
+
+    // Trigger screen effect for local player damage
+    if (isLocalPlayer) {
+      screenEffects.triggerDamage(0.3)
+    }
+  }
+
+  /**
+   * Trigger stun screen effect (white flash)
+   */
+  triggerStunEffect(): void {
+    screenEffects.triggerStun(0.6)
+  }
+
+  /**
+   * Trigger correct answer screen effect (green flash)
+   */
+  triggerCorrectAnswer(): void {
+    screenEffects.triggerCorrectAnswer()
+  }
+
+  /**
+   * Trigger wrong answer screen effect (red flash)
+   */
+  triggerWrongAnswer(): void {
+    screenEffects.triggerWrongAnswer()
+  }
+
+  /**
+   * Trigger heal screen effect (green pulse)
+   */
+  triggerHealEffect(): void {
+    screenEffects.triggerHeal()
+  }
+
+  /**
+   * Trigger speed boost screen effect (blue tint)
+   */
+  triggerSpeedBoostEffect(): void {
+    screenEffects.triggerSpeedBoost()
   }
 
   /**
@@ -193,6 +242,9 @@ export class CombatEffectsRenderer extends BaseRenderer {
    */
   update(deltaTime: number): void {
     const now = Date.now()
+
+    // Update screen effects
+    screenEffects.update()
 
     // Clean up expired hit markers
     for (const [id, marker] of this.hitMarkers) {
@@ -260,6 +312,19 @@ export class CombatEffectsRenderer extends BaseRenderer {
     this.renderHitMarkers()
     this.renderDamageNumbers()
     this.renderRespawnEffects()
+    
+    // Render screen-wide effects last (on top of everything)
+    screenEffects.render()
+  }
+
+  /**
+   * Initialize screen effects with canvas dimensions
+   * Call this when the canvas is set up
+   */
+  initializeScreenEffects(width: number, height: number): void {
+    if (this.ctx) {
+      screenEffects.initialize(this.ctx, width, height)
+    }
   }
 
   private renderHitMarkers(): void {

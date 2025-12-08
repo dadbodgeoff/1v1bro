@@ -99,6 +99,83 @@ class GameRepository(BaseRepository):
         )
         return result.data
 
+    async def get_user_history_enhanced(
+        self,
+        user_id: str,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[dict]:
+        """
+        Get enhanced game history for a user with opponent details and ELO changes.
+        
+        Joins with user_profiles for opponent info and match_results for ELO data.
+        
+        Args:
+            user_id: User UUID
+            limit: Max results
+            offset: Pagination offset
+            
+        Returns:
+            List of games with opponent_name, opponent_avatar_url, and elo_change
+        """
+        # Get base game history
+        games = await self.get_user_history(user_id, limit, offset)
+        
+        if not games:
+            return []
+        
+        # Collect opponent IDs
+        opponent_ids = set()
+        game_ids = []
+        for game in games:
+            is_player1 = game["player1_id"] == user_id
+            opponent_id = game["player2_id"] if is_player1 else game["player1_id"]
+            opponent_ids.add(opponent_id)
+            game_ids.append(game["id"])
+        
+        # Fetch opponent profiles
+        profiles_result = (
+            self.client.table("user_profiles")
+            .select("id, display_name, avatar_url")
+            .in_("id", list(opponent_ids))
+            .execute()
+        )
+        profiles_map = {p["id"]: p for p in (profiles_result.data or [])}
+        
+        # Fetch ELO changes from match_results
+        # Note: match_results uses match_id which corresponds to game.id
+        elo_map = {}
+        if game_ids:
+            elo_result = (
+                self.client.table("match_results")
+                .select("match_id, player1_id, player2_id, elo_delta_p1, elo_delta_p2")
+                .in_("match_id", game_ids)
+                .execute()
+            )
+            for row in (elo_result.data or []):
+                match_id = row["match_id"]
+                if row["player1_id"] == user_id:
+                    elo_map[match_id] = row.get("elo_delta_p1", 0)
+                elif row["player2_id"] == user_id:
+                    elo_map[match_id] = row.get("elo_delta_p2", 0)
+        
+        # Enhance games with opponent info and ELO
+        enhanced_games = []
+        for game in games:
+            is_player1 = game["player1_id"] == user_id
+            opponent_id = game["player2_id"] if is_player1 else game["player1_id"]
+            opponent_profile = profiles_map.get(opponent_id, {})
+            
+            enhanced_game = {
+                **game,
+                "opponent_name": opponent_profile.get("display_name"),
+                "opponent_avatar_url": opponent_profile.get("avatar_url"),
+                "elo_change": elo_map.get(game["id"], 0),
+            }
+            enhanced_games.append(enhanced_game)
+        
+        return enhanced_games
+
     async def get_user_stats(self, user_id: str) -> dict:
         """
         Calculate user statistics from game history.

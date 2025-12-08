@@ -4,8 +4,10 @@
  * Validates: Requirements 3.2
  */
 
-import { useRef, ReactNode } from 'react'
-import { motion, Variants } from 'framer-motion'
+import { useRef } from 'react'
+import type { ReactNode } from 'react'
+import { motion } from 'framer-motion'
+import type { Variants } from 'framer-motion'
 import { useScrollAnimation } from '@/hooks/landing/useScrollAnimation'
 
 interface ScrollRevealProps {

@@ -20,7 +20,7 @@ interface HeroBackgroundProps {
 
 export function HeroBackground({ reducedMotion, parallaxOffset }: HeroBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | null>(null)
   const layersRef = useRef<BackdropLayer[]>([])
   const configRef = useRef<BackdropConfig | null>(null)
 

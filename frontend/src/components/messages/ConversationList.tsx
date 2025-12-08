@@ -44,7 +44,7 @@ export function ConversationList({ conversations, onSelect }: ConversationListPr
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-500/20 flex items-center justify-center">
                 <span className="text-sm font-medium text-white/60">
                   {(conv.friend_display_name || '?')[0].toUpperCase()}
                 </span>
@@ -80,7 +80,7 @@ export function ConversationList({ conversations, onSelect }: ConversationListPr
 
           {/* Unread badge */}
           {conv.unread_count > 0 && (
-            <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-purple-500 text-white text-[10px] font-medium rounded-full flex items-center justify-center">
+            <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-indigo-500 text-white text-[10px] font-medium rounded-full flex items-center justify-center">
               {conv.unread_count > 99 ? '99+' : conv.unread_count}
             </span>
           )}

@@ -1,12 +1,14 @@
 /**
  * ArenaGame - Unified game page combining PvP arena with quiz system
- * Clean, minimal UI - questions integrated into top scoreboard bar
+ * Layout: Scoreboard → Canvas → Quiz Panel (stacked vertically)
+ * Quiz panel is HTML/CSS outside canvas for crisp text and touch support
  */
 
 import { useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { GameArena } from '@/components/game/GameArena'
 import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
+import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
 import { LatencyIndicator } from '@/components/game/LatencyIndicator'
 import { useArenaGame } from '@/hooks/useArenaGame'
@@ -39,9 +41,15 @@ export function ArenaGame() {
     setTrapTriggeredCallback,
     setTeleportCallback,
     setJumpPadCallback,
+    // Emote callbacks (Requirement 5.3)
+    sendEmote,
+    setRemoteEmoteCallback,
+    // Cosmetics
+    equippedSkin,
+    opponentSkin,
   } = useArenaGame(code)
 
-  const { localPlayerId, currentQuestion, selectedAnswer, answerSubmitted } = useGameStore()
+  const { localPlayerId } = useGameStore()
 
   const [localHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
   const [opponentHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
@@ -114,35 +122,21 @@ export function ArenaGame() {
   const showQuestion = status === 'playing'
   const showRoundResult = status === 'round_result'
 
-  // Build question broadcast state for in-arena display
-  const questionBroadcast = {
-    question: currentQuestion ? {
-      qNum: currentQuestion.qNum,
-      text: currentQuestion.text,
-      options: currentQuestion.options,
-      startTime: currentQuestion.startTime,
-      totalTime: 30000, // 30 seconds
-    } : null,
-    selectedAnswer,
-    answerSubmitted,
-    visible: showQuestion && !!currentQuestion,
-  }
-
   return (
     <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden">
-      {/* Scoreboard header with integrated question */}
+      {/* Scoreboard header - scores only, no question */}
       <ArenaScoreboard
         localHealth={localHealth}
         opponentHealth={opponentHealth}
         showHealth={true}
-        showQuestion={showQuestion}
+        showQuestion={false}
         onAnswer={sendAnswer}
       />
 
-      {/* Main game area */}
-      <div className="flex-1 relative p-3 min-h-0">
-        {/* Arena container */}
-        <div className="h-full relative rounded-lg overflow-hidden border border-white/[0.06]">
+      {/* Main game area - canvas fills available space */}
+      <div className="flex-1 relative min-h-0">
+        {/* Arena container - no padding, full bleed */}
+        <div className="h-full relative">
           <GameArena
             playerId={localPlayerId || 'player'}
             isPlayer1={isPlayer1}
@@ -166,33 +160,42 @@ export function ArenaGame() {
             setTeleportCallback={setTeleportCallback}
             setJumpPadCallback={setJumpPadCallback}
             sendArenaConfig={sendArenaConfig}
-            questionBroadcast={questionBroadcast}
+            sendEmote={sendEmote}
+            setRemoteEmoteCallback={setRemoteEmoteCallback}
+            equippedSkin={equippedSkin}
+            opponentSkin={opponentSkin}
           />
 
-          {/* Round result toast */}
+          {/* Round result toast - overlaid on canvas */}
           <RoundResultOverlay visible={showRoundResult} />
-        </div>
 
-        {/* Controls hint + Latency - bottom left corner */}
-        <div className="absolute bottom-6 left-6 hidden lg:flex items-center gap-2">
-          <LatencyIndicator />
-          <div className="px-3 py-2 bg-[#0a0a0a]/80 backdrop-blur-sm border border-white/[0.08] rounded-lg">
-            <p className="text-[10px] text-neutral-500 font-mono">
-              WASD move · Click shoot · 1-4 answer
-            </p>
+          {/* Controls hint + Latency - bottom left corner of canvas */}
+          <div className="absolute bottom-3 left-3 hidden lg:flex items-center gap-2 z-10">
+            <LatencyIndicator />
+            <div className="px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">
+              <p className="text-[9px] text-neutral-500 font-mono">
+                WASD move · Click shoot · 1-4 answer
+              </p>
+            </div>
+          </div>
+
+          {/* Leave button - bottom right corner of canvas */}
+          <div className="absolute bottom-3 right-3 z-10">
+            <button
+              onClick={leaveGame}
+              className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors"
+            >
+              Leave
+            </button>
           </div>
         </div>
-
-        {/* Leave button - bottom right corner */}
-        <div className="absolute bottom-6 right-6">
-          <button
-            onClick={leaveGame}
-            className="px-3 py-2 text-xs text-neutral-600 hover:text-red-400 bg-[#0a0a0a]/80 backdrop-blur-sm border border-white/[0.08] rounded-lg transition-colors"
-          >
-            Leave Match
-          </button>
-        </div>
       </div>
+
+      {/* Quiz panel - BELOW canvas, HTML/CSS for crisp text */}
+      <ArenaQuizPanel
+        onAnswer={sendAnswer}
+        visible={showQuestion}
+      />
     </div>
   )
 }

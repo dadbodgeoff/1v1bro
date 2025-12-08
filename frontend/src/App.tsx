@@ -1,9 +1,27 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { usePresence } from '@/hooks/usePresence'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
-import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing } from '@/pages'
+import { useAuthStore } from '@/stores/authStore'
+import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings } from '@/pages'
+import { MatchHistory } from '@/pages/MatchHistory'
+import { CoinShop } from '@/pages/CoinShop'
+import { CoinSuccess } from '@/pages/CoinSuccess'
 import { ArenaTest } from '@/pages/ArenaTest'
+import { ProgressionProvider } from '@/components/progression'
+
+// Root route - shows Landing for guests, redirects to dashboard for authenticated users
+function RootRoute() {
+  const { isAuthenticated, isLoading } = useAuthStore()
+  
+  if (isLoading) {
+    return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  }
+  
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />
+}
 
 function App() {
   // Initialize auth check on app load
@@ -14,11 +32,13 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ProgressionProvider>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/" element={<RootRoute />} />
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Home />
@@ -84,13 +104,85 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* Profile page */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        {/* Match History page */}
+        <Route
+          path="/profile/matches"
+          element={
+            <ProtectedRoute>
+              <MatchHistory />
+            </ProtectedRoute>
+          }
+        />
+        {/* Battle Pass page */}
+        <Route
+          path="/battlepass"
+          element={
+            <ProtectedRoute>
+              <BattlePass />
+            </ProtectedRoute>
+          }
+        />
+        {/* Shop page */}
+        <Route
+          path="/shop"
+          element={
+            <ProtectedRoute>
+              <Shop />
+            </ProtectedRoute>
+          }
+        />
+        {/* Inventory page */}
+        <Route
+          path="/inventory"
+          element={
+            <ProtectedRoute>
+              <Inventory />
+            </ProtectedRoute>
+          }
+        />
+        {/* Settings page */}
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        {/* Coin Shop pages */}
+        <Route
+          path="/coins"
+          element={
+            <ProtectedRoute>
+              <CoinShop />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/coins/success"
+          element={
+            <ProtectedRoute>
+              <CoinSuccess />
+            </ProtectedRoute>
+          }
+        />
         {/* Fortnite Quiz - no auth required for testing */}
         <Route path="/fortnite-quiz" element={<FortniteQuiz />} />
         {/* Test route - no auth required */}
         <Route path="/arena-test" element={<ArenaTest />} />
-        {/* Landing page - no auth required */}
-        <Route path="/landing" element={<Landing />} />
+        {/* Legacy landing route - redirect to root */}
+        <Route path="/landing" element={<Navigate to="/" replace />} />
       </Routes>
+      </ProgressionProvider>
     </BrowserRouter>
   )
 }

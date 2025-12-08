@@ -7,6 +7,11 @@ import type {
   HazardSpawnPayload,
   TrapSpawnPayload,
   TrapTriggeredPayload,
+  ArenaStatePayload,
+  BarrierDamagedPayload,
+  BarrierDestroyedPayload,
+  BuffAppliedPayload,
+  BuffExpiredPayload,
 } from '@/types/websocket'
 
 export interface QuizState {
@@ -54,6 +59,12 @@ export interface ArenaCallbacks {
   onTrapArmed: ((id: string) => void) | null
   onTeleport: ((playerId: string, toX: number, toY: number) => void) | null
   onJumpPad: ((playerId: string, vx: number, vy: number) => void) | null
+  // Server authority events
+  onArenaState: ((state: ArenaStatePayload) => void) | null
+  onBarrierDamaged: ((data: BarrierDamagedPayload) => void) | null
+  onBarrierDestroyed: ((data: BarrierDestroyedPayload) => void) | null
+  onBuffApplied: ((data: BuffAppliedPayload) => void) | null
+  onBuffExpired: ((data: BuffExpiredPayload) => void) | null
 }
 
 export type { Vector2, PowerUpState, Projectile }

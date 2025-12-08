@@ -94,15 +94,24 @@ export const lobbyAPI = {
 }
 
 // Game API
+import type { RecentMatch } from '@/types/matchHistory'
+
 export const gameAPI = {
   history: (limit = 20) =>
     request<GameHistory[]>(`/games/history?limit=${limit}`),
+
+  /**
+   * Get recent match history with opponent details and ELO changes.
+   * Enhanced endpoint that includes opponent_name, opponent_avatar_url, and elo_change.
+   */
+  getRecentMatches: (limit = 5) =>
+    request<RecentMatch[]>(`/games/history?limit=${limit}`),
 
   get: (id: string) => request<GameHistory>(`/games/${id}`),
 }
 
 // Leaderboard API
-import type { LeaderboardResponse, UserRankResponse, LeaderboardCategory } from '@/types/leaderboard'
+import type { LeaderboardResponse, UserRankResponse, LeaderboardCategory, UserELORankResponse, ELOLeaderboardResponse } from '@/types/leaderboard'
 
 export const leaderboardAPI = {
   getLeaderboard: (category: LeaderboardCategory, limit = 10, offset = 0) =>
@@ -113,6 +122,19 @@ export const leaderboardAPI = {
 
   getUserRank: (category: LeaderboardCategory, userId: string) =>
     request<UserRankResponse>(`/leaderboards/${category}/rank/${userId}`),
+
+  // ELO-specific endpoints (different path structure)
+  getGlobalELOLeaderboard: (limit = 100, offset = 0) =>
+    request<ELOLeaderboardResponse>(`/leaderboards/elo/global?limit=${limit}&offset=${offset}`),
+
+  getMyELORank: () =>
+    request<UserELORankResponse>(`/leaderboards/elo/me`),
+
+  getUserELORank: (userId: string) =>
+    request<UserELORankResponse>(`/leaderboards/elo/user/${userId}`),
+
+  getRegionalELOLeaderboard: (region: string, limit = 100) =>
+    request<ELOLeaderboardResponse>(`/leaderboards/elo/regional/${region}?limit=${limit}`),
 }
 
 // Friends API

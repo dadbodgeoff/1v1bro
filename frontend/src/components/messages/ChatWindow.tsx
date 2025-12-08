@@ -77,7 +77,7 @@ export function ChatWindow({
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-500/20 flex items-center justify-center">
                 <span className="text-sm font-medium text-white/60">
                   {(friendName || '?')[0].toUpperCase()}
                 </span>

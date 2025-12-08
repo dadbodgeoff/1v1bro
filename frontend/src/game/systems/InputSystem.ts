@@ -4,14 +4,20 @@
  */
 
 import type { Vector2 } from '../types'
+import { EMOTE_INPUT } from '../config/emotes'
 
 type InputCallback = (velocity: Vector2) => void
+type ActionCallback = () => void
 
 export class InputSystem {
   private keys: Set<string> = new Set()
   private touchVelocity: Vector2 = { x: 0, y: 0 }
   private callback: InputCallback | null = null
   private isTouchDevice: boolean
+
+  // Action key callbacks
+  private emoteCallback: ActionCallback | null = null
+  private emoteKeyPressed = false
 
   constructor() {
     this.isTouchDevice = 'ontouchstart' in window
@@ -23,6 +29,13 @@ export class InputSystem {
    */
   onInput(callback: InputCallback): void {
     this.callback = callback
+  }
+
+  /**
+   * Set callback for emote key press
+   */
+  onEmote(callback: ActionCallback): void {
+    this.emoteCallback = callback
   }
 
   /**
@@ -56,6 +69,12 @@ export class InputSystem {
       this.keys.add(key)
       this.emitVelocity()
     }
+
+    // Handle emote key (prevent repeated triggers while held)
+    if (e.code === EMOTE_INPUT.triggerKey && !this.emoteKeyPressed) {
+      this.emoteKeyPressed = true
+      this.emoteCallback?.()
+    }
   }
 
   private handleKeyUp = (e: KeyboardEvent): void => {
@@ -63,6 +82,11 @@ export class InputSystem {
     if (this.isMovementKey(key)) {
       this.keys.delete(key)
       this.emitVelocity()
+    }
+
+    // Reset emote key state
+    if (e.code === EMOTE_INPUT.triggerKey) {
+      this.emoteKeyPressed = false
     }
   }
 

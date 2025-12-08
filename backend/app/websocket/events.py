@@ -58,6 +58,23 @@ class WSEventType(str, Enum):
     QUEUE_STATUS = "queue_status"
     QUEUE_CANCELLED = "queue_cancelled"
     MATCH_FOUND = "match_found"
+    
+    # Progression events (Server -> Client)
+    XP_AWARDED = "xp_awarded"
+    TIER_ADVANCED = "tier_advanced"
+    REWARD_CLAIMED = "reward_claimed"
+    
+    # Arena state sync (Server -> Client)
+    ARENA_STATE = "arena_state"
+    ARENA_EVENT = "arena_event"
+    
+    # Barrier events (Server -> Client)
+    BARRIER_DAMAGED = "barrier_damaged"
+    BARRIER_DESTROYED = "barrier_destroyed"
+    
+    # Buff events (Server -> Client)
+    BUFF_APPLIED = "buff_applied"
+    BUFF_EXPIRED = "buff_expired"
 
 
 def build_message(event_type: WSEventType, payload: Optional[Dict] = None) -> Dict:
@@ -96,13 +113,17 @@ def build_game_start(
     players: List[Dict],
     player1_id: str,
     player2_id: str,
+    player_skins: Optional[Dict[str, Dict]] = None,
+    category: str = "fortnite",
 ) -> Dict:
-    """Build game_start message with explicit player assignments."""
+    """Build game_start message with explicit player assignments, skin data, and trivia category."""
     return build_message(WSEventType.GAME_START, {
         "total_questions": total_questions,
         "players": players,
         "player1_id": player1_id,
         "player2_id": player2_id,
+        "player_skins": player_skins or {},
+        "category": category,
     })
 
 
@@ -171,14 +192,16 @@ def build_lobby_state(
     players: List[Dict],
     can_start: bool,
     host_id: str,
+    category: str = "fortnite",
 ) -> Dict:
-    """Build lobby_state message."""
+    """Build lobby_state message with trivia category."""
     return build_message(WSEventType.LOBBY_STATE, {
         "lobby_id": lobby_id,
         "status": status,
         "players": players,
         "can_start": can_start,
         "host_id": host_id,
+        "category": category,
     })
 
 
@@ -192,4 +215,194 @@ def build_player_ready(
         "player_id": player_id,
         "players": players,
         "can_start": can_start,
+    })
+
+
+# ============================================
+# Progression Events (UNIFIED PROGRESSION)
+# ============================================
+
+def build_xp_awarded(
+    xp_amount: int,
+    new_total_xp: int,
+    previous_tier: int,
+    new_tier: int,
+    tier_advanced: bool,
+    calculation: Optional[Dict] = None,
+) -> Dict:
+    """
+    Build xp_awarded message.
+    
+    UNIFIED PROGRESSION: Sent after match XP is calculated and awarded.
+    Requirements: 2.8
+    """
+    return build_message(WSEventType.XP_AWARDED, {
+        "xp_amount": xp_amount,
+        "new_total_xp": new_total_xp,
+        "previous_tier": previous_tier,
+        "new_tier": new_tier,
+        "tier_advanced": tier_advanced,
+        "calculation": calculation,
+    })
+
+
+def build_tier_advanced(
+    previous_tier: int,
+    new_tier: int,
+    tiers_gained: int,
+    new_claimable_rewards: List[int],
+) -> Dict:
+    """
+    Build tier_advanced message.
+    
+    UNIFIED PROGRESSION: Sent when player advances to a new tier.
+    Requirements: 3.6
+    """
+    return build_message(WSEventType.TIER_ADVANCED, {
+        "previous_tier": previous_tier,
+        "new_tier": new_tier,
+        "tiers_gained": tiers_gained,
+        "new_claimable_rewards": new_claimable_rewards,
+    })
+
+
+def build_reward_claimed(
+    tier: int,
+    reward_type: str,
+    reward_value: Any,
+    inventory_item_id: Optional[str] = None,
+) -> Dict:
+    """
+    Build reward_claimed message.
+    
+    UNIFIED PROGRESSION: Sent when player claims a tier reward.
+    """
+    return build_message(WSEventType.REWARD_CLAIMED, {
+        "tier": tier,
+        "reward_type": reward_type,
+        "reward_value": reward_value,
+        "inventory_item_id": inventory_item_id,
+    })
+
+
+
+# ============================================
+# Arena State Events (SERVER AUTHORITY)
+# ============================================
+
+def build_arena_state(
+    hazards: List[Dict],
+    traps: List[Dict],
+    doors: List[Dict],
+    platforms: List[Dict],
+    barriers: List[Dict],
+    powerups: List[Dict],
+    buffs: Optional[Dict[str, List[Dict]]] = None,
+) -> Dict:
+    """
+    Build arena_state message with full arena state.
+    
+    SERVER AUTHORITY: Broadcast complete arena state to all clients.
+    Requirements: 5.4, 6.4
+    """
+    return build_message(WSEventType.ARENA_STATE, {
+        "hazards": hazards,
+        "traps": traps,
+        "doors": doors,
+        "platforms": platforms,
+        "barriers": barriers,
+        "powerups": powerups,
+        "buffs": buffs or {},
+    })
+
+
+def build_arena_event(
+    event_type: str,
+    data: Dict,
+) -> Dict:
+    """
+    Build arena_event message for individual arena events.
+    
+    SERVER AUTHORITY: Broadcast individual arena events.
+    Requirements: 5.1, 5.2
+    """
+    return build_message(WSEventType.ARENA_EVENT, {
+        "event_type": event_type,
+        "data": data,
+    })
+
+
+def build_barrier_damaged(
+    barrier_id: str,
+    damage: int,
+    health: int,
+    max_health: int,
+    source_player_id: Optional[str] = None,
+) -> Dict:
+    """
+    Build barrier_damaged message.
+    
+    SERVER AUTHORITY: Notify clients of barrier damage.
+    Requirements: 1.1
+    """
+    return build_message(WSEventType.BARRIER_DAMAGED, {
+        "barrier_id": barrier_id,
+        "damage": damage,
+        "health": health,
+        "max_health": max_health,
+        "source_player_id": source_player_id,
+    })
+
+
+def build_barrier_destroyed(
+    barrier_id: str,
+    source_player_id: Optional[str] = None,
+) -> Dict:
+    """
+    Build barrier_destroyed message.
+    
+    SERVER AUTHORITY: Notify clients of barrier destruction.
+    Requirements: 1.2
+    """
+    return build_message(WSEventType.BARRIER_DESTROYED, {
+        "barrier_id": barrier_id,
+        "source_player_id": source_player_id,
+    })
+
+
+def build_buff_applied(
+    player_id: str,
+    buff_type: str,
+    value: float,
+    duration: float,
+    source: str,
+) -> Dict:
+    """
+    Build buff_applied message.
+    
+    SERVER AUTHORITY: Notify clients of buff application.
+    Requirements: 3.1
+    """
+    return build_message(WSEventType.BUFF_APPLIED, {
+        "player_id": player_id,
+        "buff_type": buff_type,
+        "value": value,
+        "duration": duration,
+        "source": source,
+    })
+
+
+def build_buff_expired(
+    player_id: str,
+    buff_type: str,
+) -> Dict:
+    """
+    Build buff_expired message.
+    
+    SERVER AUTHORITY: Notify clients of buff expiration.
+    Requirements: 3.2
+    """
+    return build_message(WSEventType.BUFF_EXPIRED, {
+        "player_id": player_id,
+        "buff_type": buff_type,
     })

@@ -3,7 +3,6 @@ Cosmetics service for cosmetics and inventory management.
 Requirements: 3.3-3.10
 """
 
-import logging
 from typing import Optional, List
 
 from supabase import Client
@@ -21,8 +20,6 @@ from app.schemas.cosmetic import (
     InventoryResponse,
 )
 
-logger = logging.getLogger(__name__)
-
 
 # Cache TTLs
 SHOP_CACHE_TTL = 86400  # 24 hours for cosmetics catalog
@@ -39,7 +36,8 @@ class CosmeticsService:
         CosmeticType.BANNER: "banner_equipped",
         CosmeticType.NAMEPLATE: "nameplate_equipped",
         CosmeticType.EFFECT: "effect_equipped",
-        CosmeticType.TRAIL: "effect_equipped",  # Trail uses effect slot
+        CosmeticType.TRAIL: "trail_equipped",
+        CosmeticType.PLAYERCARD: "playercard_equipped",
     }
     
     def __init__(
@@ -171,6 +169,7 @@ class CosmeticsService:
             if cosmetic_data:
                 items.append(InventoryItem(
                     id=item["id"],
+                    cosmetic_id=item["cosmetic_id"],
                     cosmetic=Cosmetic(**cosmetic_data),
                     acquired_date=item["acquired_date"],
                     is_equipped=item.get("is_equipped", False),
@@ -203,19 +202,29 @@ class CosmeticsService:
         Returns:
             InventoryItem if successful, None if already owned or not found.
         """
+        print(f"[purchase_cosmetic] Starting purchase: user={user_id}, cosmetic={cosmetic_id}")
+        
         # Check if cosmetic exists
         cosmetic = await self.get_cosmetic(cosmetic_id)
         if not cosmetic:
+            print(f"[purchase_cosmetic] Cosmetic not found: {cosmetic_id}")
             return None
+        
+        print(f"[purchase_cosmetic] Found cosmetic: {cosmetic.name}")
         
         # Check if already owned
         if await self.cosmetics_repo.check_ownership(user_id, cosmetic_id):
+            print(f"[purchase_cosmetic] Already owned by user")
             return None  # Already owned
         
         # Add to inventory
+        print(f"[purchase_cosmetic] Adding to inventory...")
         inventory_data = await self.cosmetics_repo.add_to_inventory(user_id, cosmetic_id)
         if not inventory_data:
+            print(f"[purchase_cosmetic] Failed to add to inventory!")
             return None
+        
+        print(f"[purchase_cosmetic] Added to inventory: {inventory_data}")
         
         # Increment owned count
         await self.cosmetics_repo.increment_owned_count(cosmetic_id)
@@ -223,8 +232,11 @@ class CosmeticsService:
         # Invalidate inventory cache
         await self._invalidate_inventory_cache(user_id)
         
+        print(f"[purchase_cosmetic] Purchase complete!")
+        
         return InventoryItem(
             id=inventory_data["id"],
+            cosmetic_id=cosmetic_id,
             cosmetic=cosmetic,
             acquired_date=inventory_data["acquired_date"],
             is_equipped=False,
@@ -254,6 +266,10 @@ class CosmeticsService:
                 if loadout_data.get("nameplate_equipped_data") else None,
             effect_equipped=Cosmetic(**loadout_data["effect_equipped_data"]) 
                 if loadout_data.get("effect_equipped_data") else None,
+            trail_equipped=Cosmetic(**loadout_data["trail_equipped_data"]) 
+                if loadout_data.get("trail_equipped_data") else None,
+            playercard_equipped=Cosmetic(**loadout_data["playercard_equipped_data"]) 
+                if loadout_data.get("playercard_equipped_data") else None,
             updated_at=loadout_data.get("updated_at"),
         )
     
@@ -268,19 +284,28 @@ class CosmeticsService:
         Returns:
             Updated Loadout or None if cosmetic not owned.
         """
+        print(f"[equip_cosmetic] Starting equip: user={user_id}, cosmetic={cosmetic_id}")
+        
         # Check ownership
         if not await self.cosmetics_repo.check_ownership(user_id, cosmetic_id):
+            print(f"[equip_cosmetic] User does not own cosmetic")
             return None
         
         # Get cosmetic to determine slot
         cosmetic = await self.get_cosmetic(cosmetic_id)
         if not cosmetic:
+            print(f"[equip_cosmetic] Cosmetic not found")
             return None
+        
+        print(f"[equip_cosmetic] Equipping {cosmetic.name} (type: {cosmetic.type})")
         
         # Determine slot from cosmetic type
         slot = self.SLOT_MAP.get(cosmetic.type)
         if not slot:
+            print(f"[equip_cosmetic] No slot mapping for type: {cosmetic.type}")
             return None
+        
+        print(f"[equip_cosmetic] Using slot: {slot}")
         
         # Get current loadout to find previously equipped item
         current_loadout = await self.cosmetics_repo.get_loadout(user_id)
@@ -288,11 +313,13 @@ class CosmeticsService:
             old_cosmetic_id = current_loadout.get(slot)
             if old_cosmetic_id:
                 # Unmark old item as equipped
+                print(f"[equip_cosmetic] Unequipping old item: {old_cosmetic_id}")
                 await self.cosmetics_repo.update_equipped_status(
                     user_id, old_cosmetic_id, False
                 )
         
         # Update loadout
+        print(f"[equip_cosmetic] Updating loadout...")
         await self.cosmetics_repo.update_loadout(user_id, slot, cosmetic_id)
         
         # Mark new item as equipped in inventory

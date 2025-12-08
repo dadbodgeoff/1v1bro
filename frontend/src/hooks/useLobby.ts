@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLobbyStore } from '@/stores/lobbyStore'
 import { useAuthStore } from '@/stores/authStore'
+import { useGameStore } from '@/stores/gameStore'
 import { lobbyAPI } from '@/services/api'
 import { wsService } from '@/services/websocket'
 import type { PlayerJoinedPayload, LobbyStatePayload, GameStartPayload } from '@/types/websocket'
@@ -16,12 +17,15 @@ export function useLobby(lobbyCode?: string) {
     canStart,
     isHost,
     status,
+    category,
     setLobby,
     setPlayers,
     setCanStart,
     setIsHost,
     setStatus,
+    setCategory,
     setPlayerAssignment,
+    setPlayerSkins,
     reset,
   } = useLobbyStore()
 
@@ -36,12 +40,9 @@ export function useLobby(lobbyCode?: string) {
     let unsubPlayerReady: (() => void) | null = null
 
     const connectAndSubscribe = async () => {
-      // Don't connect if already connected to this lobby
-      if (wsService.isConnected) {
-        console.log('[Lobby] Already connected, skipping')
-        return
-      }
-
+      // Always try to connect - wsService.connect() handles:
+      // - Returning early if already connected to same lobby
+      // - Disconnecting from different lobby before connecting to new one
       try {
         await wsService.connect(lobbyCode)
       } catch (err) {
@@ -53,9 +54,12 @@ export function useLobby(lobbyCode?: string) {
       // Subscribe to lobby state (sent on connect)
       unsubLobbyState = wsService.on('lobby_state', (payload) => {
         const data = payload as LobbyStatePayload
-        console.log('[Lobby] Received lobby_state:', data)
         setPlayers(data.players)
         setCanStart(data.can_start)
+        // Set trivia category from lobby state
+        if (data.category) {
+          setCategory(data.category)
+        }
         // Get userId from store at time of event
         const currentUserId = useAuthStore.getState().user?.id
         if (currentUserId) {
@@ -66,7 +70,6 @@ export function useLobby(lobbyCode?: string) {
       // Subscribe to lobby events
       unsubPlayerJoined = wsService.on('player_joined', (payload) => {
         const data = payload as PlayerJoinedPayload
-        console.log('[Lobby] Player joined:', data)
         setPlayers(data.players)
         setCanStart(data.can_start)
       })
@@ -79,17 +82,23 @@ export function useLobby(lobbyCode?: string) {
 
       unsubPlayerReady = wsService.on('player_ready', (payload) => {
         const data = payload as { player_id: string; players: PlayerJoinedPayload['players']; can_start: boolean }
-        console.log('[Lobby] Player ready:', data)
         setPlayers(data.players)
         setCanStart(data.can_start)
       })
 
       unsubGameStart = wsService.on('game_start', (payload) => {
         const data = payload as GameStartPayload
-        console.log('[Lobby] Game start:', data)
         // Store player assignment so ArenaGame knows who is player1/player2
         if (data.player1_id && data.player2_id) {
           setPlayerAssignment(data.player1_id, data.player2_id)
+        }
+        // Store player skins so both players can see each other's skins
+        if (data.player_skins) {
+          setPlayerSkins(data.player_skins)
+        }
+        // Set total questions from server
+        if (data.total_questions) {
+          useGameStore.getState().setTotalQuestions(data.total_questions)
         }
         setStatus('in_progress')
         navigate(`/game/${lobbyCode}`)
@@ -107,7 +116,7 @@ export function useLobby(lobbyCode?: string) {
       unsubPlayerReady?.()
       unsubGameStart?.()
     }
-  }, [lobbyCode, navigate, setPlayers, setCanStart, setIsHost, setStatus, setPlayerAssignment])
+  }, [lobbyCode, navigate, setPlayers, setCanStart, setIsHost, setStatus, setCategory, setPlayerAssignment])
 
   const createLobby = useCallback(async () => {
     try {
@@ -166,6 +175,7 @@ export function useLobby(lobbyCode?: string) {
     canStart,
     isHost,
     status,
+    category,
     userId,
     createLobby,
     joinLobby,

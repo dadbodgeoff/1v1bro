@@ -264,18 +264,18 @@ class TestLeaderboardSchemas:
 class TestLeaderboardCategories:
     """
     Feature: player-stats-leaderboards, Property: Category Coverage
-    Validates: Requirements 4.1
+    Validates: Requirements 4.1, 5.6
     """
 
     def test_all_categories_defined(self):
         """
-        Property: All 9 leaderboard categories are defined.
+        Property: All 10 leaderboard categories are defined (including ELO).
         Feature: player-stats-leaderboards
-        Validates: Requirements 4.1
+        Validates: Requirements 4.1, 5.6
         """
         expected_categories = {
             "wins", "win_rate", "total_score", "kills", "kd_ratio",
-            "accuracy", "fastest_thinker", "answer_rate", "win_streak",
+            "accuracy", "fastest_thinker", "answer_rate", "win_streak", "elo",
         }
         
         actual_categories = {c.value for c in LeaderboardCategory}
@@ -288,12 +288,12 @@ class TestLeaderboardCategories:
         """
         Property: Each category is a valid LeaderboardCategory enum.
         Feature: player-stats-leaderboards
-        Validates: Requirements 4.1
+        Validates: Requirements 4.1, 5.6
         """
         assert isinstance(category, LeaderboardCategory)
         assert category.value in [
             "wins", "win_rate", "total_score", "kills", "kd_ratio",
-            "accuracy", "fastest_thinker", "answer_rate", "win_streak",
+            "accuracy", "fastest_thinker", "answer_rate", "win_streak", "elo",
         ]
 
 

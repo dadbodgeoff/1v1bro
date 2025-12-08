@@ -327,3 +327,84 @@ async def get_rate_limit_key(request: Request) -> str:
         client_ip = forwarded.split(",")[0].strip()
     
     return f"ip:{client_ip}"
+
+
+class RateLimitMiddleware:
+    """
+    ASGI middleware for rate limiting with X-RateLimit headers.
+    
+    Requirements: 7.2, 7.3
+    """
+    
+    def __init__(self, app, exclude_paths: Optional[List[str]] = None):
+        self.app = app
+        self.exclude_paths = exclude_paths or ["/health", "/metrics", "/docs", "/openapi.json"]
+    
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        
+        path = scope.get("path", "")
+        
+        # Skip excluded paths
+        if any(path.startswith(p) for p in self.exclude_paths):
+            await self.app(scope, receive, send)
+            return
+        
+        # Get rate limit config for this endpoint
+        config = get_rate_limit_for_endpoint(path)
+        
+        # Get client identifier
+        client_ip = "unknown"
+        for header_name, header_value in scope.get("headers", []):
+            if header_name == b"x-forwarded-for":
+                client_ip = header_value.decode().split(",")[0].strip()
+                break
+        else:
+            client = scope.get("client")
+            if client:
+                client_ip = client[0]
+        
+        key = f"ip:{client_ip}:{path.split('/')[3] if len(path.split('/')) > 3 else 'api'}"
+        
+        # Check rate limit
+        if not rate_limiter.is_allowed(key, config):
+            reset_time = rate_limiter.get_reset_time(key, config)
+            
+            # Send 429 response
+            response_headers = [
+                (b"content-type", b"application/json"),
+                (b"retry-after", str(int(reset_time or 60)).encode()),
+                (b"x-ratelimit-limit", str(config.requests).encode()),
+                (b"x-ratelimit-remaining", b"0"),
+                (b"x-ratelimit-reset", str(int(time.time() + (reset_time or 60))).encode()),
+            ]
+            
+            await send({
+                "type": "http.response.start",
+                "status": 429,
+                "headers": response_headers,
+            })
+            await send({
+                "type": "http.response.body",
+                "body": b'{"detail":"Rate limit exceeded"}',
+            })
+            return
+        
+        # Wrap send to add rate limit headers
+        remaining = rate_limiter.get_remaining(key, config)
+        reset_time = rate_limiter.get_reset_time(key, config)
+        
+        async def send_with_headers(message):
+            if message["type"] == "http.response.start":
+                headers = list(message.get("headers", []))
+                headers.extend([
+                    (b"x-ratelimit-limit", str(config.requests).encode()),
+                    (b"x-ratelimit-remaining", str(remaining).encode()),
+                    (b"x-ratelimit-reset", str(int(time.time() + (reset_time or config.window_seconds))).encode()),
+                ])
+                message = {**message, "headers": headers}
+            await send(message)
+        
+        await self.app(scope, receive, send_with_headers)

@@ -3,6 +3,16 @@ import { useGame } from '@/hooks/useGame'
 import { QuestionCard, Scoreboard } from '@/components/game'
 import { Button } from '@/components/ui'
 
+// Convert letter answer (A, B, C, D) to number (1, 2, 3, 4)
+function letterToNumber(letter: string | null): string {
+  if (!letter) return '?'
+  const index = letter.toUpperCase().charCodeAt(0) - 65 // A=0, B=1, C=2, D=3
+  if (index >= 0 && index <= 3) {
+    return String(index + 1)
+  }
+  return letter
+}
+
 export function Game() {
   const { code } = useParams<{ code: string }>()
   const { status, currentQuestion, roundResult, sendAnswer, leaveGame } = useGame(code)
@@ -30,6 +40,16 @@ export function Game() {
 
   // Round result state
   if (status === 'round_result' && roundResult) {
+    // Get correct answer text from options if available
+    const getCorrectAnswerDisplay = (): string => {
+      const letter = roundResult.correctAnswer
+      const index = letter.toUpperCase().charCodeAt(0) - 65
+      if (currentQuestion?.options && index >= 0 && index < currentQuestion.options.length) {
+        return currentQuestion.options[index]
+      }
+      return letterToNumber(letter)
+    }
+
     return (
       <div className="min-h-screen flex flex-col">
         <Scoreboard />
@@ -37,7 +57,7 @@ export function Game() {
           <div className="bg-slate-800 rounded-2xl p-8 max-w-md w-full text-center">
             <p className="text-slate-400 mb-2">Correct Answer</p>
             <p className="text-3xl font-bold text-green-400 mb-6">
-              {roundResult.correctAnswer}
+              {getCorrectAnswerDisplay()}
             </p>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
@@ -47,7 +67,7 @@ export function Game() {
                   +{roundResult.localScore}
                 </p>
                 <p className="text-slate-500 text-sm">
-                  {roundResult.localAnswer || 'No answer'}
+                  {roundResult.localAnswer ? letterToNumber(roundResult.localAnswer) : 'No answer'}
                 </p>
               </div>
               <div>
@@ -56,7 +76,7 @@ export function Game() {
                   +{roundResult.opponentScore}
                 </p>
                 <p className="text-slate-500 text-sm">
-                  {roundResult.opponentAnswer || 'No answer'}
+                  {roundResult.opponentAnswer ? letterToNumber(roundResult.opponentAnswer) : 'No answer'}
                 </p>
               </div>
             </div>

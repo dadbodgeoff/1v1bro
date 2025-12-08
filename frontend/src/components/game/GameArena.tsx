@@ -12,6 +12,7 @@ import { DeathReplayModal } from '@/components/replay'
 import { wsService } from '@/services/websocket'
 import type { Vector2, PowerUpState, FireEvent, HitEvent, DeathEvent, RespawnEvent } from '@/game'
 import type { DeathReplay } from '@/game/telemetry'
+import type { MapConfig } from '@/game/config/maps'
 
 interface QuestionBroadcastData {
   qNum: number
@@ -29,6 +30,8 @@ interface GameArenaProps {
   powerUps: PowerUpState[]
   onPositionUpdate: (position: Vector2) => void
   onPowerUpCollect: (powerUpId: number) => void
+  // Map configuration (defaults to NEXUS_ARENA if not provided)
+  mapConfig?: MapConfig
   // Combat props
   combatEnabled?: boolean
   onCombatFire?: (event: FireEvent) => void
@@ -58,6 +61,23 @@ interface GameArenaProps {
   }
   // Buff update callback
   setBuffUpdateCallback?: (callback: (buffs: Record<string, Array<{ type: string; value: number; remaining: number; source: string }>>) => void) => void
+  // Emote callbacks (Requirement 5.3)
+  setRemoteEmoteCallback?: (callback: (playerId: string, emoteId: string) => void) => void
+  sendEmote?: (emoteId: string) => void
+  // Emote initialization data
+  inventoryEmotes?: Array<{ id: string; name: string; image_url: string }>
+  equippedEmoteId?: string | null
+  // Skin initialization data
+  equippedSkin?: {
+    skinId?: string  // Static bundled skin ID
+    spriteSheetUrl?: string  // Dynamic skin URL
+    metadataUrl?: string  // Dynamic skin metadata URL
+  } | null
+  opponentSkin?: {
+    skinId?: string
+    spriteSheetUrl?: string
+    metadataUrl?: string
+  } | null
 }
 
 export interface GameArenaRef {
@@ -73,6 +93,7 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
   powerUps,
   onPositionUpdate,
   onPowerUpCollect,
+  mapConfig,
   combatEnabled = false,
   onCombatFire,
   onCombatHit,
@@ -90,6 +111,12 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
   sendArenaConfig,
   questionBroadcast,
   setBuffUpdateCallback,
+  setRemoteEmoteCallback,
+  sendEmote,
+  inventoryEmotes,
+  equippedEmoteId,
+  equippedSkin,
+  opponentSkin,
 }, ref) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<GameEngine | null>(null)
@@ -124,7 +151,8 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
   useEffect(() => {
     if (!canvasRef.current) return
 
-    const engine = new GameEngine(canvasRef.current)
+    console.log('[GameArena] Initializing engine with map:', mapConfig?.metadata?.name || 'default (NEXUS_ARENA)')
+    const engine = new GameEngine(canvasRef.current, mapConfig)
     engine.initLocalPlayer(playerId, isPlayer1)
     engine.setCallbacks({
       onPositionUpdate: (pos) => onPositionUpdateRef.current?.(pos),
@@ -151,7 +179,7 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
       engine.destroy()
       engineRef.current = null
     }
-  }, [playerId, isPlayer1])
+  }, [playerId, isPlayer1, mapConfig])
 
   // Enable/disable combat
   useEffect(() => {
@@ -271,6 +299,92 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
       })
     }
   }, [setBuffUpdateCallback, playerId])
+
+  // Register emote callbacks (Requirement 5.3)
+  useEffect(() => {
+    if (setRemoteEmoteCallback) {
+      setRemoteEmoteCallback((pid, emoteId) => {
+        engineRef.current?.handleRemoteEmote(pid, emoteId)
+      })
+    }
+  }, [setRemoteEmoteCallback, playerId])
+
+  // Wire emote trigger to WebSocket send
+  useEffect(() => {
+    if (sendEmote && engineRef.current) {
+      const emoteManager = engineRef.current.getEmoteManager()
+      emoteManager.setOnEmoteTrigger((event) => {
+        sendEmote(event.emoteId)
+      })
+    }
+  }, [sendEmote, playerId])
+
+  // Initialize emotes with inventory and equipped emote
+  useEffect(() => {
+    if (engineRef.current && inventoryEmotes) {
+      engineRef.current.initializeEmotes(inventoryEmotes, equippedEmoteId ?? null)
+    }
+  }, [inventoryEmotes, equippedEmoteId, playerId])
+
+  // Initialize player skin - with retry to handle timing issues
+  useEffect(() => {
+    console.log('[GameArena] Skin effect triggered:', { 
+      equippedSkin, 
+      playerId, 
+      hasEngine: !!engineRef.current,
+      skinType: equippedSkin ? (equippedSkin.spriteSheetUrl ? 'dynamic' : equippedSkin.skinId ? 'static' : 'unknown') : 'none'
+    })
+    
+    const applySkin = () => {
+      if (!engineRef.current) {
+        console.log('[GameArena] No engine ref yet, will retry')
+        return false
+      }
+      
+      if (equippedSkin) {
+        if (equippedSkin.spriteSheetUrl) {
+          // Dynamic skin from CMS
+          console.log('[GameArena] Applying dynamic skin:', equippedSkin.spriteSheetUrl)
+          engineRef.current.setDynamicSkin(playerId, equippedSkin.spriteSheetUrl, equippedSkin.metadataUrl)
+          console.log('[GameArena] setDynamicSkin called successfully')
+        } else if (equippedSkin.skinId) {
+          // Static bundled skin
+          console.log('[GameArena] Applying static skin:', equippedSkin.skinId)
+          engineRef.current.setPlayerSkin(playerId, equippedSkin.skinId)
+          console.log('[GameArena] setPlayerSkin called successfully')
+        } else {
+          console.log('[GameArena] equippedSkin has no spriteSheetUrl or skinId:', equippedSkin)
+        }
+      } else {
+        console.log('[GameArena] No equipped skin (null)')
+      }
+      return true
+    }
+    
+    // Try immediately
+    if (applySkin()) return
+    
+    // Retry after a short delay if engine wasn't ready
+    const retryTimer = setTimeout(() => {
+      console.log('[GameArena] Retrying skin application...')
+      applySkin()
+    }, 100)
+    
+    return () => clearTimeout(retryTimer)
+  }, [equippedSkin, playerId])
+
+  // Initialize opponent skin
+  useEffect(() => {
+    if (!engineRef.current || !opponentId) return
+    
+    if (opponentSkin) {
+      if (opponentSkin.spriteSheetUrl) {
+        engineRef.current.setDynamicSkin(opponentId, opponentSkin.spriteSheetUrl, opponentSkin.metadataUrl)
+      } else if (opponentSkin.skinId) {
+        engineRef.current.setPlayerSkin(opponentId, opponentSkin.skinId)
+      }
+    }
+  }, [opponentSkin, opponentId])
 
   // Register server arena callbacks
   useEffect(() => {

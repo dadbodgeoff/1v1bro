@@ -106,8 +106,8 @@ class GamePersistenceService:
                 )
     
     async def get_user_history(self, user_id: str, limit: int = 20) -> List[dict]:
-        """Get game history for a user."""
-        return await self.game_repo.get_user_history(user_id, limit)
+        """Get game history for a user with opponent details and ELO changes."""
+        return await self.game_repo.get_user_history_enhanced(user_id, limit)
     
     def _determine_winner(
         self,

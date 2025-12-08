@@ -18,6 +18,11 @@ import type {
   TrapArmedPayload,
   TeleportPayload,
   JumpPadPayload,
+  ArenaStatePayload,
+  BarrierDamagedPayload,
+  BarrierDestroyedPayload,
+  BuffAppliedPayload,
+  BuffExpiredPayload,
 } from '@/types/websocket'
 import type { ArenaCallbacks } from './types'
 
@@ -35,6 +40,12 @@ export function useArenaEvents(lobbyCode: string | undefined) {
     onTrapArmed: null,
     onTeleport: null,
     onJumpPad: null,
+    // Server authority events
+    onArenaState: null,
+    onBarrierDamaged: null,
+    onBarrierDestroyed: null,
+    onBuffApplied: null,
+    onBuffExpired: null,
   })
 
   useEffect(() => {
@@ -93,6 +104,27 @@ export function useArenaEvents(lobbyCode: string | undefined) {
       callbacksRef.current.onJumpPad?.(data.player_id, data.vx, data.vy)
     })
 
+    // Server authority events
+    const unsubArenaState = wsService.on('arena_state', (payload) => {
+      callbacksRef.current.onArenaState?.(payload as ArenaStatePayload)
+    })
+
+    const unsubBarrierDamaged = wsService.on('barrier_damaged', (payload) => {
+      callbacksRef.current.onBarrierDamaged?.(payload as BarrierDamagedPayload)
+    })
+
+    const unsubBarrierDestroyed = wsService.on('barrier_destroyed', (payload) => {
+      callbacksRef.current.onBarrierDestroyed?.(payload as BarrierDestroyedPayload)
+    })
+
+    const unsubBuffApplied = wsService.on('buff_applied', (payload) => {
+      callbacksRef.current.onBuffApplied?.(payload as BuffAppliedPayload)
+    })
+
+    const unsubBuffExpired = wsService.on('buff_expired', (payload) => {
+      callbacksRef.current.onBuffExpired?.(payload as BuffExpiredPayload)
+    })
+
     return () => {
       unsubHazardSpawn()
       unsubHazardDespawn()
@@ -106,6 +138,12 @@ export function useArenaEvents(lobbyCode: string | undefined) {
       unsubTrapArmed()
       unsubTeleport()
       unsubJumpPad()
+      // Server authority events
+      unsubArenaState()
+      unsubBarrierDamaged()
+      unsubBarrierDestroyed()
+      unsubBuffApplied()
+      unsubBuffExpired()
     }
   }, [lobbyCode])
 
@@ -169,6 +207,27 @@ export function useArenaEvents(lobbyCode: string | undefined) {
     callbacksRef.current.onJumpPad = cb
   }, [])
 
+  // Server authority callback setters
+  const setArenaStateCallback = useCallback((cb: (state: ArenaStatePayload) => void) => {
+    callbacksRef.current.onArenaState = cb
+  }, [])
+
+  const setBarrierDamagedCallback = useCallback((cb: (data: BarrierDamagedPayload) => void) => {
+    callbacksRef.current.onBarrierDamaged = cb
+  }, [])
+
+  const setBarrierDestroyedCallback = useCallback((cb: (data: BarrierDestroyedPayload) => void) => {
+    callbacksRef.current.onBarrierDestroyed = cb
+  }, [])
+
+  const setBuffAppliedCallback = useCallback((cb: (data: BuffAppliedPayload) => void) => {
+    callbacksRef.current.onBuffApplied = cb
+  }, [])
+
+  const setBuffExpiredCallback = useCallback((cb: (data: BuffExpiredPayload) => void) => {
+    callbacksRef.current.onBuffExpired = cb
+  }, [])
+
   return {
     sendArenaConfig,
     setHazardSpawnCallback,
@@ -183,5 +242,11 @@ export function useArenaEvents(lobbyCode: string | undefined) {
     setTrapArmedCallback,
     setTeleportCallback,
     setJumpPadCallback,
+    // Server authority callbacks
+    setArenaStateCallback,
+    setBarrierDamagedCallback,
+    setBarrierDestroyedCallback,
+    setBuffAppliedCallback,
+    setBuffExpiredCallback,
   }
 }

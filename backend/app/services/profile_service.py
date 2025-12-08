@@ -21,6 +21,16 @@ from app.schemas.profile import (
     UploadConfirmResponse,
     SocialLinks,
 )
+from app.schemas.match_history import (
+    MatchHistoryResponse,
+    MatchHistoryItem,
+    MatchOpponent,
+)
+from app.schemas.achievement import (
+    AchievementsResponse,
+    UserAchievement,
+    AchievementRarity,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -183,7 +193,7 @@ class ProfileService:
         # Clean up old versions
         await self.storage.delete_old_versions(
             user_id=user_id,
-            prefix=self.storage.AVATAR_PREFIX,
+            prefix="avatar",  # Used to determine bucket
             keep_latest=1,
         )
         
@@ -225,8 +235,8 @@ class ProfileService:
         # Process banner (resize to multiple sizes)
         variant_urls = await self.storage.process_banner(storage_path, user_id)
         
-        # Use the larger size (1920x540) as the main banner URL
-        main_url = variant_urls[-1] if variant_urls else self.storage.get_cdn_url(storage_path)
+        # Use the first URL as the main banner URL
+        main_url = variant_urls[0] if variant_urls else self.storage.get_public_url("banners", storage_path)
         
         # Update profile with new banner URL
         await self.profile_repo.update_banner_url(user_id, main_url)
@@ -239,7 +249,7 @@ class ProfileService:
         # Clean up old versions
         await self.storage.delete_old_versions(
             user_id=user_id,
-            prefix=self.storage.BANNER_PREFIX,
+            prefix="banner",  # Used to determine bucket
             keep_latest=1,
         )
         
@@ -336,3 +346,93 @@ class ProfileService:
             updated_data["social_links"] = SocialLinks()
         
         return Profile(**updated_data)
+    
+    async def get_match_history(
+        self, user_id: str, limit: int = 10, offset: int = 0
+    ) -> MatchHistoryResponse:
+        """
+        Get match history for a user.
+        
+        Fetches from match_results table and formats for display.
+        
+        Args:
+            user_id: User ID
+            limit: Number of matches to return
+            offset: Offset for pagination
+            
+        Returns:
+            MatchHistoryResponse with matches and pagination info
+        """
+        matches_data, total = await self.profile_repo.get_match_history(
+            user_id=user_id,
+            limit=limit,
+            offset=offset,
+        )
+        
+        matches = []
+        for match in matches_data:
+            # Determine if user was player1 or player2
+            is_player1 = match.get("player1_id") == user_id
+            
+            # Get opponent info
+            opponent_id = match.get("player2_id") if is_player1 else match.get("player1_id")
+            opponent_profile = match.get("opponent_profile", {}) or {}
+            
+            opponent = MatchOpponent(
+                id=opponent_id,
+                display_name=opponent_profile.get("display_name", "Unknown"),
+                avatar_url=opponent_profile.get("avatar_url"),
+            )
+            
+            # Determine if user won
+            won = match.get("winner_id") == user_id
+            
+            # Calculate XP earned (based on ELO delta)
+            elo_delta = match.get("elo_delta_p1") if is_player1 else match.get("elo_delta_p2")
+            xp_earned = max(0, (elo_delta or 0) * 10)  # Convert ELO delta to XP
+            
+            matches.append(MatchHistoryItem(
+                id=match.get("id"),
+                opponent=opponent,
+                won=won,
+                xp_earned=xp_earned,
+                played_at=match.get("played_at"),
+            ))
+        
+        has_more = (offset + len(matches)) < total
+        
+        return MatchHistoryResponse(
+            matches=matches,
+            total=total,
+            has_more=has_more,
+        )
+
+    async def get_achievements(self, user_id: str) -> AchievementsResponse:
+        """
+        Get achievements for a user.
+        
+        Fetches earned achievements from user_achievements table.
+        
+        Args:
+            user_id: User ID
+            
+        Returns:
+            AchievementsResponse with achievements list
+        """
+        achievements_data = await self.profile_repo.get_user_achievements(user_id)
+        
+        achievements = []
+        for ach in achievements_data:
+            achievements.append(UserAchievement(
+                id=ach.get("id"),
+                name=ach.get("name"),
+                description=ach.get("description"),
+                icon_url=ach.get("icon_url"),
+                rarity=AchievementRarity(ach.get("rarity", "common")),
+                earned_at=ach.get("earned_at"),
+            ))
+        
+        return AchievementsResponse(
+            achievements=achievements,
+            total=len(achievements),
+        )

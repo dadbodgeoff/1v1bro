@@ -107,7 +107,7 @@ export function LatencyIndicator({ className = '', showTickRate = true }: Latenc
       {showTickRate && tickRate > 0 && (
         <>
           <div className="w-px h-3 bg-white/20" />
-          <span className="text-[10px] font-mono text-cyan-400">
+          <span className="text-[10px] font-mono text-indigo-400">
             {tickRate}Hz
           </span>
         </>

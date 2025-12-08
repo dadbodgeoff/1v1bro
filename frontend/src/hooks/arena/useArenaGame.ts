@@ -23,18 +23,33 @@ import { useCombatEvents } from './useCombatEvents'
 import { useArenaEvents } from './useArenaEvents'
 import { useInterpolation } from './useInterpolation'
 import { usePowerUpEvents } from './usePowerUpEvents'
+import { useEmoteEvents } from './useEmoteEvents'
 import type { Vector2 } from './types'
 
 export function useArenaGame(lobbyCode?: string) {
   const navigate = useNavigate()
   const userId = useAuthStore((s) => s.user?.id)
   const userName = useAuthStore((s) => s.user?.display_name)
-  const { players, player1Id, player2Id } = useLobbyStore()
+  const { players, player1Id, player2Id, playerSkins } = useLobbyStore()
   const { setLocalPlayer, setOpponent, reset } = useGameStore()
 
   // Player state
   const [isPlayer1, setIsPlayer1] = useState(true)
   const [opponentId, setOpponentId] = useState<string | null>(null)
+  
+  // Compute skins from playerSkins (received in game_start) for consistency
+  // Both local player and opponent skins come from the same verified source
+  const equippedSkin = userId && playerSkins[userId] ? {
+    skinId: playerSkins[userId]?.skin_id,
+    spriteSheetUrl: playerSkins[userId]?.sprite_sheet_url,
+    metadataUrl: playerSkins[userId]?.sprite_meta_url,
+  } : null
+  
+  const opponentSkin = opponentId && playerSkins[opponentId] ? {
+    skinId: playerSkins[opponentId]?.skin_id,
+    spriteSheetUrl: playerSkins[opponentId]?.sprite_sheet_url,
+    metadataUrl: playerSkins[opponentId]?.sprite_meta_url,
+  } : null
 
   // Compose sub-hooks
   const quiz = useQuizEvents(lobbyCode)
@@ -42,6 +57,7 @@ export function useArenaGame(lobbyCode?: string) {
   const arena = useArenaEvents(lobbyCode)
   const interpolation = useInterpolation(lobbyCode)
   const { powerUps } = usePowerUpEvents(lobbyCode)
+  const emote = useEmoteEvents(lobbyCode, userId)
 
   // Initialize players from lobby
   useEffect(() => {
@@ -63,6 +79,11 @@ export function useArenaGame(lobbyCode?: string) {
       }
     }
   }, [userId, userName, players, player1Id, player2Id, setLocalPlayer, setOpponent])
+
+  // Debug: Log whenever skin state changes
+  useEffect(() => {
+    console.log('[useArenaGame] Skins from game_start:', { equippedSkin, opponentSkin, playerSkins })
+  }, [equippedSkin, opponentSkin, playerSkins])
 
 
   // Connect to WebSocket and subscribe to position updates
@@ -162,8 +183,27 @@ export function useArenaGame(lobbyCode?: string) {
     setTrapArmedCallback: arena.setTrapArmedCallback,
     setTeleportCallback: arena.setTeleportCallback,
     setJumpPadCallback: arena.setJumpPadCallback,
+    // Server authority callbacks
+    setArenaStateCallback: arena.setArenaStateCallback,
+    setBarrierDamagedCallback: arena.setBarrierDamagedCallback,
+    setBarrierDestroyedCallback: arena.setBarrierDestroyedCallback,
+    setBuffAppliedCallback: arena.setBuffAppliedCallback,
+    setBuffExpiredCallback: arena.setBuffExpiredCallback,
 
     // Lifecycle
     leaveGame,
+
+    // Emotes (Requirement 5.3)
+    sendEmote: emote.sendEmote,
+    setRemoteEmoteCallback: emote.setRemoteEmoteCallback,
+
+    // Cosmetics
+    equippedSkin,
+    opponentSkin,
   }
+}
+
+// Debug: Log when equippedSkin changes
+if (typeof window !== 'undefined') {
+  (window as unknown as { __debugEquippedSkin?: unknown }).__debugEquippedSkin = undefined
 }

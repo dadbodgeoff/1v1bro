@@ -24,6 +24,7 @@ class CosmeticType(str, Enum):
     NAMEPLATE = "nameplate"
     EFFECT = "effect"
     TRAIL = "trail"
+    PLAYERCARD = "playercard"  # Full-art player cards for lobby display
 
 
 class Rarity(str, Enum):
@@ -48,13 +49,18 @@ class Cosmetic(BaseSchema):
     rarity: Rarity = Field(..., description="Rarity tier")
     description: Optional[str] = Field(None, description="Item description")
     image_url: str = Field(..., description="Image URL for display")
+    shop_preview_url: Optional[str] = Field(None, description="Custom shop preview image URL")
     preview_video_url: Optional[str] = Field(None, description="Preview video URL")
-    price_coins: int = Field(default=0, description="Price in coins")
+    price_coins: Optional[int] = Field(default=0, description="Price in coins")
     price_premium: Optional[int] = Field(None, description="Price in premium currency")
-    release_date: datetime = Field(default_factory=datetime.utcnow, description="Release date")
+    release_date: Optional[datetime] = Field(default=None, description="Release date")
     event: Optional[str] = Field(None, description="Associated event name")
-    is_limited: bool = Field(default=False, description="Limited edition flag")
-    owned_by_count: int = Field(default=0, description="Number of players who own this")
+    is_limited: Optional[bool] = Field(default=False, description="Limited edition flag")
+    owned_by_count: Optional[int] = Field(default=0, description="Number of players who own this")
+    # Dynamic asset URLs (from CMS)
+    sprite_sheet_url: Optional[str] = Field(None, description="Sprite sheet URL for skins")
+    sprite_meta_url: Optional[str] = Field(None, description="Sprite metadata URL")
+    skin_id: Optional[str] = Field(None, description="Static bundled skin ID")
 
 
 class CosmeticCreate(BaseSchema):
@@ -80,6 +86,7 @@ class InventoryItem(BaseSchema):
     """Item in player inventory."""
     
     id: str = Field(..., description="Inventory entry UUID")
+    cosmetic_id: str = Field(..., description="Cosmetic UUID")
     cosmetic: Cosmetic = Field(..., description="The cosmetic item")
     acquired_date: datetime = Field(..., description="When the item was acquired")
     is_equipped: bool = Field(default=False, description="Whether item is currently equipped")
@@ -107,6 +114,8 @@ class Loadout(BaseSchema):
     banner_equipped: Optional[Cosmetic] = Field(None, description="Equipped banner")
     nameplate_equipped: Optional[Cosmetic] = Field(None, description="Equipped nameplate")
     effect_equipped: Optional[Cosmetic] = Field(None, description="Equipped effect")
+    trail_equipped: Optional[Cosmetic] = Field(None, description="Equipped trail")
+    playercard_equipped: Optional[Cosmetic] = Field(None, description="Equipped playercard for lobby display")
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
 
@@ -119,6 +128,8 @@ class LoadoutSimple(BaseSchema):
     banner_equipped: Optional[str] = None
     nameplate_equipped: Optional[str] = None
     effect_equipped: Optional[str] = None
+    trail_equipped: Optional[str] = None
+    playercard_equipped: Optional[str] = None
 
 
 # ============================================

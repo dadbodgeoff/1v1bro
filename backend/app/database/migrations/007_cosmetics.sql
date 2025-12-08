@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS cosmetics_catalog (
     event VARCHAR(50),
     is_limited BOOLEAN DEFAULT false,
     owned_by_count INTEGER DEFAULT 0,
+    skin_id VARCHAR(50),  -- Maps to frontend SkinId for sprite-based skins
+    available_until TIMESTAMPTZ,  -- For limited time items
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

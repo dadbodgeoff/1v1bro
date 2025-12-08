@@ -12,13 +12,17 @@
  */
 
 import { ARENA_SIZE, PLAYER_CONFIG, PLAYER_SPAWNS } from '../config'
-import { NEXUS_ARENA } from '../config/maps'
+import { NEXUS_ARENA, type MapConfig } from '../config/maps'
+import type { MapTheme } from '../config/maps/map-schema'
 import { InputSystem } from '../systems'
 import { CombatSystem, BuffManager } from '../combat'
 import { BackdropSystem } from '../backdrop'
 import { ArenaManager } from '../arena'
 import { loadGameAssets } from '../assets'
 import { arenaAssets } from '../assets/ArenaAssetLoader'
+import { EmoteManager } from '../emotes'
+import { EmoteRenderer } from '../renderers/EmoteRenderer'
+import { animatedTileRenderer } from '../terrain/AnimatedTiles'
 
 import { GameLoop } from './GameLoop'
 import { PlayerController } from './PlayerController'
@@ -45,6 +49,8 @@ export class GameEngine {
   private inputSystem: InputSystem
   private combatSystem: CombatSystem
   private buffManager: BuffManager
+  private emoteManager: EmoteManager
+  private emoteRenderer: EmoteRenderer
 
   // State
   private assetsLoaded = false
@@ -54,19 +60,23 @@ export class GameEngine {
   private opponent: PlayerState | null = null
   private powerUps: PowerUpState[] = []
   private callbacks: GameEngineCallbacks = {}
+  private currentMapConfig: MapConfig
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, mapConfig?: MapConfig) {
     this.canvas = canvas
     const ctx = canvas.getContext('2d')
     if (!ctx) throw new Error('Could not get 2d context')
 
-    // Initialize systems
-    this.backdropSystem = new BackdropSystem(ARENA_SIZE.width, ARENA_SIZE.height)
+    // Initialize systems with theme from map config
+    const theme: MapTheme = mapConfig?.metadata?.theme ?? 'space'
+    this.backdropSystem = new BackdropSystem(ARENA_SIZE.width, ARENA_SIZE.height, theme)
     this.arenaManager = new ArenaManager()
     this.inputSystem = new InputSystem()
     this.combatSystem = new CombatSystem()
     this.buffManager = new BuffManager()
     this.telemetryManager = new TelemetryManager()
+    this.emoteManager = new EmoteManager()
+    this.emoteRenderer = new EmoteRenderer()
 
     // Initialize modules
     this.gameLoop = new GameLoop()
@@ -80,8 +90,12 @@ export class GameEngine {
       () => this.localPlayer,
       () => this.opponent,
       (v, d) => this.playerController.setLaunch(v, d),
-      (v) => this.playerController.setLaunchFromKnockback(v)
+      (v) => this.playerController.setLaunchFromKnockback(v),
+      (pos) => this.playerController.setPositionOverride(pos)
     )
+
+    // Store map config (default to NEXUS_ARENA if not provided)
+    this.currentMapConfig = mapConfig ?? NEXUS_ARENA
 
     this.wireCallbacks()
     this.loadMap()
@@ -98,10 +112,12 @@ export class GameEngine {
       (pos) => this.callbacks.onPositionUpdate?.(pos),
       (opponentId, pos) => this.handleLaunchCollision(opponentId, pos)
     )
+    // Wire emote input
+    this.inputSystem.onEmote(() => this.handleEmoteTrigger())
   }
 
   private loadMap(): void {
-    this.arenaManager.loadMap(NEXUS_ARENA)
+    this.arenaManager.loadMap(this.currentMapConfig)
     this.arenaManager.setCallbacks({
       onBarrierDestroyed: (_id, pos) => this.renderPipeline.getCombatEffectsRenderer().addDeathEffect(pos),
       onTrapTriggered: () => this.handleTrapEffects(),
@@ -140,6 +156,12 @@ export class GameEngine {
     this.combatSystem.applyDamage(opponentId, 15, 'launch_collision')
     this.renderPipeline.getCombatEffectsRenderer().addHitMarker(position)
     this.renderPipeline.getCombatEffectsRenderer().addDamageNumber(position, 15)
+  }
+
+  private handleEmoteTrigger(): void {
+    if (!this.localPlayer) return
+    const isAlive = this.combatSystem.isPlayerAlive(this.localPlayer.id)
+    this.emoteManager.triggerEmote(this.localPlayer.position, isAlive)
   }
 
 
@@ -203,7 +225,7 @@ export class GameEngine {
   }
 
   setPowerUps(powerUps: PowerUpState[]): void { this.powerUps = powerUps }
-  getMapConfig(): unknown { return NEXUS_ARENA }
+  getMapConfig(): MapConfig { return this.currentMapConfig }
 
   // Server-authoritative methods (delegate to ServerSync)
   setServerProjectiles(projectiles: Projectile[]): void { this.serverSync.setServerProjectiles(projectiles) }
@@ -248,17 +270,36 @@ export class GameEngine {
   // Update and render
   private update(deltaTime: number): void {
     this.backdropSystem.update(deltaTime)
+    animatedTileRenderer.update(deltaTime)
     this.arenaManager.update(deltaTime, this.getPlayerPositions())
     this.playerController.update(deltaTime, this.localPlayer, this.opponent)
     this.updateTrails()
     this.checkPowerUpCollisions()
     if (this.combatEnabled) this.updateCombat(deltaTime)
+    this.emoteManager.update(deltaTime, this.getPlayerPositions())
     this.renderPipeline.setPlayers(this.localPlayer, this.opponent)
     this.renderPipeline.updateAnimations(deltaTime)
   }
 
   private render(): void {
     this.renderPipeline.render(this.gameLoop.getAnimationTime(), this.powerUps, this.combatEnabled, this.localPlayer, this.opponent)
+    // Render emotes above players
+    this.renderEmotes()
+  }
+
+  private renderEmotes(): void {
+    const ctx = this.canvas.getContext('2d')
+    if (!ctx) return
+    
+    ctx.save()
+    ctx.scale(this.scale, this.scale)
+    
+    this.emoteRenderer.setContext({ ctx, animationTime: this.gameLoop.getAnimationTime(), scale: this.scale })
+    this.emoteRenderer.setEmotes(this.emoteManager.getActiveEmotes())
+    this.emoteRenderer.setAssets(this.emoteManager.getAssets())
+    this.emoteRenderer.render()
+    
+    ctx.restore()
   }
 
   private getPlayerPositions(): Map<string, Vector2> {
@@ -315,4 +356,39 @@ export class GameEngine {
   updateNetworkStats(stats: { rttMs?: number; serverTick?: number; jitterMs?: number }): void { this.telemetryManager.updateNetworkStats(stats) }
   getLastDeathReplay() { return this.telemetryManager.getLastDeathReplay() }
   clearLastDeathReplay(): void { this.telemetryManager.clearLastDeathReplay() }
+
+  // Skin system
+  setPlayerSkin(playerId: string, skinId: string): void {
+    this.renderPipeline.getPlayerRenderer().setPlayerSkin(playerId, skinId as import('../assets').SkinId)
+  }
+
+  setDynamicSkin(playerId: string, spriteSheetUrl: string, metadataUrl?: string): void {
+    this.renderPipeline.getPlayerRenderer().setDynamicSkin(playerId, spriteSheetUrl, metadataUrl)
+  }
+
+  // Emote system
+  getEmoteManager(): EmoteManager { return this.emoteManager }
+  
+  async initializeEmotes(
+    inventoryEmotes: Array<{ id: string; name: string; image_url: string }>,
+    equippedEmoteId: string | null
+  ): Promise<void> {
+    if (!this.localPlayer) return
+    await this.emoteManager.initialize(this.localPlayer.id, inventoryEmotes, equippedEmoteId)
+  }
+
+  setEquippedEmote(emoteId: string | null): void {
+    this.emoteManager.setEquippedEmote(emoteId)
+  }
+
+  handleRemoteEmote(playerId: string, emoteId: string): void {
+    const position = this.opponent?.id === playerId ? this.opponent.position : null
+    if (position) {
+      this.emoteManager.handleRemoteEmote({ playerId, emoteId, timestamp: Date.now() }, position)
+    }
+  }
+
+  resetEmotes(): void {
+    this.emoteManager.reset()
+  }
 }

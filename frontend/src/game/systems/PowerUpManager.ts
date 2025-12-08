@@ -143,6 +143,82 @@ export class PowerUpManager {
   getSchedule(): PowerUpSchedule[] {
     return [...this.schedule]
   }
+
+  /**
+   * Apply server-authoritative power-up state
+   * SERVER AUTHORITY: Sync client state with server
+   * Requirements: 6.2
+   * 
+   * @param serverState - Array of power-up states from server
+   */
+  applyServerState(serverState: Array<{
+    id: string
+    x: number
+    y: number
+    type: string
+    radius: number
+    is_active: boolean
+  }>): void {
+    // Find active power-ups from server
+    const activeServerPowerups = serverState.filter(p => p.is_active)
+    
+    if (activeServerPowerups.length > 0) {
+      const serverPowerup = activeServerPowerups[0]
+      
+      // Update or create active power-up
+      if (this.activePowerUp) {
+        // Update existing
+        this.activePowerUp.position = { x: serverPowerup.x, y: serverPowerup.y }
+        this.activePowerUp.type = serverPowerup.type as PowerUpType
+        this.activePowerUp.active = true
+        this.activePowerUp.collected = false
+      } else {
+        // Create new from server state
+        this.activePowerUp = {
+          id: parseInt(serverPowerup.id.replace(/\D/g, '')) || Date.now(),
+          position: { x: serverPowerup.x, y: serverPowerup.y },
+          type: serverPowerup.type as PowerUpType,
+          active: true,
+          collected: false,
+        }
+      }
+    } else {
+      // No active power-ups on server
+      this.activePowerUp = null
+    }
+  }
+
+  /**
+   * Handle server power-up spawn event
+   * SERVER AUTHORITY: Spawn power-up from server
+   * 
+   * @param id - Power-up ID
+   * @param x - X position
+   * @param y - Y position
+   * @param type - Power-up type
+   */
+  applyServerSpawn(id: string, x: number, y: number, type: string): void {
+    this.activePowerUp = {
+      id: parseInt(id.replace(/\D/g, '')) || Date.now(),
+      position: { x, y },
+      type: type as PowerUpType,
+      active: true,
+      collected: false,
+    }
+  }
+
+  /**
+   * Handle server power-up collection event
+   * SERVER AUTHORITY: Mark power-up as collected
+   * 
+   * @param _id - Power-up ID (unused, for API consistency)
+   * @param type - Power-up type
+   * @param _playerId - Player who collected (unused, for API consistency)
+   */
+  applyServerCollection(_id: string, type: string, _playerId: string): void {
+    this.collectedTypes.add(type as PowerUpType)
+    this.activePowerUp = null
+  }
 }
 
 // Singleton instance for easy access

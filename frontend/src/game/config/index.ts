@@ -5,3 +5,4 @@
 export * from './arena'
 export * from './colors'
 export * from './combat'
+export * from './emotes'

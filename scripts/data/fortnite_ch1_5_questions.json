@@ -1,0 +1,2422 @@
+{
+  "category": "fortnite",
+  "generated_at": "2025-12-08T15:52:32.231614+00:00",
+  "source": "Chapters 1-5 Manual Questions",
+  "total_questions": 200,
+  "by_difficulty": {
+    "easy": 50,
+    "medium": 100,
+    "hard": 50
+  },
+  "by_subcategory": {
+    "seasons": 103,
+    "events": 15,
+    "cosmetics": 23,
+    "collabs": 6,
+    "map": 31,
+    "weapons": 14,
+    "history": 8
+  },
+  "questions": [
+    {
+      "text": "When did Fortnite Chapter 1 begin?",
+      "options": [
+        "September 12, 2017",
+        "October 25, 2017",
+        "November 1, 2017",
+        "December 1, 2017"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Fortnite Chapter 1 end?",
+      "options": [
+        "September 27, 2019",
+        "October 13, 2019",
+        "November 1, 2019",
+        "December 31, 2019"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What major event marked the end of Chapter 1?",
+      "options": [
+        "The End Event",
+        "The Black Hole Event",
+        "The Zero Point Event",
+        "The First Finale"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "events"
+    },
+    {
+      "text": "How long was the Black Hole Event downtime?",
+      "options": [
+        "1 hour",
+        "2 hours",
+        "24 hours",
+        "48 hours"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "events"
+    },
+    {
+      "text": "How many seasons were in Chapter 1?",
+      "options": [
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Season 1 of Chapter 1 called?",
+      "options": [
+        "First Steps",
+        "New Beginnings",
+        "The Start",
+        "Launch Season"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 1 Season 1 launch?",
+      "options": [
+        "October 13, 2017",
+        "October 25, 2017",
+        "November 15, 2017",
+        "December 1, 2017"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 1 Season 2 called?",
+      "options": [
+        "Fort Knights",
+        "Medieval Madness",
+        "Castle Time",
+        "Fortified"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 1 Season 3 called?",
+      "options": [
+        "Meteor Strike",
+        "Falling Meteors",
+        "Sky Impact",
+        "Destruction"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "In which season was the Battle Pass introduced?",
+      "options": [
+        "Season 1",
+        "Season 2",
+        "Season 3",
+        "Season 4"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "What was Chapter 1 Season 4 called?",
+      "options": [
+        "Brace for Impact",
+        "Marvel Madness",
+        "Superhero Season",
+        "Thanos Time"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Which Marvel character was featured in Season 4?",
+      "options": [
+        "Iron Man",
+        "Captain America",
+        "Thanos",
+        "Thor"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "collabs"
+    },
+    {
+      "text": "What was Chapter 1 Season 5 called?",
+      "options": [
+        "Worlds Collide",
+        "Dimensional Shift",
+        "Portal Opening",
+        "Multi-verse"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 1 Season 6 called?",
+      "options": [
+        "Darkness Rises",
+        "Spooky Season",
+        "Dark Times",
+        "Night Falls"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 1 Season 7 called?",
+      "options": [
+        "You Better Watch Out",
+        "Winter Wonderland",
+        "Holiday Season",
+        "Festive Times"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 1 Season 8 called?",
+      "options": [
+        "X Marks the Spot",
+        "Treasure Hunt",
+        "Pirates Ahoy",
+        "Bounty Season"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 1 Season 9 called?",
+      "options": [
+        "The Future is Yours",
+        "Futuristic Age",
+        "Technology Time",
+        "Next Generation"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 1 Season 10 (X) called?",
+      "options": [
+        "Out of Time",
+        "Time Warp",
+        "The End",
+        "Final Season"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was the final event that ended Chapter 1?",
+      "options": [
+        "The Meteor Strike",
+        "The Black Hole Event",
+        "The Zero Point Implosion",
+        "The Final Showdown"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "events"
+    },
+    {
+      "text": "What was the original starting location in Chapter 1?",
+      "options": [
+        "Tilted Towers",
+        "Pleasant Park",
+        "Retail Row",
+        "Not specified"
+      ],
+      "correct_index": 3,
+      "difficulty": "easy",
+      "subcategory": "map"
+    },
+    {
+      "text": "Was the Assault Rifle available in Chapter 1 Season 1?",
+      "options": [
+        "Yes",
+        "No",
+        "Vaulted mid-season",
+        "Only in certain modes"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "Was the Pump Shotgun in Chapter 1 Season 1?",
+      "options": [
+        "Yes",
+        "No",
+        "Added in Season 2",
+        "Vaulted immediately"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "When was the Battle Pass introduced to Fortnite?",
+      "options": [
+        "Season 1",
+        "Season 2",
+        "Season 3",
+        "Season 4"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "What cosmetic item was first introduced in Season 2?",
+      "options": [
+        "Battle Pass skins",
+        "Emotes",
+        "Back Blings",
+        "Pickaxes"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did Chapter 1 feature Mythic weapons?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in later seasons",
+        "Only cosmetics"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "When did Fortnite Chapter 2 begin?",
+      "options": [
+        "October 1, 2019",
+        "October 15, 2019",
+        "November 1, 2019",
+        "December 1, 2019"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Fortnite Chapter 2 end?",
+      "options": [
+        "November 15, 2021",
+        "December 1, 2021",
+        "December 5, 2021",
+        "December 31, 2021"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many seasons did Chapter 2 have?",
+      "options": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 2 Season 1 called?",
+      "options": [
+        "New World",
+        "Fresh Start",
+        "Apollo Island",
+        "New Beginning"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How long was Chapter 2 Season 1?",
+      "options": [
+        "100 days",
+        "110 days",
+        "128 days",
+        "150 days"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Was Season 1 the longest season ever in Fortnite?",
+      "options": [
+        "Yes",
+        "No",
+        "One of the longest",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 2 Season 2 called?",
+      "options": [
+        "Top Secret",
+        "Spy Season",
+        "Agent Era",
+        "GHOST and SHADOW"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 2 Season 2 start?",
+      "options": [
+        "January 1, 2020",
+        "February 20, 2020",
+        "March 1, 2020",
+        "April 1, 2020"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 2 Season 2 last?",
+      "options": [
+        "100",
+        "110",
+        "119",
+        "130"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What major event concluded Chapter 2 Season 2?",
+      "options": [
+        "Midas' Device",
+        "The Tsunami",
+        "Both Midas' Device and The Tsunami",
+        "The Device Explosion"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "events"
+    },
+    {
+      "text": "What was Chapter 2 Season 3 called?",
+      "options": [
+        "Splash Down",
+        "Underwater",
+        "Aqua Age",
+        "Water World"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 2 Season 4 called?",
+      "options": [
+        "Nexus War",
+        "Marvel Season",
+        "Galactus Event",
+        "Cosmic Battle"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 2 Season 4 feature Marvel collaborations?",
+      "options": [
+        "Yes",
+        "No",
+        "Only cosmetics",
+        "Limited collaboration"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "collabs"
+    },
+    {
+      "text": "What was Chapter 2 Season 5 called?",
+      "options": [
+        "Zero Point",
+        "Reality Break",
+        "Zero Dawn",
+        "Dimensional Rift"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 2 Season 5 start?",
+      "options": [
+        "October 1, 2020",
+        "November 1, 2020",
+        "December 2, 2020",
+        "January 1, 2021"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 2 Season 6 called?",
+      "options": [
+        "Primal",
+        "Stone Age",
+        "Dino Time",
+        "Ancient Era"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 2 Season 6 start?",
+      "options": [
+        "January 1, 2021",
+        "February 1, 2021",
+        "March 16, 2021",
+        "April 1, 2021"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 2 Season 7 called?",
+      "options": [
+        "Invasion",
+        "Aliens",
+        "UFO Era",
+        "Extraterrestrial"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 2 Season 7 start?",
+      "options": [
+        "May 1, 2021",
+        "June 8, 2021",
+        "July 1, 2021",
+        "August 1, 2021"
+      ],
+      "correct_index": 1,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 2 Season 8 called?",
+      "options": [
+        "Cubed",
+        "Cube Time",
+        "Block Era",
+        "Geometry"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 2 Season 8 start?",
+      "options": [
+        "August 1, 2021",
+        "September 1, 2021",
+        "September 13, 2021",
+        "October 1, 2021"
+      ],
+      "correct_index": 2,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many POIs were new in Chapter 2 Season 1?",
+      "options": [
+        "5",
+        "8",
+        "10",
+        "More than 10"
+      ],
+      "correct_index": 3,
+      "difficulty": "easy",
+      "subcategory": "map"
+    },
+    {
+      "text": "Name a location from Chapter 2 Season 1:",
+      "options": [
+        "Dirty Docks",
+        "Misty Meadows",
+        "Slurpy Swamp",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "easy",
+      "subcategory": "map"
+    },
+    {
+      "text": "What was the Apollo Island map also known as?",
+      "options": [
+        "The New Map",
+        "Chapter 2 Island",
+        "Post Black Hole Island",
+        "Apollo"
+      ],
+      "correct_index": 3,
+      "difficulty": "easy",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 2 introduce building changes?",
+      "options": [
+        "Yes",
+        "No",
+        "Minor changes",
+        "Only cosmetic changes"
+      ],
+      "correct_index": 0,
+      "difficulty": "easy",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What POI replaced Tilted Towers in Chapter 2?",
+      "options": [
+        "Lazy Links",
+        "Frenzy Farm",
+        "Agency",
+        "Not directly replaced"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Was there a POI called The Yacht in Chapter 2?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in Season 2",
+        "Only cosmetic"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Which POI was known as a GHOST/SHADOW faction location in Season 2?",
+      "options": [
+        "The Agency",
+        "Steamy Stacks",
+        "Both",
+        "Neither"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "What was the Fortilla location?",
+      "options": [
+        "A floating fortress",
+        "A regular POI",
+        "A seasonal location",
+        "Not a real location"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 2 Feature the Authority POI?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "As a landmark only"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "When did Fortnite Chapter 3 begin?",
+      "options": [
+        "October 1, 2021",
+        "November 1, 2021",
+        "December 5, 2021",
+        "January 1, 2022"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Fortnite Chapter 3 end?",
+      "options": [
+        "August 1, 2022",
+        "September 1, 2022",
+        "December 3, 2022",
+        "January 1, 2023"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many seasons did Chapter 3 have?",
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 3 Season 1 called?",
+      "options": [
+        "Flipped",
+        "Upside Down",
+        "Inverted",
+        "New Map"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What signature mechanic was introduced in Chapter 3 Season 1?",
+      "options": [
+        "Sliding",
+        "Climbing",
+        "Double Jumping",
+        "Wall Running"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 3 Season 2 called?",
+      "options": [
+        "Resistance",
+        "IO Fight",
+        "Invasion",
+        "Rebellion"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 3 Season 2 start?",
+      "options": [
+        "February 1, 2022",
+        "March 20, 2022",
+        "April 1, 2022",
+        "May 1, 2022"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 3 Season 2 last?",
+      "options": [
+        "60",
+        "76",
+        "90",
+        "100"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 3 Season 3 called?",
+      "options": [
+        "Vibin'",
+        "Party Time",
+        "Reality Falls",
+        "Summer Season"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 3 Season 3 start?",
+      "options": [
+        "May 1, 2022",
+        "June 4, 2022",
+        "June 5, 2022",
+        "July 1, 2022"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What new biome was introduced in Chapter 3 Season 3?",
+      "options": [
+        "Reality Falls",
+        "Mushroom Forest",
+        "Purple Biome",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 3 Season 4 called?",
+      "options": [
+        "Paradise",
+        "Chrome Invasion",
+        "Reality Decay",
+        "Final Season"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 3 Season 4 start?",
+      "options": [
+        "August 1, 2022",
+        "September 1, 2022",
+        "September 18, 2022",
+        "October 1, 2022"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 3 Season 4 last?",
+      "options": [
+        "60",
+        "70",
+        "76",
+        "85"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What major element was featured in Chapter 3 Season 4?",
+      "options": [
+        "Chrome",
+        "Reality Decay",
+        "Chrome Spread",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was the primary new POI in Chapter 3 Season 1?",
+      "options": [
+        "Rave Cave",
+        "Greasy Grove",
+        "The Joneses",
+        "Rocky Reels"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Was there a location called Rave Cave in Chapter 3?",
+      "options": [
+        "Yes",
+        "No",
+        "Only as a landmark",
+        "Only in certain modes"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "What location was Flipped (upside down) in Chapter 3 Season 1?",
+      "options": [
+        "Tilted Towers",
+        "Shifty Shafts",
+        "Retail Row",
+        "Pleasant Park"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Was The Daily Bugle a POI in Chapter 3?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in Season 2",
+        "Only in Season 1"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 3 feature the return of Greasy Grove?",
+      "options": [
+        "Yes",
+        "No",
+        "Only as a landmark",
+        "Only cosmetically"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 3 introduce Zero Build mode?",
+      "options": [
+        "Yes",
+        "No",
+        "Later in the chapter",
+        "Only as an LTM"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What vehicle was introduced in Chapter 3?",
+      "options": [
+        "Dirt Bike",
+        "Raft",
+        "Both",
+        "Neither"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 3 feature augments?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in Season 1",
+        "Only in certain modes"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Were augments permanent or seasonal in Chapter 3?",
+      "options": [
+        "Permanent",
+        "Seasonal",
+        "Both",
+        "Removed after Season 1"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What new weapon type was introduced in Chapter 3?",
+      "options": [
+        "Plasma Rifle",
+        "Hammer AR",
+        "Both",
+        "Neither"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "When did Fortnite Chapter 4 begin?",
+      "options": [
+        "November 1, 2022",
+        "December 1, 2022",
+        "December 4, 2022",
+        "January 1, 2023"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Fortnite Chapter 4 end?",
+      "options": [
+        "October 1, 2023",
+        "November 2, 2023",
+        "November 30, 2023",
+        "December 2, 2023"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many regular seasons did Chapter 4 have?",
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 4 Season 1 called?",
+      "options": [
+        "A New Beginning",
+        "Medieval Age",
+        "Fresh Start",
+        "New Island"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What theme did Chapter 4 Season 1 feature?",
+      "options": [
+        "Medieval",
+        "Fantasy",
+        "Castle Era",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 4 Season 2 called?",
+      "options": [
+        "MEGA",
+        "Mega City",
+        "Giant Era",
+        "Huge Season"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 4 Season 2 start?",
+      "options": [
+        "February 1, 2023",
+        "March 10, 2023",
+        "April 1, 2023",
+        "May 1, 2023"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 4 Season 2 last?",
+      "options": [
+        "80",
+        "85",
+        "90",
+        "100"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 4 Season 3 called?",
+      "options": [
+        "WILDS",
+        "Jungle",
+        "Wild Times",
+        "Nature Era"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 4 Season 3 start?",
+      "options": [
+        "May 1, 2023",
+        "June 1, 2023",
+        "June 9, 2023",
+        "July 1, 2023"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 4 Season 3 last?",
+      "options": [
+        "60",
+        "70",
+        "76",
+        "85"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 4 Season 4 called?",
+      "options": [
+        "Last Resort",
+        "Vampire Season",
+        "Kado Thorne Era",
+        "Heist Theme"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 4 Season 4 start?",
+      "options": [
+        "July 1, 2023",
+        "August 1, 2023",
+        "August 25, 2023",
+        "September 1, 2023"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 4 Season 4 last?",
+      "options": [
+        "60",
+        "70",
+        "80",
+        "90"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What character was the villain in Chapter 4 Season 4?",
+      "options": [
+        "Kado Thorne",
+        "A vampire",
+        "Both",
+        "A different villain"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Fortnite OG (Classic Chapter 1) occur?",
+      "options": [
+        "October 1, 2023",
+        "November 1, 2023",
+        "November 3, 2023",
+        "December 1, 2023"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "events"
+    },
+    {
+      "text": "How many days did Fortnite OG last?",
+      "options": [
+        "14 days",
+        "21 days",
+        "29 days",
+        "30 days"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "events"
+    },
+    {
+      "text": "Was the original map fully recreated in Fortnite OG?",
+      "options": [
+        "Yes",
+        "No",
+        "Partially",
+        "Only certain areas"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Were classic weapons available in Fortnite OG?",
+      "options": [
+        "Yes",
+        "No",
+        "Only some",
+        "Only as cosmetics"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "What was the OG Battle Pass cost?",
+      "options": [
+        "800 V-Bucks",
+        "950 V-Bucks",
+        "1000 V-Bucks",
+        "Free"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "What was a major POI in Chapter 4 Season 1?",
+      "options": [
+        "Brutal Bastion",
+        "Lonely Labs",
+        "The Citadel",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Was Tilted Towers part of Chapter 4?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in OG",
+        "Only as a landmark"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "What location was controlled by Kado Thorne in Season 4?",
+      "options": [
+        "Sanguine Suites",
+        "Relentless Retreat",
+        "Eclipsed Estate",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 4 feature a MEGA City?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in Season 2",
+        "Only as a landmark"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "What POI was featured in Chapter 4 Season 3 (WILDS)?",
+      "options": [
+        "Rumble Ruins",
+        "Creeky Compound",
+        "Shady Stilts",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 4 introduce new mechanics compared to Chapter 3?",
+      "options": [
+        "Yes",
+        "No",
+        "Minor changes",
+        "Only cosmetic changes"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Were Dirt Bikes available in all of Chapter 4?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "Only in early game"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 4 feature Reality Augments?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in Season 1",
+        "Only in certain modes"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What vehicle was introduced in Chapter 4 Season 4?",
+      "options": [
+        "Rocket Ram",
+        "Tank",
+        "Mech",
+        "Helicopter"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 4 feature Mythic weapons?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "Only from bosses"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "When did Fortnite Chapter 5 begin?",
+      "options": [
+        "November 1, 2023",
+        "December 1, 2023",
+        "December 3, 2023",
+        "January 1, 2024"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Fortnite Chapter 5 end?",
+      "options": [
+        "October 1, 2024",
+        "November 1, 2024",
+        "November 2, 2024",
+        "December 1, 2024"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many regular seasons did Chapter 5 have?",
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 5 Season 1 called?",
+      "options": [
+        "Underground",
+        "Beneath the Surface",
+        "Underworld",
+        "Cave Era"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 5 Season 1 start?",
+      "options": [
+        "November 1, 2023",
+        "December 1, 2023",
+        "December 3, 2023",
+        "January 1, 2024"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 5 Season 2 called?",
+      "options": [
+        "Myths & Mortals",
+        "Mythological Age",
+        "Gods Era",
+        "Ancient Times"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 5 Season 2 start?",
+      "options": [
+        "February 1, 2024",
+        "March 1, 2024",
+        "March 9, 2024",
+        "April 1, 2024"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 5 Season 2 last?",
+      "options": [
+        "60",
+        "70",
+        "75",
+        "85"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 5 Season 3 called?",
+      "options": [
+        "Wrecked",
+        "Destruction",
+        "Apocalypse",
+        "Chaos Era"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 5 Season 3 start?",
+      "options": [
+        "April 1, 2024",
+        "May 1, 2024",
+        "May 24, 2024",
+        "June 1, 2024"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 5 Season 3 last?",
+      "options": [
+        "70",
+        "80",
+        "84",
+        "90"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was Chapter 5 Season 4 called?",
+      "options": [
+        "Absolute Doom",
+        "Doctor Doom Era",
+        "Marvel Season",
+        "Villain Theme"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When did Chapter 5 Season 4 start?",
+      "options": [
+        "July 1, 2024",
+        "August 1, 2024",
+        "August 16, 2024",
+        "September 1, 2024"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many days did Chapter 5 Season 4 last?",
+      "options": [
+        "60",
+        "70",
+        "78",
+        "90"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What major Marvel character was featured in Chapter 5 Season 4?",
+      "options": [
+        "Doctor Doom",
+        "Iron Man",
+        "Spider-Man",
+        "Thanos"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "collabs"
+    },
+    {
+      "text": "When did Fortnite Remix (Chapter 2 throwback) occur?",
+      "options": [
+        "October 1, 2024",
+        "November 1, 2024",
+        "November 2, 2024",
+        "November 30, 2024"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "events"
+    },
+    {
+      "text": "How many days did Fortnite Remix last?",
+      "options": [
+        "14 days",
+        "21 days",
+        "28 days",
+        "29 days"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "events"
+    },
+    {
+      "text": "What theme did Fortnite Remix feature?",
+      "options": [
+        "Chapter 2 Throwback",
+        "Hip-Hop Music",
+        "Music Festival",
+        "Celebrity Collaboration"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "events"
+    },
+    {
+      "text": "What major rappers were featured in Remix?",
+      "options": [
+        "Snoop Dogg",
+        "Ice Spice",
+        "Eminem",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "events"
+    },
+    {
+      "text": "Was there a free cosmetic in Fortnite Remix?",
+      "options": [
+        "Yes",
+        "No",
+        "Only for Battle Pass owners",
+        "Only purchasable"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "What was the Chapter 5 map called?",
+      "options": [
+        "Helios",
+        "New Island",
+        "Reality",
+        "Rift"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 5 introduce a new map or use the Chapter 4 map?",
+      "options": [
+        "New map",
+        "Chapter 4 map",
+        "Modified Chapter 4",
+        "Hybrid"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Was the Helios map significantly different from Chapter 4?",
+      "options": [
+        "Yes",
+        "No",
+        "Minor changes",
+        "Only cosmetic differences"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "What major POI was in Chapter 5 Season 1?",
+      "options": [
+        "Underground areas",
+        "Caves",
+        "Both",
+        "Neither"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did Chapter 5 Season 2 feature mythological locations?",
+      "options": [
+        "Yes",
+        "No",
+        "Only as landmarks",
+        "Only cosmetically"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "map"
+    },
+    {
+      "text": "What were some main Battle Pass skins in Chapter 5 Season 4?",
+      "options": [
+        "War Machine",
+        "Emma Frost",
+        "Mysterio",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did Chapter 5 introduce the Snap skin with customizable parts?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "As cosmetic only"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "In which Chapter 5 season was Snap featured?",
+      "options": [
+        "Season 1",
+        "Season 2",
+        "Season 3",
+        "Season 4"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many parts could Snap have?",
+      "options": [
+        "2",
+        "4",
+        "6",
+        "8"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "history"
+    },
+    {
+      "text": "What were Snap's customizable parts?",
+      "options": [
+        "Head",
+        "Arms",
+        "Legs",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "history"
+    },
+    {
+      "text": "Did Chapter 5 continue using Zero Build mode?",
+      "options": [
+        "Yes",
+        "No",
+        "As optional",
+        "Only in certain seasons"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Were Mythic weapons available in Chapter 5?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "Only from specific sources"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "Did Chapter 5 introduce new weapon types?",
+      "options": [
+        "Yes",
+        "No",
+        "Only cosmetically",
+        "Only in certain seasons"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "Were vehicles available throughout Chapter 5?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "Only as cosmetics"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 5 feature Mythic bosses?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "Only cosmetically"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "In what order did the chapters release?",
+      "options": [
+        "1, 2, 3, 4, 5, 6",
+        "1, 2, OG, 3, 4, 5, 6",
+        "Chapters in order with OG events between some",
+        "Random order"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many years span from Chapter 1 launch to Chapter 5 end?",
+      "options": [
+        "5 years",
+        "6 years",
+        "7 years",
+        "8 years"
+      ],
+      "correct_index": 2,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was the first Fortnite OG event?",
+      "options": [
+        "Chapter 1 throwback (November 2023)",
+        "Chapter 2 throwback (November 2024)",
+        "Original Chapter 1 season",
+        "Not yet released"
+      ],
+      "correct_index": 0,
+      "difficulty": "medium",
+      "subcategory": "events"
+    },
+    {
+      "text": "When did the Fortnite Battle Pass debut?",
+      "options": [
+        "Chapter 1 Season 1",
+        "Chapter 1 Season 2",
+        "Chapter 2 Season 1",
+        "Chapter 2 Season 2"
+      ],
+      "correct_index": 1,
+      "difficulty": "medium",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "How many total seasons existed before Chapter 6?",
+      "options": [
+        "30",
+        "35",
+        "40",
+        "45"
+      ],
+      "correct_index": 3,
+      "difficulty": "medium",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many different maps existed through Chapter 5?",
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "map"
+    },
+    {
+      "text": "What was the Chapter 1 map called?",
+      "options": [
+        "Artemis",
+        "Apollo",
+        "Helios",
+        "Original Island"
+      ],
+      "correct_index": 3,
+      "difficulty": "hard",
+      "subcategory": "map"
+    },
+    {
+      "text": "What was the Chapter 2-3 map called?",
+      "options": [
+        "Artemis",
+        "Apollo",
+        "Helios",
+        "New World"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "map"
+    },
+    {
+      "text": "What was the Chapter 4-5 map called?",
+      "options": [
+        "Artemis",
+        "Apollo",
+        "Helios",
+        "Reality Island"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "map"
+    },
+    {
+      "text": "Did the Black Hole Event destroy the Chapter 1 map?",
+      "options": [
+        "Yes",
+        "No",
+        "Partially",
+        "Transforming it"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "map"
+    },
+    {
+      "text": "Were Assault Rifles in Chapter 1?",
+      "options": [
+        "Yes",
+        "No",
+        "Added later",
+        "Only cosmetically"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "Were Mythic weapons introduced in Chapter 4?",
+      "options": [
+        "Yes",
+        "No",
+        "Later chapters",
+        "Only in certain seasons"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "What was a signature weapon of Chapter 1?",
+      "options": [
+        "Pump Shotgun",
+        "Assault Rifle",
+        "Sniper Rifle",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "difficulty": "hard",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "Did Mythic weapons appear in Chapter 5?",
+      "options": [
+        "Yes",
+        "No",
+        "In some seasons",
+        "Only as cosmetics"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "Were Zero Build weapons different from Build weapons?",
+      "options": [
+        "Yes",
+        "No",
+        "Generally same",
+        "Only cosmetically different"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "weapons"
+    },
+    {
+      "text": "When was the first emote introduced?",
+      "options": [
+        "Chapter 1 Season 1",
+        "Chapter 1 Season 2",
+        "Chapter 2 Season 1",
+        "Not before Chapter 2"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did Chapter 1 have Battle Pass cosmetics?",
+      "options": [
+        "Yes",
+        "No",
+        "Starting Season 2",
+        "Only in later seasons"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "How many cosmetic tiers were in the earliest Battle Pass?",
+      "options": [
+        "50",
+        "75",
+        "100",
+        "150"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Were there alternate styles for Battle Pass skins?",
+      "options": [
+        "Yes, from the start",
+        "No, never",
+        "Starting Chapter 2",
+        "Only in later chapters"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did LEGO cosmetics exist in Chapter 1-2?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "As cosmetics only"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did Chapter 1 have major live events?",
+      "options": [
+        "Yes",
+        "No",
+        "Only late-game",
+        "Not confirmed"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "events"
+    },
+    {
+      "text": "What was the first major crossover event?",
+      "options": [
+        "Season 4 Thanos",
+        "Season 8 Pirates",
+        "Chapter 2 Season 4 Marvel",
+        "Another event"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "events"
+    },
+    {
+      "text": "How many major crossovers happened in Chapter 1?",
+      "options": [
+        "0-2",
+        "3-5",
+        "6-8",
+        "9+"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 2 have more crossovers than Chapter 1?",
+      "options": [
+        "Yes",
+        "No",
+        "Approximately same",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Were music events held in Chapter 3?",
+      "options": [
+        "Yes",
+        "No",
+        "Only cosmetically",
+        "Only in certain modes"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "events"
+    },
+    {
+      "text": "Was building always a core mechanic?",
+      "options": [
+        "Yes",
+        "No",
+        "From Chapter 1",
+        "Only in certain modes"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "history"
+    },
+    {
+      "text": "When was Zero Build mode introduced?",
+      "options": [
+        "Chapter 2",
+        "Chapter 3",
+        "Chapter 4",
+        "Chapter 5"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "history"
+    },
+    {
+      "text": "Was sliding introduced in Chapter 3?",
+      "options": [
+        "Yes",
+        "No",
+        "Chapter 2",
+        "Chapter 4"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 4 introduce vehicles?",
+      "options": [
+        "Yes",
+        "No",
+        "Chapter 3",
+        "Chapter 5"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Were grappling mechanics always available?",
+      "options": [
+        "Yes",
+        "No",
+        "Seasonal item",
+        "Only in certain areas"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "history"
+    },
+    {
+      "text": "Did Chapter 5 introduce mix-and-match cosmetics?",
+      "options": [
+        "Yes, with Snap",
+        "No",
+        "Only as cosmetics",
+        "Earlier in Chapter 4"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "When did enlightened styles appear?",
+      "options": [
+        "Chapter 1",
+        "Chapter 2",
+        "Chapter 3",
+        "Chapter 4"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "history"
+    },
+    {
+      "text": "Were there style options for Battle Pass skins?",
+      "options": [
+        "Yes, from the start",
+        "No",
+        "Starting Chapter 2",
+        "Only in Chapter 5"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did cosmetics ever provide gameplay advantages?",
+      "options": [
+        "Yes",
+        "No",
+        "Minimal advantage",
+        "Only visually"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "How many cosmetic slots exist in-game?",
+      "options": [
+        "4",
+        "6",
+        "8",
+        "10+"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did Chapter 1 have ranked mode?",
+      "options": [
+        "Yes",
+        "No",
+        "Later in chapter",
+        "Only as tournament"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "When was ranked/competitive mode introduced?",
+      "options": [
+        "Chapter 2",
+        "Chapter 3",
+        "Chapter 4",
+        "Chapter 5"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "history"
+    },
+    {
+      "text": "Did Chapter 4 introduce Reality Augments in ranked?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in Season 1",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Were FNCS tournaments held in every chapter?",
+      "options": [
+        "Yes",
+        "No",
+        "Most chapters",
+        "Starting Chapter 2"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Zero Build have separate ranked rankings?",
+      "options": [
+        "Yes",
+        "No",
+        "In some chapters",
+        "Only cosmetically"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "history"
+    },
+    {
+      "text": "What was Season X (10) of Chapter 1 known for?",
+      "options": [
+        "Time Warp Event",
+        "The End Event",
+        "Both A and B",
+        "Neither"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "Did Chapter 2 Season 1 have competitive ranking?",
+      "options": [
+        "Yes",
+        "No",
+        "Later seasons only",
+        "Not applicable"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "How many cosmetics approximately were in the Chapter 1 shop?",
+      "options": [
+        "50-100",
+        "100-200",
+        "200-300",
+        "300+"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did Chapter 5 introduce new map territories?",
+      "options": [
+        "Yes",
+        "No",
+        "Minor additions",
+        "Only cosmetically"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "map"
+    },
+    {
+      "text": "Were there post-apocalyptic themes in Chapter 5?",
+      "options": [
+        "Yes, Season 3",
+        "No",
+        "Only cosmetically",
+        "Only in events"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    },
+    {
+      "text": "What was the typical Battle Pass cost?",
+      "options": [
+        "800 V-Bucks",
+        "950 V-Bucks",
+        "1000 V-Bucks",
+        "Varied by chapter"
+      ],
+      "correct_index": 1,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "How many V-Bucks could players earn back?",
+      "options": [
+        "500",
+        "1000",
+        "1500",
+        "2000"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Did the Battle Pass ever offer more V-Bucks?",
+      "options": [
+        "Yes, in some seasons",
+        "No, always same",
+        "Only in early chapters",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Were there discounted Battle Pass bundles?",
+      "options": [
+        "Yes",
+        "No",
+        "Only in certain seasons",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "How many tiers were typically in a Battle Pass?",
+      "options": [
+        "50",
+        "75",
+        "100",
+        "150"
+      ],
+      "correct_index": 2,
+      "difficulty": "hard",
+      "subcategory": "cosmetics"
+    },
+    {
+      "text": "Which chapter had the most Marvel crossovers?",
+      "options": [
+        "Chapter 1",
+        "Chapter 2",
+        "Chapter 4",
+        "Chapter 5"
+      ],
+      "correct_index": 3,
+      "difficulty": "hard",
+      "subcategory": "collabs"
+    },
+    {
+      "text": "Did Chapter 3 feature DC Universe content?",
+      "options": [
+        "Yes",
+        "No",
+        "Limited cosmetics",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "collabs"
+    },
+    {
+      "text": "How many Star Wars seasons existed through Chapter 5?",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "collabs"
+    },
+    {
+      "text": "Did Chapter 5 Season 2 feature mythology-based crossovers?",
+      "options": [
+        "Yes",
+        "No",
+        "Only cosmetics",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "events"
+    },
+    {
+      "text": "What was a signature Chapter 1 crossover?",
+      "options": [
+        "Avengers: Infinity War (Thanos)",
+        "DC Comics",
+        "Star Wars",
+        "Dragon Ball"
+      ],
+      "correct_index": 0,
+      "difficulty": "hard",
+      "subcategory": "seasons"
+    }
+  ]
+}

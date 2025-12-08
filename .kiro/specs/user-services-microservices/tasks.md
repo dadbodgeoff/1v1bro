@@ -296,8 +296,8 @@ This implementation follows a **bottom-up, service-by-service approach**:
 
 ## Phase 5: Battle Pass Service
 
-- [ ] 20. Battle Pass Schemas
-  - [ ] 20.1 Create `backend/app/schemas/battlepass.py`
+- [x] 20. Battle Pass Schemas
+  - [x] 20.1 Create `backend/app/schemas/battlepass.py`
     - Define Season schema
     - Define BattlePassTier schema
     - Define Reward schema (type, value, cosmetic)
@@ -307,8 +307,8 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Define ClaimResult schema
     - _Requirements: 4.1, 4.2, 4.6_
 
-- [ ] 21. Battle Pass Repository
-  - [ ] 21.1 Create `backend/app/database/repositories/battlepass_repo.py`
+- [x] 21. Battle Pass Repository
+  - [x] 21.1 Create `backend/app/database/repositories/battlepass_repo.py`
     - Implement BattlePassRepository class
     - Implement get_current_season()
     - Implement get_player_progress()
@@ -319,8 +319,8 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Implement log_xp_gain()
     - _Requirements: 4.1, 4.2, 4.6, 4.10_
 
-- [ ] 22. Battle Pass Service
-  - [ ] 22.1 Create `backend/app/services/battlepass_service.py`
+- [x] 22. Battle Pass Service
+  - [x] 22.1 Create `backend/app/services/battlepass_service.py`
     - Implement BattlePassService class
     - Implement get_current_season()
     - Implement get_player_progress() with claimable rewards calculation
@@ -331,16 +331,16 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Implement calculate_match_xp() with formula and clamping [50, 300]
     - _Requirements: 4.1-4.10_
 
-  - [ ] 22.2 Write property test for XP bounds
+  - [x] 22.2 Write property test for XP bounds
     - **Property 8: XP Calculation Bounds**
     - **Validates: Requirements 4.4**
 
-  - [ ] 22.3 Write property test for tier advancement
+  - [x] 22.3 Write property test for tier advancement
     - **Property 9: Tier Advancement Correctness**
     - **Validates: Requirements 4.5**
 
-- [ ] 23. Battle Pass API
-  - [ ] 23.1 Create `backend/app/api/v1/battlepass.py`
+- [x] 23. Battle Pass API
+  - [x] 23.1 Create `backend/app/api/v1/battlepass.py`
     - Create battlepass router
     - Implement GET /battlepass/current endpoint
     - Implement GET /me/battlepass endpoint
@@ -350,19 +350,19 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Implement POST /me/battlepass/purchase-premium endpoint
     - _Requirements: 4.1-4.9_
 
-  - [ ] 23.2 Register battlepass router in `backend/app/api/v1/router.py`
+  - [x] 23.2 Register battlepass router in `backend/app/api/v1/router.py`
     - Add battlepass router to v1 router
     - _Requirements: 7.7_
 
-- [ ] 24. Checkpoint - Ensure all tests pass
+- [x] 24. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ---
 
 ## Phase 6: Enhanced Leaderboard Service with ELO
 
-- [ ] 25. ELO Schemas
-  - [ ] 25.1 Update `backend/app/schemas/leaderboard.py`
+- [x] 25. ELO Schemas
+  - [x] 25.1 Update `backend/app/schemas/leaderboard.py`
     - Add RankTier enum (Bronze through Grandmaster)
     - Add PlayerRating schema
     - Add LeaderboardEntry schema with ELO and tier
@@ -370,8 +370,8 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Add MatchResult schema for ELO history
     - _Requirements: 5.5, 5.6, 5.8_
 
-- [ ] 26. Ratings Repository
-  - [ ] 26.1 Create `backend/app/database/repositories/ratings_repo.py`
+- [x] 26. Ratings Repository
+  - [x] 26.1 Create `backend/app/database/repositories/ratings_repo.py`
     - Implement RatingsRepository class
     - Implement get_rating() by user_id
     - Implement update_rating() with ELO and tier
@@ -381,15 +381,15 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Implement get_nearby_players()
     - _Requirements: 5.6, 5.7, 5.8_
 
-  - [ ] 26.2 Create `backend/app/database/repositories/match_results_repo.py`
+  - [x] 26.2 Create `backend/app/database/repositories/match_results_repo.py`
     - Implement MatchResultsRepository class
     - Implement create_result() with ELO deltas
     - Implement get_results_for_player() with pagination
     - Implement get_head_to_head() for matchup stats
     - _Requirements: 6.2, 6.8_
 
-- [ ] 27. Enhanced Leaderboard Service
-  - [ ] 27.1 Update `backend/app/services/leaderboard_service.py`
+- [x] 27. Enhanced Leaderboard Service
+  - [x] 27.1 Update `backend/app/services/leaderboard_service.py`
     - Add K_FACTORS dict by rating range
     - Add TIERS dict with ELO ranges
     - Implement calculate_elo_change() with standard formula
@@ -401,39 +401,39 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Implement _clamp_elo() to [100, 3000]
     - _Requirements: 5.1-5.10_
 
-  - [ ] 27.2 Write property test for ELO zero-sum
+  - [x] 27.2 Write property test for ELO zero-sum
     - **Property 10: ELO Zero-Sum**
     - **Validates: Requirements 5.3**
 
-  - [ ] 27.3 Write property test for ELO bounds
+  - [x] 27.3 Write property test for ELO bounds
     - **Property 11: ELO Bounds**
     - **Validates: Requirements 5.4**
 
-  - [ ] 27.4 Write property test for tier assignment
+  - [x] 27.4 Write property test for tier assignment
     - **Property 12: Rank Tier Assignment**
     - **Validates: Requirements 5.5**
 
-- [ ] 28. Leaderboard API Updates
-  - [ ] 28.1 Update `backend/app/api/v1/leaderboards.py`
+- [x] 28. Leaderboard API Updates
+  - [x] 28.1 Update `backend/app/api/v1/leaderboards.py`
     - Update GET /leaderboards/global with ELO sorting
     - Add GET /leaderboards/regional/{region} endpoint
     - Update GET /leaderboards/me with nearby players
     - Add GET /leaderboards/seasonal/{season} endpoint
     - _Requirements: 5.6, 5.7, 5.8, 5.10_
 
-- [ ] 29. Checkpoint - Ensure all tests pass
+- [x] 29. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ---
 
 ## Phase 7: Event-Driven Integration
 
-- [ ] 30. Event Infrastructure
-  - [ ] 30.1 Create `backend/app/events/__init__.py`
+- [x] 30. Event Infrastructure
+  - [x] 30.1 Create `backend/app/events/__init__.py`
     - Export EventPublisher, EventSubscriber
     - _Requirements: 8.1_
 
-  - [ ] 30.2 Create `backend/app/events/publisher.py`
+  - [x] 30.2 Create `backend/app/events/publisher.py`
     - Implement EventPublisher class
     - Define TOPICS dict for all event types
     - Implement publish() generic method
@@ -443,32 +443,32 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Implement publish_player_levelup()
     - _Requirements: 8.2, 8.6, 8.7, 8.8_
 
-  - [ ] 30.3 Create `backend/app/events/subscriber.py`
+  - [x] 30.3 Create `backend/app/events/subscriber.py`
     - Implement EventSubscriber class
     - Implement start() to begin listening
     - Implement handle_message() with routing
     - Implement acknowledgment and retry logic
     - _Requirements: 8.9, 8.10_
 
-  - [ ] 30.4 Create `backend/app/events/handlers.py`
+  - [x] 30.4 Create `backend/app/events/handlers.py`
     - Implement handle_match_completed() - updates stats, ELO, XP
     - Implement handle_cosmetic_purchased() - audit logging
     - Implement handle_reward_earned() - notifications
     - Ensure all handlers are idempotent
     - _Requirements: 8.3, 8.4, 8.5, 8.9_
 
-  - [ ] 30.5 Write property test for event idempotency
+  - [x] 30.5 Write property test for event idempotency
     - **Property 14: Event Idempotency**
     - **Validates: Requirements 8.9**
 
-- [ ] 31. Game Service Integration
-  - [ ] 31.1 Update `backend/app/services/game_service.py`
+- [x] 31. Game Service Integration
+  - [x] 31.1 Update `backend/app/services/game_service.py`
     - Import EventPublisher
     - Publish match.completed event on game end
     - Include all match data in event payload
     - _Requirements: 8.2_
 
-- [ ] 32. Checkpoint - Ensure all tests pass
+- [x] 32. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 
@@ -477,27 +477,27 @@ This implementation follows a **bottom-up, service-by-service approach**:
 
 ## Phase 8: API Gateway Enhancements
 
-- [ ] 33. Enhanced Middleware
-  - [ ] 33.1 Update `backend/app/middleware/auth.py`
+- [x] 33. Enhanced Middleware
+  - [x] 33.1 Update `backend/app/middleware/auth.py`
     - Implement RS256 JWT verification
     - Add token blacklist checking
     - Add request tracing with X-Request-ID
     - _Requirements: 1.2, 1.6, 7.8_
 
-  - [ ] 33.2 Create `backend/app/middleware/request_logging.py`
+  - [x] 33.2 Create `backend/app/middleware/request_logging.py`
     - Implement request logging middleware
     - Log timestamp, user_id, endpoint, response_time, status_code
     - Use structured JSON format
     - _Requirements: 7.4, 14.2_
 
-  - [ ] 33.3 Update `backend/app/middleware/rate_limit.py`
+  - [x] 33.3 Update `backend/app/middleware/rate_limit.py`
     - Add per-category rate limits
     - Add X-RateLimit headers to responses
     - Implement Redis-backed counters
     - _Requirements: 7.2, 7.3_
 
-- [ ] 34. API Gateway Configuration
-  - [ ] 34.1 Update `backend/app/main.py`
+- [x] 34. API Gateway Configuration
+  - [x] 34.1 Update `backend/app/main.py`
     - Add CORS configuration with allowed origins
     - Add gzip compression middleware
     - Add request size limits (10MB uploads, 1MB others)
@@ -505,43 +505,43 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Register all new routers
     - _Requirements: 7.5, 7.9, 7.10, 14.6_
 
-- [ ] 35. Checkpoint - Ensure all tests pass
+- [x] 35. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ---
 
 ## Phase 9: Frontend Integration
 
-- [ ] 36. Profile Frontend
-  - [ ] 36.1 Create `frontend/src/types/profile.ts`
+- [x] 36. Profile Frontend
+  - [x] 36.1 Create `frontend/src/types/profile.ts`
     - Define Profile interface
     - Define ProfileUpdate interface
     - Define SocialLinks interface
     - Define PrivacySettings interface
     - _Requirements: 2.1_
 
-  - [ ] 36.2 Create `frontend/src/hooks/useProfile.ts`
+  - [x] 36.2 Create `frontend/src/hooks/useProfile.ts`
     - Implement profile fetching
     - Implement profile update
     - Implement avatar upload flow
     - Implement banner upload flow
     - _Requirements: 2.1-2.6_
 
-  - [ ] 36.3 Create `frontend/src/components/profile/ProfileCard.tsx`
+  - [x] 36.3 Create `frontend/src/components/profile/ProfileCard.tsx`
     - Display avatar, banner, display_name, bio
     - Display level, title, country
     - Display social links
     - _Requirements: 2.1_
 
-  - [ ] 36.4 Create `frontend/src/components/profile/ProfileEditor.tsx`
+  - [x] 36.4 Create `frontend/src/components/profile/ProfileEditor.tsx`
     - Form for editing profile fields
     - Avatar upload with preview
     - Banner upload with preview
     - Privacy settings toggles
     - _Requirements: 2.2-2.8_
 
-- [ ] 37. Cosmetics Frontend
-  - [ ] 37.1 Create `frontend/src/types/cosmetic.ts`
+- [x] 37. Cosmetics Frontend
+  - [x] 37.1 Create `frontend/src/types/cosmetic.ts`
     - Define CosmeticType enum
     - Define Rarity enum
     - Define Cosmetic interface
@@ -549,172 +549,172 @@ This implementation follows a **bottom-up, service-by-service approach**:
     - Define Loadout interface
     - _Requirements: 3.1, 3.2_
 
-  - [ ] 37.2 Create `frontend/src/hooks/useCosmetics.ts`
+  - [x] 37.2 Create `frontend/src/hooks/useCosmetics.ts`
     - Implement shop fetching with filters
     - Implement inventory fetching
     - Implement purchase flow
     - Implement equip/unequip flow
     - _Requirements: 3.3-3.6_
 
-  - [ ] 37.3 Create `frontend/src/components/cosmetics/ShopGrid.tsx`
+  - [x] 37.3 Create `frontend/src/components/cosmetics/ShopGrid.tsx`
     - Display cosmetics in grid layout
     - Filter by type and rarity
     - Show price and owned status
     - _Requirements: 3.3_
 
-  - [ ] 37.4 Create `frontend/src/components/cosmetics/InventoryGrid.tsx`
+  - [x] 37.4 Create `frontend/src/components/cosmetics/InventoryGrid.tsx`
     - Display owned cosmetics
     - Show equipped status
     - Equip/unequip buttons
     - _Requirements: 3.6_
 
-  - [ ] 37.5 Create `frontend/src/components/cosmetics/LoadoutDisplay.tsx`
+  - [x] 37.5 Create `frontend/src/components/cosmetics/LoadoutDisplay.tsx`
     - Display currently equipped items
     - Quick-swap functionality
     - _Requirements: 3.5_
 
-- [ ] 38. Battle Pass Frontend
-  - [ ] 38.1 Create `frontend/src/types/battlepass.ts`
+- [x] 38. Battle Pass Frontend
+  - [x] 38.1 Create `frontend/src/types/battlepass.ts`
     - Define Season interface
     - Define BattlePassTier interface
     - Define PlayerBattlePass interface
     - Define XPAwardResult interface
     - _Requirements: 4.1, 4.2_
 
-  - [ ] 38.2 Create `frontend/src/hooks/useBattlePass.ts`
+  - [x] 38.2 Create `frontend/src/hooks/useBattlePass.ts`
     - Implement season fetching
     - Implement progress fetching
     - Implement reward claiming
     - Implement premium purchase
     - _Requirements: 4.1-4.9_
 
-  - [ ] 38.3 Create `frontend/src/components/battlepass/BattlePassTrack.tsx`
+  - [x] 38.3 Create `frontend/src/components/battlepass/BattlePassTrack.tsx`
     - Display tier progression track
     - Show free and premium rewards
     - Highlight current tier
     - Claim buttons for available rewards
     - _Requirements: 4.2, 4.6, 4.8_
 
-  - [ ] 38.4 Create `frontend/src/components/battlepass/XPProgress.tsx`
+  - [x] 38.4 Create `frontend/src/components/battlepass/XPProgress.tsx`
     - Display current XP and tier
     - Progress bar to next tier
     - XP breakdown by source
     - _Requirements: 4.2, 4.5_
 
-- [ ] 39. Enhanced Leaderboard Frontend
-  - [ ] 39.1 Update `frontend/src/types/leaderboard.ts`
+- [x] 39. Enhanced Leaderboard Frontend
+  - [x] 39.1 Update `frontend/src/types/leaderboard.ts`
     - Add RankTier type
     - Add PlayerRating interface
     - Add ELO-based LeaderboardEntry
     - _Requirements: 5.5, 5.6_
 
-  - [ ] 39.2 Update `frontend/src/pages/LeaderboardHub.tsx`
+  - [x] 39.2 Update `frontend/src/pages/LeaderboardHub.tsx`
     - Add ELO-based global leaderboard
     - Add regional filter
     - Display rank tiers with icons
     - _Requirements: 5.6, 5.7_
 
-  - [ ] 39.3 Create `frontend/src/components/leaderboard/RankBadge.tsx`
+  - [x] 39.3 Create `frontend/src/components/leaderboard/RankBadge.tsx`
     - Display rank tier with icon and color
     - Bronze through Grandmaster styling
     - _Requirements: 5.5_
 
-  - [ ] 39.4 Update `frontend/src/pages/LeaderboardDetail.tsx`
+  - [x] 39.4 Update `frontend/src/pages/LeaderboardDetail.tsx`
     - Show user's rank with nearby players
     - Display ELO and tier
     - Show peak ELO
     - _Requirements: 5.8_
 
-- [ ] 40. Checkpoint - Ensure all tests pass
+- [x] 40. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ---
 
 ## Phase 10: Integration Testing
 
-- [ ] 41. Integration Tests
-  - [ ] 41.1 Create `backend/tests/integration/test_profile_flow.py`
+- [x] 41. Integration Tests
+  - [x] 41.1 Create `backend/tests/integration/test_profile_flow.py`
     - Test profile creation on registration
     - Test profile update with validation
     - Test avatar upload flow
     - Test privacy settings
     - _Requirements: 2.1-2.10_
 
-  - [ ] 41.2 Create `backend/tests/integration/test_cosmetics_flow.py`
+  - [x] 41.2 Create `backend/tests/integration/test_cosmetics_flow.py`
     - Test shop browsing
     - Test purchase flow
     - Test equip/unequip flow
     - Test inventory caching
     - _Requirements: 3.1-3.10_
 
-  - [ ] 41.3 Create `backend/tests/integration/test_battlepass_flow.py`
+  - [x] 41.3 Create `backend/tests/integration/test_battlepass_flow.py`
     - Test XP award from match
     - Test tier advancement
     - Test reward claiming
     - Test premium upgrade
     - _Requirements: 4.1-4.10_
 
-  - [ ] 41.4 Create `backend/tests/integration/test_elo_flow.py`
+  - [x] 41.4 Create `backend/tests/integration/test_elo_flow.py`
     - Test ELO calculation after match
     - Test tier assignment
     - Test leaderboard updates
     - Test regional filtering
     - _Requirements: 5.1-5.10_
 
-  - [ ] 41.5 Create `backend/tests/integration/test_event_flow.py`
+  - [x] 41.5 Create `backend/tests/integration/test_event_flow.py`
     - Test match.completed event publishing
     - Test event handler execution
     - Test idempotent handling
     - _Requirements: 8.1-8.10_
 
-- [ ] 42. Migration Testing
-  - [ ] 42.1 Write property test for migration idempotency
+- [x] 42. Migration Testing
+  - [x] 42.1 Write property test for migration idempotency
     - **Property 15: Migration Idempotency**
     - **Validates: Requirements 13.9**
 
-  - [ ] 42.2 Test migration on production-like data
+  - [x] 42.2 Test migration on production-like data
     - Create test database with sample data
     - Run all migrations
     - Verify data integrity
     - Verify rollback capability
     - _Requirements: 13.1-13.10_
 
-- [ ] 43. Final Checkpoint - Ensure all tests pass
+- [x] 43. Final Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ---
 
 ## Phase 11: Documentation and Deployment
 
-- [ ] 44. API Documentation
-  - [ ] 44.1 Update OpenAPI schemas
+- [x] 44. API Documentation
+  - [x] 44.1 Update OpenAPI schemas
     - Document all new endpoints
     - Add request/response examples
     - Document error codes
     - _Requirements: All_
 
-- [ ] 45. Deployment Configuration
-  - [ ] 45.1 Update environment configuration
+- [x] 45. Deployment Configuration
+  - [x] 45.1 Update environment configuration
     - Add Redis connection settings
     - Add Cloud Storage settings
     - Add Pub/Sub settings
     - Add RS256 key paths
     - _Requirements: 11.1, 10.1, 8.1, 1.2_
 
-  - [ ] 45.2 Create Cloud Run service configurations
+  - [x] 45.2 Create Cloud Run service configurations
     - Configure autoscaling for each service
     - Set memory and CPU limits
     - Configure health checks
     - _Requirements: 15.1-15.10_
 
-- [ ] 46. Final Verification
-  - [ ] 46.1 Run full test suite
+- [x] 46. Final Verification
+  - [x] 46.1 Run full test suite
     - All unit tests pass
     - All property tests pass
     - All integration tests pass
     - _Requirements: All_
 
-  - [ ] 46.2 Performance verification
+  - [x] 46.2 Performance verification
     - API response time < 200ms p95
     - Database queries < 100ms
     - Cache hit rate > 90%

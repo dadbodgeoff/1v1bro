@@ -35,7 +35,7 @@ export function RespawnOverlay({
         {/* Countdown */}
         <div className="flex flex-col items-center">
           <div className="text-white text-lg">Respawning in</div>
-          <div className="text-cyan-400 text-6xl font-bold tabular-nums">
+          <div className="text-indigo-400 text-6xl font-bold tabular-nums">
             {seconds}
           </div>
         </div>

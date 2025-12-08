@@ -28,13 +28,32 @@ function isCheckeredBackgroundPixel(r: number, g: number, b: number): boolean {
 }
 
 /**
- * Remove checkered gray background from sprite sheet
- * The checkered pattern uses two gray colors that we'll make transparent
+ * Check if a pixel is a white or light background
  */
-function removeCheckeredBackground(
+function isWhiteBackgroundPixel(r: number, g: number, b: number): boolean {
+  // Pure white
+  if (r > 245 && g > 245 && b > 245) return true
+  
+  // Light gray (common in image backgrounds)
+  const isGray = Math.abs(r - g) < 15 && Math.abs(g - b) < 15 && Math.abs(r - b) < 15
+  if (isGray && r > 220) return true
+  
+  // Off-white/cream
+  if (r > 235 && g > 230 && b > 220) return true
+  
+  return false
+}
+
+/**
+ * Remove checkered gray and white backgrounds from sprite sheet
+ * The checkered pattern uses two gray colors that we'll make transparent
+ * Also removes white/light backgrounds for JPG images
+ */
+function removeBackgrounds(
   ctx: CanvasRenderingContext2D,
   width: number,
-  height: number
+  height: number,
+  removeWhite: boolean = true
 ): void {
   const imageData = ctx.getImageData(0, 0, width, height)
   const data = imageData.data
@@ -47,6 +66,9 @@ function removeCheckeredBackground(
     if (isCheckeredBackgroundPixel(r, g, b)) {
       // Make transparent
       data[i + 3] = 0
+    } else if (removeWhite && isWhiteBackgroundPixel(r, g, b)) {
+      // Make white backgrounds transparent
+      data[i + 3] = 0
     }
   }
 
@@ -55,10 +77,14 @@ function removeCheckeredBackground(
 
 /**
  * Load and process a sprite sheet, returning individual frame canvases
+ * @param imageSrc - URL of the sprite sheet image
+ * @param config - Sprite sheet configuration (columns, rows, frame dimensions)
+ * @param removeWhiteBackground - Whether to remove white backgrounds (default: true for JPG/JPEG)
  */
 export async function processSpriteSheet(
   imageSrc: string,
-  config: SpriteSheetConfig
+  config: SpriteSheetConfig,
+  removeWhiteBackground?: boolean
 ): Promise<HTMLCanvasElement[]> {
   return new Promise((resolve, reject) => {
     const img = new Image()
@@ -78,8 +104,13 @@ export async function processSpriteSheet(
       // Draw the image
       fullCtx.drawImage(img, 0, 0)
       
-      // Remove checkered background
-      removeCheckeredBackground(fullCtx, img.width, img.height)
+      // Determine if we should remove white background
+      // Default to true for JPG/JPEG, false for PNG
+      const shouldRemoveWhite = removeWhiteBackground ?? 
+        (imageSrc.toLowerCase().includes('.jpg') || imageSrc.toLowerCase().includes('.jpeg'))
+      
+      // Remove backgrounds (checkered always, white based on image type)
+      removeBackgrounds(fullCtx, img.width, img.height, shouldRemoveWhite)
 
       // Extract individual frames
       const frames: HTMLCanvasElement[] = []

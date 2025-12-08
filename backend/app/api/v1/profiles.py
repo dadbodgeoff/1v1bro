@@ -3,9 +3,9 @@ Profile API endpoints.
 Requirements: 2.1-2.6
 """
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Query, status
 
-from app.api.deps import CurrentUser, ProfileServiceDep
+from app.api.deps import CurrentUser, ProfileServiceDep, AchievementServiceDep
 from app.core.responses import APIResponse
 from app.schemas.profile import (
     Profile,
@@ -15,9 +15,16 @@ from app.schemas.profile import (
     UploadConfirmRequest,
     UploadConfirmResponse,
 )
+from app.schemas.match_history import MatchHistoryResponse
+from app.schemas.achievement import AchievementsResponse, AchievementCheckResponse
 
 
 router = APIRouter(prefix="/profiles", tags=["Profiles"])
+
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @router.get(
@@ -32,16 +39,44 @@ async def get_my_profile(
     Get the current user's profile.
     
     Returns the full profile for the authenticated user.
+    If profile doesn't exist yet, returns a default profile structure.
     """
-    profile = await profile_service.get_profile(
-        user_id=current_user.id,
-        viewer_id=current_user.id,
-    )
+    try:
+        profile = await profile_service.get_profile(
+            user_id=current_user.id,
+            viewer_id=current_user.id,
+        )
+    except Exception as e:
+        # Log the actual error for debugging, but return default profile
+        # This handles cases where the profile trigger hasn't run yet
+        logger.warning(f"Failed to fetch profile for user {current_user.id}: {e}")
+        profile = None
     
     if not profile:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profile not found",
+        # Return a minimal default profile instead of 404
+        # This handles cases where the profile trigger hasn't run yet
+        from app.schemas.profile import Profile, SocialLinks
+        default_name = "Player"
+        if hasattr(current_user, 'display_name') and current_user.display_name:
+            default_name = current_user.display_name
+        elif hasattr(current_user, 'email') and current_user.email:
+            default_name = current_user.email.split("@")[0]
+        
+        profile = Profile(
+            user_id=current_user.id,
+            display_name=default_name,
+            avatar_url=None,
+            bio=None,
+            country=None,
+            banner_url=None,
+            banner_color="#1a1a2e",
+            social_links=SocialLinks(),
+            is_public=True,
+            accept_friend_requests=True,
+            allow_messages=True,
+            level=1,
+            total_xp=0,
+            title="Rookie",
         )
     
     return APIResponse.ok(profile)
@@ -130,6 +165,94 @@ async def update_privacy_settings(
         )
     
     return APIResponse.ok(profile)
+
+
+# ============================================
+# Match History Endpoint
+# ============================================
+
+@router.get(
+    "/me/matches",
+    response_model=APIResponse[MatchHistoryResponse],
+)
+async def get_my_match_history(
+    current_user: CurrentUser,
+    profile_service: ProfileServiceDep,
+    limit: int = Query(default=10, ge=1, le=50, description="Number of matches to return"),
+    offset: int = Query(default=0, ge=0, description="Offset for pagination"),
+):
+    """
+    Get the current user's match history.
+    
+    Returns recent matches with opponent info, outcome, and XP earned.
+    Paginated with limit/offset parameters.
+    """
+    result = await profile_service.get_match_history(
+        user_id=current_user.id,
+        limit=limit,
+        offset=offset,
+    )
+    
+    return APIResponse.ok(result)
+
+
+# ============================================
+# Achievements Endpoint
+# ============================================
+
+@router.get(
+    "/me/achievements",
+    response_model=APIResponse[AchievementsResponse],
+)
+async def get_my_achievements(
+    current_user: CurrentUser,
+    profile_service: ProfileServiceDep,
+):
+    """
+    Get the current user's earned achievements.
+    
+    Returns all achievements the user has earned, sorted by rarity and date.
+    """
+    result = await profile_service.get_achievements(
+        user_id=current_user.id,
+    )
+    
+    return APIResponse.ok(result)
+
+
+@router.post(
+    "/me/achievements/check",
+    response_model=APIResponse[AchievementCheckResponse],
+)
+async def check_achievements(
+    current_user: CurrentUser,
+    achievement_service: AchievementServiceDep,
+):
+    """
+    Check and award any newly earned achievements.
+    
+    Compares user's current stats against all achievement criteria
+    and awards any achievements that have been newly unlocked.
+    
+    Returns list of newly awarded achievements.
+    """
+    newly_awarded = await achievement_service.check_achievements_for_user(
+        user_id=current_user.id,
+    )
+    
+    return APIResponse.ok(AchievementCheckResponse(
+        newly_awarded=[
+            {
+                "id": a["id"],
+                "name": a["name"],
+                "description": a["description"],
+                "icon_url": a.get("icon_url"),
+                "rarity": a.get("rarity", "common"),
+            }
+            for a in newly_awarded
+        ],
+        count=len(newly_awarded),
+    ))
 
 
 # ============================================

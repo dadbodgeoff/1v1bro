@@ -99,7 +99,7 @@ export function Landing() {
 
     // Navigate based on auth state
     if (isAuthenticated) {
-      navigate('/')
+      navigate('/dashboard')
     } else {
       navigate('/register')
     }
@@ -141,7 +141,7 @@ export function Landing() {
                   Welcome back, {user?.email?.split('@')[0] || 'Player'}
                 </span>
                 <button
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate('/dashboard')}
                   className="px-6 py-2 bg-white text-black rounded-lg font-medium hover:bg-neutral-200 transition"
                 >
                   Play Now

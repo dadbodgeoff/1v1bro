@@ -6,13 +6,13 @@ import {
 
 describe('Leaderboard Types', () => {
   describe('ALL_CATEGORIES', () => {
-    it('contains exactly 9 categories', () => {
-      expect(ALL_CATEGORIES).toHaveLength(9)
+    it('contains exactly 10 categories', () => {
+      expect(ALL_CATEGORIES).toHaveLength(10)
     })
 
     it('contains all expected categories', () => {
       const expected = [
-        'wins', 'win_rate', 'total_score', 'kills', 'kd_ratio',
+        'elo', 'wins', 'win_rate', 'total_score', 'kills', 'kd_ratio',
         'accuracy', 'fastest_thinker', 'answer_rate', 'win_streak',
       ]
       expect(ALL_CATEGORIES).toEqual(expect.arrayContaining(expected))

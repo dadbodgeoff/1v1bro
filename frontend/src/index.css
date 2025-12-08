@@ -1,16 +1,7 @@
 @import "tailwindcss";
+@import "./styles/tokens.css";
 
-:root {
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
-  --color-success: #22c55e;
-  --color-error: #ef4444;
-  --color-warning: #f59e0b;
-  --color-bg-dark: #0f172a;
-  --color-bg-card: #1e293b;
-  --color-text: #f8fafc;
-  --color-text-muted: #94a3b8;
-}
+/* Legacy color overrides removed - using design tokens from tokens.css */
 
 * {
   box-sizing: border-box;
@@ -18,14 +9,62 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background-color: var(--color-bg-dark);
-  color: var(--color-text);
+  font-family: var(--font-family);
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
   min-height: 100vh;
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* ============================================
+ * Focus Styles for Accessibility
+ * Requirements: 6.2
+ * ============================================ */
+
+/* Focus visible styles - 2px indigo-500 ring */
+:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Remove default focus for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Custom focus ring class for components */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Focus ring for buttons */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Focus ring for inputs */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent-primary);
+}
+
+/* Focus ring for links */
+a:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 /* Custom scrollbar for friends panel and other scrollable areas */
@@ -92,4 +131,335 @@ body {
 
 .timer-warning {
   animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+/* ============================================
+ * Skeleton Shimmer Animation
+ * Requirements: 2.9, 5.6
+ * ============================================ */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-card) 0%,
+    var(--color-bg-elevated) 50%,
+    var(--color-bg-card) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ============================================
+ * Glow Pulse Animation (for claimable items)
+ * Requirements: 4.3
+ * ============================================ */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px var(--glow-color, var(--color-accent-primary));
+  }
+  50% {
+    box-shadow: 0 0 20px var(--glow-color, var(--color-accent-primary));
+  }
+}
+
+.glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.glow-pulse-success {
+  --glow-color: var(--color-accent-success);
+}
+
+.glow-pulse-premium {
+  --glow-color: var(--color-accent-premium);
+}
+
+/* ============================================
+ * Legendary Shimmer Animation
+ * Requirements: 2.5
+ * ============================================ */
+@keyframes legendaryShimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.legendary-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(245, 158, 11, 0.3) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: legendaryShimmer 2s ease-in-out infinite;
+}
+
+/* ============================================
+ * Modal Animations
+ * Requirements: 2.4, 7.3
+ * ============================================ */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalScaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* ============================================
+ * Toast Animations
+ * Requirements: 7.4
+ * ============================================ */
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+ * Card Hover Lift
+ * Requirements: 7.2
+ * ============================================ */
+.card-hover-lift {
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-border-visible);
+}
+
+/* ============================================
+ * Button Press Effect
+ * Requirements: 7.1
+ * ============================================ */
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+/* ============================================
+ * Progress Bar Animation
+ * Requirements: 2.8, 4.5
+ * ============================================ */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+}
+
+.progress-animated {
+  animation: progressFill 0.5s ease-out;
+}
+
+
+/* ============================================
+ * Touch Target Styles
+ * Requirements: 6.5
+ * Minimum 44x44px tap targets
+ * ============================================ */
+.touch-target {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+/* Touch feedback */
+.touch-feedback:active {
+  opacity: 0.7;
+}
+
+/* Ensure icon buttons have minimum touch target */
+button:has(svg:only-child),
+[role="button"]:has(svg:only-child) {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+
+/* ============================================
+ * Page Transitions
+ * Requirements: 7.6
+ * ============================================ */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pageFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.page-enter {
+  animation: pageFadeIn 150ms ease-out;
+}
+
+.page-exit {
+  animation: pageFadeOut 150ms ease-out;
+}
+
+/* Page content wrapper for transitions */
+.page-content {
+  animation: pageFadeIn 150ms ease-out;
+}
+
+
+/* ============================================
+ * Battle Pass Enterprise Animations
+ * Requirements: 7.1, 7.2, 7.3
+ * ============================================ */
+
+/* Claimable glow pulse - success (emerald) */
+@keyframes glowPulseSuccess {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+  }
+}
+
+.animate-pulse-glow-success {
+  animation: glowPulseSuccess 2s ease-in-out infinite;
+}
+
+/* Claimable glow pulse - premium (amber) */
+@keyframes glowPulsePremium {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+  }
+}
+
+.animate-pulse-glow-premium {
+  animation: glowPulsePremium 2s ease-in-out infinite;
+}
+
+/* Shimmer animation for legendary badges */
+@keyframes shimmerBadge {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerBadge 2s ease-in-out infinite;
+}
+
+/* Claim success animation */
+@keyframes claimSuccess {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-claim-success {
+  animation: claimSuccess 0.4s ease-out;
+}
+
+/* Reward card hover lift */
+.reward-card-hover {
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.reward-card-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

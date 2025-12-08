@@ -66,11 +66,13 @@ export function useGame(lobbyCode?: string) {
       // Subscribe to game events
       const unsubQuestion = wsService.on('question', (payload) => {
         const data = payload as QuestionPayload
+        // Use client's local time when question is received to avoid clock skew issues
+        // The server's start_time is only used for synchronization between players
         setQuestion({
           qNum: data.q_num,
           text: data.text,
           options: data.options,
-          startTime: data.start_time,
+          startTime: Date.now(), // Use local time instead of server time
         })
       })
 

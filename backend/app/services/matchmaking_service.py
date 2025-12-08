@@ -44,15 +44,16 @@ class MatchmakingService:
         
         self._running = True
         
-        # Restore tickets from database
-        tickets = await self.repo.get_active_tickets()
-        if tickets:
-            await queue_manager.restore_tickets(tickets)
+        # Clean up any stale tickets from previous server runs
+        # This prevents duplicate key errors when users try to rejoin
+        await self.repo.cleanup_all_waiting_tickets()
+        print("[Matchmaking] Cleaned up stale tickets from previous session")
         
         # Start background tasks
         self._processor_task = asyncio.create_task(self._queue_processor())
         self._status_task = asyncio.create_task(self._status_broadcaster())
         
+        print("[Matchmaking] Service started with background tasks")
         logger.info("Matchmaking service started")
     
     async def stop(self) -> None:
@@ -75,13 +76,14 @@ class MatchmakingService:
         
         logger.info("Matchmaking service stopped")
     
-    async def join_queue(self, player_id: str, player_name: str) -> MatchTicket:
+    async def join_queue(self, player_id: str, player_name: str, category: str = "fortnite") -> MatchTicket:
         """
         Add player to matchmaking queue.
         
         Args:
             player_id: Player UUID
             player_name: Display name
+            category: Trivia category (fortnite, nfl, etc.)
             
         Returns:
             Created MatchTicket
@@ -98,11 +100,12 @@ class MatchmakingService:
         if await queue_manager.contains(player_id):
             raise ValueError("ALREADY_IN_QUEUE")
         
-        # Create ticket
+        # Create ticket with category
         ticket = MatchTicket(
             player_id=player_id,
             player_name=player_name,
             queue_time=datetime.utcnow(),
+            game_mode=category,  # Use game_mode field for category
         )
         
         # Add to queue
@@ -138,11 +141,10 @@ class MatchmakingService:
         Returns:
             True if removed, False if not in queue
         """
+        # Remove from in-memory queue
         ticket = await queue_manager.remove(player_id)
-        if not ticket:
-            return False
         
-        # Remove from database
+        # Always clean up database (handles stale tickets from server restarts)
         await self.repo.delete_ticket(player_id)
         
         # Send queue_cancelled event
@@ -152,6 +154,7 @@ class MatchmakingService:
         })
         
         logger.info(f"Player {player_id} left queue: {reason}")
+        # Return true even if not in memory queue - we cleaned up DB
         return True
     
     async def get_queue_status(self, player_id: str) -> QueueStatus:
@@ -223,14 +226,26 @@ class MatchmakingService:
     
     async def _queue_processor(self) -> None:
         """Background task that processes queue every second."""
+        print("[Matchmaking] Queue processor started")
         while self._running:
             try:
-                match = await queue_manager.find_match()
-                if match:
-                    player1, player2 = match
-                    await self._create_match(player1, player2)
+                queue_size = queue_manager.get_queue_size()
+                if queue_size > 0:
+                    print(f"[Matchmaking] Queue has {queue_size} players")
+                
+                if queue_size >= 2:
+                    print(f"[Matchmaking] Attempting to find match...")
+                    match = await queue_manager.find_match()
+                    if match:
+                        player1, player2 = match
+                        print(f"[Matchmaking] Match found! {player1.player_name} vs {player2.player_name}")
+                        await self._create_match(player1, player2)
+                    else:
+                        print(f"[Matchmaking] find_match returned None despite {queue_size} players")
             except Exception as e:
-                logger.error(f"Queue processor error: {e}")
+                print(f"[Matchmaking] Queue processor error: {e}")
+                import traceback
+                traceback.print_exc()
             
             await asyncio.sleep(1.0)  # 1Hz tick rate
     
@@ -262,21 +277,26 @@ class MatchmakingService:
     async def _create_match(self, player1: MatchTicket, player2: MatchTicket) -> None:
         """Create a match between two players."""
         try:
+            print(f"[Matchmaking] Creating match - updating ticket status...")
             # Remove tickets from database
             await self.repo.update_ticket_status(player1.player_id, "matched")
             await self.repo.update_ticket_status(player2.player_id, "matched")
             
-            # Create lobby with player1 as host
+            print(f"[Matchmaking] Creating lobby with category: {player1.game_mode}")
+            # Create lobby with player1 as host and matched category
             lobby = await self.lobby_service.create_lobby(
                 host_id=player1.player_id,
                 game_mode=player1.game_mode,
+                category=player1.game_mode,  # Pass category for trivia questions
             )
+            print(f"[Matchmaking] Lobby created: {lobby.get('code')}")
             
             # Add player2 to lobby
             lobby = await self.lobby_service.join_lobby(
                 code=lobby["code"],
                 player_id=player2.player_id,
             )
+            print(f"[Matchmaking] Player2 joined lobby")
             
             # Send match_found events
             match_event_p1 = MatchFoundEvent(
@@ -291,16 +311,27 @@ class MatchmakingService:
                 opponent_name=player1.player_name,
             )
             
-            await manager.send_to_user(player1.player_id, {
-                "type": "match_found",
-                "payload": match_event_p1.to_dict(),
-            })
+            # Send match_found events with retry for players not yet connected
+            async def send_match_found(player_id: str, event: MatchFoundEvent, player_name: str):
+                for attempt in range(5):  # Retry up to 5 times over 2.5 seconds
+                    sent = await manager.send_to_user(player_id, {
+                        "type": "match_found",
+                        "payload": event.to_dict(),
+                    })
+                    if sent:
+                        print(f"[Matchmaking] Sent match_found to {player_name} (attempt {attempt + 1})")
+                        return True
+                    await asyncio.sleep(0.5)  # Wait 500ms before retry
+                print(f"[Matchmaking] Failed to send match_found to {player_name} after 5 attempts")
+                return False
             
-            await manager.send_to_user(player2.player_id, {
-                "type": "match_found",
-                "payload": match_event_p2.to_dict(),
-            })
+            # Send to both players (with retries)
+            await asyncio.gather(
+                send_match_found(player1.player_id, match_event_p1, player1.player_name),
+                send_match_found(player2.player_id, match_event_p2, player2.player_name),
+            )
             
+            print(f"[Matchmaking] Match created successfully! Lobby: {lobby['code']}")
             logger.info(
                 f"Match created: {player1.player_name} vs {player2.player_name} "
                 f"in lobby {lobby['code']}"

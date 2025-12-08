@@ -24,13 +24,13 @@ export function Results() {
 
   const handlePlayAgain = () => {
     resetGame()
-    navigate('/')
+    navigate('/dashboard')
   }
 
   const handleReturnHome = () => {
     resetGame()
     resetLobby()
-    navigate('/')
+    navigate('/dashboard')
   }
 
   return (

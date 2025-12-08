@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Arena Component Library",
+  "description": "Schema for arena map component definitions",
+  "type": "object",
+  "required": ["version", "components"],
+  "properties": {
+    "version": { "type": "string" },
+    "description": { "type": "string" },
+    "lastUpdated": { "type": "string" },
+    "categories": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "components": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/component" }
+    },
+    "placementRules": { "$ref": "#/definitions/placementRules" },
+    "validationRules": { "$ref": "#/definitions/validationRules" }
+  },
+  "definitions": {
+    "component": {
+      "type": "object",
+      "required": ["id", "type", "category", "displayName"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "category": { "type": "string" },
+        "displayName": { "type": "string" },
+        "description": { "type": "string" },
+        "dimensions": {
+          "type": "object",
+          "properties": {
+            "width": { "type": "number" },
+            "height": { "type": "number" }
+          }
+        },
+        "properties": { "type": "object" },
+        "visual": { "type": "object" },
+        "variants": { "type": "array", "items": { "type": "string" } },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "placementRules": {
+      "type": "object",
+      "properties": {
+        "spawnProtectionRadius": { "type": "number" },
+        "minObjectSpacing": { "type": "number" },
+        "symmetryModes": { "type": "array", "items": { "type": "string" } },
+        "edgeBuffer": { "type": "number" }
+      }
+    },
+    "validationRules": {
+      "type": "object",
+      "properties": {
+        "minSpawnPoints": { "type": "number" },
+        "maxSpawnPoints": { "type": "number" },
+        "teleporterPairRequired": { "type": "boolean" },
+        "maxHazardCoverage": { "type": "number" },
+        "minFloorCoverage": { "type": "number" }
+      }
+    }
+  }
+}

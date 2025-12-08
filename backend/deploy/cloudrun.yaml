@@ -1,0 +1,156 @@
+# Cloud Run Service Configuration
+# Requirements: 15.1-15.10
+#
+# Deploy with:
+#   gcloud run services replace cloudrun.yaml --region=us-central1
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: 1v1bro-api
+  labels:
+    cloud.googleapis.com/location: us-central1
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/launch-stage: GA
+spec:
+  template:
+    metadata:
+      annotations:
+        # Autoscaling configuration (Requirements: 15.1-15.7)
+        autoscaling.knative.dev/minScale: "2"
+        autoscaling.knative.dev/maxScale: "50"
+        autoscaling.knative.dev/target: "80"
+        
+        # CPU allocation
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/startup-cpu-boost: "true"
+        
+        # VPC connector for Redis
+        run.googleapis.com/vpc-access-connector: projects/PROJECT_ID/locations/us-central1/connectors/redis-connector
+        run.googleapis.com/vpc-access-egress: private-ranges-only
+        
+    spec:
+      containerConcurrency: 100
+      timeoutSeconds: 300
+      serviceAccountName: 1v1bro-api@PROJECT_ID.iam.gserviceaccount.com
+      
+      containers:
+        - image: gcr.io/PROJECT_ID/1v1bro-api:latest
+          
+          ports:
+            - containerPort: 8000
+              name: http1
+          
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 1Gi
+          
+          # Health check (Requirements: 14.6)
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 10
+            timeoutSeconds: 5
+          
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 5
+          
+          # Environment variables
+          env:
+            - name: APP_NAME
+              value: "1v1 Bro"
+            - name: DEBUG
+              value: "false"
+            - name: API_V1_PREFIX
+              value: "/api/v1"
+            
+            # JWT Configuration
+            - name: JWT_ALGORITHM
+              value: "RS256"
+            - name: JWT_EXPIRATION_HOURS
+              value: "24"
+            
+            # Rate Limits
+            - name: RATE_LIMIT_AUTH
+              value: "10"
+            - name: RATE_LIMIT_GAME
+              value: "1000"
+            - name: RATE_LIMIT_LEADERBOARD
+              value: "100"
+            - name: RATE_LIMIT_UPLOAD
+              value: "10"
+            
+            # Battle Pass
+            - name: XP_PER_TIER
+              value: "1000"
+            - name: XP_MIN
+              value: "50"
+            - name: XP_MAX
+              value: "300"
+            
+            # ELO
+            - name: ELO_STARTING
+              value: "1200"
+            - name: ELO_MIN
+              value: "100"
+            - name: ELO_MAX
+              value: "3000"
+            
+            # Secrets from Secret Manager
+            - name: SUPABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-url
+                  key: latest
+            - name: SUPABASE_ANON_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-anon-key
+                  key: latest
+            - name: SUPABASE_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-service-key
+                  key: latest
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: redis-url
+                  key: latest
+            - name: JWT_PRIVATE_KEY_PATH
+              value: "/secrets/jwt/private.pem"
+            - name: JWT_PUBLIC_KEY_PATH
+              value: "/secrets/jwt/public.pem"
+          
+          # Volume mounts for secrets
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /secrets/jwt
+              readOnly: true
+      
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: jwt-keys
+            items:
+              - key: private-key
+                path: private.pem
+              - key: public-key
+                path: public.pem
+
+  traffic:
+    - percent: 100
+      latestRevision: true

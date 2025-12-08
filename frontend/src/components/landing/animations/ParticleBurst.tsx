@@ -27,7 +27,7 @@ const COLORS = ['#6366f1', '#8b5cf6', '#a855f7', '#ffffff']
 export function ParticleBurst({ count = 10 }: ParticleBurstProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const particlesRef = useRef<Particle[]>([])
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current

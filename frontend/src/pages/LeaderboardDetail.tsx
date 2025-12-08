@@ -10,6 +10,7 @@ import { leaderboardAPI } from '@/services/api'
 import { CATEGORY_META, ALL_CATEGORIES } from '@/types/leaderboard'
 import type { LeaderboardEntry, LeaderboardCategory, LeaderboardResponse, UserRankResponse } from '@/types/leaderboard'
 import { useAuthStore } from '@/stores/authStore'
+import { RankBadge, RankProgress } from '@/components/leaderboard/RankBadge'
 
 const PAGE_SIZE = 20
 
@@ -131,9 +132,14 @@ export function LeaderboardDetail() {
               <div>
                 <p className="text-xs text-neutral-500 mb-1">Your Rank</p>
                 {myRank.eligible ? (
-                  <p className="text-2xl font-semibold text-white tabular-nums">
-                    #{myRank.rank?.toLocaleString()}
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-2xl font-semibold text-white tabular-nums">
+                      #{myRank.rank?.toLocaleString()}
+                    </p>
+                    {category === 'elo' && (
+                      <RankBadge elo={myRank.stat_value} size="sm" showElo={false} />
+                    )}
+                  </div>
                 ) : (
                   <p className="text-sm text-neutral-400">Not eligible yet</p>
                 )}
@@ -153,6 +159,12 @@ export function LeaderboardDetail() {
                 </button>
               )}
             </div>
+            {/* ELO Progress to next tier */}
+            {category === 'elo' && myRank.eligible && (
+              <div className="mt-4">
+                <RankProgress elo={myRank.stat_value} />
+              </div>
+            )}
           </div>
         )}
 

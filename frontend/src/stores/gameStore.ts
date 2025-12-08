@@ -52,6 +52,7 @@ interface GameState {
   // Actions
   setLobbyId: (id: string) => void
   setStatus: (status: GameStatus) => void
+  setTotalQuestions: (total: number) => void
   setLocalPlayer: (id: string, name: string | null) => void
   setOpponent: (id: string | null, name: string | null) => void
   setQuestion: (question: Question) => void
@@ -74,7 +75,7 @@ const initialState = {
   opponentScore: 0,
   currentQuestion: null,
   questionNumber: 0,
-  totalQuestions: 15,
+  totalQuestions: 10,
   selectedAnswer: null,
   answerSubmitted: false,
   roundResult: null,
@@ -87,6 +88,8 @@ export const useGameStore = create<GameState>((set) => ({
   setLobbyId: (lobbyId) => set({ lobbyId }),
 
   setStatus: (status) => set({ status }),
+
+  setTotalQuestions: (totalQuestions) => set({ totalQuestions }),
 
   setLocalPlayer: (localPlayerId, localPlayerName) =>
     set({ localPlayerId, localPlayerName }),

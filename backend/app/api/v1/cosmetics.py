@@ -1,13 +1,13 @@
 """
 Cosmetics API endpoints.
-Requirements: 3.3-3.6
+Requirements: 3.3-3.6, 5.5 (coin balance integration)
 """
 
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, status, Query
 
-from app.api.deps import CurrentUser, CosmeticsServiceDep
+from app.api.deps import CurrentUser, CosmeticsServiceDep, BalanceServiceDep
 from app.core.responses import APIResponse
 from app.schemas.cosmetic import (
     Cosmetic,
@@ -21,6 +21,7 @@ from app.schemas.cosmetic import (
     EquipRequest,
     UnequipRequest,
 )
+from app.schemas.coin import InsufficientFundsError
 
 
 router = APIRouter(prefix="/cosmetics", tags=["Cosmetics"])
@@ -143,22 +144,72 @@ async def purchase_cosmetic(
     cosmetic_id: str,
     current_user: CurrentUser,
     cosmetics_service: CosmeticsServiceDep,
+    balance_service: BalanceServiceDep,
 ):
     """
     Purchase a cosmetic and add to inventory.
     
+    Checks coin balance and debits the price before adding to inventory.
     The cosmetic will be added to the user's inventory with the current timestamp.
-    Returns error if already owned or cosmetic not found.
+    Returns error if already owned, not found, or insufficient funds.
+    
+    Requirements: 3.4, 5.5
     """
+    # Get cosmetic to check price
+    cosmetic = await cosmetics_service.get_cosmetic(cosmetic_id)
+    if not cosmetic:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Cosmetic not found",
+        )
+    
+    # Check if already owned
+    inventory = await cosmetics_service.get_inventory(current_user.id)
+    owned_ids = {item.cosmetic_id for item in inventory.items}
+    if cosmetic_id in owned_ids:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Cosmetic already owned",
+        )
+    
+    # Check and debit balance (Requirements: 5.5)
+    price = cosmetic.price_coins or 0
+    if price > 0:
+        try:
+            await balance_service.debit_coins(
+                user_id=current_user.id,
+                amount=price,
+                source="cosmetic_purchase",
+            )
+        except InsufficientFundsError as e:
+            raise HTTPException(
+                status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                detail={
+                    "message": "Insufficient coin balance",
+                    "current_balance": e.current_balance,
+                    "required": e.required,
+                    "shortfall": e.required - e.current_balance,
+                },
+            )
+    
+    # Add to inventory
     item = await cosmetics_service.purchase_cosmetic(
         user_id=current_user.id,
         cosmetic_id=cosmetic_id,
     )
     
     if not item:
+        # Refund if purchase failed (shouldn't happen after checks above)
+        if price > 0:
+            await balance_service.credit_coins(
+                user_id=current_user.id,
+                amount=price,
+                transaction_id=f"refund_{cosmetic_id}_{current_user.id}",
+                source="refund",
+            )
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Cosmetic already owned or not found",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to add cosmetic to inventory",
         )
     
     return APIResponse.ok(item)

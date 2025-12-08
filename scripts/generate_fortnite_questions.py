@@ -1,0 +1,739 @@
+#!/usr/bin/env python3
+"""
+Generate comprehensive Fortnite trivia questions from the knowledge document.
+This script outputs a JSON file with 400+ questions organized by difficulty and subcategory.
+"""
+
+import json
+from datetime import datetime
+
+def generate_questions():
+    """Generate all Fortnite trivia questions."""
+    questions = []
+    
+    # ============================================
+    # SECTION 1: EASY QUESTIONS - Basic Knowledge
+    # ============================================
+    
+    easy_questions = [
+        # History & Basics
+        {"text": "In what year did Fortnite Battle Royale launch?", "options": ["2016", "2017", "2018", "2019"], "correct_index": 1, "subcategory": "history"},
+        {"text": "Which company developed Fortnite?", "options": ["Activision", "EA Games", "Epic Games", "Ubisoft"], "correct_index": 2, "subcategory": "history"},
+        {"text": "What is the name of the in-game currency?", "options": ["V-Coins", "V-Bucks", "F-Bucks", "Battle Coins"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What is the maximum number of players in a standard Battle Royale match?", "options": ["50", "75", "100", "150"], "correct_index": 2, "subcategory": "history"},
+        {"text": "How much health does a player start with?", "options": ["50", "75", "100", "150"], "correct_index": 2, "subcategory": "history"},
+        {"text": "What is the maximum shield you can have?", "options": ["50", "100", "150", "200"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What material provides the most health when built?", "options": ["Wood", "Stone", "Metal", "All equal"], "correct_index": 2, "subcategory": "history"},
+        {"text": "What is the name of the storm that closes in during a match?", "options": ["The Circle", "The Storm", "The Zone", "The Ring"], "correct_index": 1, "subcategory": "history"},
+        {"text": "How many tiers are in a standard Battle Pass?", "options": ["50", "75", "100", "150"], "correct_index": 2, "subcategory": "history"},
+        {"text": "What is the standard V-Bucks cost of a Battle Pass?", "options": ["750", "950", "1200", "1500"], "correct_index": 1, "subcategory": "history"},
+        {"text": "How many total chapters have been released as of 2025?", "options": ["4", "5", "6", "7"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "What is the approximate average length of a Fortnite season?", "options": ["30-40 days", "50-60 days", "70-75 days", "90-100 days"], "correct_index": 2, "subcategory": "seasons"},
+        
+        # Weapons & Items
+        {"text": "What color represents common rarity items?", "options": ["White", "Green", "Gray", "Blue"], "correct_index": 2, "subcategory": "weapons"},
+        {"text": "What is the rarest weapon rarity color?", "options": ["Purple", "Gold", "Orange (Mythic)", "Blue"], "correct_index": 2, "subcategory": "weapons"},
+        {"text": "What color represents Legendary rarity?", "options": ["Purple", "Gold/Orange", "Blue", "Green"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What color represents Epic rarity?", "options": ["Purple", "Gold", "Blue", "Green"], "correct_index": 0, "subcategory": "weapons"},
+        {"text": "What color represents Rare rarity?", "options": ["Purple", "Gold", "Blue", "Green"], "correct_index": 2, "subcategory": "weapons"},
+        {"text": "What color represents Uncommon rarity?", "options": ["Purple", "Gold", "Blue", "Green"], "correct_index": 3, "subcategory": "weapons"},
+        
+        # Cosmetics
+        {"text": "Which emote became the most iconic Fortnite dance?", "options": ["Floss", "Orange Justice", "Take the L", "Default Dance"], "correct_index": 3, "subcategory": "cosmetics"},
+        {"text": "What is the name of the iconic purple cube?", "options": ["Kevin", "Steve", "Bob", "Carl"], "correct_index": 0, "subcategory": "history"},
+        
+        # Events
+        {"text": "Which rapper performed the Astronomical concert?", "options": ["Drake", "Travis Scott", "Marshmello", "Eminem"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What happened at the end of Chapter 1?", "options": ["Map flooded", "Black hole", "Aliens invaded", "Volcano erupted"], "correct_index": 1, "subcategory": "events"},
+        
+        # Collaborations
+        {"text": "Which superhero franchise had a major Season in Chapter 2?", "options": ["DC", "Marvel", "Image Comics", "Dark Horse"], "correct_index": 1, "subcategory": "collabs"},
+        {"text": "Which Star Wars character first appeared in Fortnite?", "options": ["Luke Skywalker", "Darth Vader", "The Mandalorian", "Boba Fett"], "correct_index": 2, "subcategory": "collabs"},
+    ]
+    
+    for q in easy_questions:
+        q["difficulty"] = "easy"
+        questions.append(q)
+
+    # ============================================
+    # SECTION 2: MEDIUM QUESTIONS - Moderate Knowledge
+    # ============================================
+    
+    medium_questions = [
+        # Chapter 1 Seasons
+        {"text": "What was the theme of Chapter 1, Season 2?", "options": ["Space", "Medieval/Fantasy", "Pirates", "Superheroes"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 2?", "options": ["Omega", "Black Knight", "Ice King", "Dire"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "How long did Chapter 1, Season 2 last?", "options": ["50 days", "70 days", "84 days", "100 days"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What weapon was added in Chapter 1, Season 2?", "options": ["Rocket Launcher", "Crossbow", "Minigun", "Hunting Rifle"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What POI was added in Chapter 1, Season 2?", "options": ["Tilted Towers", "Risky Reels", "Paradise Palms", "Lazy Links"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What was the theme of Chapter 1, Season 3?", "options": ["Medieval", "Meteor/Space", "Pirates", "Winter"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 3?", "options": ["Omega", "Carbide", "Black Knight", "Drift"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What item was introduced in Chapter 1, Season 3?", "options": ["Launch Pad", "Port-a-Fort", "Rift-to-Go", "Shockwave"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What was the theme of Chapter 1, Season 4?", "options": ["Medieval", "Superheroes", "Pirates", "Winter"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the first major live event called?", "options": ["The End", "The Blast Off", "The Ice Storm", "The Unvaulting"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What did The Blast Off event create in the sky?", "options": ["A black hole", "A massive rift", "A meteor", "A rainbow"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What was the theme of Chapter 1, Season 5?", "options": ["Halloween", "Worlds Collide", "Winter", "Superheroes"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What vehicle was introduced in Chapter 1, Season 5?", "options": ["Shopping Cart", "ATK", "X-4 Stormwing", "Boat"], "correct_index": 1, "subcategory": "history"},
+        {"text": "Which skin introduced progressive unlocks in Season 5?", "options": ["Omega", "Drift", "Dire", "Ice King"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What was the theme of Chapter 1, Season 6?", "options": ["Pirates", "Halloween/Horror", "Winter", "Futuristic"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 6?", "options": ["Ice King", "Dire", "Luxe", "Omega"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What was the theme of Chapter 1, Season 7?", "options": ["Halloween", "Pirates", "Winter/Christmas", "Superheroes"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 7?", "options": ["Dire", "Ice King", "Luxe", "Black Knight"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What vehicle was introduced in Chapter 1, Season 7?", "options": ["ATK", "X-4 Stormwing", "Boat", "Car"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What event occurred in Chapter 1, Season 7?", "options": ["The Blast Off", "The Ice Storm", "The Unvaulting", "The End"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What POI was added in Chapter 1, Season 7?", "options": ["Tilted Towers", "Polar Peak", "Paradise Palms", "Lazy Lagoon"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What was the theme of Chapter 1, Season 8?", "options": ["Winter", "Pirate/Treasure", "Futuristic", "Halloween"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What iconic cosmetic debuted in Chapter 1, Season 8?", "options": ["Black Knight", "Peely", "Drift", "Omega"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What weapon did players vote to unvault in Season 8?", "options": ["Infinity Blade", "Drum Gun", "Guided Missile", "Zapotron"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What was the theme of Chapter 1, Season 9?", "options": ["Pirates", "Futuristic/Cyberpunk", "Medieval", "Winter"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What controversial vehicle was in Chapter 1, Season 9?", "options": ["X-4 Stormwing", "B.R.U.T.E.", "Boat", "Helicopter"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What was the Season 9 finale event called?", "options": ["The End", "The Final Showdown", "The Device", "The Devourer"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What was the theme of Chapter 1, Season X?", "options": ["Multiverse/Time Fracture", "Pirates", "Winter", "Superheroes"], "correct_index": 0, "subcategory": "seasons"},
+        {"text": "How long did the black hole event last?", "options": ["30 minutes", "1 hour", "2+ hours", "24 hours"], "correct_index": 2, "subcategory": "events"},
+        
+        # Chapter 2 Seasons
+        {"text": "What was the longest season in Fortnite history?", "options": ["Ch1 S7", "Ch2 S1", "Ch2 S2", "Ch3 S1"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 1?", "options": ["100 days", "119 days", "128 days", "150 days"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "What was the theme of Chapter 2, Season 1?", "options": ["Spy", "Fresh Start", "Marvel", "Flooding"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What new mechanic was introduced in Chapter 2, Season 1?", "options": ["Building", "Swimming", "Sliding", "Mantling"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What was the theme of Chapter 2, Season 2?", "options": ["Spy/Secret Agents", "Marvel", "Flooding", "Primal"], "correct_index": 0, "subcategory": "seasons"},
+        {"text": "What was the secret Battle Pass skin in Chapter 2, Season 2?", "options": ["Wolverine", "Deadpool", "Spider-Man", "Batman"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What two factions fought in Chapter 2, Season 2?", "options": ["IO vs Seven", "Ghost vs Shadow", "Aliens vs Humans", "Heroes vs Villains"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What POI replaced Tilted Towers in Chapter 2, Season 2?", "options": ["The Yacht", "The Agency", "The Rig", "The Grotto"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What was the theme of Chapter 2, Season 3?", "options": ["Spy", "Flooded Island", "Marvel", "Primal"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the Tier 100 skin in Chapter 2, Season 3?", "options": ["Jules", "Ocean", "Kit", "Fade"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What was the theme of Chapter 2, Season 4?", "options": ["Spy", "Flooding", "Marvel/Nexus War", "Primal"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "What was the Tier 100 skin in Chapter 2, Season 4?", "options": ["Thor", "Iron Man", "Wolverine", "Doctor Doom"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "Which Marvel character was Tier 1 in Chapter 2, Season 4?", "options": ["Iron Man", "Thor", "Wolverine", "Groot"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What villain threatened the island in Chapter 2, Season 4?", "options": ["Thanos", "Galactus", "Doctor Doom", "Loki"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What was the Chapter 2, Season 4 finale event called?", "options": ["The End", "The Devourer of Worlds", "Nexus War", "Zero Crisis"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What was the theme of Chapter 2, Season 5?", "options": ["Marvel", "Zero Point/Multiverse", "Primal", "Aliens"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "Which Star Wars character was Tier 1 in Chapter 2, Season 5?", "options": ["Boba Fett", "The Mandalorian", "Darth Vader", "Kylo Ren"], "correct_index": 1, "subcategory": "collabs"},
+        {"text": "What was the theme of Chapter 2, Season 6?", "options": ["Zero Point", "Primal/Nature", "Aliens", "Cubed"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What new mechanic was introduced in Chapter 2, Season 6?", "options": ["Swimming", "Crafting", "Sliding", "Mantling"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What was the theme of Chapter 2, Season 7?", "options": ["Primal", "Alien Invasion", "Cubed", "Flipped"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "Which DC hero appeared in Chapter 2, Season 7?", "options": ["Batman", "Superman", "Wonder Woman", "The Flash"], "correct_index": 1, "subcategory": "collabs"},
+        {"text": "What was the theme of Chapter 2, Season 8?", "options": ["Aliens", "Cubed/Kevin Returns", "Flipped", "Medieval"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "Which Marvel villain appeared in Chapter 2, Season 8?", "options": ["Thanos", "Galactus", "Carnage", "Venom"], "correct_index": 2, "subcategory": "collabs"},
+        
+        # Chapter 3 Seasons
+        {"text": "What was unique about Chapter 3's map reveal?", "options": ["It flooded", "It flipped over", "It exploded", "It froze"], "correct_index": 1, "subcategory": "map"},
+        {"text": "Which Marvel hero was in Chapter 3, Season 1?", "options": ["Iron Man", "Thor", "Spider-Man", "Wolverine"], "correct_index": 2, "subcategory": "collabs"},
+        {"text": "What new movement mechanic was added in Chapter 3, Season 1?", "options": ["Swimming", "Sliding", "Mantling", "Both B and C"], "correct_index": 3, "subcategory": "history"},
+        {"text": "What mythic weapon did Spider-Man bring?", "options": ["Repulsors", "Web Shooters", "Shield", "Hammer"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What revolutionary change happened in Chapter 3, Season 2?", "options": ["No weapons", "No building", "No vehicles", "No storm"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What replaced building in Chapter 3, Season 2?", "options": ["Shields", "Overshield", "Armor", "Extra health"], "correct_index": 1, "subcategory": "history"},
+        {"text": "What was the theme of Chapter 3, Season 3?", "options": ["Resistance", "Vibin'/Festival", "Paradise", "Medieval"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What POI was added in Chapter 3, Season 3?", "options": ["The Agency", "Rave Cave", "The Citadel", "Paradise"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What was the theme of Chapter 3, Season 4?", "options": ["Vibin'", "Paradise", "Medieval", "Underground"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "How many biomes did Chapter 3's map have?", "options": ["2", "3", "4", "5"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What were the three biomes in Chapter 3?", "options": ["Desert, Snow, Grass", "Snow, Tropical, Desert", "Forest, Beach, Mountain", "Urban, Rural, Wild"], "correct_index": 1, "subcategory": "map"},
+        
+        # Chapter 4 Seasons
+        {"text": "What was the theme of Chapter 4?", "options": ["Futuristic", "Medieval Fantasy", "Underground", "Japanese"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "Which game character was in Chapter 4, Season 1?", "options": ["Master Chief", "Geralt of Rivia", "Kratos", "Lara Croft"], "correct_index": 1, "subcategory": "collabs"},
+        {"text": "Which game character was Tier 100 in Chapter 4, Season 1?", "options": ["Geralt", "Doom Slayer", "Kratos", "Master Chief"], "correct_index": 1, "subcategory": "collabs"},
+        {"text": "What was the main POI in Chapter 4?", "options": ["The Agency", "Tilted Towers", "The Citadel", "Paradise"], "correct_index": 2, "subcategory": "map"},
+        {"text": "What was the theme of Chapter 4, Season 2?", "options": ["Medieval", "MEGA", "WILDS", "Last Resort"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the theme of Chapter 4, Season 3?", "options": ["MEGA", "WILDS/Safari", "Last Resort", "Underground"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "Which PlayStation character appeared in Chapter 4, Season 3?", "options": ["Nathan Drake", "Kratos", "Aloy", "Jin Sakai"], "correct_index": 1, "subcategory": "collabs"},
+        {"text": "What was the theme of Chapter 4, Season 4?", "options": ["WILDS", "Last Resort", "Underground", "Hunters"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What meme franchise appeared in Chapter 4, Season 4?", "options": ["Among Us", "Skibidi Toilet", "Minecraft", "Roblox"], "correct_index": 1, "subcategory": "collabs"},
+        
+        # Chapter 5 Seasons
+        {"text": "What was the theme of Chapter 5?", "options": ["Medieval", "Underground", "Japanese", "Superheroes"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What major new system was added in Chapter 5, Season 1?", "options": ["Crafting", "Weapon Mods", "Building 2.0", "Vehicles"], "correct_index": 1, "subcategory": "history"},
+        {"text": "How many mod slots does a Legendary weapon have?", "options": ["2", "3", "4", "5"], "correct_index": 2, "subcategory": "weapons"},
+        {"text": "How many mod slots does an Uncommon weapon have?", "options": ["1", "2", "3", "4"], "correct_index": 0, "subcategory": "weapons"},
+        {"text": "What was the theme of Chapter 5, Season 2?", "options": ["Underground", "Myths & Mortals", "Wrecked", "Absolute Doom"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What mythology inspired Chapter 5, Season 2?", "options": ["Norse", "Greek", "Egyptian", "Japanese"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the theme of Chapter 5, Season 3?", "options": ["Myths", "Wrecked/Post-Apocalyptic", "Absolute Doom", "Hunters"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the theme of Chapter 5, Season 4?", "options": ["Wrecked", "Absolute Doom", "Hunters", "Lawless"], "correct_index": 1, "subcategory": "seasons"},
+        
+        # Chapter 6 Seasons
+        {"text": "What culture inspired Chapter 6?", "options": ["Greek", "Norse", "Japanese", "Egyptian"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "What was the theme of Chapter 6, Season 1?", "options": ["Lawless", "Demon Hunters", "Super", "Underground"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What Japanese term appears in Chapter 6, Season 1's title?", "options": ["Samurai", "Ninja", "鬼 (Oni/Demon)", "Shogun"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "What was the theme of Chapter 6, Season 2?", "options": ["Hunters", "Lawless/Outlaw", "Super", "Medieval"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the theme of Chapter 6, Season 3?", "options": ["Lawless", "Super/Superheroes", "Medieval", "Primal"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "Which DC hero is featured in Chapter 6, Season 3?", "options": ["Batman", "Superman", "Wonder Woman", "Aquaman"], "correct_index": 1, "subcategory": "collabs"},
+        
+        # Events
+        {"text": "When did Travis Scott's Astronomical concert happen?", "options": ["March 2020", "April 2020", "May 2020", "June 2020"], "correct_index": 1, "subcategory": "events"},
+        {"text": "How many concurrent viewers watched The End event on Twitch?", "options": ["5 million", "10 million", "15+ million", "20 million"], "correct_index": 2, "subcategory": "events"},
+        {"text": "What event let players vote to unvault a weapon?", "options": ["The End", "The Unvaulting", "The Device", "The Devourer"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What was the special event between Chapter 4 and 5?", "options": ["Fortnite OG", "Fortnite Remix", "Fortnite Classic", "Fortnite Rewind"], "correct_index": 0, "subcategory": "events"},
+        {"text": "How long was the Fortnite OG event?", "options": ["14 days", "21 days", "29 days", "45 days"], "correct_index": 2, "subcategory": "events"},
+        {"text": "What did Fortnite OG recreate?", "options": ["Chapter 2 map", "Chapter 1 map", "Original weapons only", "Both B and C"], "correct_index": 3, "subcategory": "events"},
+        
+        # Map & POIs
+        {"text": "What shape was Chapter 1's island?", "options": ["Circular", "Rectangular", "Square", "Triangular"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What shape was Chapter 2's island?", "options": ["Circular", "Rectangular", "Square", "Triangular"], "correct_index": 0, "subcategory": "map"},
+        {"text": "Which POI is considered the most iconic in Fortnite?", "options": ["Pleasant Park", "Tilted Towers", "Retail Row", "Salty Springs"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What POI was a drive-in movie theater?", "options": ["Lazy Links", "Risky Reels", "Paradise Palms", "Junk Junction"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What POI was an underground villain base in Chapter 2?", "options": ["The Agency", "The Grotto", "The Yacht", "The Rig"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What POI was an oil platform in Chapter 2?", "options": ["The Agency", "The Grotto", "The Yacht", "The Rig"], "correct_index": 3, "subcategory": "map"},
+        {"text": "What POI was a nightclub in Chapter 3?", "options": ["The Agency", "Rave Cave", "The Citadel", "Paradise"], "correct_index": 1, "subcategory": "map"},
+        
+        # Weapons
+        {"text": "What was the 'Double Pump' meta?", "options": ["Two rocket launchers", "Two shotguns", "Two SMGs", "Two ARs"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What weapon shoots through structures?", "options": ["Heavy Sniper", "Railgun", "Rocket Launcher", "Minigun"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What weapon was Midas' signature mythic?", "options": ["Minigun", "Drum Gun", "AR", "Shotgun"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What type of weapon is the Boom Bow?", "options": ["Sniper", "Explosive bow", "Shotgun", "SMG"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What weapon lets you grapple and swing?", "options": ["Harpoon Gun", "Web Shooters", "Grapple Gun", "All of the above"], "correct_index": 3, "subcategory": "weapons"},
+        
+        # Cosmetics
+        {"text": "What tier was Black Knight in Chapter 1, Season 2?", "options": ["Tier 50", "Tier 70", "Tier 100", "Tier 1"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What level was required for Golden Peely?", "options": ["Level 100", "Level 200", "Level 350", "Level 500"], "correct_index": 2, "subcategory": "cosmetics"},
+        {"text": "Which skin had glow progression in Season 4?", "options": ["Black Knight", "Omega", "Drift", "Ice King"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What was the first customizable Battle Pass skin?", "options": ["Drift", "Maya", "Kymera", "Toona Fish"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "Which alien skin was fully customizable in Chapter 2?", "options": ["Kymera", "Zyg", "Slone", "Joey"], "correct_index": 0, "subcategory": "cosmetics"},
+    ]
+    
+    for q in medium_questions:
+        q["difficulty"] = "medium"
+        questions.append(q)
+
+    # ============================================
+    # SECTION 3: HARD QUESTIONS - Expert Knowledge
+    # ============================================
+    
+    hard_questions = [
+        # Specific Dates & Durations
+        {"text": "What was the exact date Fortnite BR launched?", "options": ["Sept 12, 2017", "Oct 25, 2017", "Dec 14, 2017", "Jan 1, 2018"], "correct_index": 0, "subcategory": "history"},
+        {"text": "How long was Chapter 1, Season 7?", "options": ["70 days", "78 days", "84 days", "90 days"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 2?", "options": ["100 days", "119 days", "128 days", "140 days"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the shortest seasonal event?", "options": ["Fortnite OG", "Fortnite Remix", "Galactic Battle", "Winterfest"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "How long was Galactic Battle?", "options": ["28 days", "36 days", "45 days", "60 days"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "How long was Fortnite Remix?", "options": ["21 days", "28 days", "36 days", "45 days"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "What was the total duration of Chapter 1?", "options": ["500 days", "650 days", "768 days", "900 days"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "How many seasons were in Chapter 1?", "options": ["8", "10", "11", "12"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "How many seasons were in Chapter 2?", "options": ["6", "7", "8", "9"], "correct_index": 2, "subcategory": "seasons"},
+        {"text": "How many seasons were in Chapter 3?", "options": ["3", "4", "5", "6"], "correct_index": 1, "subcategory": "seasons"},
+        {"text": "How many seasons were in Chapter 4?", "options": ["3", "4", "5", "6"], "correct_index": 1, "subcategory": "seasons"},
+        
+        # Specific Event Details
+        {"text": "Who launched the rocket in The Blast Off?", "options": ["The Foundation", "The Visitor", "Agent Jones", "Midas"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What date was The Blast Off event?", "options": ["May 30, 2018", "June 30, 2018", "July 30, 2018", "Aug 30, 2018"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What date was The Ice Storm event?", "options": ["Dec 19, 2018", "Jan 19, 2019", "Feb 19, 2019", "Mar 19, 2019"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What date was The Unvaulting event?", "options": ["April 5, 2019", "May 5, 2019", "June 5, 2019", "July 5, 2019"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What date was The Final Showdown?", "options": ["June 20, 2019", "July 20, 2019", "Aug 20, 2019", "Sept 20, 2019"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What date was The End event?", "options": ["Sept 13, 2019", "Oct 13, 2019", "Nov 13, 2019", "Dec 13, 2019"], "correct_index": 1, "subcategory": "events"},
+        {"text": "What date was The Devourer of Worlds?", "options": ["Nov 1, 2020", "Dec 1, 2020", "Jan 1, 2021", "Feb 1, 2021"], "correct_index": 1, "subcategory": "events"},
+        
+        # Esports
+        {"text": "What was the 2019 World Cup prize pool?", "options": ["$10M", "$20M", "$30M", "$40M"], "correct_index": 2, "subcategory": "history"},
+        {"text": "Who won the 2019 World Cup Solo?", "options": ["Tfue", "Bugha", "Benjyfishy", "Clix"], "correct_index": 1, "subcategory": "history"},
+        {"text": "How old was Bugha when he won?", "options": ["14", "15", "16", "17"], "correct_index": 2, "subcategory": "history"},
+        {"text": "How much did Bugha win?", "options": ["$1M", "$2M", "$3M", "$4M"], "correct_index": 2, "subcategory": "history"},
+        {"text": "What format is FNCS 2025?", "options": ["Solos", "Duos", "Trios", "Squads"], "correct_index": 2, "subcategory": "history"},
+        {"text": "What was the 2023 FNCS Global Championship prize?", "options": ["$2M", "$4M", "$6M", "$8M"], "correct_index": 1, "subcategory": "history"},
+        
+        # Specific Cosmetic Details
+        {"text": "What tier was Renegade Raider in Season 1?", "options": ["Tier 10", "Tier 20", "Tier 50", "Tier 100"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What level was required for Omega's full glow?", "options": ["Level 65", "Level 80", "Level 100", "Level 120"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "How many pages are in a Chapter 6 Battle Pass?", "options": ["10", "12", "14", "16"], "correct_index": 2, "subcategory": "cosmetics"},
+        {"text": "What tier was Jennifer Walters in Chapter 2, Season 4?", "options": ["Tier 1", "Tier 22", "Tier 50", "Tier 100"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What tier was Groot in Chapter 2, Season 4?", "options": ["Tier 22", "Tier 38", "Tier 53", "Tier 67"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What tier was Storm in Chapter 2, Season 4?", "options": ["Tier 38", "Tier 53", "Tier 67", "Tier 80"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What tier was Doctor Doom in Chapter 2, Season 4?", "options": ["Tier 53", "Tier 67", "Tier 80", "Tier 93"], "correct_index": 1, "subcategory": "cosmetics"},
+        {"text": "What tier was Mystique in Chapter 2, Season 4?", "options": ["Tier 67", "Tier 80", "Tier 93", "Tier 100"], "correct_index": 1, "subcategory": "cosmetics"},
+        
+        # Specific Weapon/Item Details
+        {"text": "How many Infinity Stones were mythic weapons?", "options": ["4", "5", "6", "7"], "correct_index": 2, "subcategory": "weapons"},
+        {"text": "How many Society Medallions were in Chapter 5, Season 1?", "options": ["3", "4", "5", "6"], "correct_index": 2, "subcategory": "weapons"},
+        {"text": "What effect do Society Medallions give?", "options": ["Damage boost", "Shield regen", "Speed boost", "Invisibility"], "correct_index": 1, "subcategory": "weapons"},
+        {"text": "What item gives low-gravity effect in Chapter 5?", "options": ["Slurp Juice", "FlowBerry", "Chug Splash", "Shield Keg"], "correct_index": 1, "subcategory": "weapons"},
+        
+        # Map Specifics
+        {"text": "How many named POIs were in Chapter 1?", "options": ["10+", "15+", "20+", "25+"], "correct_index": 1, "subcategory": "map"},
+        {"text": "How many named POIs were in Chapter 2?", "options": ["15+", "20+", "25+", "30+"], "correct_index": 1, "subcategory": "map"},
+        {"text": "What was the first vehicle ever added?", "options": ["ATK", "Shopping Cart", "Boat", "Plane"], "correct_index": 1, "subcategory": "history"},
+        
+        # Revenue & Stats
+        {"text": "What was Fortnite's estimated 2020 revenue?", "options": ["$1.2B", "$1.8B", "$2.4B", "$3.0B"], "correct_index": 2, "subcategory": "history"},
+        {"text": "What is Fortnite's estimated total revenue (2017-2025)?", "options": ["$10B+", "$12B+", "$15B+", "$20B+"], "correct_index": 2, "subcategory": "history"},
+        {"text": "How much does 1,000 V-Bucks cost?", "options": ["$7.99", "$9.99", "$11.99", "$14.99"], "correct_index": 1, "subcategory": "history"},
+        {"text": "How much does the Crew subscription cost monthly?", "options": ["$7.99", "$9.99", "$11.99", "$14.99"], "correct_index": 1, "subcategory": "history"},
+    ]
+    
+    for q in hard_questions:
+        q["difficulty"] = "hard"
+        questions.append(q)
+
+    # ============================================
+    # SECTION 4: MORE QUESTIONS - Various Topics
+    # ============================================
+    
+    more_questions = [
+        # More Season Themes
+        {"text": "What was Chapter 1, Season 1 called?", "options": ["First Steps", "New World", "The Beginning", "Launch"], "correct_index": 0, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season 2 called?", "options": ["Fort Knights", "Medieval Mayhem", "Castle Chaos", "Knight Time"], "correct_index": 0, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season 4 called?", "options": ["Meteor Strike", "Brace for Impact", "Space Invasion", "Cosmic Chaos"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season 5 called?", "options": ["Worlds Collide", "Dimension Drift", "Reality Rift", "Time Warp"], "correct_index": 0, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season 6 called?", "options": ["Spooky Season", "Darkness Rises", "Halloween Horror", "Night Falls"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season 7 called?", "options": ["Winter Wonderland", "You Better Watch Out", "Ice Age", "Frozen"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season 8 called?", "options": ["Pirate's Life", "X Marks the Spot", "Treasure Hunt", "Sea Dogs"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season 9 called?", "options": ["Neo World", "The Future is Yours", "Cyber City", "Tomorrow"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 1, Season X called?", "options": ["Time Warp", "Out of Time", "Final Chapter", "The End"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 1 called?", "options": ["Fresh Start", "New World", "New Beginning", "Chapter Two"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 2 called?", "options": ["Spy Games", "Top Secret", "Agent Wars", "Shadow vs Ghost"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 3 called?", "options": ["Water World", "Splash Down", "Flooded", "Tidal Wave"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 4 called?", "options": ["Marvel Mayhem", "Nexus War", "Hero Time", "Avengers"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 5 called?", "options": ["Multiverse", "Zero Point", "Reality Break", "Dimension X"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 6 called?", "options": ["Wild", "Primal", "Nature", "Caveman"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 7 called?", "options": ["UFO", "Invasion", "Aliens", "Area 51"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 2, Season 8 called?", "options": ["Kevin Returns", "Cubed", "Corruption", "Dark Ages"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 3, Season 1 called?", "options": ["New Island", "Flipped", "Turned", "Reversed"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 3, Season 2 called?", "options": ["No Build", "Resistance", "Rebellion", "Fight Back"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 3, Season 3 called?", "options": ["Summer", "Vibin'", "Festival", "Party"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 3, Season 4 called?", "options": ["Reality", "Paradise", "Tropical", "Island"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 4, Season 1 called?", "options": ["Medieval", "A New Beginning", "Castle", "Fantasy"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        {"text": "What was Chapter 5, Season 1 called?", "options": ["City", "Underground", "Subway", "Urban"], "correct_index": 1, "difficulty": "medium", "subcategory": "seasons"},
+        
+        # More Tier 100 Skins
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 8?", "options": ["Peely", "Luxe", "Blackheart", "Hybrid"], "correct_index": 1, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 9?", "options": ["Vendetta", "Slurpentine", "Rox", "Sentinel"], "correct_index": 0, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season X?", "options": ["Ultima Knight", "Singularity", "Catalyst", "Eternal Voyager"], "correct_index": 0, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 2, Season 1?", "options": ["Fusion", "Remedy", "8-Ball", "Turk"], "correct_index": 0, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 2, Season 5?", "options": ["Mandalorian", "Menace", "Kondor", "Lexa"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 2, Season 6?", "options": ["Raz", "Spire Assassin", "Tarana", "Cluck"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 2, Season 7?", "options": ["Superman", "Rick Sanchez", "Kymera", "Slone"], "correct_index": 2, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 2, Season 8?", "options": ["Carnage", "Torin", "Fabio", "Charlotte"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        
+        # More Collaborations
+        {"text": "Which Witcher character appeared in Fortnite?", "options": ["Yennefer", "Geralt", "Ciri", "Triss"], "correct_index": 1, "difficulty": "easy", "subcategory": "collabs"},
+        {"text": "Which Doom character appeared in Fortnite?", "options": ["Cyberdemon", "Doom Slayer", "Icon of Sin", "Marauder"], "correct_index": 1, "difficulty": "easy", "subcategory": "collabs"},
+        {"text": "Which God of War character appeared in Fortnite?", "options": ["Atreus", "Kratos", "Baldur", "Thor"], "correct_index": 1, "difficulty": "easy", "subcategory": "collabs"},
+        {"text": "Which X-Men character was unlockable in Chapter 2, Season 4?", "options": ["Cyclops", "Wolverine", "Jean Grey", "Beast"], "correct_index": 1, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "Which Guardian of the Galaxy was in Chapter 2, Season 4?", "options": ["Star-Lord", "Groot", "Rocket", "Drax"], "correct_index": 1, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "Which Avenger was Tier 1 in Chapter 2, Season 4?", "options": ["Iron Man", "Thor", "Captain America", "Hulk"], "correct_index": 1, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "Which Spider-Man variant was available in Chapter 3?", "options": ["Peter Parker only", "Miles Morales only", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What franchise is Baby Yoda from?", "options": ["Star Trek", "Star Wars", "Guardians", "Marvel"], "correct_index": 1, "difficulty": "easy", "subcategory": "collabs"},
+        {"text": "Which Rick and Morty character appeared in Fortnite?", "options": ["Morty", "Rick Sanchez", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        
+        # More Weapons
+        {"text": "What weapon type is the SCAR?", "options": ["SMG", "Assault Rifle", "Sniper", "Shotgun"], "correct_index": 1, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What weapon type is the Pump?", "options": ["SMG", "Assault Rifle", "Sniper", "Shotgun"], "correct_index": 3, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What weapon type is the Bolt?", "options": ["SMG", "Assault Rifle", "Sniper", "Shotgun"], "correct_index": 2, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What was TNTina's mythic weapon?", "options": ["Drum Gun", "Ka-Boom Bow", "Minigun", "AR"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What was Brutus' mythic weapon?", "options": ["Drum Gun", "Ka-Boom Bow", "Minigun", "AR"], "correct_index": 2, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What was Skye's mythic weapon?", "options": ["Drum Gun", "Ka-Boom Bow", "Minigun", "AR"], "correct_index": 3, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What was Meowscles' mythic weapon?", "options": ["Drum Gun", "Peow Peow Rifle", "Minigun", "AR"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What alien weapon shoots through walls?", "options": ["Pulse Rifle", "Railgun", "Plasma Gun", "Kymera Ray"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What primal weapon was wooden?", "options": ["Primal AR", "Primal Shotgun", "Primal Pistol", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What Chapter 5 weapon has a melee focus?", "options": ["Frenzy Shotgun", "Hammer Pump", "Thunder SMG", "Nemesis AR"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        
+        # More Map Questions
+        {"text": "What POI has a diner?", "options": ["Tilted Towers", "Greasy Grove", "Retail Row", "Pleasant Park"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI is a shopping center?", "options": ["Tilted Towers", "Greasy Grove", "Retail Row", "Pleasant Park"], "correct_index": 2, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI is a residential suburb?", "options": ["Tilted Towers", "Greasy Grove", "Retail Row", "Pleasant Park"], "correct_index": 3, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI is an urban center?", "options": ["Tilted Towers", "Greasy Grove", "Retail Row", "Pleasant Park"], "correct_index": 0, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI was a yacht in Chapter 2?", "options": ["The Agency", "The Yacht", "The Rig", "The Grotto"], "correct_index": 1, "difficulty": "easy", "subcategory": "map"},
+        {"text": "What POI was the central spy base?", "options": ["The Agency", "The Yacht", "The Rig", "The Grotto"], "correct_index": 0, "difficulty": "easy", "subcategory": "map"},
+        {"text": "What Chapter 4 POI has a bowling alley?", "options": ["The Citadel", "Anvil Square", "Faulty Splits", "Brutal Bastion"], "correct_index": 2, "difficulty": "hard", "subcategory": "map"},
+        {"text": "What Chapter 4 POI is a medieval village?", "options": ["The Citadel", "Anvil Square", "Faulty Splits", "Brutal Bastion"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What Chapter 4 POI is a massive castle?", "options": ["The Citadel", "Anvil Square", "Faulty Splits", "Brutal Bastion"], "correct_index": 0, "difficulty": "easy", "subcategory": "map"},
+        {"text": "What POI was added for Marvel in Chapter 2?", "options": ["Stark Industries", "Doom's Domain", "Sentinel Graveyard", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI featured Doctor Doom?", "options": ["Stark Industries", "Doom's Domain", "Sentinel Graveyard", "Helicarrier"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What floating POI was in Chapter 2, Season 4?", "options": ["The Yacht", "Helicarrier", "The Rig", "Coral Castle"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI returned in Chapter 3 from Chapter 1?", "options": ["Tilted Towers", "Greasy Grove", "Shifty Shafts", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What was The Seven's base in Chapter 3?", "options": ["The Agency", "Sanctuary", "The Citadel", "Paradise"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        
+        # More Event Questions
+        {"text": "What creature fought the mech in Season 9?", "options": ["Kevin", "A monster", "Galactus", "The Storm King"], "correct_index": 1, "difficulty": "medium", "subcategory": "events"},
+        {"text": "What did the mech use as a sword?", "options": ["A building", "Neo Tilted statue", "A tree", "A rocket"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What dance did the mech do after winning?", "options": ["Default Dance", "Floss", "Orange Justice", "Take the L"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What emerged from the Ice King's sphere?", "options": ["Kevin", "Ice golem", "Monster", "Aliens"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What did the Ice King use to create the golem?", "options": ["Ice", "Kevin cube fragments", "Snow", "Magic"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What broadcast the Ice Storm countdown?", "options": ["Radios", "TVs", "Billboards", "Phones"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What dimension did Kevin reveal?", "options": ["The Upside Down", "The In-Between", "The Sideways", "The Void"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What song premiered at Travis Scott's concert?", "options": ["Sicko Mode", "The Scotts", "Highest in the Room", "Goosebumps"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "Who featured on 'The Scotts' with Travis Scott?", "options": ["Drake", "Kid Cudi", "Kanye West", "The Weeknd"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What character was introduced in The Devourer event?", "options": ["The Foundation", "Agent Jones", "Doctor Slone", "Midas"], "correct_index": 1, "difficulty": "medium", "subcategory": "events"},
+        {"text": "What fought Galactus in The Devourer event?", "options": ["The Seven", "Battle Bus army", "Avengers", "Players alone"], "correct_index": 1, "difficulty": "medium", "subcategory": "events"},
+        
+        # More Mechanics Questions
+        {"text": "What mechanic was added in Chapter 2, Season 1?", "options": ["Building", "Swimming", "Sliding", "Mantling"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What mechanic was added in Chapter 3, Season 1?", "options": ["Swimming", "Sliding", "Crafting", "Mods"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What mechanic was added in Chapter 2, Season 6?", "options": ["Swimming", "Sliding", "Crafting", "Mods"], "correct_index": 2, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What mechanic was added in Chapter 5, Season 1?", "options": ["Swimming", "Sliding", "Crafting", "Weapon Mods"], "correct_index": 3, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What replaced building in Chapter 3, Season 2?", "options": ["Shields", "Overshield", "Armor", "Nothing"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "How much extra HP does Overshield give?", "options": ["50", "75", "100", "150"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What weather was added in Chapter 3?", "options": ["Rain only", "Tornadoes and lightning", "Snow only", "Hurricanes"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What friendly creature roamed Chapter 3's map?", "options": ["Raptor", "Klombo", "Wolf", "Boar"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What can you do while healing in Chapter 5?", "options": ["Sprint", "Slow walk", "Build", "Nothing"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What new item type was added in Chapter 5?", "options": ["Ballistic Shield", "Grapple Blade", "FlowBerry", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "history"},
+        
+        # More Cosmetic Questions
+        {"text": "What was the first R-rated skin in Fortnite?", "options": ["Venom", "Carnage", "Deadpool", "Wolverine"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What skin has a built-in transformation emote?", "options": ["Iron Man", "She-Hulk", "Mystique", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What skin can copy other players' appearances?", "options": ["Iron Man", "She-Hulk", "Mystique", "Deadpool"], "correct_index": 2, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What Chapter 6 skin is a cat demon hunter?", "options": ["Kendo", "Nyanja", "Jade", "Hope"], "correct_index": 1, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What Chapter 6 skin is a cursed guardian?", "options": ["Kendo", "Nyanja", "Jade", "Hope"], "correct_index": 2, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What Chapter 6 skin is a demon hunter warrior?", "options": ["Kendo", "Nyanja", "Jade", "Hope"], "correct_index": 0, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What skin is the main protagonist of Chapter 5?", "options": ["Oscar", "Hope", "Vengeance Jones", "Hermes"], "correct_index": 1, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What skin is a Greek god in Chapter 5, Season 2?", "options": ["Zeus", "Hermes", "Athena", "Poseidon"], "correct_index": 1, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What was the first banana skin?", "options": ["Peely", "Peely Bone", "Agent Peely", "Potassius Peels"], "correct_index": 0, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What variant of Peely is a skeleton?", "options": ["Peely", "Peely Bone", "Agent Peely", "Potassius Peels"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+    ]
+    
+    questions.extend(more_questions)
+
+    # ============================================
+    # SECTION 5: EVEN MORE QUESTIONS
+    # ============================================
+    
+    extra_questions = [
+        # Duration Questions
+        {"text": "How long was Chapter 1, Season 1?", "options": ["44 days", "50 days", "70 days", "84 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 1, Season 3?", "options": ["50 days", "58 days", "70 days", "84 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 1, Season 4?", "options": ["58 days", "70 days", "73 days", "84 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 1, Season 5?", "options": ["70 days", "73 days", "78 days", "84 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 1, Season 6?", "options": ["70 days", "71 days", "78 days", "84 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 1, Season 8?", "options": ["58 days", "70 days", "78 days", "84 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 1, Season 9?", "options": ["70 days", "78 days", "84 days", "90 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 1, Season X?", "options": ["70 days", "73 days", "84 days", "90 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 3?", "options": ["60 days", "71 days", "83 days", "95 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 4?", "options": ["71 days", "83 days", "95 days", "103 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 5?", "options": ["83 days", "95 days", "103 days", "119 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 6?", "options": ["71 days", "85 days", "97 days", "103 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 7?", "options": ["83 days", "85 days", "97 days", "103 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 2, Season 8?", "options": ["71 days", "83 days", "97 days", "103 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 3, Season 1?", "options": ["76 days", "97 days", "105 days", "119 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 3, Season 2?", "options": ["70 days", "76 days", "90 days", "105 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 3, Season 3?", "options": ["76 days", "90 days", "105 days", "119 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 3, Season 4?", "options": ["70 days", "76 days", "90 days", "105 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 4, Season 1?", "options": ["76 days", "90 days", "97 days", "105 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 4, Season 2?", "options": ["76 days", "90 days", "97 days", "105 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 4, Season 3?", "options": ["71 days", "76 days", "90 days", "97 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 4, Season 4?", "options": ["71 days", "76 days", "90 days", "97 days"], "correct_index": 0, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 5, Season 1?", "options": ["76 days", "90 days", "97 days", "105 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 5, Season 2?", "options": ["70 days", "75 days", "84 days", "97 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 5, Season 3?", "options": ["75 days", "84 days", "97 days", "105 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 6, Season 1?", "options": ["70 days", "76 days", "82 days", "90 days"], "correct_index": 2, "difficulty": "hard", "subcategory": "seasons"},
+        {"text": "How long was Chapter 6, Season 2?", "options": ["61 days", "70 days", "76 days", "82 days"], "correct_index": 1, "difficulty": "hard", "subcategory": "seasons"},
+        
+        # More Specific Questions
+        {"text": "What was the first vehicle in Fortnite?", "options": ["ATK", "Shopping Cart", "Boat", "Plane"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What was the first flying vehicle?", "options": ["ATK", "Shopping Cart", "X-4 Stormwing", "Helicopter"], "correct_index": 2, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What was the first water vehicle?", "options": ["Jet Ski", "Boat", "Motorboat", "Shark"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What organization is the main antagonist?", "options": ["The Seven", "IO (Imagined Order)", "The Last Reality", "GHOST"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What group fights against IO?", "options": ["SHADOW", "The Seven", "The Last Reality", "GHOST"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "Who is the leader of The Seven?", "options": ["The Visitor", "The Foundation", "Agent Jones", "The Scientist"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What actor plays The Foundation?", "options": ["Keanu Reeves", "Dwayne Johnson", "Chris Pratt", "Ryan Reynolds"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is Agent Jones' full name?", "options": ["John Jones", "James Jones", "Jack Jones", "Unknown"], "correct_index": 0, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is the Zero Point?", "options": ["A weapon", "Reality's core", "A POI", "A skin"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What happens when the Zero Point is unstable?", "options": ["Nothing", "Rifts open", "Map floods", "Storm stops"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        
+        # Revenue & Business
+        {"text": "How much does 2,800 V-Bucks cost?", "options": ["$19.99", "$24.99", "$29.99", "$34.99"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "How much does 5,000 V-Bucks cost?", "options": ["$29.99", "$34.99", "$39.99", "$44.99"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        {"text": "How much does 13,500 V-Bucks cost?", "options": ["$79.99", "$89.99", "$99.99", "$109.99"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        {"text": "How much does an Epic skin typically cost?", "options": ["800-1000", "1200-1500", "1500-2000", "2000+"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "How much does a Legendary skin typically cost?", "options": ["1200", "1500", "1800", "2000"], "correct_index": 3, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What was Fortnite's estimated 2019 revenue?", "options": ["$800M", "$1.2B", "$1.8B", "$2.4B"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What was Fortnite's estimated 2021 revenue?", "options": ["$1.5B", "$2.0B", "$2.5B", "$3.0B"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        
+        # More Collaboration Questions
+        {"text": "What was the first music artist concert in Fortnite?", "options": ["Travis Scott", "Marshmello", "Ariana Grande", "The Weeknd"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What John Wick skin is in Fortnite?", "options": ["John Wick", "The Reaper", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What Alien franchise character appeared?", "options": ["Alien", "Predator", "Xenomorph", "Ellen Ripley"], "correct_index": 3, "difficulty": "hard", "subcategory": "collabs"},
+        {"text": "What Terminator character appeared?", "options": ["T-800", "T-1000", "Sarah Connor", "Both A and C"], "correct_index": 3, "difficulty": "hard", "subcategory": "collabs"},
+        {"text": "What Street Fighter characters appeared?", "options": ["Ryu only", "Chun-Li only", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What Halo character appeared?", "options": ["Master Chief", "Cortana", "Arbiter", "Noble Six"], "correct_index": 0, "difficulty": "easy", "subcategory": "collabs"},
+        {"text": "What Naruto characters appeared?", "options": ["Naruto only", "Sasuke only", "Multiple characters", "None"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What Dragon Ball characters appeared?", "options": ["Goku only", "Vegeta only", "Multiple characters", "None"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What My Hero Academia characters appeared?", "options": ["Deku only", "All Might only", "Multiple characters", "None"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What Attack on Titan characters appeared?", "options": ["Eren only", "Mikasa only", "Multiple characters", "None"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+    ]
+    
+    questions.extend(extra_questions)
+
+    # ============================================
+    # SECTION 6: FINAL BATCH OF QUESTIONS
+    # ============================================
+    
+    final_questions = [
+        # More Weapon Questions
+        {"text": "What is the Charge Shotgun's unique mechanic?", "options": ["Auto-fire", "Hold to charge damage", "Burst fire", "Silenced"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What weapon has thermal vision?", "options": ["Heavy Sniper", "Thermal AR", "Railgun", "Pulse Rifle"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What explosive weapon has an arc trajectory?", "options": ["Rocket Launcher", "Grenade Launcher", "C4", "Dynamite"], "correct_index": 1, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What weapon can you place on surfaces?", "options": ["Rocket Launcher", "Grenade Launcher", "C4", "Dynamite"], "correct_index": 2, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What is the Harpoon Gun used for?", "options": ["Damage only", "Grappling", "Fishing and damage", "Building"], "correct_index": 2, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What weapon was the Infinity Blade?", "options": ["Ranged", "Melee mythic", "Explosive", "Sniper"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What happened to the Infinity Blade?", "options": ["Still in game", "Vaulted permanently", "Seasonal only", "LTM only"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What is the Shockwave Grenade's effect?", "options": ["Damage", "Knockback without damage", "Healing", "Building"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What is the Boogie Bomb's effect?", "options": ["Damage", "Forces dancing", "Healing", "Building"], "correct_index": 1, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What is the Chug Jug's effect?", "options": ["50 HP", "100 HP", "Full HP and Shield", "200 Shield"], "correct_index": 2, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "How long does a Chug Jug take to consume?", "options": ["5 seconds", "10 seconds", "15 seconds", "20 seconds"], "correct_index": 2, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What does a Small Shield Potion give?", "options": ["25 shield", "50 shield", "75 shield", "100 shield"], "correct_index": 0, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What does a Big Shield Potion give?", "options": ["25 shield", "50 shield", "75 shield", "100 shield"], "correct_index": 1, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What is the max shield from Small Potions?", "options": ["25", "50", "75", "100"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What does a Medkit restore?", "options": ["50 HP", "75 HP", "100 HP", "Full HP"], "correct_index": 3, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What does a Bandage restore?", "options": ["15 HP", "25 HP", "50 HP", "75 HP"], "correct_index": 0, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What is the max HP from Bandages?", "options": ["50", "75", "100", "No limit"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        
+        # More POI Questions
+        {"text": "What POI has a clock tower?", "options": ["Tilted Towers", "Pleasant Park", "Retail Row", "Lazy Lake"], "correct_index": 0, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI is near a volcano?", "options": ["Sunny Steps", "Lazy Lagoon", "Pressure Plant", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI was destroyed by the meteor?", "options": ["Tilted Towers", "Dusty Depot", "Pleasant Park", "Retail Row"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What replaced Dusty Depot after the meteor?", "options": ["Dusty Divot", "Dusty Crater", "Dusty Diner", "Dusty Dunes"], "correct_index": 0, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI has a soccer stadium?", "options": ["Pleasant Park", "Tilted Towers", "Lazy Links", "Paradise Palms"], "correct_index": 0, "difficulty": "hard", "subcategory": "map"},
+        {"text": "What POI has a golf course?", "options": ["Pleasant Park", "Lazy Links", "Paradise Palms", "Retail Row"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI is in a desert biome?", "options": ["Pleasant Park", "Lazy Links", "Paradise Palms", "Retail Row"], "correct_index": 2, "difficulty": "easy", "subcategory": "map"},
+        {"text": "What POI has a haunted castle?", "options": ["Haunted Hills", "Wailing Woods", "Lonely Lodge", "Junk Junction"], "correct_index": 0, "difficulty": "easy", "subcategory": "map"},
+        {"text": "What POI has a forest maze?", "options": ["Haunted Hills", "Wailing Woods", "Lonely Lodge", "Junk Junction"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI has a lodge/cabin?", "options": ["Haunted Hills", "Wailing Woods", "Lonely Lodge", "Junk Junction"], "correct_index": 2, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI has a junkyard?", "options": ["Haunted Hills", "Wailing Woods", "Lonely Lodge", "Junk Junction"], "correct_index": 3, "difficulty": "easy", "subcategory": "map"},
+        
+        # More Cosmetic Questions
+        {"text": "What rarity is the Renegade Raider?", "options": ["Uncommon", "Rare", "Epic", "Legendary"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What rarity is the Black Knight?", "options": ["Uncommon", "Rare", "Epic", "Legendary"], "correct_index": 3, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What rarity is the Skull Trooper?", "options": ["Uncommon", "Rare", "Epic", "Legendary"], "correct_index": 2, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What holiday is Skull Trooper associated with?", "options": ["Christmas", "Halloween", "Easter", "Valentine's"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What holiday is Codename E.L.F. associated with?", "options": ["Christmas", "Halloween", "Easter", "Valentine's"], "correct_index": 0, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is the female version of Skull Trooper?", "options": ["Skull Ranger", "Skull Queen", "Ghoul Trooper", "Bone Queen"], "correct_index": 2, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What skin is a default character?", "options": ["Jonesy", "Ramirez", "Headhunter", "All of the above"], "correct_index": 3, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is the most common default skin name?", "options": ["Jonesy", "Ramirez", "Headhunter", "Hawk"], "correct_index": 0, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What skin type can change appearance?", "options": ["Reactive", "Built-in Emote", "Enlightened", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What does a Reactive skin do?", "options": ["Changes with kills", "Changes with emotes", "Changes with damage", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "cosmetics"},
+        
+        # More Event Questions
+        {"text": "What was the first in-game concert?", "options": ["Travis Scott", "Marshmello", "Ariana Grande", "J Balvin"], "correct_index": 1, "difficulty": "medium", "subcategory": "events"},
+        {"text": "When was the Marshmello concert?", "options": ["January 2019", "February 2019", "March 2019", "April 2019"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What song did Marshmello premiere?", "options": ["Alone", "Happier", "Marsh Walk", "Check This Out"], "correct_index": 2, "difficulty": "hard", "subcategory": "events"},
+        {"text": "How many people attended Travis Scott's concert?", "options": ["10M+", "20M+", "27M+", "40M+"], "correct_index": 2, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What Ariana Grande event was called?", "options": ["Astronomical", "Rift Tour", "Soundwave Series", "Party Royale"], "correct_index": 1, "difficulty": "medium", "subcategory": "events"},
+        {"text": "When was the Rift Tour?", "options": ["June 2021", "July 2021", "August 2021", "September 2021"], "correct_index": 2, "difficulty": "hard", "subcategory": "events"},
+        
+        # More Mechanics Questions
+        {"text": "What is the build limit height?", "options": ["No limit", "100 tiles", "200 tiles", "Varies by mode"], "correct_index": 3, "difficulty": "hard", "subcategory": "history"},
+        {"text": "How many materials can you carry max?", "options": ["500 each", "999 each", "1500 each", "Unlimited"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What happens in the final storm circle?", "options": ["Nothing", "Storm closes completely", "Healing stops", "Building disabled"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What is a Victory Royale?", "options": ["Getting 10 kills", "Being last alive", "Winning a tournament", "Completing challenges"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What is a 'dub' in Fortnite slang?", "options": ["A kill", "A win", "A death", "A build"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What does 'cranking 90s' mean?", "options": ["Shooting fast", "Building quickly upward", "Running fast", "Healing quickly"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is 'box fighting'?", "options": ["Fighting in buildings", "Close-range build battles", "Fighting in boxes you build", "Fighting with fists"], "correct_index": 2, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is 'W-keying'?", "options": ["Winning", "Aggressive pushing", "Walking", "Waiting"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is 'third partying'?", "options": ["Playing trios", "Attacking players already fighting", "Using three weapons", "Building three walls"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is 'rotating'?", "options": ["Spinning", "Moving to the safe zone", "Building in circles", "Changing weapons"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+    ]
+    
+    questions.extend(final_questions)
+    
+    # ============================================
+    # SECTION 7: BONUS QUESTIONS - Push to 500+
+    # ============================================
+    
+    bonus_questions = [
+        # More specific season details
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 1?", "options": ["Black Knight", "Aerial Assault Trooper", "Renegade Raider", "The Reaper"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 4?", "options": ["Omega", "Carbide", "The Visitor", "Valor"], "correct_index": 0, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What was the Tier 100 skin in Chapter 1, Season 5?", "options": ["Drift", "Ragnarok", "Enforcer", "Road Trip"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What skin had lights that changed with level?", "options": ["Black Knight", "Omega", "Drift", "Both B and C"], "correct_index": 3, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What was the secret skin in Chapter 1, Season 4?", "options": ["Omega", "The Visitor", "Enforcer", "A.I.M."], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the secret skin in Chapter 1, Season 5?", "options": ["The Visitor", "Enforcer", "A.I.M.", "The Prisoner"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the secret skin in Chapter 1, Season 6?", "options": ["Enforcer", "A.I.M.", "The Prisoner", "Ruin"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What was the secret skin in Chapter 1, Season 7?", "options": ["A.I.M.", "The Prisoner", "Ruin", "Singularity"], "correct_index": 1, "difficulty": "hard", "subcategory": "cosmetics"},
+        
+        # More POI details
+        {"text": "What POI was added in Chapter 1, Season 5?", "options": ["Tilted Towers", "Paradise Palms", "Polar Peak", "The Block"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI was added in Chapter 1, Season 6?", "options": ["Leaky Lake", "Polar Peak", "Paradise Palms", "Lazy Lagoon"], "correct_index": 0, "difficulty": "hard", "subcategory": "map"},
+        {"text": "What POI was added in Chapter 1, Season 8?", "options": ["Lazy Lagoon", "Polar Peak", "The Block", "Neo Tilted"], "correct_index": 0, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What replaced Tilted Towers in Season 9?", "options": ["Tilted Town", "Neo Tilted", "Gotham City", "Tilted Towers"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI was a wild west town?", "options": ["Paradise Palms", "Tilted Town", "Lazy Lagoon", "Westworld"], "correct_index": 1, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What was special about Tilted Town?", "options": ["No building allowed", "No weapons", "No storm", "No vehicles"], "correct_index": 0, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI became Gotham City?", "options": ["Pleasant Park", "Tilted Town", "Retail Row", "Salty Springs"], "correct_index": 1, "difficulty": "hard", "subcategory": "map"},
+        {"text": "What POI was a pirate ship?", "options": ["Lazy Lagoon", "The Yacht", "Coral Castle", "Craggy Cliffs"], "correct_index": 0, "difficulty": "medium", "subcategory": "map"},
+        
+        # More weapon details
+        {"text": "What was the first mythic weapon?", "options": ["Infinity Blade", "Midas Drum Gun", "Skye's AR", "Brutus Minigun"], "correct_index": 0, "difficulty": "hard", "subcategory": "weapons"},
+        {"text": "When was the Infinity Blade added?", "options": ["Season 6", "Season 7", "Season 8", "Season 9"], "correct_index": 1, "difficulty": "hard", "subcategory": "weapons"},
+        {"text": "How long was the Infinity Blade in the game?", "options": ["1 day", "3 days", "1 week", "2 weeks"], "correct_index": 1, "difficulty": "hard", "subcategory": "weapons"},
+        {"text": "What weapon was vaulted fastest?", "options": ["Infinity Blade", "Drum Gun", "B.R.U.T.E.", "Guided Missile"], "correct_index": 0, "difficulty": "hard", "subcategory": "weapons"},
+        {"text": "What weapon could you guide after firing?", "options": ["Rocket Launcher", "Guided Missile", "Grenade Launcher", "Boom Bow"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What weapon shoots explosive arrows?", "options": ["Crossbow", "Boom Bow", "Harpoon Gun", "Primal Bow"], "correct_index": 1, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What weapon can fish?", "options": ["Harpoon Gun", "Fishing Rod", "Both", "Neither"], "correct_index": 2, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What can you catch while fishing?", "options": ["Fish only", "Weapons only", "Fish and weapons", "Nothing"], "correct_index": 2, "difficulty": "easy", "subcategory": "weapons"},
+        {"text": "What fish gives shield?", "options": ["Flopper", "Slurpfish", "Small Fry", "Thermal Fish"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What fish gives health?", "options": ["Flopper", "Slurpfish", "Small Fry", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What fish gives thermal vision?", "options": ["Flopper", "Slurpfish", "Thermal Fish", "Spicy Fish"], "correct_index": 2, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What fish gives speed boost?", "options": ["Flopper", "Pepper Fish", "Thermal Fish", "Hop Fish"], "correct_index": 1, "difficulty": "medium", "subcategory": "weapons"},
+        {"text": "What fish gives low gravity?", "options": ["Flopper", "Pepper Fish", "Thermal Fish", "Hop Fish"], "correct_index": 3, "difficulty": "medium", "subcategory": "weapons"},
+        
+        # More collaboration details
+        {"text": "What Batman skin was first in Fortnite?", "options": ["Batman Zero", "The Dark Knight", "Batman Comic", "Armored Batman"], "correct_index": 2, "difficulty": "hard", "subcategory": "collabs"},
+        {"text": "What Fortnite x Batman event happened?", "options": ["Gotham City POI", "Batman skins", "Grapnel Gun", "All of the above"], "correct_index": 3, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What weapon came with Batman?", "options": ["Batarang", "Grapnel Gun", "Batmobile", "Both A and B"], "correct_index": 3, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What LeBron James skin was added?", "options": ["LeBron James", "King James", "The King", "Space Jam LeBron"], "correct_index": 0, "difficulty": "easy", "subcategory": "collabs"},
+        {"text": "What Neymar Jr skin was added?", "options": ["Neymar Jr", "Neymar Jr Primal", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What season had Neymar Jr?", "options": ["Ch2 S5", "Ch2 S6", "Ch2 S7", "Ch2 S8"], "correct_index": 1, "difficulty": "hard", "subcategory": "collabs"},
+        {"text": "What Lara Croft skin was added?", "options": ["Classic Lara", "Anniversary Lara", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What season had Lara Croft?", "options": ["Ch2 S5", "Ch2 S6", "Ch2 S7", "Ch2 S8"], "correct_index": 1, "difficulty": "hard", "subcategory": "collabs"},
+        {"text": "What Ryu skin was added?", "options": ["Classic Ryu", "Tournament Ryu", "Both", "Neither"], "correct_index": 0, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What Chun-Li skin was added?", "options": ["Classic Chun-Li", "Nostalgia Chun-Li", "Both", "Neither"], "correct_index": 0, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What season had Street Fighter?", "options": ["Ch2 S4", "Ch2 S5", "Ch2 S6", "Ch2 S7"], "correct_index": 1, "difficulty": "hard", "subcategory": "collabs"},
+        {"text": "What Tron skins were added?", "options": ["Rinzler only", "Multiple characters", "None", "Tron Legacy only"], "correct_index": 1, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What G.I. Joe characters were added?", "options": ["Snake Eyes only", "Storm Shadow only", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What Alien vs Predator characters were added?", "options": ["Alien only", "Predator only", "Both", "Neither"], "correct_index": 1, "difficulty": "medium", "subcategory": "collabs"},
+        {"text": "What season had Predator?", "options": ["Ch2 S4", "Ch2 S5", "Ch2 S6", "Ch2 S7"], "correct_index": 1, "difficulty": "hard", "subcategory": "collabs"},
+        {"text": "What The Walking Dead characters were added?", "options": ["Rick only", "Daryl only", "Michonne only", "Multiple"], "correct_index": 3, "difficulty": "medium", "subcategory": "collabs"},
+        
+        # More event details
+        {"text": "What was the first crossover event?", "options": ["Marvel", "Thanos LTM", "Star Wars", "Batman"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "When was the Thanos LTM?", "options": ["Season 3", "Season 4", "Season 5", "Season 6"], "correct_index": 1, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What movie was the Thanos LTM promoting?", "options": ["Avengers", "Infinity War", "Endgame", "Thor"], "correct_index": 1, "difficulty": "medium", "subcategory": "events"},
+        {"text": "What Star Wars event showed a movie clip?", "options": ["Rise of Skywalker", "The Mandalorian", "Rogue One", "Solo"], "correct_index": 0, "difficulty": "medium", "subcategory": "events"},
+        {"text": "Where was the Star Wars clip shown?", "options": ["Tilted Towers", "Risky Reels", "Pleasant Park", "Retail Row"], "correct_index": 1, "difficulty": "medium", "subcategory": "events"},
+        {"text": "What lightsaber colors were available?", "options": ["Blue only", "Red only", "Multiple colors", "Green only"], "correct_index": 2, "difficulty": "easy", "subcategory": "events"},
+        {"text": "What Star Wars weapon was added?", "options": ["Blaster", "Lightsaber", "Both", "Neither"], "correct_index": 2, "difficulty": "easy", "subcategory": "events"},
+        {"text": "What NFL event happened in Fortnite?", "options": ["NFL skins", "Super Bowl event", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "events"},
+        {"text": "What NBA event happened in Fortnite?", "options": ["NBA skins", "Creative mode", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "events"},
+        {"text": "What Ferrari event happened?", "options": ["Ferrari car", "Ferrari skins", "Both", "Neither"], "correct_index": 0, "difficulty": "medium", "subcategory": "events"},
+        {"text": "What Lamborghini event happened?", "options": ["Lamborghini car", "Lamborghini skins", "Both", "Neither"], "correct_index": 0, "difficulty": "medium", "subcategory": "events"},
+        
+        # More mechanics
+        {"text": "What is the max squad size?", "options": ["2", "3", "4", "5"], "correct_index": 2, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What is Duos mode?", "options": ["1 player", "2 players", "3 players", "4 players"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What is Trios mode?", "options": ["1 player", "2 players", "3 players", "4 players"], "correct_index": 2, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What is Squads mode?", "options": ["1 player", "2 players", "3 players", "4 players"], "correct_index": 3, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What is Arena mode?", "options": ["Casual", "Ranked/Competitive", "Creative", "Save the World"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What are Arena points called?", "options": ["V-Bucks", "Hype", "XP", "Gold"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is the highest Arena division?", "options": ["Champion", "Contender", "Open", "Elite"], "correct_index": 0, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is siphon in Arena?", "options": ["Extra damage", "Health on kill", "Shield on kill", "Both B and C"], "correct_index": 3, "difficulty": "medium", "subcategory": "history"},
+        {"text": "How much HP do you get from siphon?", "options": ["25", "50", "75", "100"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is the storm surge mechanic?", "options": ["Storm moves faster", "Damage to low-damage players", "Extra loot", "Healing in storm"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "When does storm surge activate?", "options": ["Always", "When too many players alive", "Final circle", "Never"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is a 'zone war'?", "options": ["Fighting in storm", "Creative mode practice", "Tournament format", "LTM mode"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is 'piece control'?", "options": ["Controlling weapons", "Controlling builds around enemy", "Controlling vehicles", "Controlling loot"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is an 'edit play'?", "options": ["Editing videos", "Editing builds to attack", "Editing settings", "Editing skins"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is 'tarping'?", "options": ["Building floors above you", "Building walls", "Building ramps", "Building cones"], "correct_index": 0, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is 'tunneling'?", "options": ["Going underground", "Building protected path", "Using vehicles", "Swimming"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+    ]
+    
+    questions.extend(bonus_questions)
+    
+    # ============================================
+    # SECTION 8: FINAL PUSH TO 500+
+    # ============================================
+    
+    final_push = [
+        # More specific facts
+        {"text": "How many players participated in Fortnite OG?", "options": ["1M+", "3M+", "5M+", "10M+"], "correct_index": 2, "difficulty": "hard", "subcategory": "events"},
+        {"text": "What was Fortnite's peak concurrent players?", "options": ["5M", "10M", "12.3M", "15M"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        {"text": "When did Fortnite reach 350M players?", "options": ["2019", "2020", "2021", "2022"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What platform has the most Fortnite players?", "options": ["PC", "PlayStation", "Xbox", "Mobile"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What was Fortnite's first mobile platform?", "options": ["iOS", "Android", "Both same time", "Neither"], "correct_index": 0, "difficulty": "medium", "subcategory": "history"},
+        {"text": "Why was Fortnite removed from iOS?", "options": ["Bugs", "Apple lawsuit", "Epic's choice", "Low players"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What year was Fortnite removed from iOS?", "options": ["2019", "2020", "2021", "2022"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is Fortnite Save the World?", "options": ["Battle Royale", "PvE mode", "Creative", "Racing"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "Which came first: Save the World or Battle Royale?", "options": ["Save the World", "Battle Royale", "Same time", "Neither"], "correct_index": 0, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is Fortnite Creative?", "options": ["Battle Royale", "PvE mode", "Building/creation mode", "Racing"], "correct_index": 2, "difficulty": "easy", "subcategory": "history"},
+        {"text": "When was Creative mode added?", "options": ["Season 5", "Season 6", "Season 7", "Season 8"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is UEFN?", "options": ["Game mode", "Unreal Editor for Fortnite", "Skin type", "Weapon"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What engine does Fortnite use?", "options": ["Unity", "Unreal Engine", "CryEngine", "Frostbite"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What version of Unreal Engine?", "options": ["UE3", "UE4", "UE5", "Custom"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        
+        # More cosmetic types
+        {"text": "What is a Back Bling?", "options": ["Weapon skin", "Backpack cosmetic", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Contrail?", "options": ["Weapon skin", "Skydiving effect", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Wrap?", "options": ["Weapon/vehicle skin", "Backpack", "Glider", "Pickaxe"], "correct_index": 0, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Spray?", "options": ["Weapon", "Graffiti tag", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Loading Screen?", "options": ["Weapon", "Menu art", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Banner?", "options": ["Weapon", "Profile icon", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Music Pack?", "options": ["Weapon", "Lobby music", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is an Emoticon?", "options": ["Emote", "Chat emoji", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Toy?", "options": ["Weapon", "Throwable item", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What is a Pet?", "options": ["Weapon", "Animated back bling", "Glider", "Pickaxe"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        
+        # More specific weapon stats
+        {"text": "What is the headshot multiplier for snipers?", "options": ["1.5x", "2x", "2.5x", "Varies"], "correct_index": 3, "difficulty": "hard", "subcategory": "weapons"},
+        {"text": "What is the headshot multiplier for ARs?", "options": ["1.5x", "2x", "2.5x", "Varies"], "correct_index": 0, "difficulty": "hard", "subcategory": "weapons"},
+        {"text": "What is the headshot multiplier for shotguns?", "options": ["1.5x", "2x", "2.5x", "Varies"], "correct_index": 0, "difficulty": "hard", "subcategory": "weapons"},
+        {"text": "How much damage does fall damage start?", "options": ["1 tile", "2 tiles", "3 tiles", "4 tiles"], "correct_index": 2, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What height is lethal fall damage?", "options": ["10 tiles", "15 tiles", "20 tiles", "25 tiles"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        {"text": "How fast does the storm do damage in final circles?", "options": ["1/sec", "5/sec", "10/sec", "Varies"], "correct_index": 3, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is the storm damage in circle 1?", "options": ["1/tick", "2/tick", "5/tick", "10/tick"], "correct_index": 0, "difficulty": "hard", "subcategory": "history"},
+        
+        # More POI trivia
+        {"text": "What POI has a burger restaurant?", "options": ["Greasy Grove", "Durr Burger", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What POI has a pizza restaurant?", "options": ["Tomato Town", "Pizza Pit", "Both", "Neither"], "correct_index": 2, "difficulty": "medium", "subcategory": "map"},
+        {"text": "What is the Durr Burger mascot?", "options": ["Beef Boss", "Tomato Head", "Peely", "Fishstick"], "correct_index": 0, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What is the Pizza Pit mascot?", "options": ["Beef Boss", "Tomato Head", "Peely", "Fishstick"], "correct_index": 1, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What POI has a taco shop?", "options": ["Greasy Grove", "Taco Time", "Guaco", "Tacos"], "correct_index": 0, "difficulty": "hard", "subcategory": "map"},
+        {"text": "What is the taco mascot skin?", "options": ["Beef Boss", "Tomato Head", "Guaco", "Taco"], "correct_index": 2, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What POI has a fish restaurant?", "options": ["Craggy Cliffs", "Coral Castle", "Sweaty Sands", "All of the above"], "correct_index": 0, "difficulty": "hard", "subcategory": "map"},
+        {"text": "What is the fish mascot skin?", "options": ["Beef Boss", "Fishstick", "Guaco", "Peely"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        
+        # More esports
+        {"text": "What region has won the most FNCS?", "options": ["NA East", "NA West", "EU", "Asia"], "correct_index": 2, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is the FNCS format in 2024?", "options": ["Solos", "Duos", "Trios", "Squads"], "correct_index": 2, "difficulty": "medium", "subcategory": "history"},
+        {"text": "How many FNCS Majors are there per year?", "options": ["2", "3", "4", "5"], "correct_index": 1, "difficulty": "hard", "subcategory": "history"},
+        {"text": "What is the FNCS Global Championship?", "options": ["Weekly event", "Season finale", "Year-end championship", "Monthly event"], "correct_index": 2, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What platform do most pros play on?", "options": ["Console", "PC", "Mobile", "Switch"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What input do most pros use?", "options": ["Controller", "Keyboard & Mouse", "Touch", "Mixed"], "correct_index": 1, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What is aim assist?", "options": ["Cheat", "Controller feature", "PC feature", "Mobile feature"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What FPS do pros typically play at?", "options": ["60", "120", "144+", "240+"], "correct_index": 3, "difficulty": "medium", "subcategory": "history"},
+        
+        # More random trivia
+        {"text": "What is the Battle Bus horn sound?", "options": ["Car horn", "Trumpet", "Air horn", "Custom sound"], "correct_index": 3, "difficulty": "medium", "subcategory": "history"},
+        {"text": "What happens if you don't jump from the Battle Bus?", "options": ["You die", "Auto-eject at end", "Stay on bus", "Teleport to ground"], "correct_index": 1, "difficulty": "easy", "subcategory": "history"},
+        {"text": "What is the default glider called?", "options": ["Basic Glider", "Default Glider", "Umbrella", "Standard Issue"], "correct_index": 1, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What do you get for winning?", "options": ["V-Bucks", "Victory Umbrella", "XP only", "Nothing special"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "What is a Victory Umbrella?", "options": ["Weapon", "Glider reward for winning", "Pickaxe", "Back Bling"], "correct_index": 1, "difficulty": "easy", "subcategory": "cosmetics"},
+        {"text": "How many Victory Umbrellas are there?", "options": ["1 per season", "1 per chapter", "1 total", "Unlimited"], "correct_index": 0, "difficulty": "medium", "subcategory": "cosmetics"},
+        {"text": "What is the rarest Victory Umbrella?", "options": ["Season 1", "Season 2", "Chapter 2 S1", "Fortnite OG"], "correct_index": 0, "difficulty": "hard", "subcategory": "cosmetics"},
+        {"text": "What color is the Season 1 umbrella?", "options": ["Blue", "Gold", "Gray", "Green"], "correct_index": 2, "difficulty": "hard", "subcategory": "cosmetics"},
+    ]
+    
+    questions.extend(final_push)
+    
+    return questions
+
+
+def main():
+    """Generate and save questions to JSON file."""
+    questions = generate_questions()
+    
+    # Count by difficulty
+    easy = sum(1 for q in questions if q.get("difficulty") == "easy")
+    medium = sum(1 for q in questions if q.get("difficulty") == "medium")
+    hard = sum(1 for q in questions if q.get("difficulty") == "hard")
+    
+    # Count by subcategory
+    subcategories = {}
+    for q in questions:
+        sub = q.get("subcategory", "unknown")
+        subcategories[sub] = subcategories.get(sub, 0) + 1
+    
+    output = {
+        "category": "fortnite",
+        "generated_at": datetime.utcnow().isoformat(),
+        "total_questions": len(questions),
+        "by_difficulty": {
+            "easy": easy,
+            "medium": medium,
+            "hard": hard
+        },
+        "by_subcategory": subcategories,
+        "questions": questions
+    }
+    
+    # Save to file
+    output_path = "scripts/data/fortnite_questions_generated.json"
+    with open(output_path, "w") as f:
+        json.dump(output, f, indent=2)
+    
+    print(f"Generated {len(questions)} questions")
+    print(f"  Easy: {easy}")
+    print(f"  Medium: {medium}")
+    print(f"  Hard: {hard}")
+    print(f"\nBy subcategory:")
+    for sub, count in sorted(subcategories.items()):
+        print(f"  {sub}: {count}")
+    print(f"\nSaved to {output_path}")
+
+
+if __name__ == "__main__":
+    main()

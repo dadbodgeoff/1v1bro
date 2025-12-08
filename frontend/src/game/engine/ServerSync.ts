@@ -23,6 +23,7 @@ export class ServerSync {
   private getOpponent: () => PlayerState | null
   private setLaunch: (velocity: Vector2, duration?: number) => void
   private setLaunchFromKnockback: (velocity: Vector2) => void
+  private setPositionOverride: (position: Vector2) => void
 
   constructor(
     combatSystem: CombatSystem,
@@ -31,7 +32,8 @@ export class ServerSync {
     getLocalPlayer: () => PlayerState | null,
     getOpponent: () => PlayerState | null,
     setLaunch: (velocity: Vector2, duration?: number) => void,
-    setLaunchFromKnockback: (velocity: Vector2) => void
+    setLaunchFromKnockback: (velocity: Vector2) => void,
+    setPositionOverride: (position: Vector2) => void
   ) {
     this.combatSystem = combatSystem
     this.combatEffectsRenderer = combatEffectsRenderer
@@ -40,6 +42,7 @@ export class ServerSync {
     this.getOpponent = getOpponent
     this.setLaunch = setLaunch
     this.setLaunchFromKnockback = setLaunchFromKnockback
+    this.setPositionOverride = setPositionOverride
   }
 
   setCallbacks(callbacks: ServerSyncCallbacks): void {
@@ -79,9 +82,17 @@ export class ServerSync {
 
     // Update player position
     if (playerId === localPlayer?.id && localPlayer) {
-      localPlayer.position = position
+      // For local player, use position override to ensure movement system respects it
+      this.setPositionOverride(position)
+      // Also update directly for immediate visual feedback
+      localPlayer.position.x = position.x
+      localPlayer.position.y = position.y
+      // Clear trails to avoid visual artifacts
+      localPlayer.trail = []
     } else if (playerId === opponent?.id && opponent) {
-      opponent.position = position
+      opponent.position.x = position.x
+      opponent.position.y = position.y
+      opponent.trail = []
     }
 
     // Reset health in combat system
@@ -104,9 +115,13 @@ export class ServerSync {
     const opponent = this.getOpponent()
 
     if (playerId === localPlayer?.id && localPlayer) {
-      localPlayer.position = position
+      // For local player, use position override to ensure movement system respects it
+      this.setPositionOverride(position)
+      localPlayer.position.x = position.x
+      localPlayer.position.y = position.y
     } else if (playerId === opponent?.id && opponent) {
-      opponent.position = position
+      opponent.position.x = position.x
+      opponent.position.y = position.y
     }
 
     this.combatEffectsRenderer.addRespawnEffect(position)

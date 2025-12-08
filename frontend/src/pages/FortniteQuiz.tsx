@@ -61,7 +61,7 @@ export function FortniteQuiz() {
 
       <div className="relative z-10 min-h-screen">
         {phase === 'menu' && (
-          <QuizMenu onStart={handleStartSetup} onBack={() => navigate('/')} />
+          <QuizMenu onStart={handleStartSetup} onBack={() => navigate('/dashboard')} />
         )}
 
         {phase === 'setup' && (

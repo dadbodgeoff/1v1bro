@@ -29,10 +29,53 @@ class Settings(BaseSettings):
     SUPABASE_ANON_KEY: str
     SUPABASE_SERVICE_KEY: str
 
-    # JWT
-    JWT_SECRET_KEY: str
-    JWT_ALGORITHM: str = "HS256"
+    # JWT - RS256 Configuration (Requirements: 1.2, 12.4)
+    JWT_SECRET_KEY: str = ""  # Fallback for HS256
+    JWT_ALGORITHM: str = "RS256"
     JWT_EXPIRATION_HOURS: int = 24
+    JWT_PRIVATE_KEY_PATH: Optional[str] = None
+    JWT_PUBLIC_KEY_PATH: Optional[str] = None
+
+    # Redis Configuration (Requirements: 11.1)
+    REDIS_URL: str = "redis://localhost:6379"
+    REDIS_PASSWORD: str = ""
+    REDIS_DB: int = 0
+    REDIS_MAX_CONNECTIONS: int = 20
+
+    # Google Cloud Storage (Requirements: 10.1)
+    GCS_BUCKET_NAME: str = "1v1bro-user-media"
+    GCS_PROJECT_ID: Optional[str] = None
+    GCS_CREDENTIALS_PATH: Optional[str] = None
+    CDN_BASE_URL: str = "https://cdn.1v1bro.com"
+
+    # Google Cloud Pub/Sub (Requirements: 8.1)
+    PUBSUB_PROJECT_ID: Optional[str] = None
+    PUBSUB_CREDENTIALS_PATH: Optional[str] = None
+    PUBSUB_TOPIC_PREFIX: str = "1v1bro"
+
+    # Rate Limiting (Requirements: 1.3, 7.2)
+    RATE_LIMIT_AUTH: int = 10
+    RATE_LIMIT_GAME: int = 1000
+    RATE_LIMIT_LEADERBOARD: int = 100
+    RATE_LIMIT_UPLOAD: int = 10
+
+    # Battle Pass Settings (Requirements: 4.3, 4.4)
+    XP_WIN: int = 100
+    XP_LOSS: int = 50
+    XP_PER_KILL: int = 5
+    XP_PER_STREAK: int = 10
+    XP_PER_SECOND: float = 0.1
+    XP_MIN: int = 50
+    XP_MAX: int = 300
+    XP_PER_TIER: int = 1000
+
+    # ELO Settings (Requirements: 5.1, 5.4)
+    ELO_STARTING: int = 1200
+    ELO_MIN: int = 100
+    ELO_MAX: int = 3000
+    ELO_K_FACTOR_LOW: int = 32
+    ELO_K_FACTOR_MID: int = 24
+    ELO_K_FACTOR_HIGH: int = 16
 
     # Game Settings
     QUESTIONS_PER_GAME: int = 10
@@ -47,6 +90,14 @@ class Settings(BaseSettings):
 
     # CORS (for development)
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173"]
+    
+    # Frontend URL for redirects
+    FRONTEND_URL: str = "http://localhost:5173"
+    
+    # Stripe Configuration (Requirements: 7.2)
+    STRIPE_SECRET_KEY: str = ""
+    STRIPE_WEBHOOK_SECRET: str = ""
+    STRIPE_PUBLISHABLE_KEY: str = ""
 
     # Power-up settings
     POWERUP_SPAWN_INTERVAL_MS: int = 15000  # Spawn new power-up every 15s

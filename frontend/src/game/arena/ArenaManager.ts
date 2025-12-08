@@ -6,7 +6,7 @@
  * @module arena/ArenaManager
  */
 
-import type { MapConfig } from '../config/maps/map-schema'
+import type { MapConfig, MapTheme } from '../config/maps/map-schema'
 import type { 
   ArenaCallbacks, 
   EffectState, 
@@ -26,6 +26,7 @@ import { SpatialHash } from '../collision'
 import { LayerManager } from '../rendering'
 import { RenderLayer } from './types'
 import { DynamicSpawnManager } from './DynamicSpawnManager'
+import { LavaVortexRenderer } from '../renderers/LavaVortexRenderer'
 
 // ============================================================================
 // ArenaManager Class
@@ -47,12 +48,14 @@ export class ArenaManager {
   private spatialHash: SpatialHash
   private layerManager: LayerManager
   private dynamicSpawnManager: DynamicSpawnManager
+  private lavaVortexRenderer: LavaVortexRenderer | null = null
 
   // State
   private mapConfig: MapConfig | null = null
   private isInitialized: boolean = false
   private callbacks: ArenaCallbacks = {}
   private useDynamicSpawning: boolean = true
+  private theme: MapTheme = 'space'
 
   constructor() {
     this.tileMap = new TileMap()
@@ -80,8 +83,12 @@ export class ArenaManager {
     this.mapConfig = config
     this.useDynamicSpawning = useDynamicSpawning
 
-    // Initialize barriers (always static)
+    // Set theme from map config
+    this.theme = config.metadata?.theme ?? 'space'
+
+    // Initialize barriers (always static) with theme
     this.barrierManager.initialize(config.barriers)
+    this.barrierManager.setTheme(this.theme)
     this.barrierManager.setCallbacks({
       onDestroyed: (id, pos) => {
         this.spatialHash.remove(id)
@@ -95,6 +102,7 @@ export class ArenaManager {
     } else {
       this.hazardManager.initialize(config.hazards)
     }
+    this.hazardManager.setTheme(this.theme)
     this.hazardManager.setCallbacks({
       onDamage: (playerId, damage, sourceId) => {
         this.callbacks.onHazardDamage?.(playerId, damage, sourceId)
@@ -107,6 +115,7 @@ export class ArenaManager {
     } else {
       this.trapManager.initialize(config.traps)
     }
+    this.trapManager.setTheme(this.theme)
     this.trapManager.setCallbacks({
       onTriggered: (id, players) => {
         this.callbacks.onTrapTriggered?.(id, players)
@@ -115,6 +124,7 @@ export class ArenaManager {
 
     // Initialize transport (always static - teleporters and jump pads)
     this.transportManager.initialize(config.teleporters, config.jumpPads)
+    this.transportManager.setTheme(this.theme)
     this.transportManager.setCallbacks({
       onTeleport: (playerId, from, to) => {
         this.callbacks.onPlayerTeleported?.(playerId, from, to)
@@ -148,6 +158,13 @@ export class ArenaManager {
 
     // Build spatial hash
     this.rebuildSpatialHash()
+
+    // Initialize lava vortex renderer for volcanic theme
+    if (this.theme === 'volcanic') {
+      this.lavaVortexRenderer = new LavaVortexRenderer()
+    } else {
+      this.lavaVortexRenderer = null
+    }
 
     // Register renderers
     this.registerRenderers()
@@ -186,6 +203,11 @@ export class ArenaManager {
 
     // Update transport cooldowns
     this.transportManager.update(deltaTime)
+
+    // Update lava vortex for volcanic theme
+    if (this.lavaVortexRenderer) {
+      this.lavaVortexRenderer.update(deltaTime)
+    }
 
     // Update zone effects for each player
     for (const [playerId, position] of players) {
@@ -372,6 +394,12 @@ export class ArenaManager {
   render(ctx: CanvasRenderingContext2D): void {
     if (!this.isInitialized) return
     this.layerManager.render(ctx)
+
+    // Render lava vortex at map center for volcanic theme
+    if (this.lavaVortexRenderer) {
+      // Map center is at 640, 360 (1280x720 / 2)
+      this.lavaVortexRenderer.render(ctx, 640, 360, 80)
+    }
   }
 
   /**

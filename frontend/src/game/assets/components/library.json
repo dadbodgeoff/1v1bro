@@ -1,0 +1,310 @@
+{
+  "$schema": "./library-schema.json",
+  "version": "1.0.0",
+  "description": "Master component library for arena map objects",
+  "lastUpdated": "2025-12-08",
+  
+  "categories": {
+    "terrain": "Ground/floor surfaces",
+    "barrier": "Collision objects (walls, covers)",
+    "interactive": "Gameplay mechanics (pads, pickups)",
+    "hazard": "Damage/effect zones",
+    "transport": "Movement mechanics (teleporters, jump pads)",
+    "decoration": "Visual flavor (non-interactive)"
+  },
+
+  "components": [
+    {
+      "id": "terrain_floor_base",
+      "type": "terrain",
+      "category": "ground",
+      "displayName": "Standard Floor",
+      "description": "Basic walkable floor tile",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "walkable": true,
+        "friction": 1.0,
+        "speedMultiplier": 1.0,
+        "damagePerSecond": 0
+      },
+      "visual": {
+        "colorTint": "#1a1a2e",
+        "renderStyle": "solid"
+      },
+      "tags": ["floor", "walkable", "base"]
+    },
+
+    {
+      "id": "barrier_wall_full",
+      "type": "barrier",
+      "category": "wall",
+      "displayName": "Full Wall",
+      "description": "Solid wall blocking movement and projectiles",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": true,
+        "passable": false,
+        "destructible": false,
+        "blocksProjectiles": true
+      },
+      "visual": {
+        "colorTint": "#2d2d44",
+        "renderStyle": "solid"
+      },
+      "variants": ["straight_h", "straight_v", "corner_tl", "corner_tr", "corner_bl", "corner_br"],
+      "tags": ["wall", "barrier", "solid", "cover"]
+    },
+
+    {
+      "id": "barrier_wall_half",
+      "type": "barrier",
+      "category": "cover",
+      "displayName": "Half Wall",
+      "description": "Partial cover - blocks movement but not projectiles",
+      "dimensions": { "width": 80, "height": 40 },
+      "properties": {
+        "collision": true,
+        "passable": false,
+        "destructible": false,
+        "blocksProjectiles": false,
+        "height": 40
+      },
+      "visual": {
+        "colorTint": "#3d3d5c",
+        "renderStyle": "solid"
+      },
+      "tags": ["wall", "barrier", "cover", "half"]
+    },
+
+    {
+      "id": "barrier_destructible",
+      "type": "barrier",
+      "category": "destructible",
+      "displayName": "Destructible Barrier",
+      "description": "Barrier that can be destroyed by damage",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": true,
+        "passable": false,
+        "destructible": true,
+        "health": 100,
+        "minHealth": 50,
+        "maxHealth": 200
+      },
+      "visual": {
+        "colorTint": "#4a3d2d",
+        "renderStyle": "solid",
+        "damageStates": ["intact", "cracked", "damaged", "destroyed"]
+      },
+      "tags": ["barrier", "destructible", "breakable"]
+    },
+
+    {
+      "id": "interactive_spawn_point",
+      "type": "interactive",
+      "category": "spawn",
+      "displayName": "Spawn Point",
+      "description": "Player spawn location",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": false,
+        "team": "neutral",
+        "maxPlayers": 1
+      },
+      "visual": {
+        "colorTint": "#44ff44",
+        "renderStyle": "glow",
+        "animated": true
+      },
+      "variants": ["player1", "player2", "neutral"],
+      "tags": ["spawn", "interactive", "player"]
+    },
+
+    {
+      "id": "interactive_powerup_spawn",
+      "type": "interactive",
+      "category": "item",
+      "displayName": "Power-up Spawn",
+      "description": "Location where power-ups appear",
+      "dimensions": { "width": 60, "height": 60 },
+      "properties": {
+        "collision": false,
+        "respawnTime": 10000,
+        "interactionRadius": 50
+      },
+      "visual": {
+        "colorTint": "#ffaa00",
+        "renderStyle": "pulse",
+        "animated": true
+      },
+      "tags": ["powerup", "item", "spawn"]
+    },
+
+    {
+      "id": "hazard_damage_zone",
+      "type": "hazard",
+      "category": "damage",
+      "displayName": "Damage Zone",
+      "description": "Area that deals damage over time",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": false,
+        "damagePerSecond": 15,
+        "minIntensity": 5,
+        "maxIntensity": 25
+      },
+      "visual": {
+        "colorTint": "#ff4444",
+        "renderStyle": "animated",
+        "effectType": "fire"
+      },
+      "tags": ["hazard", "damage", "zone"]
+    },
+
+    {
+      "id": "hazard_slow_field",
+      "type": "hazard",
+      "category": "slow",
+      "displayName": "Slow Field",
+      "description": "Area that reduces movement speed",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": false,
+        "speedMultiplier": 0.5,
+        "minIntensity": 0.25,
+        "maxIntensity": 0.75
+      },
+      "visual": {
+        "colorTint": "#4444ff",
+        "renderStyle": "animated",
+        "effectType": "slow"
+      },
+      "tags": ["hazard", "slow", "zone", "debuff"]
+    },
+
+    {
+      "id": "hazard_emp_zone",
+      "type": "hazard",
+      "category": "emp",
+      "displayName": "EMP Zone",
+      "description": "Area that disables power-ups",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": false,
+        "disablesPowerups": true
+      },
+      "visual": {
+        "colorTint": "#ffff44",
+        "renderStyle": "animated",
+        "effectType": "electric"
+      },
+      "tags": ["hazard", "emp", "zone", "disable"]
+    },
+
+    {
+      "id": "trap_pressure",
+      "type": "interactive",
+      "category": "trap",
+      "displayName": "Pressure Trap",
+      "description": "Trap triggered by player contact",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": false,
+        "triggerRadius": 40,
+        "effect": "damage_burst",
+        "effectValue": 35,
+        "cooldown": 10,
+        "minCooldown": 5,
+        "maxCooldown": 30
+      },
+      "visual": {
+        "colorTint": "#ff8844",
+        "renderStyle": "animated",
+        "states": ["armed", "warning", "triggered", "cooldown"]
+      },
+      "tags": ["trap", "pressure", "damage"]
+    },
+
+    {
+      "id": "trap_timed",
+      "type": "interactive",
+      "category": "trap",
+      "displayName": "Timed Trap",
+      "description": "Trap that triggers on a timer",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": false,
+        "triggerRadius": 40,
+        "effect": "damage_burst",
+        "effectValue": 35,
+        "interval": 10,
+        "cooldown": 10
+      },
+      "visual": {
+        "colorTint": "#ff6644",
+        "renderStyle": "animated",
+        "states": ["armed", "warning", "triggered", "cooldown"]
+      },
+      "tags": ["trap", "timed", "damage"]
+    },
+
+    {
+      "id": "transport_teleporter",
+      "type": "transport",
+      "category": "teleporter",
+      "displayName": "Teleporter Pad",
+      "description": "Teleports player to linked pad",
+      "dimensions": { "width": 60, "height": 60 },
+      "properties": {
+        "collision": false,
+        "triggerRadius": 30,
+        "cooldown": 2000,
+        "requiresPair": true
+      },
+      "visual": {
+        "colorTint": "#44ffff",
+        "renderStyle": "glow",
+        "animated": true
+      },
+      "tags": ["transport", "teleporter", "movement"]
+    },
+
+    {
+      "id": "transport_jump_pad",
+      "type": "transport",
+      "category": "jumppad",
+      "displayName": "Jump Pad",
+      "description": "Launches player in specified direction",
+      "dimensions": { "width": 80, "height": 80 },
+      "properties": {
+        "collision": false,
+        "triggerRadius": 40,
+        "force": 400,
+        "direction": "N",
+        "cooldown": 500
+      },
+      "visual": {
+        "colorTint": "#44ff44",
+        "renderStyle": "animated",
+        "showDirection": true
+      },
+      "variants": ["N", "S", "E", "W", "NE", "NW", "SE", "SW"],
+      "tags": ["transport", "jumppad", "launch", "movement"]
+    }
+  ],
+
+  "placementRules": {
+    "spawnProtectionRadius": 80,
+    "minObjectSpacing": 40,
+    "symmetryModes": ["none", "horizontal", "vertical", "radial"],
+    "edgeBuffer": 40
+  },
+
+  "validationRules": {
+    "minSpawnPoints": 2,
+    "maxSpawnPoints": 4,
+    "teleporterPairRequired": true,
+    "maxHazardCoverage": 0.25,
+    "minFloorCoverage": 0.5
+  }
+}

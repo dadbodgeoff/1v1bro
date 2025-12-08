@@ -32,14 +32,14 @@ class ProfileRepository:
             self._profiles()
             .select("*")
             .eq("id", user_id)
-            .single()
+            .limit(1)
             .execute()
         )
 
         if not result.data:
             return None
 
-        profile = result.data
+        profile = result.data[0]
 
         # If viewer is the owner, return full profile
         if viewer_id == user_id:
@@ -256,3 +256,137 @@ class ProfileRepository:
             .execute()
         )
         return result.data or []
+
+    def _match_results(self):
+        return self._client.table("match_results")
+
+    async def get_match_history(
+        self, user_id: str, limit: int = 10, offset: int = 0
+    ) -> tuple[list[dict], int]:
+        """
+        Get match history for a user.
+        
+        Fetches matches where user was player1 or player2, ordered by played_at desc.
+        Includes opponent profile info via join.
+        
+        Args:
+            user_id: User UUID
+            limit: Number of matches to return
+            offset: Offset for pagination
+            
+        Returns:
+            Tuple of (matches list, total count)
+        """
+        # Get total count first
+        count_result = (
+            self._match_results()
+            .select("id", count="exact")
+            .or_(f"player1_id.eq.{user_id},player2_id.eq.{user_id}")
+            .execute()
+        )
+        total = count_result.count or 0
+        
+        # Get matches with opponent profile info
+        # We need to fetch matches and then get opponent profiles separately
+        matches_result = (
+            self._match_results()
+            .select("*")
+            .or_(f"player1_id.eq.{user_id},player2_id.eq.{user_id}")
+            .order("played_at", desc=True)
+            .range(offset, offset + limit - 1)
+            .execute()
+        )
+        
+        matches = matches_result.data or []
+        
+        # Get opponent profiles
+        opponent_ids = set()
+        for match in matches:
+            if match.get("player1_id") == user_id:
+                opponent_ids.add(match.get("player2_id"))
+            else:
+                opponent_ids.add(match.get("player1_id"))
+        
+        opponent_profiles = {}
+        if opponent_ids:
+            profiles_result = (
+                self._profiles()
+                .select("id, display_name, avatar_url")
+                .in_("id", list(opponent_ids))
+                .execute()
+            )
+            for profile in (profiles_result.data or []):
+                opponent_profiles[profile["id"]] = profile
+        
+        # Attach opponent profile to each match
+        for match in matches:
+            opponent_id = match.get("player2_id") if match.get("player1_id") == user_id else match.get("player1_id")
+            match["opponent_profile"] = opponent_profiles.get(opponent_id, {})
+        
+        return matches, total
+
+
+    def _achievements(self):
+        return self._client.table("achievements")
+
+    def _user_achievements(self):
+        return self._client.table("user_achievements")
+
+    async def get_user_achievements(self, user_id: str) -> list[dict]:
+        """
+        Get all achievements earned by a user.
+        
+        Joins user_achievements with achievements to get full achievement info.
+        Ordered by rarity (legendary first) then by earned_at (newest first).
+        
+        Args:
+            user_id: User UUID
+            
+        Returns:
+            List of achievement dicts with earned_at
+        """
+        # Get user's earned achievement IDs with earned_at
+        user_ach_result = (
+            self._user_achievements()
+            .select("achievement_id, earned_at")
+            .eq("user_id", user_id)
+            .order("earned_at", desc=True)
+            .execute()
+        )
+        
+        user_achievements = user_ach_result.data or []
+        
+        if not user_achievements:
+            return []
+        
+        # Get achievement details
+        achievement_ids = [ua["achievement_id"] for ua in user_achievements]
+        
+        ach_result = (
+            self._achievements()
+            .select("id, name, description, icon_url, rarity")
+            .in_("id", achievement_ids)
+            .execute()
+        )
+        
+        achievements_map = {a["id"]: a for a in (ach_result.data or [])}
+        
+        # Combine and sort by rarity then date
+        rarity_order = {"legendary": 0, "epic": 1, "rare": 2, "uncommon": 3, "common": 4}
+        
+        result = []
+        for ua in user_achievements:
+            ach = achievements_map.get(ua["achievement_id"])
+            if ach:
+                result.append({
+                    **ach,
+                    "earned_at": ua["earned_at"],
+                })
+        
+        # Sort by rarity (legendary first) then by earned_at (newest first)
+        result.sort(key=lambda x: (
+            rarity_order.get(x.get("rarity", "common"), 4),
+            x.get("earned_at", ""),
+        ))
+        
+        return result

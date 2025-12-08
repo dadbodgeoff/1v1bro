@@ -28,7 +28,13 @@ class MatchmakingRepository:
             ticket: MatchTicket to save
         """
         try:
-            self.client.table("matchmaking_queue").upsert({
+            # First delete any existing ticket for this player (cleanup stale data)
+            self.client.table("matchmaking_queue").delete().eq(
+                "player_id", ticket.player_id
+            ).execute()
+            
+            # Then insert the new ticket
+            self.client.table("matchmaking_queue").insert({
                 "id": ticket.id,
                 "player_id": ticket.player_id,
                 "player_name": ticket.player_name,
@@ -134,21 +140,34 @@ class MatchmakingRepository:
                 "cooldown_until", desc=True
             ).limit(1).execute()
             
-            if result.data:
+            if result.data and len(result.data) > 0:
                 row = result.data[0]
+                # Handle both dict and tuple responses
+                if isinstance(row, dict):
+                    cooldown_until_str = row.get("cooldown_until", "")
+                    reason = row.get("reason", "unknown")
+                else:
+                    # Table might not exist or returned unexpected format
+                    logger.warning(f"Unexpected cooldown data format: {type(row)}")
+                    return None
+                
+                if not cooldown_until_str:
+                    return None
+                    
                 cooldown_until = datetime.fromisoformat(
-                    row["cooldown_until"].replace("Z", "+00:00")
+                    cooldown_until_str.replace("Z", "+00:00")
                 )
                 remaining = max(0, int((cooldown_until - datetime.utcnow()).total_seconds()))
                 
                 return CooldownInfo(
                     cooldown_until=cooldown_until,
-                    reason=row["reason"],
+                    reason=reason,
                     remaining_seconds=remaining,
                 )
             return None
         except Exception as e:
-            logger.error(f"Failed to get cooldown: {e}")
+            # Log but don't fail - cooldown check is not critical
+            logger.warning(f"Cooldown check failed (table may not exist): {e}")
             return None
     
     async def set_cooldown(
@@ -280,4 +299,27 @@ class MatchmakingRepository:
             return count
         except Exception as e:
             logger.error(f"Failed to cleanup expired tickets: {e}")
+            return 0
+
+    async def cleanup_all_waiting_tickets(self) -> int:
+        """
+        Delete all waiting tickets on startup.
+        
+        This prevents stale tickets from causing duplicate key errors
+        after server restarts.
+        
+        Returns:
+            Number of tickets deleted
+        """
+        try:
+            result = self.client.table("matchmaking_queue").delete().eq(
+                "status", "waiting"
+            ).execute()
+            
+            count = len(result.data) if result.data else 0
+            if count > 0:
+                logger.info(f"Cleaned up {count} stale waiting tickets")
+            return count
+        except Exception as e:
+            logger.error(f"Failed to cleanup waiting tickets: {e}")
             return 0

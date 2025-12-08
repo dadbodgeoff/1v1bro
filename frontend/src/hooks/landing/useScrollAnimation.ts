@@ -5,7 +5,8 @@
  * Validates: Requirements 3.2, 3.7, 3.8
  */
 
-import { useState, useEffect, useRef, RefObject } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import type { RefObject } from 'react'
 import type { ScrollAnimationState } from '@/components/landing/types'
 
 interface UseScrollAnimationOptions {
@@ -23,7 +24,7 @@ const defaultOptions: UseScrollAnimationOptions = {
 }
 
 export function useScrollAnimation(
-  ref: RefObject<HTMLElement>,
+  ref: RefObject<HTMLElement | null>,
   options: UseScrollAnimationOptions = {}
 ): ScrollAnimationState {
   const mergedOptions = { ...defaultOptions, ...options }

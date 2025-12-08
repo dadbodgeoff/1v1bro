@@ -45,7 +45,7 @@ class CooldownResponse(BaseModel):
 @router.post("/queue", response_model=QueueJoinResponse)
 async def join_queue(
     request: QueueJoinRequest,
-    current_user: dict = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     """
     Join the matchmaking queue.
@@ -57,16 +57,16 @@ async def join_queue(
         service = get_matchmaking_service()
         
         ticket = await service.join_queue(
-            player_id=current_user["id"],
-            player_name=current_user.get("display_name", "Unknown"),
+            player_id=current_user.id,
+            player_name=current_user.email or "Unknown",
         )
         
-        status = await service.get_queue_status(current_user["id"])
+        queue_status = await service.get_queue_status(current_user.id)
         
         return QueueJoinResponse(
             ticket_id=ticket.id,
-            position=status.position or 1,
-            queue_size=status.queue_size,
+            position=queue_status.position or 1,
+            queue_size=queue_status.queue_size,
         )
         
     except ValueError as e:
@@ -99,7 +99,7 @@ async def join_queue(
 
 @router.delete("/queue")
 async def leave_queue(
-    current_user: dict = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     """
     Leave the matchmaking queue.
@@ -110,7 +110,7 @@ async def leave_queue(
         service = get_matchmaking_service()
         
         removed = await service.leave_queue(
-            player_id=current_user["id"],
+            player_id=current_user.id,
             reason="user_cancelled",
         )
         
@@ -134,7 +134,7 @@ async def leave_queue(
 
 @router.get("/status", response_model=QueueStatusResponse)
 async def get_queue_status(
-    current_user: dict = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     """
     Get current queue status.
@@ -144,7 +144,7 @@ async def get_queue_status(
     try:
         service = get_matchmaking_service()
         
-        queue_status = await service.get_queue_status(current_user["id"])
+        queue_status = await service.get_queue_status(current_user.id)
         
         return QueueStatusResponse(
             in_queue=queue_status.in_queue,
@@ -164,7 +164,7 @@ async def get_queue_status(
 
 @router.get("/cooldown", response_model=CooldownResponse)
 async def get_cooldown_status(
-    current_user: dict = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     """
     Check if player has active queue cooldown.
@@ -172,7 +172,7 @@ async def get_cooldown_status(
     try:
         service = get_matchmaking_service()
         
-        remaining = await service.check_cooldown(current_user["id"])
+        remaining = await service.check_cooldown(current_user.id)
         
         return CooldownResponse(
             has_cooldown=remaining is not None,

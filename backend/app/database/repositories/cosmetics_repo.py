@@ -42,6 +42,8 @@ class CosmeticsRepository:
         """
         Get cosmetics from catalog with optional filtering.
         
+        Only returns items where shop_available = true (excludes battle pass items).
+        
         Args:
             type_filter: Filter by cosmetic type
             rarity_filter: Filter by rarity
@@ -56,6 +58,9 @@ class CosmeticsRepository:
             List of cosmetic items
         """
         query = self._catalog().select("*")
+        
+        # Only show items available in shop (excludes battle pass items)
+        query = query.eq("shop_available", True)
         
         if type_filter:
             query = query.eq("type", type_filter)
@@ -81,8 +86,11 @@ class CosmeticsRepository:
         type_filter: Optional[str] = None,
         rarity_filter: Optional[str] = None,
     ) -> int:
-        """Get total count of cosmetics matching filters."""
+        """Get total count of cosmetics matching filters (excludes battle pass items)."""
         query = self._catalog().select("id", count="exact")
+        
+        # Only count items available in shop
+        query = query.eq("shop_available", True)
         
         if type_filter:
             query = query.eq("type", type_filter)
@@ -98,10 +106,10 @@ class CosmeticsRepository:
             self._catalog()
             .select("*")
             .eq("id", cosmetic_id)
-            .single()
+            .limit(1)
             .execute()
         )
-        return result.data
+        return result.data[0] if result.data else None
 
     async def get_cosmetics_by_type(self, cosmetic_type: str) -> List[dict]:
         """Get all cosmetics of a specific type."""
@@ -141,20 +149,29 @@ class CosmeticsRepository:
         
         Returns the new inventory entry or None if already owned.
         """
-        result = (
-            self._inventory()
-            .insert({
-                "user_id": user_id,
-                "cosmetic_id": cosmetic_id,
-                "acquired_date": datetime.utcnow().isoformat(),
-                "is_equipped": False,
-            })
-            .execute()
-        )
+        insert_data = {
+            "user_id": user_id,
+            "cosmetic_id": cosmetic_id,
+            "acquired_date": datetime.utcnow().isoformat(),
+            "is_equipped": False,
+        }
+        print(f"[cosmetics_repo] add_to_inventory: inserting {insert_data}")
         
-        if not result.data:
-            return None
-        return result.data[0]
+        try:
+            result = (
+                self._inventory()
+                .insert(insert_data)
+                .execute()
+            )
+            print(f"[cosmetics_repo] add_to_inventory result: {result.data}")
+            
+            if not result.data:
+                print(f"[cosmetics_repo] add_to_inventory: no data returned!")
+                return None
+            return result.data[0]
+        except Exception as e:
+            print(f"[cosmetics_repo] add_to_inventory ERROR: {e}")
+            raise
 
     async def check_ownership(self, user_id: str, cosmetic_id: str) -> bool:
         """Check if user owns a specific cosmetic."""
@@ -176,10 +193,10 @@ class CosmeticsRepository:
             .select("*, cosmetics_catalog(*)")
             .eq("user_id", user_id)
             .eq("cosmetic_id", cosmetic_id)
-            .single()
+            .limit(1)
             .execute()
         )
-        return result.data
+        return result.data[0] if result.data else None
 
     async def update_equipped_status(
         self, user_id: str, cosmetic_id: str, is_equipped: bool
@@ -218,10 +235,10 @@ class CosmeticsRepository:
             self._loadouts()
             .select("*")
             .eq("user_id", user_id)
-            .single()
+            .limit(1)
             .execute()
         )
-        return result.data
+        return result.data[0] if result.data else None
 
     async def get_loadout_with_cosmetics(self, user_id: str) -> Optional[dict]:
         """
@@ -236,7 +253,7 @@ class CosmeticsRepository:
         # Fetch cosmetic details for each equipped slot
         equipped_ids = []
         for slot in ["skin_equipped", "emote_equipped", "banner_equipped", 
-                     "nameplate_equipped", "effect_equipped"]:
+                     "nameplate_equipped", "effect_equipped", "trail_equipped", "playercard_equipped"]:
             if loadout.get(slot):
                 equipped_ids.append(loadout[slot])
         
@@ -251,7 +268,7 @@ class CosmeticsRepository:
             
             # Replace IDs with full cosmetic objects
             for slot in ["skin_equipped", "emote_equipped", "banner_equipped",
-                         "nameplate_equipped", "effect_equipped"]:
+                         "nameplate_equipped", "effect_equipped", "trail_equipped", "playercard_equipped"]:
                 if loadout.get(slot) and loadout[slot] in cosmetics_map:
                     loadout[f"{slot}_data"] = cosmetics_map[loadout[slot]]
         
@@ -286,24 +303,36 @@ class CosmeticsRepository:
         Returns:
             Updated loadout or None if not found
         """
+        print(f"[cosmetics_repo] update_loadout: user={user_id}, slot={slot}, cosmetic_id={cosmetic_id}")
+        
         # Ensure loadout exists
         existing = await self.get_loadout(user_id)
         if not existing:
+            print(f"[cosmetics_repo] update_loadout: creating new loadout for user")
             await self.create_loadout(user_id)
         
-        result = (
-            self._loadouts()
-            .update({
-                slot: cosmetic_id,
-                "updated_at": datetime.utcnow().isoformat(),
-            })
-            .eq("user_id", user_id)
-            .execute()
-        )
+        update_data = {
+            slot: cosmetic_id,
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        print(f"[cosmetics_repo] update_loadout: updating with {update_data}")
         
-        if not result.data:
-            return None
-        return result.data[0]
+        try:
+            result = (
+                self._loadouts()
+                .update(update_data)
+                .eq("user_id", user_id)
+                .execute()
+            )
+            print(f"[cosmetics_repo] update_loadout result: {result.data}")
+            
+            if not result.data:
+                print(f"[cosmetics_repo] update_loadout: no data returned!")
+                return None
+            return result.data[0]
+        except Exception as e:
+            print(f"[cosmetics_repo] update_loadout ERROR: {e}")
+            raise
 
     async def clear_loadout_slot(self, user_id: str, slot: str) -> Optional[dict]:
         """Clear a specific slot in the loadout."""
@@ -322,3 +351,163 @@ class CosmeticsRepository:
             self._catalog().update(
                 {"owned_by_count": new_count}
             ).eq("id", cosmetic_id).execute()
+
+
+    # ============================================
+    # Admin CRUD Operations (Dynamic Shop CMS)
+    # Requirements: 2.1, 2.2, 2.3, 2.4, 3.1
+    # ============================================
+
+    async def create_cosmetic(self, data: dict) -> Optional[dict]:
+        """
+        Create a new cosmetic in the catalog.
+        
+        Property 5: Cosmetic creation stores all fields.
+        
+        Args:
+            data: Cosmetic data dictionary
+            
+        Returns:
+            Created cosmetic or None
+        """
+        # Set defaults
+        data.setdefault("release_date", datetime.utcnow().isoformat())
+        data.setdefault("created_at", datetime.utcnow().isoformat())
+        data.setdefault("owned_by_count", 0)
+        
+        result = self._catalog().insert(data).execute()
+        return result.data[0] if result.data else None
+
+    async def update_cosmetic(
+        self, cosmetic_id: str, data: dict
+    ) -> Optional[dict]:
+        """
+        Update a cosmetic in the catalog.
+        
+        Property 6: Partial update preserves unchanged fields.
+        Only updates fields present in data dict.
+        
+        Args:
+            cosmetic_id: ID of cosmetic to update
+            data: Fields to update
+            
+        Returns:
+            Updated cosmetic or None
+        """
+        # Remove None values to preserve existing data
+        update_data = {k: v for k, v in data.items() if v is not None}
+        
+        if not update_data:
+            return await self.get_cosmetic(cosmetic_id)
+        
+        result = (
+            self._catalog()
+            .update(update_data)
+            .eq("id", cosmetic_id)
+            .execute()
+        )
+        return result.data[0] if result.data else None
+
+    async def delete_cosmetic(self, cosmetic_id: str) -> bool:
+        """
+        Delete a cosmetic from the catalog.
+        
+        Property 7: Delete cascades - asset_metadata has ON DELETE CASCADE.
+        
+        Args:
+            cosmetic_id: ID of cosmetic to delete
+            
+        Returns:
+            True if deleted
+        """
+        result = (
+            self._catalog()
+            .delete()
+            .eq("id", cosmetic_id)
+            .execute()
+        )
+        return bool(result.data)
+
+    async def get_featured(self) -> List[dict]:
+        """
+        Get featured cosmetics.
+        
+        Property 10: Featured flag behavior.
+        
+        Returns:
+            List of featured cosmetics
+        """
+        now = datetime.utcnow().isoformat()
+        query = (
+            self._catalog()
+            .select("*")
+            .eq("is_featured", True)
+        )
+        
+        # Filter by availability window
+        query = query.or_(f"available_from.is.null,available_from.lte.{now}")
+        query = query.or_(f"available_until.is.null,available_until.gte.{now}")
+        
+        result = query.order("sort_order").execute()
+        return result.data or []
+
+    async def get_available_shop(
+        self,
+        type_filter: Optional[str] = None,
+        rarity_filter: Optional[str] = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> List[dict]:
+        """
+        Get shop items respecting availability windows.
+        
+        Property 8: Availability window enforcement.
+        Excludes battle pass items (shop_available = false).
+        
+        Returns:
+            List of available cosmetics
+        """
+        now = datetime.utcnow().isoformat()
+        query = self._catalog().select("*")
+        
+        # Only show items available in shop (excludes battle pass items)
+        query = query.eq("shop_available", True)
+        
+        if type_filter:
+            query = query.eq("type", type_filter)
+        if rarity_filter:
+            query = query.eq("rarity", rarity_filter)
+        
+        # Filter by availability window
+        query = query.or_(f"available_from.is.null,available_from.lte.{now}")
+        query = query.or_(f"available_until.is.null,available_until.gte.{now}")
+        
+        query = query.order("sort_order").order("release_date", desc=True)
+        query = query.range(offset, offset + limit - 1)
+        
+        result = query.execute()
+        return result.data or []
+
+    async def set_featured(self, cosmetic_id: str, is_featured: bool) -> Optional[dict]:
+        """Set the featured flag for a cosmetic."""
+        return await self.update_cosmetic(cosmetic_id, {"is_featured": is_featured})
+
+    async def get_all_admin(
+        self,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> List[dict]:
+        """Get all cosmetics for admin view (no availability filtering)."""
+        result = (
+            self._catalog()
+            .select("*")
+            .order("created_at", desc=True)
+            .range(offset, offset + limit - 1)
+            .execute()
+        )
+        return result.data or []
+
+    async def get_total_count(self) -> int:
+        """Get total count of all cosmetics."""
+        result = self._catalog().select("id", count="exact").execute()
+        return result.count or 0

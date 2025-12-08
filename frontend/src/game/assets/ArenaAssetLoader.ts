@@ -1,9 +1,11 @@
 /**
  * Arena Asset Loader
  * Loads and processes arena effect images (hazards, traps, transport)
+ * Requirements: 5.1
  */
 
 import { loadImageWithTransparency, type BackgroundType } from './ImageProcessor'
+import { dynamicAssets } from './DynamicAssetLoader'
 
 // Arena image imports
 import iceCrystalsImg from '../../assets/game/arena/ice-crystals.jpg'
@@ -129,6 +131,29 @@ export class ArenaAssetLoader {
 
     ctx.drawImage(asset, x, y, width, height)
     return true
+  }
+
+  /**
+   * Load a dynamic asset from URL and cache it
+   * Requirements: 5.1
+   */
+  async loadDynamicAsset(key: string, url: string): Promise<boolean> {
+    try {
+      const image = await dynamicAssets.loadImage(url)
+      this.assets.set(key, image)
+      console.log(`[ArenaAssets] Loaded dynamic asset: ${key}`)
+      return true
+    } catch (error) {
+      console.warn(`[ArenaAssets] Failed to load dynamic asset ${key}:`, error)
+      return false
+    }
+  }
+
+  /**
+   * Check if a specific asset is loaded
+   */
+  hasAsset(key: string): boolean {
+    return this.assets.has(key)
   }
 }
 

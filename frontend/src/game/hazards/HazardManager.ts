@@ -10,11 +10,14 @@ import type {
   HazardType,
   HazardCallbacks 
 } from '../arena/types'
+import type { MapTheme } from '../config/maps/map-schema'
 import type { Vector2 } from '../types'
 import { DamageZone } from './DamageZone'
 import { SlowField } from './SlowField'
 import { EMPZone } from './EMPZone'
 import { arenaAssets } from '../assets/ArenaAssetLoader'
+import { animatedTileRenderer } from '../terrain/AnimatedTiles'
+import { VOLCANIC_COLORS } from '../backdrop/types'
 
 // ============================================================================
 // HazardManager Class
@@ -31,6 +34,15 @@ export class HazardManager {
   private empZones: Map<string, EMPZone> = new Map()
   private callbacks: HazardCallbacks = {}
   private playerLastDamageTick: Map<string, Map<string, number>> = new Map()
+  private theme: MapTheme = 'space'
+
+  /**
+   * Set the visual theme for hazard rendering
+   * @param theme - Map theme ('space' | 'volcanic' | etc.)
+   */
+  setTheme(theme: MapTheme): void {
+    this.theme = theme
+  }
 
   /**
    * Initialize hazards from map configuration
@@ -298,6 +310,11 @@ export class HazardManager {
    * Render damage zone with danger visuals
    */
   private renderDamageZone(ctx: CanvasRenderingContext2D, bounds: { x: number; y: number; width: number; height: number }, time: number): void {
+    if (this.theme === 'volcanic') {
+      this.renderVolcanicDamageZone(ctx, bounds, time)
+      return
+    }
+
     const pulse = 0.5 + 0.3 * Math.sin(time * 4)
     const centerX = bounds.x + bounds.width / 2
     const centerY = bounds.y + bounds.height / 2
@@ -348,9 +365,39 @@ export class HazardManager {
   }
 
   /**
+   * Render volcanic lava pool damage zone
+   */
+  private renderVolcanicDamageZone(ctx: CanvasRenderingContext2D, bounds: { x: number; y: number; width: number; height: number }, _time: number): void {
+    const tileSize = 40 // Render lava in tiles for better animation
+    
+    // Render lava tiles across the zone
+    for (let x = bounds.x; x < bounds.x + bounds.width; x += tileSize) {
+      for (let y = bounds.y; y < bounds.y + bounds.height; y += tileSize) {
+        const w = Math.min(tileSize, bounds.x + bounds.width - x)
+        const h = Math.min(tileSize, bounds.y + bounds.height - y)
+        animatedTileRenderer.render(ctx, 'lava', x, y, Math.min(w, h))
+      }
+    }
+
+    // Add extra glow around edges
+    ctx.save()
+    ctx.shadowColor = VOLCANIC_COLORS.lavaGlow
+    ctx.shadowBlur = 15
+    ctx.strokeStyle = VOLCANIC_COLORS.lavaCore
+    ctx.lineWidth = 2
+    ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
+    ctx.restore()
+  }
+
+  /**
    * Render slow field with ice/frost visuals
    */
   private renderSlowField(ctx: CanvasRenderingContext2D, bounds: { x: number; y: number; width: number; height: number }, time: number): void {
+    if (this.theme === 'volcanic') {
+      this.renderVolcanicSteamVent(ctx, bounds, time)
+      return
+    }
+
     const centerX = bounds.x + bounds.width / 2
     const centerY = bounds.y + bounds.height / 2
     const pulse = 0.7 + 0.3 * Math.sin(time * 2)
@@ -375,9 +422,60 @@ export class HazardManager {
   }
 
   /**
+   * Render volcanic steam vent slow zone
+   */
+  private renderVolcanicSteamVent(ctx: CanvasRenderingContext2D, bounds: { x: number; y: number; width: number; height: number }, time: number): void {
+    const centerX = bounds.x + bounds.width / 2
+    const centerY = bounds.y + bounds.height / 2
+    const pulse = 0.6 + 0.4 * Math.sin(time * 3)
+
+    // Steam/smoke gradient background
+    const gradient = ctx.createRadialGradient(
+      centerX, centerY, 0,
+      centerX, centerY, bounds.width / 2
+    )
+    gradient.addColorStop(0, `rgba(136, 136, 136, ${0.3 * pulse})`)
+    gradient.addColorStop(0.5, `rgba(74, 74, 74, ${0.2 * pulse})`)
+    gradient.addColorStop(1, 'rgba(74, 74, 74, 0.05)')
+
+    ctx.fillStyle = gradient
+    ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height)
+
+    // Animated steam particles rising
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(bounds.x, bounds.y, bounds.width, bounds.height)
+    ctx.clip()
+
+    const particleCount = 8
+    for (let i = 0; i < particleCount; i++) {
+      const px = bounds.x + (i / particleCount) * bounds.width + bounds.width / (particleCount * 2)
+      const pyOffset = ((time * 40 + i * 30) % bounds.height)
+      const py = bounds.y + bounds.height - pyOffset
+      const size = 10 + Math.sin(time * 2 + i) * 5
+
+      ctx.fillStyle = `rgba(200, 200, 200, ${0.3 * (1 - pyOffset / bounds.height)})`
+      ctx.beginPath()
+      ctx.arc(px + Math.sin(time + i) * 5, py, size, 0, Math.PI * 2)
+      ctx.fill()
+    }
+    ctx.restore()
+
+    // Subtle border
+    ctx.strokeStyle = `rgba(136, 136, 136, ${0.3 * pulse})`
+    ctx.lineWidth = 1
+    ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
+  }
+
+  /**
    * Render EMP zone with lightning bolt icon
    */
   private renderEMPZone(ctx: CanvasRenderingContext2D, bounds: { x: number; y: number; width: number; height: number }, time: number): void {
+    if (this.theme === 'volcanic') {
+      this.renderVolcanicEMPZone(ctx, bounds, time)
+      return
+    }
+
     const centerX = bounds.x + bounds.width / 2
     const centerY = bounds.y + bounds.height / 2
     const pulse = 0.7 + 0.3 * Math.sin(time * 3)
@@ -399,6 +497,26 @@ export class HazardManager {
     ctx.globalAlpha = 0.7 + pulse * 0.3
     arenaAssets.drawCentered(ctx, 'emp-zone', centerX, centerY, iconSize, iconSize)
     ctx.globalAlpha = 1
+  }
+
+  /**
+   * Render volcanic EMP zone with electric/fire effect
+   */
+  private renderVolcanicEMPZone(ctx: CanvasRenderingContext2D, bounds: { x: number; y: number; width: number; height: number }, _time: number): void {
+    const tileSize = 40
+    
+    // Render electric tiles with volcanic color tint
+    for (let x = bounds.x; x < bounds.x + bounds.width; x += tileSize) {
+      for (let y = bounds.y; y < bounds.y + bounds.height; y += tileSize) {
+        const w = Math.min(tileSize, bounds.x + bounds.width - x)
+        const h = Math.min(tileSize, bounds.y + bounds.height - y)
+        animatedTileRenderer.render(ctx, 'electric', x, y, Math.min(w, h))
+      }
+    }
+
+    // Add volcanic tint overlay
+    ctx.fillStyle = 'rgba(255, 68, 0, 0.1)'
+    ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height)
   }
 
   /**

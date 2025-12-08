@@ -50,13 +50,14 @@ export function useQuizEvents(lobbyCode?: string) {
 
     const unsubQuestion = wsService.on('question', (payload) => {
       const data = payload as QuestionPayload
-      lastQuestionTimeRef.current = Date.now()
+      const localStartTime = Date.now() // Use local time to avoid clock skew
+      lastQuestionTimeRef.current = localStartTime
       stuckRecoveryAttemptRef.current = 0 // Reset recovery attempts on new question
       setQuestion({
         qNum: data.q_num,
         text: data.text,
         options: data.options,
-        startTime: data.start_time,
+        startTime: localStartTime, // Use local time instead of server time
       })
     })
 

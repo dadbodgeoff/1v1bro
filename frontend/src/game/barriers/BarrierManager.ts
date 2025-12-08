@@ -10,10 +10,12 @@ import type {
   BarrierState, 
   BarrierCallbacks
 } from '../arena/types'
+import type { MapTheme } from '../config/maps/map-schema'
 import type { Vector2 } from '../types'
 import { DestructibleBarrier } from './DestructibleBarrier'
 import { OneWayBarrier } from './OneWayBarrier'
 import { blocksProjectiles, BARRIER_HEALTH } from './BarrierTypes'
+import { VOLCANIC_COLORS } from '../backdrop/types'
 
 // ============================================================================
 // BarrierManager Class
@@ -28,6 +30,15 @@ export class BarrierManager {
   private destructibles: Map<string, DestructibleBarrier> = new Map()
   private oneWays: Map<string, OneWayBarrier> = new Map()
   private callbacks: BarrierCallbacks = {}
+  private theme: MapTheme = 'space'
+
+  /**
+   * Set the visual theme for barrier rendering
+   * @param theme - Map theme ('space' | 'volcanic' | etc.)
+   */
+  setTheme(theme: MapTheme): void {
+    this.theme = theme
+  }
 
   /**
    * Initialize barriers from map configuration
@@ -210,6 +221,142 @@ export class BarrierManager {
   }
 
   /**
+   * Apply server-authoritative barrier state
+   * SERVER AUTHORITY: Sync client state with server
+   * Requirements: 6.1
+   * 
+   * @param serverState - Array of barrier states from server
+   */
+  applyServerState(serverState: Array<{
+    id: string
+    x: number
+    y: number
+    width: number
+    height: number
+    type: string
+    health: number
+    max_health: number
+    is_active: boolean
+    direction?: string
+  }>): void {
+    const serverIds = new Set(serverState.map(s => s.id))
+
+    // Remove barriers that no longer exist on server
+    for (const id of this.barriers.keys()) {
+      if (!serverIds.has(id)) {
+        this.barriers.delete(id)
+        this.destructibles.delete(id)
+        this.oneWays.delete(id)
+      }
+    }
+
+    // Map server direction to client direction
+    const mapDirection = (dir?: string): 'N' | 'S' | 'E' | 'W' | undefined => {
+      if (!dir) return undefined
+      const dirMap: Record<string, 'N' | 'S' | 'E' | 'W'> = {
+        'up': 'N', 'down': 'S', 'left': 'W', 'right': 'E',
+        'N': 'N', 'S': 'S', 'E': 'E', 'W': 'W'
+      }
+      return dirMap[dir]
+    }
+
+    // Update or create barriers from server state
+    for (const state of serverState) {
+      const existing = this.barriers.get(state.id)
+      
+      if (existing) {
+        // Update existing barrier
+        existing.position = { x: state.x, y: state.y }
+        existing.size = { x: state.width, y: state.height }
+        existing.health = state.health
+        existing.maxHealth = state.max_health
+        existing.isActive = state.is_active
+        
+        // Update damage state based on health percentage
+        const healthPercent = state.health / state.max_health
+        if (healthPercent <= 0) {
+          existing.damageState = 'destroyed'
+        } else if (healthPercent <= 0.33) {
+          existing.damageState = 'damaged'
+        } else if (healthPercent <= 0.66) {
+          existing.damageState = 'cracked'
+        } else {
+          existing.damageState = 'intact'
+        }
+      } else {
+        // Create new barrier from server state
+        const newState: BarrierState = {
+          id: state.id,
+          type: state.type as BarrierState['type'],
+          position: { x: state.x, y: state.y },
+          size: { x: state.width, y: state.height },
+          health: state.health,
+          maxHealth: state.max_health,
+          damageState: 'intact',
+          isActive: state.is_active
+        }
+        
+        this.barriers.set(state.id, newState)
+        
+        if (state.type === 'destructible') {
+          this.destructibles.set(state.id, new DestructibleBarrier(newState))
+        } else if (state.type === 'one_way') {
+          const dir = mapDirection(state.direction)
+          if (dir) {
+            this.oneWays.set(state.id, new OneWayBarrier(newState, dir))
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Handle server barrier damage event
+   * SERVER AUTHORITY: Apply damage from server
+   * 
+   * @param barrierId - ID of damaged barrier
+   * @param health - New health value
+   * @param maxHealth - Max health value
+   */
+  applyServerDamage(barrierId: string, health: number, maxHealth: number): void {
+    const barrier = this.barriers.get(barrierId)
+    if (!barrier) return
+
+    barrier.health = health
+    barrier.maxHealth = maxHealth
+
+    // Update damage state
+    const healthPercent = health / maxHealth
+    if (healthPercent <= 0) {
+      barrier.damageState = 'destroyed'
+      barrier.isActive = false
+    } else if (healthPercent <= 0.33) {
+      barrier.damageState = 'damaged'
+    } else if (healthPercent <= 0.66) {
+      barrier.damageState = 'cracked'
+    }
+
+    this.callbacks.onDamaged?.(barrierId, health, maxHealth)
+  }
+
+  /**
+   * Handle server barrier destruction event
+   * SERVER AUTHORITY: Mark barrier as destroyed
+   * 
+   * @param barrierId - ID of destroyed barrier
+   */
+  applyServerDestruction(barrierId: string): void {
+    const barrier = this.barriers.get(barrierId)
+    if (!barrier) return
+
+    barrier.health = 0
+    barrier.damageState = 'destroyed'
+    barrier.isActive = false
+
+    this.callbacks.onDestroyed?.(barrierId, barrier.position)
+  }
+
+  /**
    * Render all barriers
    * Requirements: 2.9
    * 
@@ -226,6 +373,11 @@ export class BarrierManager {
    * Render a single barrier
    */
   private renderBarrier(ctx: CanvasRenderingContext2D, barrier: BarrierState): void {
+    if (this.theme === 'volcanic') {
+      this.renderVolcanicBarrier(ctx, barrier)
+      return
+    }
+
     const { position, size, type, damageState } = barrier
     const time = Date.now() / 1000
     const pulse = 0.6 + 0.4 * Math.sin(time * 1.5)
@@ -272,6 +424,127 @@ export class BarrierManager {
     // Draw direction indicator for one-way barriers
     if (type === 'one_way') {
       this.renderOneWayIndicator(ctx, barrier)
+    }
+
+    ctx.restore()
+  }
+
+  /**
+   * Render volcanic obsidian barrier
+   */
+  private renderVolcanicBarrier(ctx: CanvasRenderingContext2D, barrier: BarrierState): void {
+    const { position, size, type, damageState, health, maxHealth } = barrier
+    const time = Date.now() / 1000
+    const pulse = 0.6 + 0.4 * Math.sin(time * 2)
+
+    ctx.save()
+
+    // Dark obsidian base gradient
+    const isHorizontal = size.x > size.y
+    const obsidianGradient = isHorizontal
+      ? ctx.createLinearGradient(position.x, position.y, position.x, position.y + size.y)
+      : ctx.createLinearGradient(position.x, position.y, position.x + size.x, position.y)
+
+    obsidianGradient.addColorStop(0, '#2d2d2d')
+    obsidianGradient.addColorStop(0.3, VOLCANIC_COLORS.obsidian)
+    obsidianGradient.addColorStop(0.7, VOLCANIC_COLORS.obsidian)
+    obsidianGradient.addColorStop(1, '#2d2d2d')
+
+    ctx.fillStyle = obsidianGradient
+    ctx.fillRect(position.x, position.y, size.x, size.y)
+
+    // Orange/red glow along edges
+    ctx.save()
+    ctx.shadowColor = VOLCANIC_COLORS.lavaGlow
+    ctx.shadowBlur = 8 * pulse
+    ctx.strokeStyle = VOLCANIC_COLORS.lavaDark
+    ctx.lineWidth = 2
+    ctx.strokeRect(position.x, position.y, size.x, size.y)
+    ctx.restore()
+
+    // Inner edge highlight
+    ctx.strokeStyle = `rgba(255, 102, 0, ${0.3 * pulse})`
+    ctx.lineWidth = 1
+    ctx.strokeRect(position.x + 2, position.y + 2, size.x - 4, size.y - 4)
+
+    // Volcanic rock texture
+    this.renderVolcanicTexture(ctx, barrier)
+
+    // Cracks with lava glow for destructible barriers
+    if (type === 'destructible') {
+      const crackIntensity = 1 - (health / maxHealth)
+      this.renderVolcanicCracks(ctx, barrier, crackIntensity)
+    }
+
+    // Half walls show more cracks
+    if (type === 'half' || damageState !== 'intact') {
+      this.renderVolcanicCracks(ctx, barrier, type === 'half' ? 0.3 : 0.5)
+    }
+
+    // Draw direction indicator for one-way barriers
+    if (type === 'one_way') {
+      this.renderOneWayIndicator(ctx, barrier)
+    }
+
+    ctx.restore()
+  }
+
+  /**
+   * Render volcanic rock texture
+   */
+  private renderVolcanicTexture(ctx: CanvasRenderingContext2D, barrier: BarrierState): void {
+    const { position, size } = barrier
+
+    // Add subtle rock texture with darker patches
+    ctx.globalAlpha = 0.3
+    ctx.fillStyle = '#0a0a0a'
+
+    const seed = position.x * 7 + position.y * 13
+    for (let i = 0; i < 5; i++) {
+      const x = position.x + ((seed * (i + 1) * 17) % size.x)
+      const y = position.y + ((seed * (i + 1) * 23) % size.y)
+      const w = 8 + ((seed * (i + 1) * 7) % 15)
+      const h = 6 + ((seed * (i + 1) * 11) % 10)
+
+      ctx.fillRect(x, y, w, h)
+    }
+
+    ctx.globalAlpha = 1
+  }
+
+  /**
+   * Render volcanic cracks with lava glow
+   */
+  private renderVolcanicCracks(ctx: CanvasRenderingContext2D, barrier: BarrierState, intensity: number): void {
+    if (intensity <= 0) return
+
+    const { position, size } = barrier
+    const time = Date.now() / 1000
+    const glowPulse = 0.5 + 0.5 * Math.sin(time * 3)
+
+    // Crack lines with lava glow
+    ctx.save()
+    ctx.shadowColor = VOLCANIC_COLORS.lavaCore
+    ctx.shadowBlur = 6 * intensity * glowPulse
+    ctx.strokeStyle = VOLCANIC_COLORS.crack
+    ctx.lineWidth = 2 * intensity
+
+    const crackCount = Math.floor(2 + intensity * 4)
+    const seed = position.x * 11 + position.y * 7
+
+    for (let i = 0; i < crackCount; i++) {
+      const startX = position.x + ((seed * (i + 1) * 13) % size.x)
+      const startY = position.y + ((seed * (i + 1) * 17) % size.y)
+      const endX = startX + ((seed * (i + 1) * 7) % 30) - 15
+      const endY = startY + ((seed * (i + 1) * 11) % 30) - 15
+
+      ctx.beginPath()
+      ctx.moveTo(startX, startY)
+      ctx.lineTo(
+        Math.max(position.x, Math.min(position.x + size.x, endX)),
+        Math.max(position.y, Math.min(position.y + size.y, endY))
+      )
+      ctx.stroke()
     }
 
     ctx.restore()

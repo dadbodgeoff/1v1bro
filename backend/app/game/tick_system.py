@@ -457,5 +457,20 @@ class TickSystem:
             logger.error(f"Broadcast failed: {e}")
 
 
+    def get_arena_state(self, lobby_id: str) -> Optional[dict]:
+        """Get current arena state for a game."""
+        game = self._games.get(lobby_id)
+        if not game or not game.arena_systems:
+            return None
+        return game.arena_systems.get_arena_state()
+    
+    def get_buff_state(self, lobby_id: str) -> Optional[dict]:
+        """Get current buff state for a game."""
+        game = self._games.get(lobby_id)
+        if not game or not game.buff_manager:
+            return None
+        return game.buff_manager.get_buff_state_for_broadcast()
+
+
 # Global instance
 tick_system = TickSystem()

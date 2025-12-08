@@ -166,27 +166,31 @@ class QuizHandler(BaseHandler):
             logger.error(f"Error processing round end: {e}")
 
     async def process_game_end(self, lobby_code: str, lobby_id: str) -> None:
-        """Process end of game and send final results."""
+        """Process end of game and send final results with XP awards."""
         try:
             result = await self.game_service.end_game(lobby_id)
             await self.lobby_service.complete_game(lobby_id)
 
-            await self.manager.broadcast_to_lobby(
-                lobby_code,
-                build_game_end(
-                    winner_id=result.winner_id,
-                    final_scores={
-                        result.player1_id: result.player1_score,
-                        result.player2_id: result.player2_score,
-                    },
-                    is_tie=result.is_tie,
-                    total_times={
-                        result.player1_id: result.player1_total_time_ms,
-                        result.player2_id: result.player2_total_time_ms,
-                    },
-                    won_by_time=result.won_by_time,
-                )
+            # Build game_end message with XP results
+            game_end_msg = build_game_end(
+                winner_id=result.winner_id,
+                final_scores={
+                    result.player1_id: result.player1_score,
+                    result.player2_id: result.player2_score,
+                },
+                is_tie=result.is_tie,
+                total_times={
+                    result.player1_id: result.player1_total_time_ms,
+                    result.player2_id: result.player2_total_time_ms,
+                },
+                won_by_time=result.won_by_time,
             )
+            
+            # Add XP results if available from game result
+            if hasattr(result, 'xp_results') and result.xp_results:
+                game_end_msg["payload"]["xp_results"] = result.xp_results
+
+            await self.manager.broadcast_to_lobby(lobby_code, game_end_msg)
 
         except Exception as e:
             logger.error(f"Error processing game end: {e}")

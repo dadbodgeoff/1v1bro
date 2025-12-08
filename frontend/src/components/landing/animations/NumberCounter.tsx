@@ -26,7 +26,7 @@ export function NumberCounter({
 }: NumberCounterProps) {
   const [displayValue, setDisplayValue] = useState(reducedMotion ? value : 0)
   const startTimeRef = useRef<number | null>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | null>(null)
   const startValueRef = useRef(0)
 
   useEffect(() => {

@@ -4,6 +4,7 @@
 
 export { BaseRenderer } from './BaseRenderer'
 export { GridRenderer } from './GridRenderer'
+export { TileBatchRenderer } from './TileBatchRenderer'
 export { HubRenderer } from './HubRenderer'
 export { BarrierRenderer } from './BarrierRenderer'
 export { PowerUpRenderer } from './PowerUpRenderer'

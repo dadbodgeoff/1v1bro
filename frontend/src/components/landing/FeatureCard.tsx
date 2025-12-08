@@ -5,7 +5,7 @@
  * Validates: Requirements 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8
  */
 
-import { useRef } from 'react'
+import React, { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useScrollAnimation } from '@/hooks/landing/useScrollAnimation'
 import type { FeatureConfig } from './types'
@@ -18,7 +18,7 @@ interface FeatureCardProps {
 }
 
 // Icon components
-const ICONS: Record<string, JSX.Element> = {
+const ICONS: Record<string, React.ReactElement> = {
   crosshair: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-8 h-8">
       <circle cx="12" cy="12" r="10" />
@@ -76,7 +76,7 @@ export function FeatureCard({ feature, index, reducedMotion }: FeatureCardProps)
       x: 0,
       transition: {
         duration: reducedMotion ? 0 : 0.6,
-        ease: [0.25, 0.1, 0.25, 1],
+        ease: [0.25, 0.1, 0.25, 1] as const,
       },
     },
   }
@@ -88,7 +88,7 @@ export function FeatureCard({ feature, index, reducedMotion }: FeatureCardProps)
       opacity: 1,
       transition: {
         duration: reducedMotion ? 0 : ANIMATION_CONFIG.features.iconDrawDuration / 1000,
-        ease: 'easeInOut',
+        ease: 'easeInOut' as const,
       },
     },
   }

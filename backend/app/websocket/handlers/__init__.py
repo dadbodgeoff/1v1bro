@@ -8,9 +8,11 @@ Organized by domain:
 - lobby: Join, leave, ready
 - telemetry: Replay upload/flagging
 - matchmaking: Queue join/leave
+- emote: Emote triggering and broadcasting
 """
 
 from .base import BaseHandler
 from .router import GameHandler
+from .emote import EmoteHandler
 
-__all__ = ["BaseHandler", "GameHandler"]
+__all__ = ["BaseHandler", "GameHandler", "EmoteHandler"]

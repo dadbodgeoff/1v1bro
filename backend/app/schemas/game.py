@@ -84,6 +84,8 @@ class GameResult(BaseSchema, TimestampMixin):
     won_by_time: bool = Field(default=False, description="Whether winner was decided by faster time")
     questions_data: Optional[list[dict]] = Field(None, description="Questions used")
     answers_data: Optional[dict[str, list]] = Field(None, description="Player answers")
+    # XP results for both players (UNIFIED PROGRESSION)
+    xp_results: Optional[dict[str, dict]] = Field(None, description="XP award results keyed by player_id")
 
 
 class GameHistoryItem(BaseSchema, TimestampMixin):
@@ -92,7 +94,9 @@ class GameHistoryItem(BaseSchema, TimestampMixin):
     id: str
     opponent_id: str
     opponent_name: Optional[str] = None
+    opponent_avatar_url: Optional[str] = None  # NEW: Opponent's avatar from user_profiles
     my_score: int
     opponent_score: int
     won: bool
     is_tie: bool = False
+    elo_change: int = 0  # NEW: ELO change from match_results table

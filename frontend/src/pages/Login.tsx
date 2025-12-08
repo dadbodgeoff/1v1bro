@@ -24,7 +24,7 @@ export function Login() {
     try {
       const response = await authAPI.login({ email, password })
       setUser(response.user, response.access_token)
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     } finally {

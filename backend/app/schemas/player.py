@@ -9,6 +9,16 @@ from pydantic import Field
 from app.schemas.base import BaseSchema
 
 
+class PlayerCardInfo(BaseSchema):
+    """Playercard cosmetic information for lobby display."""
+
+    id: str = Field(..., description="Playercard cosmetic UUID")
+    name: str = Field(..., description="Playercard name")
+    type: str = Field(..., description="Cosmetic type (playercard)")
+    rarity: str = Field(..., description="Rarity tier")
+    image_url: str = Field(..., description="Playercard image URL")
+
+
 class PlayerInfo(BaseSchema):
     """Basic player information for lobby display."""
 
@@ -17,6 +27,7 @@ class PlayerInfo(BaseSchema):
     avatar_url: Optional[str] = Field(None, description="Avatar URL")
     is_host: bool = Field(default=False, description="Whether player is the host")
     is_ready: bool = Field(default=False, description="Whether player is ready")
+    playercard: Optional[PlayerCardInfo] = Field(None, description="Equipped playercard for lobby display")
 
 
 class PlayerState(BaseSchema):

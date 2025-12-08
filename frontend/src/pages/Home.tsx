@@ -1,249 +1,117 @@
 /**
- * Home - Main landing page with enterprise design
+ * Home - Dashboard page with widget-based layout.
+ * Requirements: 1.1-1.5, 3.1-3.5, 4.1-4.5, 5.1-5.4, 6.1-6.4
  */
 
-import { useState, useEffect, type FormEvent } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import { useAuthStore } from '@/stores/authStore'
-import { useLobby } from '@/hooks/useLobby'
 import { useFriends } from '@/hooks/useFriends'
-import { useMatchmaking } from '@/hooks/useMatchmaking'
-import { FriendsPanel, FriendsButton, FriendsNotifications } from '@/components/friends'
-import { QueueStatus, MatchFoundModal } from '@/components/matchmaking'
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout'
+import { QuickActionsWidget } from '@/components/dashboard/QuickActionsWidget'
+import { BattlePassWidget } from '@/components/dashboard/BattlePassWidget'
+import { MatchHistoryWidget } from '@/components/dashboard/MatchHistoryWidget'
+import { FriendsWidget } from '@/components/dashboard/FriendsWidget'
+import { FriendsPanel, FriendsNotifications } from '@/components/friends'
 
 export function Home() {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
-  const { createLobby, joinLobby } = useLobby()
-  const { fetchFriends, isPanelOpen, openPanel, closePanel } = useFriends()
-  const {
-    isInQueue,
-    queueTime,
-    queuePosition,
-    queueSize,
-    isMatchFound,
-    matchData,
-    cooldownSeconds,
-    joinQueue,
-    leaveQueue,
-  } = useMatchmaking()
-
-  const [joinCode, setJoinCode] = useState('')
-  const [error, setError] = useState('')
-  const [isCreating, setIsCreating] = useState(false)
-  const [isJoining, setIsJoining] = useState(false)
-  const [isFindingMatch, setIsFindingMatch] = useState(false)
+  const { fetchFriends, isPanelOpen, closePanel } = useFriends()
 
   useEffect(() => {
     fetchFriends()
   }, [fetchFriends])
 
-  const handleCreate = async () => {
-    setError('')
-    setIsCreating(true)
-    try {
-      await createLobby()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create lobby')
-    } finally {
-      setIsCreating(false)
-    }
-  }
-
-  const handleJoin = async (e: FormEvent) => {
-    e.preventDefault()
-    if (!joinCode.trim()) return
-
-    setError('')
-    setIsJoining(true)
-    try {
-      await joinLobby(joinCode.trim())
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to join lobby')
-    } finally {
-      setIsJoining(false)
-    }
-  }
-
-  const handleFindMatch = async () => {
-    setError('')
-    setIsFindingMatch(true)
-    try {
-      await joinQueue()
-    } catch (err) {
-      if (err instanceof Error && !err.message.includes('cooldown')) {
-        setError(err.message)
-      }
-    } finally {
-      setIsFindingMatch(false)
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
-      {/* Header */}
-      <header className="border-b border-white/[0.06] px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <span className="text-sm font-medium text-white">1v1 Bro</span>
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-neutral-500">
-              {user?.display_name || user?.email}
-            </span>
+    <DashboardLayout activeNav="play">
+      {/* Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column - Quick Actions */}
+        <div className="lg:col-span-2 space-y-6">
+          <QuickActionsWidget />
+
+          {/* Secondary Actions */}
+          <div className="grid grid-cols-2 gap-4">
             <button
-              onClick={logout}
-              className="text-xs text-neutral-600 hover:text-white transition-colors"
+              onClick={() => navigate('/bot-game')}
+              className="py-4 bg-[#111111] border border-white/[0.06] rounded-xl text-sm text-neutral-400 hover:bg-white/[0.04] hover:text-white transition-all"
             >
-              Sign out
+              <span className="flex items-center justify-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Practice vs Bot
+              </span>
+            </button>
+            <button
+              onClick={() => navigate('/fortnite-quiz')}
+              className="py-4 bg-[#111111] border border-white/[0.06] rounded-xl text-sm text-neutral-400 hover:bg-white/[0.04] hover:text-white transition-all"
+            >
+              <span className="flex items-center justify-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Fortnite Quiz
+              </span>
             </button>
           </div>
+
+          {/* Match History */}
+          <MatchHistoryWidget maxItems={5} />
         </div>
-      </header>
 
-      {/* Main */}
-      <main className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-sm">
-          {/* Welcome */}
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-semibold text-white tracking-tight mb-2">
-              Ready to play?
-            </h1>
-            <p className="text-neutral-500 text-sm">
-              Create a lobby or join an existing match
-            </p>
-          </div>
+        {/* Right Column - Widgets */}
+        <div className="space-y-6">
+          {/* Battle Pass Widget */}
+          <BattlePassWidget />
 
-          {/* Error */}
-          {error && (
-            <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-              <p className="text-red-400 text-sm text-center">{error}</p>
-            </div>
-          )}
+          {/* Friends Widget */}
+          <FriendsWidget maxItems={5} />
 
-          {/* Actions */}
-          <div className="space-y-4">
-            {/* Find Match */}
-            <button
-              onClick={handleFindMatch}
-              disabled={isFindingMatch || cooldownSeconds !== null}
-              className="w-full py-3.5 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-50"
-            >
-              {cooldownSeconds !== null
-                ? `Cooldown: ${Math.floor(cooldownSeconds / 60)}:${(cooldownSeconds % 60).toString().padStart(2, '0')}`
-                : isFindingMatch
-                ? 'Finding...'
-                : 'Find Match'}
-            </button>
-
-            {/* Create */}
-            <button
-              onClick={handleCreate}
-              disabled={isCreating}
-              className="w-full py-3 bg-white/[0.06] border border-white/[0.08] text-neutral-300 font-medium rounded-lg hover:bg-white/[0.1] hover:text-white transition-all disabled:opacity-50"
-            >
-              {isCreating ? 'Creating...' : 'Create Lobby'}
-            </button>
-
-            {/* Divider */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-white/[0.08]" />
-              <span className="text-xs text-neutral-600">or join</span>
-              <div className="flex-1 h-px bg-white/[0.08]" />
-            </div>
-
-            {/* Join */}
-            <form onSubmit={handleJoin} className="space-y-3">
-              <input
-                type="text"
-                placeholder="Enter code"
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                maxLength={6}
-                className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-center text-lg font-mono tracking-[0.3em] text-white placeholder:text-neutral-600 focus:outline-none focus:border-white/[0.2] transition-colors"
-              />
-              <button
-                type="submit"
-                disabled={!joinCode.trim() || isJoining}
-                className="w-full py-3 bg-white/[0.06] border border-white/[0.08] text-neutral-300 font-medium rounded-lg hover:bg-white/[0.1] hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                {isJoining ? 'Joining...' : 'Join Lobby'}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="flex items-center gap-3 pt-2">
-              <div className="flex-1 h-px bg-white/[0.08]" />
-              <span className="text-xs text-neutral-600">more</span>
-              <div className="flex-1 h-px bg-white/[0.08]" />
-            </div>
-
-            {/* Secondary actions */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => navigate('/bot-game')}
-                className="py-3 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-neutral-400 hover:bg-white/[0.04] hover:text-white transition-all"
-              >
-                Practice
-              </button>
-              <button
-                onClick={() => navigate('/fortnite-quiz')}
-                className="py-3 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-neutral-400 hover:bg-white/[0.04] hover:text-white transition-all"
-              >
-                Quiz
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+          {/* Quick Links */}
+          <div className="bg-[#111111] border border-white/[0.06] rounded-xl p-5">
+            <h3 className="text-sm font-medium text-neutral-400 mb-4">Quick Links</h3>
+            <div className="space-y-2">
               <button
                 onClick={() => navigate('/leaderboards')}
-                className="py-3 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm text-neutral-400 hover:bg-white/[0.04] hover:text-white transition-all"
+                className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.04] transition-colors text-left"
               >
-                Leaderboards
-              </button>
-              <FriendsButton onClick={openPanel} />
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-10 pt-6 border-t border-white/[0.06]">
-            <div className="flex justify-center gap-8">
-              <div className="text-center">
-                <div className="text-lg font-semibold text-white">{user?.games_played || 0}</div>
-                <div className="text-xs text-neutral-600">Played</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-semibold text-white">{user?.games_won || 0}</div>
-                <div className="text-xs text-neutral-600">Won</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-semibold text-white">
-                  {user?.games_played ? Math.round((user.games_won / user.games_played) * 100) : 0}%
+                <div className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
                 </div>
-                <div className="text-xs text-neutral-600">Win Rate</div>
-              </div>
+                <span className="text-sm text-neutral-300">Leaderboards</span>
+              </button>
+              <button
+                onClick={() => navigate('/shop')}
+                className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.04] transition-colors text-left"
+              >
+                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </div>
+                <span className="text-sm text-neutral-300">Shop</span>
+              </button>
+              <button
+                onClick={() => navigate('/inventory')}
+                className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/[0.04] transition-colors text-left"
+              >
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+                <span className="text-sm text-neutral-300">Inventory</span>
+              </button>
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Friends Panel */}
       <FriendsPanel isOpen={isPanelOpen} onClose={closePanel} />
       <FriendsNotifications />
-
-      {/* Matchmaking Modals */}
-      <AnimatePresence>
-        {isInQueue && (
-          <QueueStatus
-            queueTime={queueTime}
-            queuePosition={queuePosition}
-            queueSize={queueSize}
-            onCancel={leaveQueue}
-          />
-        )}
-        {isMatchFound && matchData && (
-          <MatchFoundModal opponentName={matchData.opponentName} />
-        )}
-      </AnimatePresence>
-    </div>
+    </DashboardLayout>
   )
 }

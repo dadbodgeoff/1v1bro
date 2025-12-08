@@ -31,7 +31,7 @@ export function LogoReveal({ duration = 1500, reducedMotion }: LogoRevealProps) 
       pathLength: 1,
       opacity: 1,
       transition: {
-        pathLength: { duration: duration / 1000, ease: 'easeInOut' },
+        pathLength: { duration: duration / 1000, ease: 'easeInOut' as const },
         opacity: { duration: 0.3 },
       },
     },

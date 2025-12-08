@@ -11,7 +11,24 @@ import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
 import { useGameStore } from '@/stores/gameStore'
 import { useAuthStore } from '@/stores/authStore'
+import { NEXUS_ARENA, VORTEX_ARENA, type MapConfig } from '@/game/config/maps'
 import type { Vector2, FireEvent, HitEvent, DeathEvent, PowerUpState } from '@/game'
+
+// Available maps for practice mode
+const AVAILABLE_MAPS = [
+  {
+    id: 'nexus',
+    name: 'Nexus Arena',
+    description: 'Classic 3-lane arena with balanced gameplay',
+    config: NEXUS_ARENA,
+  },
+  {
+    id: 'vortex',
+    name: 'Vortex Arena',
+    description: 'Radial arena with central hazards and teleporters',
+    config: VORTEX_ARENA,
+  },
+] as const
 
 // Mock questions for bot game (10 questions to match multiplayer)
 const MOCK_QUESTIONS = [
@@ -75,6 +92,7 @@ export function BotGame() {
   // Game state
   const [questionIndex, setQuestionIndex] = useState(0)
   const [gameStarted, setGameStarted] = useState(false)
+  const [selectedMap, setSelectedMap] = useState<MapConfig>(NEXUS_ARENA)
   const [localHealth] = useState({ playerId: userId, health: 100, maxHealth: 100 })
   const [opponentHealth] = useState({ playerId: 'bot', health: 100, maxHealth: 100 })
   const [powerUps] = useState<PowerUpState[]>([])
@@ -95,6 +113,7 @@ export function BotGame() {
 
   // Start game
   const startGame = useCallback(() => {
+    console.log('[BotGame] Starting game with map:', selectedMap.metadata.name)
     setGameStarted(true)
     setStatus('playing')
     
@@ -106,7 +125,7 @@ export function BotGame() {
       options: q.options,
       startTime: Date.now(),
     })
-  }, [setStatus, setQuestion])
+  }, [setStatus, setQuestion, selectedMap])
 
   // Bot movement loop
   useEffect(() => {
@@ -290,17 +309,46 @@ export function BotGame() {
 
   const handleLeave = useCallback(() => {
     reset()
-    navigate('/')
+    navigate('/dashboard')
   }, [reset, navigate])
 
-  // Pre-game screen
+  // Pre-game screen with map selection
   if (!gameStarted) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0a]">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0a] px-4">
         <h1 className="text-3xl font-semibold text-white tracking-tight mb-2">Bot Practice</h1>
-        <p className="text-neutral-500 mb-8 text-center max-w-md text-sm">
+        <p className="text-neutral-500 mb-6 text-center max-w-md text-sm">
           Practice your skills against an AI opponent. Fight in the arena while answering trivia questions.
         </p>
+
+        {/* Map Selection */}
+        <div className="w-full max-w-md mb-8">
+          <p className="text-xs text-neutral-500 uppercase tracking-wider mb-3 text-center">Select Map</p>
+          <div className="grid grid-cols-2 gap-3">
+            {AVAILABLE_MAPS.map((map) => (
+              <button
+                key={map.id}
+                onClick={() => setSelectedMap(map.config)}
+                className={`p-4 rounded-xl border transition-all text-left ${
+                  selectedMap === map.config
+                    ? 'bg-white/[0.08] border-white/20 ring-1 ring-white/20'
+                    : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1]'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      selectedMap === map.config ? 'bg-emerald-400' : 'bg-neutral-600'
+                    }`}
+                  />
+                  <span className="text-sm font-medium text-white">{map.name}</span>
+                </div>
+                <p className="text-xs text-neutral-500 leading-relaxed">{map.description}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="flex gap-3">
           <button
             onClick={startGame}
@@ -309,7 +357,7 @@ export function BotGame() {
             Start Game
           </button>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="px-6 py-2.5 bg-white/[0.06] text-neutral-300 text-sm font-medium rounded-lg border border-white/[0.1] hover:bg-white/[0.1] transition-colors"
           >
             Back
@@ -345,7 +393,7 @@ export function BotGame() {
             Play Again
           </button>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="px-6 py-2.5 bg-white/[0.06] text-neutral-300 text-sm font-medium rounded-lg border border-white/[0.1] hover:bg-white/[0.1] transition-colors"
           >
             Back to Menu
@@ -382,6 +430,7 @@ export function BotGame() {
             powerUps={powerUps}
             onPositionUpdate={handlePositionUpdate}
             onPowerUpCollect={() => {}}
+            mapConfig={selectedMap}
             combatEnabled={true}
             onCombatFire={handleCombatFire}
             onCombatHit={handleCombatHit}

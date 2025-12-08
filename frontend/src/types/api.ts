@@ -38,11 +38,20 @@ export interface RegisterRequest {
 }
 
 // Lobby types
+export interface PlayerCard {
+  id: string
+  name: string
+  type: string
+  rarity: string
+  image_url: string
+}
+
 export interface Player {
   id: string
   display_name: string | null
   is_host: boolean
   is_ready: boolean
+  playercard?: PlayerCard | null  // Optional equipped playercard for lobby display
 }
 
 export interface Lobby {

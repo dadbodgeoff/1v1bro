@@ -39,7 +39,7 @@ const CONNECTIONS: Connection[] = [
 export function NetworkDiagram({ reducedMotion }: NetworkDiagramProps) {
   const [activePacket, setActivePacket] = useState<number>(0)
   const [pulsingNode, setPulsingNode] = useState<string | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     if (reducedMotion) return

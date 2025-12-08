@@ -1,0 +1,82 @@
+# Implementation Plan
+
+- [x] 1. Extend backend schemas and database for playercard support
+  - [x] 1.1 Add `playercard_equipped` field to Loadout and LoadoutSimple schemas in `backend/app/schemas/cosmetic.py`
+    - Add field alongside existing equipped fields
+    - Maintain backward compatibility
+    - _Requirements: 5.4_
+  - [x] 1.2 Add PLAYERCARD to SLOT_MAP in `backend/app/services/cosmetics_service.py`
+    - Map `CosmeticType.PLAYERCARD` to `"playercard_equipped"`
+    - _Requirements: 5.4_
+  - [x] 1.3 Update `get_loadout_with_cosmetics` in cosmetics repository to include playercard
+    - Add `playercard_equipped` to the slots list for fetching
+    - _Requirements: 5.4_
+  - [x] 1.4 Create database migration for loadouts table playercard column
+    - Add `playercard_equipped UUID REFERENCES cosmetics_catalog(id)` column
+    - _Requirements: 5.4_
+  - [x] 1.5 Write property test for loadout playercard round-trip
+    - **Property 6: Loadout playercard round-trip**
+    - **Validates: Requirements 5.4**
+
+- [x] 2. Extend WebSocket events to include playercard data
+  - [x] 2.1 Create `_get_player_playercards` method in lobby handler
+    - Follow same pattern as `_get_player_skins`
+    - Fetch equipped playercard for each player
+    - _Requirements: 3.1, 5.1_
+  - [x] 2.2 Update `build_lobby_state` to include playercard in player objects
+    - Add optional playercard field to player data
+    - _Requirements: 5.1, 5.2_
+  - [x] 2.3 Update `build_player_joined` to include playercard data
+    - Include playercard for the joining player
+    - _Requirements: 3.3, 5.1_
+  - [x] 2.4 Write property test for Player type backward compatibility
+    - **Property 5: Extended Player type preserves existing fields**
+    - **Validates: Requirements 5.1, 5.3**
+
+- [x] 3. Checkpoint - Ensure all backend tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 4. Create frontend PlayerCardBanner component
+  - [x] 4.1 Add `playercard` to CosmeticType in `frontend/src/types/cosmetic.ts`
+    - Add to the type union
+    - _Requirements: 4.1_
+  - [x] 4.2 Create `PlayerCardBanner` component in `frontend/src/components/lobby/PlayerCardBanner.tsx`
+    - Accept playercard, playerName, size, isCurrentUser, showStatus props
+    - Render playercard image or default placeholder
+    - Display player name
+    - Show host/ready status indicators
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 4.1, 4.2, 4.3, 4.4_
+  - [x] 4.3 Write property test for PlayerCardBanner rendering
+    - **Property 1: PlayerCardBanner renders playercard image and name**
+    - **Validates: Requirements 1.1, 1.3, 4.2**
+  - [x] 4.4 Write property test for PlayerCardBanner fallback
+    - **Property 2: PlayerCardBanner fallback to placeholder**
+    - **Validates: Requirements 1.2, 4.3**
+  - [x] 4.5 Write property test for size variants
+    - **Property 4: Size variants produce different dimensions**
+    - **Validates: Requirements 4.4**
+
+- [x] 5. Create HeadToHeadDisplay component and integrate into Lobby
+  - [x] 5.1 Extend Player type in `frontend/src/types/api.ts` with optional playercard field
+    - Add `playercard?: Cosmetic | null` to Player interface
+    - _Requirements: 5.1, 5.3_
+  - [x] 5.2 Create `HeadToHeadDisplay` component in `frontend/src/components/lobby/HeadToHeadDisplay.tsx`
+    - Accept currentPlayer, opponent, isWaitingForOpponent props
+    - Render two PlayerCardBanner components with VS indicator
+    - Position current user on left, opponent on right
+    - Show waiting placeholder when opponent missing
+    - _Requirements: 2.1, 2.2, 2.3, 2.4_
+  - [x] 5.3 Write property test for current user positioning
+    - **Property 3: Current user positioned on left**
+    - **Validates: Requirements 2.3**
+  - [x] 5.4 Update Lobby page to use HeadToHeadDisplay
+    - Replace existing player list with HeadToHeadDisplay
+    - Keep existing action buttons and lobby code display
+    - Preserve all existing lobby functionality
+    - _Requirements: 1.4, 3.2, 3.4_
+  - [x] 5.5 Export new components from `frontend/src/components/lobby/index.ts`
+    - Add PlayerCardBanner and HeadToHeadDisplay exports
+    - _Requirements: 4.1_
+
+- [x] 6. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

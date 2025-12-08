@@ -1,11 +1,17 @@
 /**
  * PlayerController - Handles local player movement, transport, and launch mechanics
  * Single responsibility: Player physics and collision
+ * 
+ * Features:
+ * - Terrain-based friction modifiers
+ * - Speed multipliers from hazards and terrain
+ * - Launch mechanics for jump pads
  */
 
 import { ARENA_SIZE, PLAYER_CONFIG } from '../config'
 import { InputSystem } from '../systems'
 import { ArenaManager } from '../arena'
+import { getTerrainProperties } from '../terrain'
 import type { PlayerState, Vector2, LaunchState } from './types'
 
 export class PlayerController {
@@ -20,9 +26,20 @@ export class PlayerController {
   private onPositionUpdate: ((position: Vector2) => void) | null = null
   private onLaunchCollision: ((opponentId: string, position: Vector2) => void) | null = null
 
+  // Server-authoritative position override (for respawns, teleports)
+  private pendingPositionOverride: Vector2 | null = null
+
   constructor(inputSystem: InputSystem, arenaManager: ArenaManager) {
     this.inputSystem = inputSystem
     this.arenaManager = arenaManager
+  }
+
+  /**
+   * Set a position override from server (respawn, teleport)
+   * This will be applied on the next update frame
+   */
+  setPositionOverride(position: Vector2): void {
+    this.pendingPositionOverride = { ...position }
   }
 
   setCallbacks(
@@ -63,6 +80,16 @@ export class PlayerController {
     opponent: PlayerState | null
   ): void {
     if (!localPlayer) return
+
+    // Apply pending position override from server (respawn, teleport)
+    if (this.pendingPositionOverride) {
+      localPlayer.position.x = this.pendingPositionOverride.x
+      localPlayer.position.y = this.pendingPositionOverride.y
+      this.pendingPositionOverride = null
+      this.onPositionUpdate?.(localPlayer.position)
+      // Skip movement this frame to ensure server position sticks
+      return
+    }
 
     // Handle jump pad launch
     if (this.launchState.velocity && this.launchState.timeRemaining > 0) {
@@ -127,7 +154,18 @@ export class PlayerController {
 
     // Apply speed modifier from hazards
     const effects = this.arenaManager.getPlayerEffects(localPlayer.id)
-    const speedMultiplier = effects.speedMultiplier
+    let speedMultiplier = effects.speedMultiplier
+
+    // Apply terrain friction based on current tile
+    const tileMap = this.arenaManager.getTileMap()
+    if (tileMap) {
+      const tile = tileMap.getTileAtPixel(localPlayer.position.x, localPlayer.position.y)
+      if (tile) {
+        const terrainProps = getTerrainProperties(tile.type)
+        // Combine terrain friction with hazard effects
+        speedMultiplier *= terrainProps.friction * terrainProps.speedMultiplier
+      }
+    }
 
     const speed = PLAYER_CONFIG.speed * deltaTime * speedMultiplier
     const newPosition: Vector2 = {

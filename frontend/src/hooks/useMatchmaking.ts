@@ -2,13 +2,7 @@ import { useEffect, useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMatchmakingStore } from '../stores/matchmakingStore';
 import { matchmakingAPI } from '../services/matchmakingAPI';
-import { wsService } from '../services/websocket';
-
-interface QueueJoinedPayload {
-  ticket_id: string;
-  position: number;
-  queue_size: number;
-}
+import { useAuthStore } from '../stores/authStore';
 
 interface QueueStatusPayload {
   elapsed: number;
@@ -32,8 +26,9 @@ interface UseMatchmakingReturn {
   isMatchFound: boolean;
   matchData: { lobbyCode: string; opponentName: string } | null;
   cooldownSeconds: number | null;
+  selectedCategory: string | null;
   
-  joinQueue: () => Promise<void>;
+  joinQueue: (category?: string) => Promise<void>;
   leaveQueue: () => Promise<void>;
 }
 
@@ -55,7 +50,10 @@ export function useMatchmaking(): UseMatchmakingReturn {
   
   const [queueTime, setQueueTime] = useState(0);
   const [cooldownSeconds, setCooldownSeconds] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const pendingCategoryRef = useRef<string>('fortnite');
   
   // Update queue time every second
   useEffect(() => {
@@ -74,45 +72,124 @@ export function useMatchmaking(): UseMatchmakingReturn {
     }
   }, [status, queueStartTime]);
   
-  // Subscribe to WebSocket events
-  useEffect(() => {
-    const unsubQueueJoined = wsService.on('queue_joined', (data) => {
-      const payload = data as QueueJoinedPayload;
-      setQueuing(payload.ticket_id);
-      updateQueueStatus(payload.position, null, payload.queue_size);
-    });
+  // Ref to track if we're in the process of joining
+  const isJoiningRef = useRef(false);
+  
+  // Connect to matchmaking WebSocket and handle all queue operations
+  const connectAndJoinQueue = useCallback((category: string = 'fortnite') => {
+    pendingCategoryRef.current = category;
+    setSelectedCategory(category);
     
-    const unsubQueueStatus = wsService.on('queue_status', (data) => {
-      const payload = data as QueueStatusPayload;
-      updateQueueStatus(payload.position, payload.estimated_wait, payload.queue_size);
-    });
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      // Already connected, just send join message with category
+      wsRef.current.send(JSON.stringify({ type: 'join_queue', payload: { category } }));
+      return;
+    }
     
-    const unsubQueueCancelled = wsService.on('queue_cancelled', () => {
-      reset();
-    });
+    const token = useAuthStore.getState().token;
+    if (!token) return;
     
-    const unsubMatchFound = wsService.on('match_found', (data) => {
-      const payload = data as MatchFoundPayload;
-      setMatchFound({
-        lobbyCode: payload.lobby_code,
-        opponentId: payload.opponent_id,
-        opponentName: payload.opponent_name,
-      });
-      
-      // Navigate to lobby after 3 seconds
-      setTimeout(() => {
-        navigate(`/lobby/${payload.lobby_code}`);
-        reset();
-      }, 3000);
-    });
+    isJoiningRef.current = true;
     
-    return () => {
-      unsubQueueJoined();
-      unsubQueueStatus();
-      unsubQueueCancelled();
-      unsubMatchFound();
+    // Connect to matchmaking WebSocket
+    const isDev = import.meta.env.DEV;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const host = isDev ? 'localhost:8000' : window.location.host;
+    const wsUrl = `${protocol}//${host}/ws/matchmaking?token=${token}`;
+    
+    console.log('[Matchmaking] Connecting to WebSocket...');
+    const ws = new WebSocket(wsUrl);
+    wsRef.current = ws;
+    
+    ws.onopen = () => {
+      console.log('[Matchmaking] WebSocket connected');
+    };
+    
+    ws.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        console.log('[Matchmaking] Received:', message.type);
+        
+        switch (message.type) {
+          case 'matchmaking_connected':
+            // Connection confirmed - now join the queue with category
+            if (isJoiningRef.current) {
+              console.log('[Matchmaking] Sending join_queue message with category:', pendingCategoryRef.current);
+              ws.send(JSON.stringify({ type: 'join_queue', payload: { category: pendingCategoryRef.current } }));
+            }
+            break;
+            
+          case 'queue_joined': {
+            const payload = message.payload as { ticket_id: string; position: number; queue_size: number };
+            isJoiningRef.current = false;
+            setQueuing(payload.ticket_id);
+            updateQueueStatus(payload.position, null, payload.queue_size);
+            break;
+          }
+          
+          case 'queue_status': {
+            const payload = message.payload as QueueStatusPayload;
+            updateQueueStatus(payload.position, payload.estimated_wait, payload.queue_size);
+            break;
+          }
+          
+          case 'match_found': {
+            const payload = message.payload as MatchFoundPayload;
+            console.log('[Matchmaking] Match found!', payload);
+            setMatchFound({
+              lobbyCode: payload.lobby_code,
+              opponentId: payload.opponent_id,
+              opponentName: payload.opponent_name,
+            });
+            
+            // Navigate to lobby after 3 seconds
+            setTimeout(() => {
+              navigate(`/lobby/${payload.lobby_code}`);
+              reset();
+            }, 3000);
+            break;
+          }
+          
+          case 'queue_cancelled':
+            reset();
+            break;
+            
+          case 'error': {
+            const payload = message.payload as { code: string; message: string };
+            console.error('[Matchmaking] Error:', payload);
+            isJoiningRef.current = false;
+            // Check for cooldown
+            if (payload.code.startsWith('QUEUE_COOLDOWN:')) {
+              const remaining = parseInt(payload.code.split(':')[1], 10);
+              setCooldownSeconds(remaining);
+            }
+            reset();
+            break;
+          }
+        }
+      } catch (e) {
+        console.error('[Matchmaking] Failed to parse message:', e);
+      }
+    };
+    
+    ws.onclose = () => {
+      console.log('[Matchmaking] WebSocket closed');
+      isJoiningRef.current = false;
+    };
+    
+    ws.onerror = (error) => {
+      console.error('[Matchmaking] WebSocket error:', error);
+      isJoiningRef.current = false;
     };
   }, [setQueuing, updateQueueStatus, setMatchFound, reset, navigate]);
+  
+  // Cleanup WebSocket when not queuing
+  useEffect(() => {
+    if (status === 'idle' && wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+  }, [status]);
   
   // Check cooldown on mount
   useEffect(() => {
@@ -143,33 +220,28 @@ export function useMatchmaking(): UseMatchmakingReturn {
     }
   }, [cooldownSeconds]);
   
-  const joinQueue = useCallback(async () => {
-    try {
-      // Try REST API first
-      const response = await matchmakingAPI.joinQueue();
-      setQueuing(response.ticket_id);
-      updateQueueStatus(response.position, null, response.queue_size);
-    } catch (error: unknown) {
-      // Check for cooldown error
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { status?: number; data?: { detail?: string } } };
-        if (axiosError.response?.status === 403) {
-          const match = axiosError.response.data?.detail?.match(/(\d+) seconds/);
-          if (match) {
-            setCooldownSeconds(parseInt(match[1], 10));
-          }
-        }
-      }
-      throw error;
-    }
-  }, [setQueuing, updateQueueStatus]);
+  const joinQueue = useCallback(async (category: string = 'fortnite') => {
+    // Connect to WebSocket first, then join queue via WebSocket message
+    // This ensures the connection is ready before we're matched
+    connectAndJoinQueue(category);
+  }, [connectAndJoinQueue]);
   
   const leaveQueue = useCallback(async () => {
+    // Send leave message via WebSocket
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'leave_queue' }));
+    }
+    // Also call REST API as backup (handles cleanup if WS disconnected)
     try {
       await matchmakingAPI.leaveQueue();
-      reset();
     } catch {
-      reset();
+      // Ignore errors
+    }
+    reset();
+    // Close WebSocket
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
     }
   }, [reset]);
   
@@ -182,6 +254,7 @@ export function useMatchmaking(): UseMatchmakingReturn {
     isMatchFound: status === 'match_found',
     matchData: matchData ? { lobbyCode: matchData.lobbyCode, opponentName: matchData.opponentName } : null,
     cooldownSeconds,
+    selectedCategory,
     joinQueue,
     leaveQueue,
   };

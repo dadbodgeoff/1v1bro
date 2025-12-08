@@ -1,0 +1,136 @@
+# Implementation Plan
+
+- [x] 1. Create Server-Side Barrier Manager
+  - [x] 1.1 Create barrier types and data classes in `backend/app/game/arena/barriers.py`
+    - Define ServerBarrier dataclass with id, position, size, type, health, max_health, is_active, direction
+    - Define BarrierType enum (solid, destructible, half_wall, one_way)
+    - Define ArenaEvent types for barrier events
+    - _Requirements: 1.1, 1.3_
+  - [x] 1.2 Write property test for barrier damage validation
+    - **Property 1: Barrier damage validation**
+    - **Validates: Requirements 1.1**
+  - [x] 1.3 Implement BarrierManager class with core methods
+    - Implement add(), remove(), apply_damage(), check_collision(), check_projectile_collision()
+    - Implement get_state(), get_and_clear_events(), clear()
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [x] 1.4 Write property test for barrier destruction event
+    - **Property 2: Barrier destruction event generation**
+    - **Validates: Requirements 1.2**
+  - [x] 1.5 Write property test for barrier collision detection
+    - **Property 4: Barrier collision detection**
+    - **Validates: Requirements 1.4**
+
+- [x] 2. Create Server-Side Power-Up Manager
+  - [x] 2.1 Create power-up types and data classes in `backend/app/game/arena/powerups.py`
+    - Define ServerPowerUp dataclass with id, position, type, radius, is_active, spawn_time
+    - Define PowerUpType enum (sos, time_steal, shield, double_points)
+    - Define collection result dataclass
+    - _Requirements: 2.1, 2.2_
+  - [x] 2.2 Write property test for power-up collection radius
+    - **Property 5: Power-up collection radius**
+    - **Validates: Requirements 2.2**
+  - [x] 2.3 Implement PowerUpManager class with core methods
+    - Implement spawn(), check_collection(), remove()
+    - Implement get_state(), get_and_clear_events(), clear()
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [x] 2.4 Write property test for single collection
+    - **Property 6: Power-up single collection**
+    - **Validates: Requirements 2.3**
+
+- [x] 3. Integrate Managers into ServerArenaSystems
+  - [x] 3.1 Update ServerArenaSystems to include BarrierManager and PowerUpManager
+    - Add barrier and powerup managers to __init__
+    - Update initialize_from_config to load barriers and powerups
+    - Update update() to call barrier and powerup managers
+    - _Requirements: 1.1, 2.1_
+  - [x] 3.2 Update get_arena_state to include barriers and powerups
+    - Add barriers and powerups to state dict
+    - _Requirements: 5.4_
+  - [x] 3.3 Write property test for arena state completeness
+    - **Property 12: Arena state completeness**
+    - **Validates: Requirements 5.4**
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - All 40 property tests pass
+
+- [x] 5. Add WebSocket Event Types and Handlers
+  - [x] 5.1 Add arena event types to WSEventType enum
+    - Add ARENA_STATE, ARENA_EVENT, BARRIER_DAMAGED, BARRIER_DESTROYED, BUFF_APPLIED, BUFF_EXPIRED
+    - _Requirements: 4.1, 5.1_
+  - [x] 5.2 Add arena state broadcast to ArenaHandler
+    - Implement broadcast_arena_state method
+    - Implement broadcast_arena_events method
+    - _Requirements: 5.1, 5.2_
+  - [x] 5.3 Wire arena state broadcast into tick system
+    - Already wired - tick system broadcasts arena state and events
+    - Added get_arena_state() and get_buff_state() helper methods
+    - _Requirements: 5.1, 5.2_
+
+- [x] 6. Add Client-Side Sync Functions
+  - [x] 6.1 Add applyServerState to BarrierManager
+    - Update barrier positions, health, and active status from server
+    - Handle new barriers and removed barriers
+    - Added applyServerDamage() and applyServerDestruction() methods
+    - _Requirements: 6.1_
+  - [x] 6.2 Add applyServerState to PowerUpManager
+    - Update power-up positions and availability from server
+    - Handle spawns and collections
+    - Added applyServerSpawn() and applyServerCollection() methods
+    - _Requirements: 6.2_
+  - [x] 6.3 Wire arena state handler in frontend
+    - Added WebSocket types: BarrierDamagedPayload, BarrierDestroyedPayload, BuffAppliedPayload, BuffExpiredPayload
+    - Updated ArenaStatePayload to include doors, platforms, barriers, powerups
+    - Added message types: arena_state, arena_event, barrier_damaged, barrier_destroyed, buff_applied, buff_expired
+    - _Requirements: 6.4_
+
+- [x] 7. Wire Door and Platform State Sync
+  - [x] 7.1 Ensure door state is included in arena state broadcast
+    - Verified doors.get_state() is called in get_arena_state
+    - _Requirements: 4.1, 4.3_
+  - [x] 7.2 Write property test for door state completeness
+    - **Property 10: Door state broadcast completeness**
+    - **Validates: Requirements 4.1**
+  - [x] 7.3 Ensure platform state is included in arena state broadcast
+    - Verified platforms.get_state() is called in get_arena_state
+    - _Requirements: 4.2, 4.3_
+  - [x] 7.4 Write property test for platform state completeness
+    - **Property 11: Platform state broadcast completeness**
+    - **Validates: Requirements 4.2**
+  - [x] 7.5 Write property test for pressure plate door trigger
+    - **Property 13: Pressure plate door trigger**
+    - **Validates: Requirements 4.4**
+
+- [x] 8. Wire Buff State Broadcast
+  - [x] 8.1 Include buff state in arena state broadcast
+    - Tick system already calls buff_manager.get_buff_state_for_broadcast()
+    - Added to arena state broadcast via build_arena_state()
+    - _Requirements: 3.1, 3.2_
+  - [x] 8.2 Write property test for buff application tracking
+    - **Property 7: Buff application tracking**
+    - **Validates: Requirements 3.1**
+  - [x] 8.3 Write property test for buff expiration
+    - **Property 8: Buff expiration removal**
+    - **Validates: Requirements 3.2**
+  - [x] 8.4 Write property test for damage multiplier
+    - **Property 9: Damage multiplier calculation**
+    - **Validates: Requirements 3.3**
+
+- [x] 9. Checkpoint - Ensure all tests pass
+  - All 40 property tests pass
+
+- [x] 10. Final Integration and Testing
+  - [x] 10.1 Update arena __init__.py exports
+    - Export BarrierManager, PowerUpManager, BarrierType, PowerUpType, etc.
+    - _Requirements: 1.1, 2.1_
+  - [x] 10.2 Update frontend game index exports
+    - Sync functions added to BarrierManager and PowerUpManager
+    - _Requirements: 6.1, 6.2_
+  - [x] 10.3 Write integration test for full arena state sync
+    - Created INTEGRATION_AUDIT.md documenting full-stack data flow
+    - Verified backend → WebSocket → frontend type contracts
+    - _Requirements: 5.2, 6.4_
+
+- [x] 11. Final Checkpoint - Ensure all tests pass
+  - All 40 property tests pass
+  - TypeScript types updated and compile without errors
+  - Integration audit completed

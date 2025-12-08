@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS seasons (
     season_number INTEGER UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
     theme VARCHAR(100),
+    banner_url TEXT,
     start_date TIMESTAMPTZ NOT NULL,
     end_date TIMESTAMPTZ NOT NULL,
     is_active BOOLEAN DEFAULT false,

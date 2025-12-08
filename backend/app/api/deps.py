@@ -8,6 +8,10 @@ from fastapi import Depends
 
 from app.core.config import Settings, get_settings
 from app.database.supabase_client import get_supabase_client, get_supabase_service_client
+from supabase import Client as SupabaseClient
+
+# Type alias for service client dependency
+SupabaseServiceClient = Annotated[SupabaseClient, Depends(get_supabase_service_client)]
 from app.middleware.auth import AuthenticatedUser, get_current_user, get_current_user_optional
 from app.services.auth_service import AuthService
 from app.services.lobby_service import LobbyService
@@ -17,6 +21,11 @@ from app.services.friend_service import FriendService
 from app.services.message_service import MessageService
 from app.services.profile_service import ProfileService
 from app.services.cosmetics_service import CosmeticsService
+from app.services.battlepass_service import BattlePassService
+from app.services.rotation_service import ShopRotationService
+from app.services.asset_service import AssetManagementService
+from app.services.achievement_service import AchievementService
+from app.services.balance_service import BalanceService
 
 
 # Settings dependency
@@ -46,8 +55,9 @@ def get_game_service() -> GameService:
 
 
 def get_question_service() -> QuestionService:
-    """Get QuestionService instance."""
-    return QuestionService()
+    """Get QuestionService instance with database support."""
+    client = get_supabase_client()
+    return QuestionService(client)
 
 
 def get_friend_service() -> FriendService:
@@ -69,9 +79,24 @@ def get_profile_service() -> ProfileService:
 
 
 def get_cosmetics_service() -> CosmeticsService:
-    """Get CosmeticsService instance."""
-    client = get_supabase_client()
+    """Get CosmeticsService instance.
+    
+    Uses service client to bypass RLS for reading catalog data.
+    User-specific operations (inventory, loadout) still respect user context.
+    """
+    client = get_supabase_service_client()
     return CosmeticsService(client)
+
+
+def get_battlepass_service() -> BattlePassService:
+    """Get BattlePassService instance.
+    
+    Uses service client to bypass RLS for reading season/tier data.
+    User-specific operations (progress, claims) still respect user context.
+    """
+    client = get_supabase_service_client()
+    cosmetics_service = get_cosmetics_service()
+    return BattlePassService(client, cosmetics_service)
 
 
 # Service dependencies
@@ -83,3 +108,47 @@ FriendServiceDep = Annotated[FriendService, Depends(get_friend_service)]
 MessageServiceDep = Annotated[MessageService, Depends(get_message_service)]
 ProfileServiceDep = Annotated[ProfileService, Depends(get_profile_service)]
 CosmeticsServiceDep = Annotated[CosmeticsService, Depends(get_cosmetics_service)]
+BattlePassServiceDep = Annotated[BattlePassService, Depends(get_battlepass_service)]
+
+
+def get_rotation_service() -> ShopRotationService:
+    """Get ShopRotationService instance."""
+    client = get_supabase_service_client()
+    return ShopRotationService(client)
+
+
+def get_asset_service() -> AssetManagementService:
+    """Get AssetManagementService instance."""
+    client = get_supabase_service_client()
+    return AssetManagementService(client)
+
+
+async def get_current_admin_user(user: CurrentUser) -> dict:
+    """
+    Verify user has admin privileges.
+    
+    For now, returns the user dict. In production, add role checking.
+    """
+    # TODO: Add proper admin role checking
+    # For now, allow any authenticated user for development
+    return {"id": user.id, "email": user.email}
+
+
+RotationServiceDep = Annotated[ShopRotationService, Depends(get_rotation_service)]
+AssetServiceDep = Annotated[AssetManagementService, Depends(get_asset_service)]
+
+
+def get_achievement_service() -> AchievementService:
+    """Get AchievementService instance."""
+    client = get_supabase_service_client()
+    return AchievementService(client)
+
+
+def get_balance_service() -> BalanceService:
+    """Get BalanceService instance."""
+    client = get_supabase_service_client()
+    return BalanceService(client)
+
+
+AchievementServiceDep = Annotated[AchievementService, Depends(get_achievement_service)]
+BalanceServiceDep = Annotated[BalanceService, Depends(get_balance_service)]

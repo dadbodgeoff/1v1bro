@@ -61,7 +61,7 @@ export function useLandingStats(): UseLandingStatsResult {
   const [stats, setStats] = useState<LandingStats | null>(() => getCachedStats())
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const isVisibleRef = useRef(true)
 
   const fetchStats = useCallback(async () => {

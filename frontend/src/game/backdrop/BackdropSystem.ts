@@ -1,40 +1,98 @@
 /**
  * Backdrop System
  * Coordinates all backdrop layers for rendering
+ * Supports parallax scrolling based on camera position
+ * Supports multiple themes: space (default), volcanic
  */
 
-import type { BackdropConfig, BackdropLayer } from './types'
+import type { BackdropConfig, BackdropLayer, CameraOffset } from './types'
+import type { MapTheme } from '../config/maps/map-schema'
 import {
   SpaceVoidLayer,
   NebulaLayer,
   StarFieldLayer,
   ShootingStarLayer,
   CosmicDustLayer,
+  VolcanicCavernLayer,
+  LavaGlowLayer,
+  EmberParticleLayer,
+  SmokeHazeLayer,
 } from './layers'
+
+interface LayerEntry {
+  layer: BackdropLayer
+  parallax: number
+}
 
 export class BackdropSystem {
   private config: BackdropConfig
-  private layers: BackdropLayer[] = []
+  private layerEntries: LayerEntry[] = []
   private time = 0
+  private cameraOffset: CameraOffset = { x: 0, y: 0 }
+  private theme: MapTheme
 
-  constructor(width: number, height: number) {
+  constructor(width: number, height: number, theme: MapTheme = 'space') {
     this.config = { width, height }
+    this.theme = theme
 
-    // Create layers in render order (back to front)
-    // 1. Deep black void
-    this.layers.push(new SpaceVoidLayer(this.config))
+    // Create layers based on theme
+    if (theme === 'volcanic') {
+      this.createVolcanicLayers()
+    } else {
+      this.createSpaceLayers()
+    }
+  }
 
-    // 2. Distant nebula clouds (very subtle)
-    this.layers.push(new NebulaLayer(this.config))
+  /**
+   * Create space theme layers (default)
+   */
+  private createSpaceLayers(): void {
+    // 1. Deep black void (fixed, no parallax)
+    this.layerEntries.push({ layer: new SpaceVoidLayer(this.config), parallax: 0 })
 
-    // 3. Star field with parallax
-    this.layers.push(new StarFieldLayer(this.config))
+    // 2. Distant nebula clouds (very slow parallax)
+    this.layerEntries.push({ layer: new NebulaLayer(this.config), parallax: 0.1 })
 
-    // 4. Cosmic dust particles
-    this.layers.push(new CosmicDustLayer(this.config))
+    // 3. Star field with medium parallax
+    this.layerEntries.push({ layer: new StarFieldLayer(this.config), parallax: 0.3 })
 
-    // 5. Occasional shooting stars
-    this.layers.push(new ShootingStarLayer(this.config))
+    // 4. Cosmic dust particles (faster parallax)
+    this.layerEntries.push({ layer: new CosmicDustLayer(this.config), parallax: 0.5 })
+
+    // 5. Occasional shooting stars (fastest parallax)
+    this.layerEntries.push({ layer: new ShootingStarLayer(this.config), parallax: 0.7 })
+  }
+
+  /**
+   * Create volcanic theme layers
+   */
+  private createVolcanicLayers(): void {
+    // 1. Dark volcanic cavern background (fixed, no parallax)
+    this.layerEntries.push({ layer: new VolcanicCavernLayer(this.config), parallax: 0 })
+
+    // 2. Pulsing lava glow at edges (fixed)
+    this.layerEntries.push({ layer: new LavaGlowLayer(this.config), parallax: 0 })
+
+    // 3. Drifting smoke/haze (slow parallax)
+    this.layerEntries.push({ layer: new SmokeHazeLayer(this.config), parallax: 0.2 })
+
+    // 4. Floating ember particles (medium parallax)
+    this.layerEntries.push({ layer: new EmberParticleLayer(this.config), parallax: 0.4 })
+  }
+
+  /**
+   * Get current theme
+   */
+  getTheme(): MapTheme {
+    return this.theme
+  }
+
+  /**
+   * Set camera offset for parallax effect
+   * Call this when camera/viewport moves
+   */
+  setCameraOffset(x: number, y: number): void {
+    this.cameraOffset = { x, y }
   }
 
   /**
@@ -43,17 +101,27 @@ export class BackdropSystem {
   update(deltaTime: number): void {
     this.time += deltaTime
 
-    for (const layer of this.layers) {
-      layer.update(deltaTime, this.time)
+    for (const entry of this.layerEntries) {
+      entry.layer.update(deltaTime, this.time)
     }
   }
 
   /**
-   * Render all layers
+   * Render all layers with parallax offset
    */
   render(ctx: CanvasRenderingContext2D): void {
-    for (const layer of this.layers) {
-      layer.render(ctx)
+    for (const entry of this.layerEntries) {
+      ctx.save()
+      
+      // Apply parallax offset
+      if (entry.parallax > 0) {
+        const offsetX = this.cameraOffset.x * entry.parallax
+        const offsetY = this.cameraOffset.y * entry.parallax
+        ctx.translate(-offsetX, -offsetY)
+      }
+      
+      entry.layer.render(ctx)
+      ctx.restore()
     }
   }
 
@@ -64,5 +132,12 @@ export class BackdropSystem {
     this.config.width = width
     this.config.height = height
     // Note: Layers will need to reinitialize on next render
+  }
+
+  /**
+   * Get all layers (for debugging)
+   */
+  get layers(): BackdropLayer[] {
+    return this.layerEntries.map(e => e.layer)
   }
 }

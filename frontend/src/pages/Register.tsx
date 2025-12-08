@@ -41,7 +41,7 @@ export function Register() {
         display_name: displayName || undefined,
       })
       setUser(response.user, response.access_token)
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {

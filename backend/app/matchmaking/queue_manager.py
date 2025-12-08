@@ -88,9 +88,10 @@ class QueueManager:
     
     async def find_match(self) -> Optional[Tuple[MatchTicket, MatchTicket]]:
         """
-        Find two players to match using FIFO ordering.
+        Find two players to match using FIFO ordering within same category.
         
-        Returns the two longest-waiting players.
+        Only matches players with the same game_mode (category).
+        Returns the two longest-waiting players in the same category.
         
         Returns:
             Tuple of (player1, player2) tickets if match found, None otherwise
@@ -105,20 +106,36 @@ class QueueManager:
                 key=lambda t: t.queue_time
             )
             
-            # Match the two longest-waiting players
-            player1 = sorted_tickets[0]
-            player2 = sorted_tickets[1]
+            # Group by category and find first category with 2+ players
+            categories: Dict[str, List[MatchTicket]] = {}
+            for ticket in sorted_tickets:
+                cat = ticket.game_mode
+                if cat not in categories:
+                    categories[cat] = []
+                categories[cat].append(ticket)
             
-            # Remove both from queue atomically
-            del self._queue[player1.player_id]
-            del self._queue[player2.player_id]
+            # Find first category with at least 2 players (by oldest player)
+            for ticket in sorted_tickets:
+                cat = ticket.game_mode
+                if len(categories.get(cat, [])) >= 2:
+                    # Match the two longest-waiting players in this category
+                    cat_tickets = categories[cat]
+                    player1 = cat_tickets[0]
+                    player2 = cat_tickets[1]
+                    
+                    # Remove both from queue atomically
+                    del self._queue[player1.player_id]
+                    del self._queue[player2.player_id]
+                    
+                    logger.info(
+                        f"Matched players {player1.player_id} (waited {player1.wait_seconds:.1f}s) "
+                        f"and {player2.player_id} (waited {player2.wait_seconds:.1f}s) "
+                        f"in category {cat}"
+                    )
+                    
+                    return (player1, player2)
             
-            logger.info(
-                f"Matched players {player1.player_id} (waited {player1.wait_seconds:.1f}s) "
-                f"and {player2.player_id} (waited {player2.wait_seconds:.1f}s)"
-            )
-            
-            return (player1, player2)
+            return None
     
     async def get_position(self, player_id: str) -> Optional[int]:
         """
