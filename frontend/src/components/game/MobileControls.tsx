@@ -97,38 +97,31 @@ export function MobileControls({ onMove, onFire, enabled = true }: MobileControl
   if (!isTouchDevice) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 pointer-events-none z-50 p-4">
-      <div className="flex justify-between items-end max-w-screen-lg mx-auto">
-        {/* Virtual Joystick - Left side */}
+    <>
+      {/* Joystick - Fixed to left side of screen, vertically centered */}
+      <div
+        ref={joystickRef}
+        className="fixed left-4 top-1/2 -translate-y-1/2 pointer-events-auto w-28 h-28 rounded-full bg-slate-800/50 border-2 border-slate-600/40 relative touch-none z-50 safe-area-left"
+        onTouchStart={handleJoystickStart}
+        onTouchMove={handleJoystickMove}
+        onTouchEnd={handleJoystickEnd}
+        onTouchCancel={handleJoystickEnd}
+      >
+        {/* Joystick knob */}
         <div
-          ref={joystickRef}
-          className="pointer-events-auto w-32 h-32 rounded-full bg-slate-800/60 border-2 border-slate-600/50 relative touch-none"
-          onTouchStart={handleJoystickStart}
-          onTouchMove={handleJoystickMove}
-          onTouchEnd={handleJoystickEnd}
-          onTouchCancel={handleJoystickEnd}
-        >
-          {/* Joystick knob */}
-          <div
-            ref={knobRef}
-            className="absolute top-1/2 left-1/2 w-14 h-14 rounded-full bg-indigo-500/80 border-2 border-indigo-400 shadow-lg"
-            style={{ transform: 'translate(-50%, -50%)' }}
-          />
-          {/* Direction indicators */}
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 text-slate-500 text-xs">▲</div>
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-slate-500 text-xs">▼</div>
-          <div className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-500 text-xs">◀</div>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 text-xs">▶</div>
-        </div>
-
-        {/* Fire Button - Right side */}
-        <button
-          className="pointer-events-auto w-24 h-24 rounded-full bg-red-600/80 border-4 border-red-400 shadow-lg active:bg-red-500 active:scale-95 transition-transform touch-none flex items-center justify-center"
-          onTouchStart={handleFire}
-        >
-          <span className="text-white font-bold text-lg">FIRE</span>
-        </button>
+          ref={knobRef}
+          className="absolute top-1/2 left-1/2 w-12 h-12 rounded-full bg-indigo-500/70 border-2 border-indigo-400/80 shadow-lg"
+          style={{ transform: 'translate(-50%, -50%)' }}
+        />
       </div>
-    </div>
+
+      {/* Fire Button - Fixed to right side of screen, vertically centered */}
+      <button
+        className="fixed right-4 top-1/2 -translate-y-1/2 pointer-events-auto w-20 h-20 rounded-full bg-red-600/70 border-4 border-red-400/80 shadow-lg active:bg-red-500 active:scale-95 transition-transform touch-none flex items-center justify-center z-50 safe-area-right"
+        onTouchStart={handleFire}
+      >
+        <span className="text-white font-bold text-base">FIRE</span>
+      </button>
+    </>
   )
 }
