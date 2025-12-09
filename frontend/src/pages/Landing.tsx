@@ -13,6 +13,7 @@ import {
   GlobalBackground,
   LandingHeader,
   HeroSection,
+  LiveDemoSection,
   HowItWorksSection,
   FeaturesSection,
   UseCasesSection,
@@ -40,6 +41,11 @@ export function Landing() {
       <main>
         {/* Hero Section - Full viewport */}
         <HeroSection />
+
+        {/* Live Demo - AI vs AI showcase */}
+        <section id="demo">
+          <LiveDemoSection />
+        </section>
 
         {/* How It Works - 3 steps */}
         <section id="how-it-works">

@@ -12,6 +12,9 @@ export * from './CTAButton'
 export * from './GlowBorder'
 export * from './SectionDivider'
 export * from './SectionHeader'
+export * from './AnimatedIcon'
+export * from './LiveDemo'
+export * from './LiveDemoSection'
 
 // Card components
 export * from './FeatureCard'

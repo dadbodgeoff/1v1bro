@@ -28,6 +28,7 @@ const NAV_ITEMS: NavItemConfig[] = [
   { id: 'battlepass', label: 'Battle Pass', icon: '⭐', path: '/battlepass' },
   { id: 'shop', label: 'Shop', icon: '🛒', path: '/shop' },
   { id: 'inventory', label: 'Inventory', icon: '🎒', path: '/inventory' },
+  { id: 'coins', label: 'Get Coins', icon: '🪙', path: '/coins' },
   { id: 'leaderboards', label: 'Leaderboards', icon: '🏆', path: '/leaderboards' },
   { id: 'friends', label: 'Friends', icon: '👥', path: '/friends' },
   { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },

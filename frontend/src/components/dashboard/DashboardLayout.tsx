@@ -20,6 +20,7 @@ export type NavItem =
   | 'battlepass'
   | 'shop'
   | 'inventory'
+  | 'coins'
   | 'leaderboards'
   | 'friends'
   | 'settings'

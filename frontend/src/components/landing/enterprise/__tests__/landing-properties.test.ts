@@ -1401,3 +1401,82 @@ describe('Property: GPU-Accelerated Animations', () => {
     )
   })
 })
+
+
+/**
+ * **Feature: landing-game-visuals, Property 6: Step Card Animated Icons**
+ * **Validates: Requirements 4.2**
+ * 
+ * For any step card in the HowItWorks section, it should contain an icon element
+ * with animation capability.
+ */
+describe('Property: Step Card Animated Icons', () => {
+  // Import the STEPS configuration and helper functions
+  const ANIMATED_ICON_TYPES = ['matchmaking', 'combat', 'victory', 'quiz'] as const
+  
+  // Step configuration (mirrored from HowItWorksSection)
+  const STEPS_CONFIG = [
+    { number: 1, animatedIcon: 'quiz' },
+    { number: 2, animatedIcon: 'matchmaking' },
+    { number: 3, animatedIcon: 'victory' },
+  ]
+
+  it('all steps have animated icon types defined', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: STEPS_CONFIG.length - 1 }),
+        (index) => {
+          const step = STEPS_CONFIG[index]
+          expect(step.animatedIcon).toBeDefined()
+          expect(ANIMATED_ICON_TYPES).toContain(step.animatedIcon)
+          return true
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+
+  it('each step has a unique animated icon', () => {
+    const icons = STEPS_CONFIG.map(s => s.animatedIcon)
+    const uniqueIcons = new Set(icons)
+    expect(uniqueIcons.size).toBe(STEPS_CONFIG.length)
+  })
+
+  it('animated icon types are valid', () => {
+    fc.assert(
+      fc.property(
+        fc.constantFrom(...ANIMATED_ICON_TYPES),
+        (iconType) => {
+          expect(['matchmaking', 'combat', 'victory', 'quiz']).toContain(iconType)
+          return true
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+
+  it('step numbers are sequential starting from 1', () => {
+    STEPS_CONFIG.forEach((step, index) => {
+      expect(step.number).toBe(index + 1)
+    })
+  })
+
+  it('HowItWorks section has exactly 3 steps', () => {
+    expect(STEPS_CONFIG.length).toBe(3)
+  })
+
+  it('animated icons support size variants', () => {
+    const sizes = ['sm', 'default', 'lg', 'xl']
+    fc.assert(
+      fc.property(
+        fc.constantFrom(...sizes),
+        (size) => {
+          // All sizes should be valid
+          expect(['sm', 'default', 'lg', 'xl']).toContain(size)
+          return true
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})

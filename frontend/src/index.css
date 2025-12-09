@@ -566,6 +566,91 @@ button:has(svg:only-child),
   animation: gradientFlow 4s ease-in-out infinite;
 }
 
+/* ============================================
+ * Animated Icon Animations (HowItWorks section)
+ * Requirements: 4.2
+ * ============================================ */
+
+/* Combat icon - crosshairs pulse */
+@keyframes combatPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+.animate-combat-pulse {
+  animation: combatPulse 0.8s ease-in-out;
+}
+
+/* Victory icon - trophy bounce */
+@keyframes victoryBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-8px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-victory-bounce {
+  animation: victoryBounce 0.6s ease-out;
+}
+
+/* Quiz icon - question mark flip */
+@keyframes quizFlip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.animate-quiz-flip {
+  animation: quizFlip 0.7s ease-in-out;
+}
+
+/* Matchmaking icon - dots converge */
+@keyframes matchmakingLeft {
+  0% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes matchmakingRight {
+  0% {
+    transform: translateX(4px);
+  }
+  100% {
+    transform: translateX(-4px);
+  }
+}
+
+.animate-matchmaking-left {
+  animation: matchmakingLeft 0.5s ease-out forwards;
+}
+
+.animate-matchmaking-right {
+  animation: matchmakingRight 0.5s ease-out forwards;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-float-slow,
@@ -573,7 +658,12 @@ button:has(svg:only-child),
   .animate-bounce-subtle,
   .animate-fade-up,
   .animate-glow-pulse,
-  .animate-gradient-flow {
+  .animate-gradient-flow,
+  .animate-combat-pulse,
+  .animate-victory-bounce,
+  .animate-quiz-flip,
+  .animate-matchmaking-left,
+  .animate-matchmaking-right {
     animation: none;
   }
 }
