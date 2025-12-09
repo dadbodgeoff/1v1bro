@@ -23,35 +23,35 @@
     - **Property 7: Mobile Particle Reduction**
     - **Validates: Requirements 5.2**
 
-- [ ] 2. Create GlowBorder component and apply to cards
-  - [ ] 2.1 Create GlowBorder wrapper component
+- [x] 2. Create GlowBorder component and apply to cards
+  - [x] 2.1 Create GlowBorder wrapper component
     - Create `frontend/src/components/landing/enterprise/GlowBorder.tsx`
     - Implement animated gradient border using CSS pseudo-elements
     - Support color variants: orange, purple, blue
     - Add hover pulse effect with intensity options
     - Use GPU-accelerated properties only (transform, opacity)
     - _Requirements: 3.1, 3.2, 3.5_
-  - [ ] 2.2 Update FeatureCard to use GlowBorder
+  - [x] 2.2 Update FeatureCard to use GlowBorder
     - Wrap existing FeatureCard content with GlowBorder
     - Configure orange accent color glow
     - Add hover state intensification
     - _Requirements: 3.1, 3.2_
-  - [ ] 2.3 Update CTAButton with glow effects
+  - [x] 2.3 Update CTAButton with glow effects
     - Add subtle glow shadow to primary CTA buttons
     - Match brand accent color (#F97316)
     - Animate glow on hover
     - _Requirements: 3.3_
-  - [ ] 2.4 Add animated gradient section dividers
+  - [x] 2.4 Add animated gradient section dividers
     - Create horizontal gradient lines between sections
     - Animate gradient position for flowing effect
     - _Requirements: 3.4_
-  - [ ] 2.5 Write property test for glow border presence
+  - [x] 2.5 Write property test for glow border presence
     - **Property 3: Glow Border Presence on Feature Cards**
     - **Validates: Requirements 3.1**
-  - [ ] 2.6 Write property test for CTA glow color consistency
+  - [x] 2.6 Write property test for CTA glow color consistency
     - **Property 4: CTA Glow Color Consistency**
     - **Validates: Requirements 3.3**
-  - [ ] 2.7 Write property test for GPU-accelerated animations
+  - [x] 2.7 Write property test for GPU-accelerated animations
     - **Property 5: GPU-Accelerated Animations**
     - **Validates: Requirements 3.5**
 

@@ -1,16 +1,17 @@
 /**
  * FeatureCard - Feature showcase card component
  * 
- * Uses ComponentBox with interactive variant.
+ * Uses ComponentBox with interactive variant and GlowBorder for game-like effects.
  * Displays icon, title, and description.
  * 
  * @module landing/enterprise/FeatureCard
- * Requirements: 7.2, 7.5
+ * Requirements: 3.1, 3.2, 7.2, 7.5
  */
 
 import type { ReactNode } from 'react'
 import { cn } from '@/utils/helpers'
 import { ComponentBox } from './ComponentBox'
+import { GlowBorder } from './GlowBorder'
 
 export interface FeatureCardProps {
   /** Icon component */
@@ -21,6 +22,8 @@ export interface FeatureCardProps {
   description: string
   /** Additional CSS classes */
   className?: string
+  /** Enable glow border effect */
+  glowEnabled?: boolean
 }
 
 export function FeatureCard({
@@ -28,8 +31,9 @@ export function FeatureCard({
   title,
   description,
   className,
+  glowEnabled = true,
 }: FeatureCardProps) {
-  return (
+  const cardContent = (
     <ComponentBox
       variant="interactive"
       className={cn(
@@ -55,6 +59,21 @@ export function FeatureCard({
       </p>
     </ComponentBox>
   )
+
+  if (glowEnabled) {
+    return (
+      <GlowBorder
+        color="orange"
+        intensity="subtle"
+        pulseOnHover={true}
+        borderRadius="rounded-xl"
+      >
+        {cardContent}
+      </GlowBorder>
+    )
+  }
+
+  return cardContent
 }
 
 export default FeatureCard

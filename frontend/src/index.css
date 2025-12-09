@@ -533,12 +533,47 @@ button:has(svg:only-child),
   animation: fadeUp 0.6s ease-out forwards;
 }
 
+/* Animated gradient border glow */
+@keyframes glowBorderPulse {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.5;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.8;
+  }
+}
+
+.animate-glow-pulse {
+  animation: glowBorderPulse 3s ease-in-out infinite;
+}
+
+/* Animated gradient flow for section dividers */
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-flow {
+  animation: gradientFlow 4s ease-in-out infinite;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-float-slow,
   .animate-rise,
   .animate-bounce-subtle,
-  .animate-fade-up {
+  .animate-fade-up,
+  .animate-glow-pulse,
+  .animate-gradient-flow {
     animation: none;
   }
 }

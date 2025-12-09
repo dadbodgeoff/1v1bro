@@ -45,10 +45,12 @@ const variantStyles: Record<CTAButtonVariant, string> = {
   primary: [
     'bg-[#F97316]',
     'text-white',
+    'shadow-[0_0_20px_rgba(249,115,22,0.3)]',  // Subtle glow at rest
     'hover:bg-[#FB923C]',
     'hover:translate-y-[-2px]',
-    'hover:shadow-lg hover:shadow-[#F97316]/20',
+    'hover:shadow-[0_0_30px_rgba(249,115,22,0.5)]',  // Intensified glow on hover
     'active:translate-y-0',
+    'active:shadow-[0_0_15px_rgba(249,115,22,0.4)]',
   ].join(' '),
   
   secondary: [

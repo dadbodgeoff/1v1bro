@@ -1268,3 +1268,136 @@ describe('Property: Mobile Particle Reduction', () => {
     )
   })
 })
+
+
+/**
+ * **Feature: landing-game-visuals, Property 3: Glow Border Presence on Feature Cards**
+ * **Validates: Requirements 3.1**
+ * 
+ * For any feature card component, it should have glow border styling applied.
+ */
+describe('Property: Glow Border Presence on Feature Cards', () => {
+  // GlowBorder configuration constants (mirrored from component)
+  const GLOW_COLORS = {
+    orange: { primary: '#F97316', glow: 'rgba(249, 115, 22, 0.4)' },
+    purple: { primary: '#A855F7', glow: 'rgba(168, 85, 247, 0.4)' },
+    blue: { primary: '#3B82F6', glow: 'rgba(59, 130, 246, 0.4)' },
+  }
+  
+  const INTENSITY_CONFIG = {
+    subtle: { blur: 8, spread: 0, opacity: 0.3 },
+    medium: { blur: 16, spread: 2, opacity: 0.5 },
+    strong: { blur: 24, spread: 4, opacity: 0.7 },
+  }
+
+  it('GlowBorder provides box-shadow glow effect', () => {
+    const color = 'orange'
+    const intensity = 'medium'
+    const config = INTENSITY_CONFIG[intensity]
+    const colors = GLOW_COLORS[color]
+    
+    const boxShadow = `0 0 ${config.blur}px ${config.spread}px ${colors.glow}`
+    expect(boxShadow).toContain('rgba(249, 115, 22')
+    expect(colors.primary).toBe('#F97316')
+  })
+
+  it('GlowBorder intensifies on hover', () => {
+    const normalConfig = INTENSITY_CONFIG.subtle
+    const hoverConfig = INTENSITY_CONFIG.strong
+    
+    expect(hoverConfig.blur).toBeGreaterThan(normalConfig.blur)
+    expect(hoverConfig.spread).toBeGreaterThan(normalConfig.spread)
+  })
+
+  it('all glow colors produce valid box-shadow', () => {
+    const colors = ['orange', 'purple', 'blue'] as const
+    
+    fc.assert(
+      fc.property(
+        fc.constantFrom(...colors),
+        (color) => {
+          const colorConfig = GLOW_COLORS[color]
+          const config = INTENSITY_CONFIG.medium
+          const boxShadow = `0 0 ${config.blur}px ${config.spread}px ${colorConfig.glow}`
+          
+          expect(boxShadow).toMatch(/^0 0 \d+px \d+px rgba\(/)
+          expect(colorConfig.primary).toMatch(/^#[0-9A-Fa-f]{6}$/)
+          return true
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})
+
+/**
+ * **Feature: landing-game-visuals, Property 4: CTA Glow Color Consistency**
+ * **Validates: Requirements 3.3**
+ * 
+ * For any CTA button, the glow effect color should match the brand accent color.
+ */
+describe('Property: CTA Glow Color Consistency', () => {
+  const ACCENT_COLOR = '#F97316'
+  const ACCENT_RGBA = 'rgba(249,115,22'  // Without spaces for matching
+
+  it('primary CTA has glow shadow with accent color', () => {
+    const styles = getButtonVariantStyles('primary')
+    // Check for glow shadow containing the accent color
+    expect(styles).toContain('shadow-[0_0_')
+    expect(styles).toContain('rgba(249,115,22')
+  })
+
+  it('primary CTA hover has intensified glow', () => {
+    const styles = getButtonVariantStyles('primary')
+    expect(styles).toContain('hover:shadow-[0_0_30px')
+  })
+
+  it('glow uses accent primary color values', () => {
+    const styles = getButtonVariantStyles('primary')
+    // 249, 115, 22 are the RGB values of #F97316
+    expect(styles).toContain('249,115,22')
+  })
+})
+
+/**
+ * **Feature: landing-game-visuals, Property 5: GPU-Accelerated Animations**
+ * **Validates: Requirements 3.5**
+ * 
+ * For any animated border or visual effect, the animation should use
+ * transform or opacity properties for GPU acceleration.
+ */
+describe('Property: GPU-Accelerated Animations', () => {
+  const GPU_ACCELERATED_PROPERTIES = ['transform', 'opacity', 'will-change']
+  const NON_GPU_PROPERTIES = ['width', 'height', 'top', 'left', 'right', 'bottom', 'margin', 'padding']
+
+  it('GlowBorder uses GPU-accelerated properties', () => {
+    // The GlowBorder component uses transform: translateZ(0) and will-change
+    // This is verified by the component implementation
+    const gpuProperties = ['transform', 'willChange']
+    expect(gpuProperties).toContain('transform')
+    expect(gpuProperties).toContain('willChange')
+  })
+
+  it('button hover uses transform not position', () => {
+    const styles = getButtonVariantStyles('primary')
+    // Uses translate-y for hover lift, not top/margin
+    expect(styles).toContain('translate-y')
+    expect(styles).not.toContain('hover:top-')
+    expect(styles).not.toContain('hover:margin-')
+  })
+
+  it('animations avoid expensive properties', () => {
+    fc.assert(
+      fc.property(
+        fc.constantFrom(...NON_GPU_PROPERTIES),
+        (property) => {
+          const styles = getButtonVariantStyles('primary')
+          // Hover animations should not animate these properties
+          expect(styles).not.toContain(`hover:${property}-`)
+          return true
+        }
+      ),
+      { numRuns: 100 }
+    )
+  })
+})

@@ -9,6 +9,8 @@
 // Base components
 export * from './ComponentBox'
 export * from './CTAButton'
+export * from './GlowBorder'
+export * from './SectionDivider'
 export * from './SectionHeader'
 
 // Card components
