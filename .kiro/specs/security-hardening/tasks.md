@@ -1,0 +1,91 @@
+# Implementation Plan
+
+- [ ] 1. Create Redis security infrastructure
+  - [ ] 1.1 Create security module structure
+    - Create `backend/app/security/` directory
+    - Create `__init__.py` with module exports
+    - _Requirements: 1.1, 2.1_
+  - [ ] 1.2 Implement Redis connection helper for security services
+    - Create async Redis client wrapper with connection pooling
+    - Add health check method for Redis availability
+    - _Requirements: 1.5, 2.4_
+
+- [ ] 2. Implement Redis Token Blacklist Service
+  - [ ] 2.1 Create RedisTokenBlacklist class
+    - Implement `add()` method with SHA-256 hashing and TTL
+    - Implement `is_blacklisted()` method with fail-closed behavior
+    - Implement `remove()` method for testing
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [ ] 2.2 Write property test for token blacklist round trip
+    - **Property 1: Token Blacklist Round Trip**
+    - **Validates: Requirements 1.1, 1.2**
+  - [ ] 2.3 Integrate RedisTokenBlacklist into auth middleware
+    - Replace in-memory `_token_blacklist` set with Redis service
+    - Add fallback logging on Redis failure
+    - _Requirements: 1.5_
+  - [ ] 2.4 Write property test for distributed blacklist consistency
+    - **Property 2: Blacklist Distributed Consistency**
+    - **Validates: Requirements 1.4**
+
+- [ ] 3. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 4. Implement Redis Rate Limiter Service
+  - [ ] 4.1 Create RedisRateLimiter class with sliding window
+    - Implement sorted set based sliding window algorithm
+    - Create Lua script for atomic increment and check
+    - Implement `is_allowed()` returning (allowed, headers)
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [ ] 4.2 Write property test for rate limit enforcement
+    - **Property 3: Rate Limit Enforcement**
+    - **Validates: Requirements 2.1, 2.2**
+  - [ ] 4.3 Implement graceful degradation to in-memory
+    - Add fallback to existing in-memory RateLimiter on Redis failure
+    - Log degraded mode activation
+    - _Requirements: 2.4_
+  - [ ] 4.4 Write property test for distributed rate limit consistency
+    - **Property 4: Rate Limit Distributed Consistency**
+    - **Validates: Requirements 2.3**
+  - [ ] 4.5 Write property test for rate limit window reset
+    - **Property 5: Rate Limit Window Reset**
+    - **Validates: Requirements 2.5**
+  - [ ] 4.6 Integrate RedisRateLimiter into rate limit middleware
+    - Replace in-memory rate limiter with Redis service
+    - Preserve existing endpoint-specific limits
+    - _Requirements: 2.1, 2.2, 2.3_
+
+- [ ] 5. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 6. Implement Configurable CORS
+  - [ ] 6.1 Create CORS configuration service
+    - Parse CORS_ORIGINS from environment variable
+    - Implement secure defaults (production vs dev)
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [ ] 6.2 Write property test for CORS origin acceptance
+    - **Property 6: CORS Origin Acceptance**
+    - **Validates: Requirements 3.1, 3.2**
+  - [ ] 6.3 Write property test for CORS origin rejection
+    - **Property 7: CORS Origin Rejection**
+    - **Validates: Requirements 3.4**
+  - [ ] 6.4 Update main.py to use configurable CORS
+    - Replace hardcoded CORS origins with config service
+    - Add CORS rejection logging
+    - _Requirements: 3.1, 3.4_
+
+- [ ] 7. Implement Security Logger
+  - [ ] 7.1 Create SecurityLogger class
+    - Implement structured logging for all security events
+    - Add log methods for blacklist, rate limit, CORS, degraded mode
+    - _Requirements: 4.1, 4.2, 4.3, 4.4_
+  - [ ] 7.2 Write property test for security log completeness
+    - **Property 8: Security Log Completeness**
+    - **Validates: Requirements 4.1, 4.2, 4.4**
+  - [ ] 7.3 Integrate SecurityLogger into all security services
+    - Add logging calls to token blacklist service
+    - Add logging calls to rate limiter service
+    - Add logging calls to CORS middleware
+    - _Requirements: 4.1, 4.2, 4.3, 4.4_
+
+- [ ] 8. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

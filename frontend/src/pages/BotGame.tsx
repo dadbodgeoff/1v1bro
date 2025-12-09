@@ -97,6 +97,26 @@ export function BotGame() {
   
   // Guest mode - user is not logged in
   const isGuest = !isAuthenticated
+  
+  // Mobile landscape detection for overlay quiz mode
+  const [isMobileLandscape, setIsMobileLandscape] = useState(false)
+  
+  useEffect(() => {
+    const checkOrientation = () => {
+      const isMobile = window.innerWidth < 1024
+      const landscape = window.innerWidth > window.innerHeight
+      setIsMobileLandscape(isMobile && landscape)
+    }
+    
+    checkOrientation()
+    window.addEventListener('resize', checkOrientation)
+    window.addEventListener('orientationchange', checkOrientation)
+    
+    return () => {
+      window.removeEventListener('resize', checkOrientation)
+      window.removeEventListener('orientationchange', checkOrientation)
+    }
+  }, [])
 
   const {
     status,
@@ -772,8 +792,8 @@ export function BotGame() {
             </div>
           </div>
 
-          {/* Leave button - bottom right corner */}
-          <div className="absolute bottom-3 right-3 z-10">
+          {/* Leave button - bottom right corner (above mobile controls) */}
+          <div className="absolute bottom-3 right-3 z-10" style={{ bottom: isMobileLandscape ? '140px' : '12px' }}>
             <button
               onClick={handleLeave}
               className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px]"
@@ -784,11 +804,19 @@ export function BotGame() {
         </div>
       </div>
 
-      {/* Quiz panel - BELOW canvas, same as multiplayer */}
-      <ArenaQuizPanel
-        onAnswer={handleAnswer}
-        visible={showQuestion}
-      />
+      {/* Quiz panel - overlay on mobile landscape, below canvas on desktop/portrait */}
+      {isMobileLandscape ? (
+        <ArenaQuizPanel
+          onAnswer={handleAnswer}
+          visible={showQuestion}
+          overlayMode={true}
+        />
+      ) : (
+        <ArenaQuizPanel
+          onAnswer={handleAnswer}
+          visible={showQuestion}
+        />
+      )}
     </div>
   )
 }

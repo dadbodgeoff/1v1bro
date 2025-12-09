@@ -1,6 +1,11 @@
 /**
  * ArenaQuizPanel - Quiz panel rendered OUTSIDE the canvas as HTML/CSS
- * Positioned below the arena canvas for clear separation
+ * 
+ * Layout modes:
+ * - Desktop: Below canvas, horizontal layout
+ * - Mobile landscape (fullscreen): Overlay at top of screen, compact
+ * - Mobile portrait: Below canvas, 2x2 grid
+ * 
  * Responsive, accessible, touch-friendly
  */
 
@@ -10,9 +15,11 @@ import { useGameStore } from '@/stores/gameStore'
 interface ArenaQuizPanelProps {
   onAnswer: (answer: string, timeMs: number) => void
   visible: boolean
+  /** When true, renders as overlay instead of below canvas */
+  overlayMode?: boolean
 }
 
-export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
+export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: ArenaQuizPanelProps) {
   const {
     currentQuestion,
     selectedAnswer,
@@ -77,7 +84,8 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
   }, [answerSubmitted, visible, handleSelect])
 
   if (!visible || !currentQuestion) {
-    // Return empty placeholder to maintain layout
+    // Return empty placeholder to maintain layout (only in non-overlay mode)
+    if (overlayMode) return null
     return (
       <div className="w-full h-[100px] bg-[#0a0a0a] border-t border-white/[0.06]" />
     )
@@ -88,6 +96,90 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
   const isUrgent = timeRemaining <= 5
   const isWarning = timeRemaining <= 10 && timeRemaining > 5
 
+  // Overlay mode: Fixed position at top of screen for mobile fullscreen
+  if (overlayMode) {
+    return (
+      <div className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-md border-b border-purple-500/30 safe-area-top">
+        {/* Timer bar */}
+        <div className="h-1 bg-white/[0.04]">
+          <div
+            className={`h-full transition-all duration-100 ${
+              isUrgent 
+                ? 'bg-red-500 animate-pulse' 
+                : isWarning 
+                  ? 'bg-amber-500' 
+                  : 'bg-purple-500/70'
+            }`}
+            style={{ width: `${timerPercent}%` }}
+          />
+        </div>
+
+        {/* Compact horizontal layout for landscape */}
+        <div className="px-2 py-1.5 flex items-center gap-2">
+          {/* Timer + Question (compact) */}
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span
+              className={`text-sm font-mono font-bold tabular-nums shrink-0 ${
+                isUrgent ? 'text-red-400 animate-pulse' : isWarning ? 'text-amber-400' : 'text-purple-400'
+              }`}
+            >
+              {timeRemaining}s
+            </span>
+            <p className="text-white/90 text-xs leading-tight truncate">
+              {currentQuestion.text}
+            </p>
+          </div>
+
+          {/* Options - horizontal row, compact */}
+          <div className="flex gap-1 shrink-0">
+            {options.map((letter, index) => {
+              const isSelected = selectedAnswer === letter
+
+              return (
+                <button
+                  key={letter}
+                  onClick={() => handleSelect(letter)}
+                  disabled={answerSubmitted}
+                  className={`
+                    flex items-center gap-1 px-2 py-1.5 rounded-md text-left transition-all min-w-[60px] max-w-[100px]
+                    ${isSelected
+                      ? 'bg-purple-600/60 border border-purple-400/80'
+                      : 'bg-white/10 border border-white/20 active:bg-white/20'
+                    }
+                    ${answerSubmitted && !isSelected ? 'opacity-40' : ''}
+                  `}
+                >
+                  <span
+                    className={`w-5 h-5 rounded text-[10px] font-bold flex items-center justify-center shrink-0 ${
+                      isSelected ? 'bg-white text-purple-900' : 'bg-white/20 text-white/70'
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  <span className="text-[10px] text-white/90 truncate">
+                    {currentQuestion.options[index]}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Waiting indicator */}
+          {answerSubmitted && (
+            <div className="flex items-center gap-1 text-white/50 shrink-0">
+              <div className="flex gap-0.5">
+                <div className="w-1 h-1 rounded-full bg-purple-400/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1 h-1 rounded-full bg-purple-400/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-1 h-1 rounded-full bg-purple-400/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Standard mode: Below canvas
   return (
     <div className="w-full bg-gradient-to-b from-[#12101a] to-[#0a0a0a] border-t border-purple-500/20 safe-area-bottom">
       {/* Timer bar - full width */}

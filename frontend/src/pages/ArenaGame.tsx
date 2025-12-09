@@ -21,14 +21,37 @@ export function ArenaGame() {
   const { code } = useParams<{ code: string }>()
   const [showRotateHint, setShowRotateHint] = useState(false)
   const [hintDismissed, setHintDismissed] = useState(false)
+  const [isMobileLandscape, setIsMobileLandscape] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  // Track fullscreen state
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+    }
+  }, [])
 
   // Show landscape recommendation on mobile portrait (dismissible)
+  // Also track if we're in mobile landscape mode for overlay quiz
   useEffect(() => {
     const checkOrientation = () => {
       const isMobile = window.innerWidth < 1024
       const portrait = window.innerHeight > window.innerWidth
+      const landscape = window.innerWidth > window.innerHeight
+      
       // Show hint if mobile + portrait + not dismissed
       setShowRotateHint(isMobile && portrait && !hintDismissed)
+      
+      // Use overlay quiz mode on mobile landscape (especially fullscreen)
+      setIsMobileLandscape(isMobile && landscape)
     }
 
     checkOrientation()
@@ -217,23 +240,52 @@ export function ArenaGame() {
     <>
       {/* Rotate device hint overlay - dismissible */}
       {showRotateHint && (
-        <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center px-8">
-          <div className="w-14 h-14 mb-4 text-purple-400 animate-pulse">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center px-8">
+          {/* Animated phone rotation icon */}
+          <div className="w-20 h-20 mb-6 text-purple-400">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-[spin_3s_ease-in-out_infinite]" style={{ animationDirection: 'alternate' }}>
               <rect x="4" y="2" width="16" height="20" rx="2" />
               <path d="M12 18h.01" />
             </svg>
           </div>
-          <p className="text-white text-base font-medium text-center mb-1">Rotate for Best Experience</p>
-          <p className="text-neutral-400 text-xs text-center mb-6">
-            Landscape mode recommended for gameplay
+          <p className="text-white text-xl font-semibold text-center mb-2">Rotate Your Device</p>
+          <p className="text-neutral-400 text-sm text-center mb-8 max-w-xs">
+            Turn your phone sideways for the best arena experience with full controls
           </p>
-          <button
-            onClick={() => setHintDismissed(true)}
-            className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            Continue Anyway
-          </button>
+          <div className="flex flex-col gap-3 w-full max-w-xs">
+            <button
+              onClick={async () => {
+                setHintDismissed(true)
+                // Try to enter fullscreen and lock landscape
+                try {
+                  const docEl = document.documentElement
+                  if (docEl.requestFullscreen) {
+                    await docEl.requestFullscreen()
+                  }
+                  // Try to lock orientation (may not be supported)
+                  const orientation = screen.orientation as ScreenOrientation & { lock?: (orientation: string) => Promise<void> }
+                  if (orientation?.lock) {
+                    try {
+                      await orientation.lock('landscape')
+                    } catch {
+                      // Orientation lock not supported
+                    }
+                  }
+                } catch {
+                  // Ignore errors - user can still play
+                }
+              }}
+              className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-xl transition-colors"
+            >
+              Enter Fullscreen & Play
+            </button>
+            <button
+              onClick={() => setHintDismissed(true)}
+              className="w-full px-6 py-3 bg-white/10 hover:bg-white/20 text-white/70 text-sm font-medium rounded-xl transition-colors"
+            >
+              Continue in Portrait
+            </button>
+          </div>
         </div>
       )}
 
@@ -316,23 +368,44 @@ export function ArenaGame() {
             </div>
           </div>
 
-          {/* Leave button - bottom right corner of canvas */}
-          <div className="absolute bottom-3 right-3 z-10 safe-area-bottom">
-            <button
-              onClick={leaveGame}
-              className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px]"
-            >
-              Leave
-            </button>
+          {/* Leave button - bottom right corner of canvas (above mobile controls) */}
+          <div className="absolute bottom-3 right-3 z-10 safe-area-bottom" style={{ bottom: isMobileLandscape ? '140px' : '12px' }}>
+            <div className="flex gap-2">
+              {/* Exit fullscreen button - only show when in fullscreen */}
+              {isFullscreen && (
+                <button
+                  onClick={() => document.exitFullscreen?.()}
+                  className="px-2 py-1.5 text-[10px] text-neutral-500 hover:text-white bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px]"
+                >
+                  Exit FS
+                </button>
+              )}
+              <button
+                onClick={leaveGame}
+                className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px]"
+              >
+                Leave
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Quiz panel - BELOW canvas, HTML/CSS for crisp text */}
-      <ArenaQuizPanel
-        onAnswer={sendAnswer}
-        visible={showQuestion}
-      />
+      {/* Quiz panel - overlay on mobile landscape, below canvas on desktop/portrait */}
+      {isMobileLandscape ? (
+        // Overlay mode for mobile landscape - renders as fixed position at top
+        <ArenaQuizPanel
+          onAnswer={sendAnswer}
+          visible={showQuestion}
+          overlayMode={true}
+        />
+      ) : (
+        // Standard mode - below canvas
+        <ArenaQuizPanel
+          onAnswer={sendAnswer}
+          visible={showQuestion}
+        />
+      )}
     </div>
     </>
   )
