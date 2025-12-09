@@ -457,6 +457,11 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
     engineRef.current?.handleFire()
   }, [])
 
+  // Fire in a specific direction (for mobile joystick)
+  const handleMobileFireDirection = useCallback((direction: Vector2) => {
+    engineRef.current?.handleFireDirection(direction)
+  }, [])
+
   // Expose methods via ref for external control
   useImperativeHandle(ref, () => ({
     fire: () => engineRef.current?.handleFire(),
@@ -509,6 +514,7 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
         <MobileControls
           onMove={handleMobileMove}
           onFire={handleMobileFire}
+          onFireDirection={handleMobileFireDirection}
           enabled={!isRespawning}
         />
       )}

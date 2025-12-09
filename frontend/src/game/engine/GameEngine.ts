@@ -252,6 +252,14 @@ export class GameEngine {
     return this.combatSystem.tryFire(this.localPlayer.position)
   }
 
+  /** Fire in a specific direction (for mobile controls) */
+  handleFireDirection(direction: Vector2): boolean {
+    if (!this.combatEnabled || !this.localPlayer) return false
+    // Update aim to the specified direction before firing
+    this.combatSystem.updateAimFromMovement(direction)
+    return this.combatSystem.tryFire(this.localPlayer.position)
+  }
+
   setMobileVelocity(velocity: Vector2): void { this.playerController.setMobileVelocity(velocity) }
 
   setOpponent(opponent: PlayerState | null, isOpponentPlayer1?: boolean): void {
