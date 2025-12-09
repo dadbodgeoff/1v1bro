@@ -10,6 +10,7 @@
 
 import { useEffect } from 'react'
 import {
+  GlobalBackground,
   LandingHeader,
   HeroSection,
   HowItWorksSection,
@@ -29,6 +30,9 @@ export function Landing() {
 
   return (
     <div className="min-h-screen bg-[#09090B] text-white safe-area-all">
+      {/* Global animated background */}
+      <GlobalBackground />
+
       {/* Fixed Header */}
       <LandingHeader />
 

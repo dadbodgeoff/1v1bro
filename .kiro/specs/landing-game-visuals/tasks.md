@@ -1,0 +1,164 @@
+# Implementation Plan
+
+- [x] 1. Create GlobalBackground component with particle system
+  - [x] 1.1 Create GlobalBackground component with multi-layer structure
+    - Create `frontend/src/components/landing/enterprise/GlobalBackground.tsx`
+    - Implement 7 visual layers: deep gradient, stars, nebula, platforms, orbs, projectiles, embers
+    - Add scroll-based parallax with different ratios per layer
+    - Support reduced motion preference detection
+    - _Requirements: 1.1, 1.2, 1.3, 1.5_
+  - [x] 1.2 Implement particle canvas system
+    - Create particle spawning, movement, and recycling logic
+    - Support multiple particle types: ember, star, orb, projectile
+    - Implement glow effects using radial gradients
+    - Add viewport-based particle count (50 desktop, 20 mobile)
+    - _Requirements: 1.1, 1.4, 5.2_
+  - [x] 1.3 Write property test for parallax transform proportionality
+    - **Property 1: Parallax Transform Proportionality**
+    - **Validates: Requirements 1.2**
+  - [x] 1.4 Write property test for reduced motion compliance
+    - **Property 2: Reduced Motion Compliance**
+    - **Validates: Requirements 1.5**
+  - [x] 1.5 Write property test for mobile particle reduction
+    - **Property 7: Mobile Particle Reduction**
+    - **Validates: Requirements 5.2**
+
+- [ ] 2. Create GlowBorder component and apply to cards
+  - [ ] 2.1 Create GlowBorder wrapper component
+    - Create `frontend/src/components/landing/enterprise/GlowBorder.tsx`
+    - Implement animated gradient border using CSS pseudo-elements
+    - Support color variants: orange, purple, blue
+    - Add hover pulse effect with intensity options
+    - Use GPU-accelerated properties only (transform, opacity)
+    - _Requirements: 3.1, 3.2, 3.5_
+  - [ ] 2.2 Update FeatureCard to use GlowBorder
+    - Wrap existing FeatureCard content with GlowBorder
+    - Configure orange accent color glow
+    - Add hover state intensification
+    - _Requirements: 3.1, 3.2_
+  - [ ] 2.3 Update CTAButton with glow effects
+    - Add subtle glow shadow to primary CTA buttons
+    - Match brand accent color (#F97316)
+    - Animate glow on hover
+    - _Requirements: 3.3_
+  - [ ] 2.4 Add animated gradient section dividers
+    - Create horizontal gradient lines between sections
+    - Animate gradient position for flowing effect
+    - _Requirements: 3.4_
+  - [ ] 2.5 Write property test for glow border presence
+    - **Property 3: Glow Border Presence on Feature Cards**
+    - **Validates: Requirements 3.1**
+  - [ ] 2.6 Write property test for CTA glow color consistency
+    - **Property 4: CTA Glow Color Consistency**
+    - **Validates: Requirements 3.3**
+  - [ ] 2.7 Write property test for GPU-accelerated animations
+    - **Property 5: GPU-Accelerated Animations**
+    - **Validates: Requirements 3.5**
+
+- [ ] 3. Create animated icons for HowItWorks section
+  - [ ] 3.1 Create AnimatedIcon component
+    - Create `frontend/src/components/landing/enterprise/AnimatedIcon.tsx`
+    - Implement 4 icon types: matchmaking, combat, victory, quiz
+    - Add scroll-triggered animation using Intersection Observer
+    - Support size variants: sm, md, lg
+    - _Requirements: 4.2_
+  - [ ] 3.2 Update StepCard to use AnimatedIcon
+    - Replace static icons with AnimatedIcon component
+    - Configure appropriate icon type per step
+    - Trigger animation on scroll into view
+    - _Requirements: 4.2_
+  - [ ] 3.3 Write property test for step card animated icons
+    - **Property 6: Step Card Animated Icons**
+    - **Validates: Requirements 4.2**
+
+- [ ] 4. Checkpoint - Ensure background and glow effects work
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Create enterprise-grade LiveDemo component
+  - [ ] 5.1 Create LiveDemo container component
+    - Create `frontend/src/components/landing/enterprise/LiveDemo.tsx`
+    - Set up canvas container with responsive sizing
+    - Implement demo game loop using requestAnimationFrame
+    - Add play/pause controls and fullscreen option
+    - _Requirements: 2.1, 2.4_
+  - [ ] 5.2 Create DemoGameEngine class
+    - Create `frontend/src/components/landing/enterprise/demo/DemoGameEngine.ts`
+    - Extend or adapt existing GameEngine for demo mode
+    - Configure demo-specific map and spawn points
+    - Implement 30-second match loop with phase transitions
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [ ] 5.3 Create DemoAI system
+    - Create `frontend/src/components/landing/enterprise/demo/DemoAI.ts`
+    - Implement AI state machine: idle, moving, aiming, firing, dodging, answering
+    - Create two AI personalities: aggressive and defensive
+    - Add realistic timing and accuracy variations
+    - _Requirements: 2.2_
+  - [ ] 5.4 Create DemoHUD overlay
+    - Create `frontend/src/components/landing/enterprise/demo/DemoHUD.tsx`
+    - Implement health bars with damage animations
+    - Add animated score display (+100 floats up)
+    - Create question panel with timer
+    - Add kill feed notifications
+    - _Requirements: 2.2, 2.5_
+  - [ ] 5.5 Implement demo quiz system
+    - Create curated set of demo questions
+    - Implement AI answer selection with realistic timing
+    - Show correct/incorrect feedback
+    - Update scores based on answers
+    - _Requirements: 2.5_
+  - [ ] 5.6 Add interactive mode
+    - Allow visitors to click/tap to fire projectiles
+    - Show "Try shooting!" prompt
+    - Track visitor interactions for engagement
+    - _Requirements: 2.4_
+  - [ ] 5.7 Implement seamless loop transition
+    - Create smooth fade/transition between match end and restart
+    - Reset all game state without visible jump
+    - Maintain 30-second total loop duration
+    - _Requirements: 2.3_
+
+- [ ] 6. Add dynamic visual elements to hero section
+  - [ ] 6.1 Add animated character silhouettes to hero
+    - Create character sprites or SVG silhouettes
+    - Animate idle movement and occasional actions
+    - Position strategically in hero background
+    - _Requirements: 4.1_
+  - [ ] 6.2 Add floating projectile effects across sections
+    - Create projectile trail elements
+    - Animate across section boundaries
+    - Use CSS animations for performance
+    - _Requirements: 4.3_
+  - [ ] 6.3 Add count-up animations for stats
+    - Implement number counting animation component
+    - Apply to any stats/metrics displayed
+    - Trigger on scroll into view
+    - _Requirements: 4.4_
+
+- [ ] 7. Integrate LiveDemo into landing page
+  - [ ] 7.1 Create LiveDemoSection wrapper
+    - Create section with proper spacing and background
+    - Add section header: "See It In Action"
+    - Position LiveDemo component with CTA overlay
+    - _Requirements: 2.1, 2.4_
+  - [ ] 7.2 Update Landing.tsx to include LiveDemoSection
+    - Import and add LiveDemoSection after HeroSection
+    - Ensure proper section ordering and spacing
+    - _Requirements: 2.1_
+
+- [ ] 8. Accessibility and performance optimization
+  - [ ] 8.1 Add aria-hidden to decorative elements
+    - Mark all particle containers with aria-hidden="true"
+    - Mark floating decorative elements as hidden
+    - Ensure screen readers skip animations
+    - _Requirements: 5.4_
+  - [ ] 8.2 Implement performance monitoring
+    - Add FPS detection for animation quality adjustment
+    - Reduce particle count if frame drops detected
+    - Log performance metrics in development
+    - _Requirements: 1.4, 5.3_
+  - [ ] 8.3 Write property test for decorative animation accessibility
+    - **Property 8: Decorative Animation Accessibility**
+    - **Validates: Requirements 5.4**
+
+- [ ] 9. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

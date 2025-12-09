@@ -17,6 +17,7 @@ export * from './StepCard'
 export * from './UseCaseCard'
 
 // Section components
+export * from './GlobalBackground'
 export * from './BackgroundScene'
 export * from './HeroSection'
 export * from './HowItWorksSection'
