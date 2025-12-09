@@ -15,6 +15,10 @@ export * from './SectionHeader'
 export * from './AnimatedIcon'
 export * from './LiveDemo'
 export * from './LiveDemoSection'
+export * from './CharacterSilhouettes'
+export * from './FloatingProjectiles'
+export * from './CountUpStat'
+export * from './usePerformanceMonitor'
 
 // Card components
 export * from './FeatureCard'

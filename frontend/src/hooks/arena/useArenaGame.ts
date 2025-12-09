@@ -84,9 +84,9 @@ export function useArenaGame(lobbyCode?: string) {
     }
   }, [userId, userName, players, player1Id, player2Id, setLocalPlayer, setOpponent])
 
-  // Debug: Log whenever skin state changes
+  // Track skin state changes (debug logging removed for production)
   useEffect(() => {
-    console.log('[useArenaGame] Skins from game_start:', { equippedSkin, opponentSkin, playerSkins })
+    // Skin state updated
   }, [equippedSkin, opponentSkin, playerSkins])
 
 

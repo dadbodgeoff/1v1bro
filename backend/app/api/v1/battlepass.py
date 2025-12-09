@@ -23,7 +23,7 @@ from app.schemas.battlepass import (
 from app.schemas.coin import InsufficientFundsError
 
 # Premium battle pass price in coins
-PREMIUM_BATTLEPASS_PRICE = 950
+PREMIUM_BATTLEPASS_PRICE = 650
 
 
 router = APIRouter(prefix="/battlepass", tags=["Battle Pass"])

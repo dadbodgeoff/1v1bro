@@ -4,6 +4,7 @@ import { usePresence } from '@/hooks/usePresence'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/stores/authStore'
 import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
+import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
 import { MatchHistory } from '@/pages/MatchHistory'
 import { CoinShop } from '@/pages/CoinShop'
 import { CoinSuccess } from '@/pages/CoinSuccess'
@@ -188,6 +189,12 @@ function App() {
         <Route path="/fortnite-quiz" element={<FortniteQuiz />} />
         {/* Test route - no auth required */}
         <Route path="/arena-test" element={<ArenaTest />} />
+        {/* Guest play route - try the game without signup */}
+        <Route path="/play" element={<BotGame />} />
+        {/* Legal pages - no auth required */}
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/refunds" element={<RefundPolicy />} />
         {/* Legacy landing route - redirect to root */}
         <Route path="/landing" element={<Navigate to="/" replace />} />
       </Routes>

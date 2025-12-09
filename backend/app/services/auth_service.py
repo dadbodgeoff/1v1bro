@@ -411,9 +411,8 @@ class AuthService(BaseService):
             "expires_at": expiry,
         }
         
-        # In production, send email here
-        # For now, just log it
-        print(f"Password reset token for {email}: {token}")
+        # TODO: Send email with reset link in production
+        # Token is stored in database for verification
         
         return True
 

@@ -10,8 +10,11 @@ from typing import Optional
 from supabase import Client
 
 from app.core.logging import get_logger
-from app.matchmaking.models import MatchTicket, QueueStatus, MatchFoundEvent
+from app.matchmaking.models import MatchTicket, QueueStatus, MatchFoundEvent, HeartbeatStatus
 from app.matchmaking.queue_manager import queue_manager
+from app.matchmaking.heartbeat_monitor import heartbeat_monitor
+from app.matchmaking.atomic_match import AtomicMatchCreator
+from app.matchmaking.health_checker import ConnectionHealthChecker
 from app.database.repositories.matchmaking_repo import MatchmakingRepository
 from app.services.lobby_service import LobbyService
 from app.websocket.manager import manager
@@ -36,6 +39,15 @@ class MatchmakingService:
         self._processor_task: Optional[asyncio.Task] = None
         self._status_task: Optional[asyncio.Task] = None
         self._running = False
+        
+        # Initialize health checker and atomic match creator
+        self._health_checker = ConnectionHealthChecker()
+        self._atomic_match_creator = AtomicMatchCreator(
+            health_checker=self._health_checker,
+        )
+        
+        # Set up heartbeat monitor callback for stale player handling
+        heartbeat_monitor.set_on_stale_callback(self._handle_stale_player)
     
     async def start(self) -> None:
         """Start background queue processing."""
@@ -47,13 +59,14 @@ class MatchmakingService:
         # Clean up any stale tickets from previous server runs
         # This prevents duplicate key errors when users try to rejoin
         await self.repo.cleanup_all_waiting_tickets()
-        print("[Matchmaking] Cleaned up stale tickets from previous session")
         
         # Start background tasks
         self._processor_task = asyncio.create_task(self._queue_processor())
         self._status_task = asyncio.create_task(self._status_broadcaster())
         
-        print("[Matchmaking] Service started with background tasks")
+        # Start heartbeat monitor
+        await heartbeat_monitor.start()
+        
         logger.info("Matchmaking service started")
     
     async def stop(self) -> None:
@@ -73,6 +86,9 @@ class MatchmakingService:
                 await self._status_task
             except asyncio.CancelledError:
                 pass
+        
+        # Stop heartbeat monitor
+        await heartbeat_monitor.stop()
         
         logger.info("Matchmaking service stopped")
     
@@ -124,6 +140,9 @@ class MatchmakingService:
         # Persist to database
         await self.repo.save_ticket(ticket)
         
+        # Register for heartbeat monitoring
+        heartbeat_monitor.register_player(player_id)
+        
         # Send queue_joined event
         position = await queue_manager.get_position(player_id)
         await manager.send_to_user(player_id, {
@@ -151,6 +170,9 @@ class MatchmakingService:
         """
         # Remove from in-memory queue
         ticket = await queue_manager.remove(player_id)
+        
+        # Unregister from heartbeat monitoring
+        heartbeat_monitor.unregister_player(player_id)
         
         # Always clean up database (handles stale tickets from server restarts)
         await self.repo.delete_ticket(player_id)
@@ -234,26 +256,17 @@ class MatchmakingService:
     
     async def _queue_processor(self) -> None:
         """Background task that processes queue every second."""
-        print("[Matchmaking] Queue processor started")
         while self._running:
             try:
                 queue_size = queue_manager.get_queue_size()
-                if queue_size > 0:
-                    print(f"[Matchmaking] Queue has {queue_size} players")
                 
                 if queue_size >= 2:
-                    print(f"[Matchmaking] Attempting to find match...")
                     match = await queue_manager.find_match()
                     if match:
                         player1, player2 = match
-                        print(f"[Matchmaking] Match found! {player1.player_name} vs {player2.player_name}")
                         await self._create_match(player1, player2)
-                    else:
-                        print(f"[Matchmaking] find_match returned None despite {queue_size} players")
             except Exception as e:
-                print(f"[Matchmaking] Queue processor error: {e}")
-                import traceback
-                traceback.print_exc()
+                logger.error(f"Queue processor error: {e}")
             
             await asyncio.sleep(1.0)  # 1Hz tick rate
     
@@ -282,77 +295,75 @@ class MatchmakingService:
             
             await asyncio.sleep(self.STATUS_INTERVAL)
     
+    async def _handle_stale_player(self, user_id: str, status: HeartbeatStatus) -> None:
+        """
+        Handle a player marked as stale by the heartbeat monitor.
+        
+        Removes them from the queue and notifies them.
+        
+        Args:
+            user_id: Player UUID
+            status: HeartbeatStatus with stale details
+        """
+        logger.warning(
+            f"Removing stale player {user_id} from queue "
+            f"(missed {status.missed_count} heartbeats, "
+            f"last pong: {status.last_pong_received})"
+        )
+        
+        # Remove from queue
+        ticket = await queue_manager.remove(user_id)
+        
+        # Unregister from heartbeat monitoring
+        heartbeat_monitor.unregister_player(user_id)
+        
+        # Clean up database
+        await self.repo.delete_ticket(user_id)
+        
+        # Try to notify the player (may fail if truly disconnected)
+        await manager.send_to_user(user_id, {
+            "type": "queue_cancelled",
+            "payload": {"reason": "connection_timeout"}
+        })
+        
+        if ticket:
+            logger.info(
+                f"Stale player {user_id} removed from queue "
+                f"(was in queue for {ticket.wait_seconds:.1f}s)"
+            )
+    
     async def _create_match(self, player1: MatchTicket, player2: MatchTicket) -> None:
-        """Create a match between two players."""
-        try:
-            print(f"[Matchmaking] Creating match - updating ticket status...")
-            # Remove tickets from database
-            await self.repo.update_ticket_status(player1.player_id, "matched")
-            await self.repo.update_ticket_status(player2.player_id, "matched")
-            
-            print(f"[Matchmaking] Creating lobby with category: {player1.game_mode}, map: {player1.map_slug}")
-            # Create lobby with player1 as host, matched category, and map
-            lobby = await self.lobby_service.create_lobby(
-                host_id=player1.player_id,
-                game_mode=player1.game_mode,
-                category=player1.game_mode,  # Pass category for trivia questions
-                map_slug=player1.map_slug,  # Pass map for arena selection
-            )
-            print(f"[Matchmaking] Lobby created: {lobby.get('code')}")
-            
-            # Add player2 to lobby
-            lobby = await self.lobby_service.join_lobby(
-                code=lobby["code"],
-                player_id=player2.player_id,
-            )
-            print(f"[Matchmaking] Player2 joined lobby")
-            
-            # Send match_found events with map_slug
-            match_event_p1 = MatchFoundEvent(
-                lobby_code=lobby["code"],
-                opponent_id=player2.player_id,
-                opponent_name=player2.player_name,
-                map_slug=player1.map_slug,
-            )
-            
-            match_event_p2 = MatchFoundEvent(
-                lobby_code=lobby["code"],
-                opponent_id=player1.player_id,
-                opponent_name=player1.player_name,
-                map_slug=player1.map_slug,
-            )
-            
-            # Send match_found events with retry for players not yet connected
-            async def send_match_found(player_id: str, event: MatchFoundEvent, player_name: str):
-                for attempt in range(5):  # Retry up to 5 times over 2.5 seconds
-                    sent = await manager.send_to_user(player_id, {
-                        "type": "match_found",
-                        "payload": event.to_dict(),
-                    })
-                    if sent:
-                        print(f"[Matchmaking] Sent match_found to {player_name} (attempt {attempt + 1})")
-                        return True
-                    await asyncio.sleep(0.5)  # Wait 500ms before retry
-                print(f"[Matchmaking] Failed to send match_found to {player_name} after 5 attempts")
-                return False
-            
-            # Send to both players (with retries)
-            await asyncio.gather(
-                send_match_found(player1.player_id, match_event_p1, player1.player_name),
-                send_match_found(player2.player_id, match_event_p2, player2.player_name),
-            )
-            
-            print(f"[Matchmaking] Match created successfully! Lobby: {lobby['code']}")
+        """
+        Create a match between two players using atomic match creation.
+        
+        Uses AtomicMatchCreator for:
+        - Pre-match connection health verification
+        - Two-phase commit with rollback on failure
+        - Automatic re-queuing of healthy player on failure
+        """
+        # Unregister both players from heartbeat monitoring
+        heartbeat_monitor.unregister_player(player1.player_id)
+        heartbeat_monitor.unregister_player(player2.player_id)
+        
+        # Use atomic match creator for safe match creation
+        result = await self._atomic_match_creator.create_match(
+            player1=player1,
+            player2=player2,
+            lobby_service=self.lobby_service,
+            repo=self.repo,
+        )
+        
+        if result.success:
             logger.info(
                 f"Match created: {player1.player_name} vs {player2.player_name} "
-                f"in lobby {lobby['code']}"
+                f"in lobby {result.lobby_code}"
             )
-            
-        except Exception as e:
-            logger.error(f"Failed to create match: {e}")
-            # Re-add players to queue on failure
-            await queue_manager.add(player1)
-            await queue_manager.add(player2)
+        else:
+            logger.warning(
+                f"Match creation failed for {player1.player_name} vs {player2.player_name}: "
+                f"{result.failure_reason} (rollback: {result.rollback_performed}, "
+                f"requeued: {result.requeued_player_id})"
+            )
 
 
 # Global service instance (initialized on startup)

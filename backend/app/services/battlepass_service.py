@@ -101,22 +101,28 @@ class BattlePassService:
         Requirements: 4.8 - Support free_reward and premium_reward per tier.
         """
         tiers_data = await self.battlepass_repo.get_tier_rewards(season_id)
+        logger.info(f"Fetched {len(tiers_data)} tiers for season {season_id}")
         
         tiers = []
         for tier_data in tiers_data:
+            tier_num = tier_data.get("tier_number", 0)
             free_reward = None
             premium_reward = None
             
             # Parse free reward
-            if tier_data.get("free_reward"):
-                free_reward = await self._parse_reward(tier_data["free_reward"])
+            free_reward_data = tier_data.get("free_reward")
+            if free_reward_data:
+                logger.debug(f"Tier {tier_num} free_reward raw: {free_reward_data} (type: {type(free_reward_data).__name__})")
+                free_reward = await self._parse_reward(free_reward_data)
             
             # Parse premium reward
-            if tier_data.get("premium_reward"):
-                premium_reward = await self._parse_reward(tier_data["premium_reward"])
+            premium_reward_data = tier_data.get("premium_reward")
+            if premium_reward_data:
+                logger.debug(f"Tier {tier_num} premium_reward raw: {premium_reward_data} (type: {type(premium_reward_data).__name__})")
+                premium_reward = await self._parse_reward(premium_reward_data)
             
             tiers.append(BattlePassTier(
-                tier_number=tier_data["tier_number"],
+                tier_number=tier_num,
                 free_reward=free_reward,
                 premium_reward=premium_reward,
             ))
@@ -129,15 +135,40 @@ class BattlePassService:
         value = reward_data.get("value")
         cosmetic = None
         
+        logger.info(f"_parse_reward: type={reward_type.value}, value={value}, has_cosmetics_service={self.cosmetics_service is not None}")
+        
         # If cosmetic reward, fetch the cosmetic details
         if reward_type == RewardType.COSMETIC and value and self.cosmetics_service:
-            cosmetic = await self.cosmetics_service.get_cosmetic(str(value))
+            try:
+                logger.info(f"Fetching cosmetic details for ID: {value}")
+                cosmetic = await self.cosmetics_service.get_cosmetic(str(value))
+                if cosmetic:
+                    logger.info(f"SUCCESS: Fetched cosmetic {value}: name={cosmetic.name}, type={cosmetic.type}, image_url={cosmetic.image_url}")
+                else:
+                    logger.warning(f"FAILED: Cosmetic {value} not found in catalog")
+            except Exception as e:
+                logger.error(f"ERROR fetching cosmetic {value}: {e}", exc_info=True)
+        elif reward_type == RewardType.COSMETIC and not self.cosmetics_service:
+            logger.error(f"CRITICAL: cosmetics_service is None, cannot fetch cosmetic {value}")
+        elif reward_type == RewardType.COSMETIC and not value:
+            logger.warning(f"Cosmetic reward has no value/ID")
         
-        return Reward(
+        # Extract preview URL for legacy frontend compatibility
+        cosmetic_preview_url = None
+        if cosmetic:
+            cosmetic_preview_url = cosmetic.image_url
+        
+        reward = Reward(
             type=reward_type,
             value=value,
             cosmetic=cosmetic,
+            cosmetic_preview_url=cosmetic_preview_url,
         )
+        
+        # Log the final reward object for debugging
+        logger.info(f"Created Reward: type={reward.type.value}, value={reward.value}, has_cosmetic={reward.cosmetic is not None}, preview_url={cosmetic_preview_url}")
+        
+        return reward
     
     # ============================================
     # Player Progress Operations

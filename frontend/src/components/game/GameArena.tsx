@@ -151,7 +151,6 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
   useEffect(() => {
     if (!canvasRef.current) return
 
-    console.log('[GameArena] Initializing engine with map:', mapConfig?.metadata?.name || 'default (NEXUS_ARENA)')
     const engine = new GameEngine(canvasRef.current, mapConfig)
     engine.initLocalPlayer(playerId, isPlayer1)
     engine.setCallbacks({
@@ -328,35 +327,19 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
 
   // Initialize player skin - with retry to handle timing issues
   useEffect(() => {
-    console.log('[GameArena] Skin effect triggered:', { 
-      equippedSkin, 
-      playerId, 
-      hasEngine: !!engineRef.current,
-      skinType: equippedSkin ? (equippedSkin.spriteSheetUrl ? 'dynamic' : equippedSkin.skinId ? 'static' : 'unknown') : 'none'
-    })
-    
     const applySkin = () => {
       if (!engineRef.current) {
-        console.log('[GameArena] No engine ref yet, will retry')
         return false
       }
       
       if (equippedSkin) {
         if (equippedSkin.spriteSheetUrl) {
           // Dynamic skin from CMS
-          console.log('[GameArena] Applying dynamic skin:', equippedSkin.spriteSheetUrl)
           engineRef.current.setDynamicSkin(playerId, equippedSkin.spriteSheetUrl, equippedSkin.metadataUrl)
-          console.log('[GameArena] setDynamicSkin called successfully')
         } else if (equippedSkin.skinId) {
           // Static bundled skin
-          console.log('[GameArena] Applying static skin:', equippedSkin.skinId)
           engineRef.current.setPlayerSkin(playerId, equippedSkin.skinId)
-          console.log('[GameArena] setPlayerSkin called successfully')
-        } else {
-          console.log('[GameArena] equippedSkin has no spriteSheetUrl or skinId:', equippedSkin)
         }
-      } else {
-        console.log('[GameArena] No equipped skin (null)')
       }
       return true
     }
@@ -366,7 +349,6 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
     
     // Retry after a short delay if engine wasn't ready
     const retryTimer = setTimeout(() => {
-      console.log('[GameArena] Retrying skin application...')
       applySkin()
     }, 100)
     

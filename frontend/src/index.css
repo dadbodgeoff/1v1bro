@@ -722,3 +722,115 @@ button:has(svg:only-child),
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+
+/* ============================================
+ * Character Silhouette Animations
+ * Requirements: 4.1
+ * ============================================ */
+
+/* Character idle breathing animation */
+@keyframes characterIdle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-character-idle {
+  animation: characterIdle 2s ease-in-out infinite;
+}
+
+/* Projectile flying right */
+@keyframes projectileRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(70vw);
+    opacity: 0;
+  }
+}
+
+.animate-projectile-right {
+  animation: projectileRight 0.5s ease-out forwards;
+}
+
+/* Projectile flying left */
+@keyframes projectileLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-70vw);
+    opacity: 0;
+  }
+}
+
+.animate-projectile-left {
+  animation: projectileLeft 0.5s ease-out forwards;
+}
+
+/* ============================================
+ * Floating Projectile Animations (Decorative)
+ * Requirements: 4.3
+ * ============================================ */
+
+/* Floating projectile moving right across screen */
+@keyframes floatProjectileRight {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(110vw);
+    opacity: 0;
+  }
+}
+
+.animate-float-projectile-right {
+  animation: floatProjectileRight 6s linear infinite;
+}
+
+/* Floating projectile moving left across screen */
+@keyframes floatProjectileLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-110vw);
+    opacity: 0;
+  }
+}
+
+.animate-float-projectile-left {
+  animation: floatProjectileLeft 6s linear infinite;
+}
+
+/* Reduced motion support for new animations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-character-idle,
+  .animate-projectile-right,
+  .animate-projectile-left,
+  .animate-float-projectile-right,
+  .animate-float-projectile-left {
+    animation: none;
+  }
+}

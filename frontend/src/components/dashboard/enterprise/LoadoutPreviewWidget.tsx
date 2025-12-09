@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCosmetics } from '@/hooks/useCosmetics'
 import { RARITY_COLORS, type CosmeticType, type Rarity, type Cosmetic, type InventoryItem } from '@/types/cosmetic'
 import { DashboardSection } from './DashboardSection'
+import { SkinPreview } from '@/components/shop/SkinPreview'
 
 export interface LoadoutPreviewWidgetProps {
   className?: string
@@ -203,6 +204,7 @@ interface LoadoutSlotProps {
 function LoadoutSlot({ slot }: LoadoutSlotProps) {
   const hasItem = slot.item !== null
   const rarityColor = slot.item?.rarity ? RARITY_COLORS[slot.item.rarity] : null
+  const isSkin = slot.type === 'skin'
 
   return (
     <div className="text-center">
@@ -219,7 +221,16 @@ function LoadoutSlot({ slot }: LoadoutSlotProps) {
       >
         {hasItem && slot.item ? (
           // Equipped item - Requirements 5.2
-          slot.item.previewUrl ? (
+          // Use SkinPreview for skins to show sprite sheet frame
+          isSkin && slot.item.previewUrl ? (
+            <SkinPreview
+              spriteSheetUrl={slot.item.previewUrl}
+              size={64}
+              animate={false}
+              frameIndex={0}
+              className="w-full h-full"
+            />
+          ) : slot.item.previewUrl ? (
             <img
               src={slot.item.previewUrl}
               alt={slot.item.name}

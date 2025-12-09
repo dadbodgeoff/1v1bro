@@ -89,6 +89,8 @@ class GameResult(BaseSchema, TimestampMixin):
     xp_results: Optional[dict[str, dict]] = Field(None, description="XP award results keyed by player_id")
     # Recap payloads for both players (MATCH AUTO-END RECAP)
     recaps: Optional[dict[str, dict]] = Field(None, description="Recap payloads keyed by player_id")
+    # ELO result from match (SOURCE OF TRUTH CONSOLIDATION)
+    elo_result: Optional[Any] = Field(None, description="ELO calculation result from leaderboard service")
     
     @property
     def game_id(self) -> str:

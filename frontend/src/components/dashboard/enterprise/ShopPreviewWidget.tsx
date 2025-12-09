@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCosmetics } from '@/hooks/useCosmetics'
 import { RARITY_COLORS, type Cosmetic, type Rarity } from '@/types/cosmetic'
 import { DashboardSection } from './DashboardSection'
+import { SkinPreview } from '@/components/shop/SkinPreview'
 
 export interface ShopPreviewWidgetProps {
   maxItems?: number
@@ -197,6 +198,8 @@ interface ShopItemCardProps {
 
 function ShopItemCard({ item, onClick }: ShopItemCardProps) {
   const rarityColor = getRarityColor(item.rarity)
+  const isSkin = item.type === 'skin'
+  const previewUrl = item.shop_preview_url || item.image_url
 
   return (
     <button
@@ -219,9 +222,18 @@ function ShopItemCard({ item, onClick }: ShopItemCardProps) {
           e.currentTarget.style.boxShadow = `0 0 0 0 ${rarityColor}00`
         }}
       >
-        {item.shop_preview_url || item.image_url ? (
+        {/* Use SkinPreview for skins to show sprite sheet frame */}
+        {isSkin && previewUrl ? (
+          <SkinPreview
+            spriteSheetUrl={previewUrl}
+            size={80}
+            animate={false}
+            frameIndex={0}
+            className="w-full h-full"
+          />
+        ) : previewUrl ? (
           <img
-            src={item.shop_preview_url || item.image_url}
+            src={previewUrl}
             alt={item.name}
             className="w-full h-full object-cover"
           />

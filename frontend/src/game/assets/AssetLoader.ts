@@ -74,8 +74,6 @@ let cachedAssets: GameAssets | null = null
 export async function loadGameAssets(): Promise<GameAssets> {
   if (cachedAssets) return cachedAssets
 
-  console.log('Loading game assets...')
-
   const [
     greenFrames,
     pinkFrames,
@@ -105,9 +103,6 @@ export async function loadGameAssets(): Promise<GameAssets> {
     loadImageRaw(floorTileImg), // Floor tile doesn't need transparency
     loadImageWithTransparency(barrierImg),
   ])
-
-  console.log(`Loaded ${greenFrames.length} green frames, ${pinkFrames.length} pink frames`)
-  console.log(`Loaded 5 premium skins: soldier-purple, banana-tactical, knight-gold, ninja-cyber, wraith-matrix`)
 
   cachedAssets = {
     sprites: {

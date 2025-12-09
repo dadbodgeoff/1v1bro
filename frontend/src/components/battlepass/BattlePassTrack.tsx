@@ -100,26 +100,12 @@ export function BattlePassTrack({
     return progress.claimed_rewards?.includes(tier) ?? false
   }
 
-  // Get the primary reward for a tier (premium if available, otherwise free)
+  // Get the primary reward for a tier (free first since all users get it, premium as fallback)
   const getUnifiedReward = (tier: BattlePassTier): UnifiedReward | null => {
     const premiumReward = tier.premium_reward
     const freeReward = tier.free_reward
 
-    // Prefer premium reward if it exists
-    if (premiumReward) {
-      const spriteUrl = premiumReward.cosmetic?.sprite_sheet_url || premiumReward.cosmetic?.image_url
-      return {
-        type: premiumReward.type as UnifiedReward['type'],
-        value: premiumReward.value,
-        isPremium: true,
-        preview_url: premiumReward.cosmetic?.image_url || premiumReward.cosmetic_preview_url,
-        sprite_sheet_url: spriteUrl,
-        rarity: (premiumReward.cosmetic?.rarity as Rarity) || 'common',
-        cosmetic_name: premiumReward.cosmetic?.name,
-      }
-    }
-
-    // Fall back to free reward
+    // Prefer free reward first (all users can claim it)
     if (freeReward) {
       const spriteUrl = freeReward.cosmetic?.sprite_sheet_url || freeReward.cosmetic?.image_url
       return {
@@ -130,6 +116,20 @@ export function BattlePassTrack({
         sprite_sheet_url: spriteUrl,
         rarity: (freeReward.cosmetic?.rarity as Rarity) || 'common',
         cosmetic_name: freeReward.cosmetic?.name,
+      }
+    }
+
+    // Fall back to premium reward if no free reward exists
+    if (premiumReward) {
+      const spriteUrl = premiumReward.cosmetic?.sprite_sheet_url || premiumReward.cosmetic?.image_url
+      return {
+        type: premiumReward.type as UnifiedReward['type'],
+        value: premiumReward.value,
+        isPremium: true,
+        preview_url: premiumReward.cosmetic?.image_url || premiumReward.cosmetic_preview_url,
+        sprite_sheet_url: spriteUrl,
+        rarity: (premiumReward.cosmetic?.rarity as Rarity) || 'common',
+        cosmetic_name: premiumReward.cosmetic?.name,
       }
     }
 
@@ -398,12 +398,17 @@ function CheckIcon({ className }: { className?: string }) {
   )
 }
 
+// Coin image URL from Supabase storage (same as CoinShop)
+const COIN_IMAGE_URL = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/playercard/coins.jpg'
+
 function CoinIcon({ style }: { style?: React.CSSProperties }) {
   return (
-    <svg style={style} viewBox="0 0 24 24" fill="#f59e0b">
-      <circle cx="12" cy="12" r="10" />
-      <text x="12" y="16" textAnchor="middle" fill="#000" fontSize="10" fontWeight="bold">$</text>
-    </svg>
+    <img
+      src={COIN_IMAGE_URL}
+      alt="Coins"
+      style={style}
+      className="rounded-full object-cover shadow-lg"
+    />
   )
 }
 

@@ -66,6 +66,78 @@ async def get_categories(
         raise HTTPException(status_code=500, detail=f"Failed to fetch categories: {str(e)}")
 
 
+class QuestionResponse(BaseModel):
+    """Response model for a single question (without correct answer for client)."""
+    id: int
+    text: str
+    options: List[str]
+    category: str
+
+
+class QuestionsResponse(BaseModel):
+    """Response model for list of questions."""
+    questions: List[QuestionResponse]
+
+
+class QuestionWithAnswer(BaseModel):
+    """Response model for a question with correct answer (for practice mode)."""
+    id: int
+    text: str
+    options: List[str]
+    correct_answer: str  # A, B, C, or D
+    category: str
+
+
+class PracticeQuestionsResponse(BaseModel):
+    """Response model for practice mode questions (includes answers)."""
+    questions: List[QuestionWithAnswer]
+
+
+@router.get("/practice/{category}", response_model=PracticeQuestionsResponse)
+async def get_practice_questions(
+    category: str,
+    count: int = 10,
+    client=Depends(get_supabase_client),
+) -> PracticeQuestionsResponse:
+    """
+    Get random questions for practice mode (includes correct answers).
+    
+    This endpoint is for single-player practice against bots.
+    Questions include the correct answer since there's no competitive advantage.
+    
+    Args:
+        category: Category slug (e.g., 'fortnite', 'nfl')
+        count: Number of questions (default 10, max 20)
+        
+    Returns:
+        List of questions with correct answers
+    """
+    count = min(count, 20)  # Cap at 20 questions
+    
+    question_service = QuestionService(client)
+    
+    try:
+        questions = await question_service.load_questions_async(
+            count=count,
+            category=category,
+        )
+        
+        return PracticeQuestionsResponse(
+            questions=[
+                QuestionWithAnswer(
+                    id=q.id,
+                    text=q.text,
+                    options=q.options,
+                    correct_answer=q.correct_answer,
+                    category=q.category or category,
+                )
+                for q in questions
+            ]
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch questions: {str(e)}")
+
+
 @router.get("/categories/{slug}", response_model=CategoryResponse)
 async def get_category(
     slug: str,

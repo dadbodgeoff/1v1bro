@@ -63,8 +63,6 @@ export class PowerUpManager {
 
     // Sort by round
     this.schedule.sort((a, b) => a.round - b.round)
-
-    console.log('Power-up schedule:', this.schedule)
   }
 
   /**

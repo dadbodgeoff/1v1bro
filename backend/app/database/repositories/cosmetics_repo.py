@@ -155,23 +155,16 @@ class CosmeticsRepository:
             "acquired_date": datetime.utcnow().isoformat(),
             "is_equipped": False,
         }
-        print(f"[cosmetics_repo] add_to_inventory: inserting {insert_data}")
         
-        try:
-            result = (
-                self._inventory()
-                .insert(insert_data)
-                .execute()
-            )
-            print(f"[cosmetics_repo] add_to_inventory result: {result.data}")
-            
-            if not result.data:
-                print(f"[cosmetics_repo] add_to_inventory: no data returned!")
-                return None
-            return result.data[0]
-        except Exception as e:
-            print(f"[cosmetics_repo] add_to_inventory ERROR: {e}")
-            raise
+        result = (
+            self._inventory()
+            .insert(insert_data)
+            .execute()
+        )
+        
+        if not result.data:
+            return None
+        return result.data[0]
 
     async def check_ownership(self, user_id: str, cosmetic_id: str) -> bool:
         """Check if user owns a specific cosmetic."""
@@ -303,36 +296,26 @@ class CosmeticsRepository:
         Returns:
             Updated loadout or None if not found
         """
-        print(f"[cosmetics_repo] update_loadout: user={user_id}, slot={slot}, cosmetic_id={cosmetic_id}")
-        
         # Ensure loadout exists
         existing = await self.get_loadout(user_id)
         if not existing:
-            print(f"[cosmetics_repo] update_loadout: creating new loadout for user")
             await self.create_loadout(user_id)
         
         update_data = {
             slot: cosmetic_id,
             "updated_at": datetime.utcnow().isoformat(),
         }
-        print(f"[cosmetics_repo] update_loadout: updating with {update_data}")
         
-        try:
-            result = (
-                self._loadouts()
-                .update(update_data)
-                .eq("user_id", user_id)
-                .execute()
-            )
-            print(f"[cosmetics_repo] update_loadout result: {result.data}")
-            
-            if not result.data:
-                print(f"[cosmetics_repo] update_loadout: no data returned!")
-                return None
-            return result.data[0]
-        except Exception as e:
-            print(f"[cosmetics_repo] update_loadout ERROR: {e}")
-            raise
+        result = (
+            self._loadouts()
+            .update(update_data)
+            .eq("user_id", user_id)
+            .execute()
+        )
+        
+        if not result.data:
+            return None
+        return result.data[0]
 
     async def clear_loadout_slot(self, user_id: str, slot: str) -> Optional[dict]:
         """Clear a specific slot in the loadout."""

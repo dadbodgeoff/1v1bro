@@ -130,10 +130,19 @@ class CosmeticsService:
     
     async def get_cosmetic(self, cosmetic_id: str) -> Optional[Cosmetic]:
         """Get a single cosmetic by ID."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        logger.info(f"get_cosmetic called for ID: {cosmetic_id}")
         data = await self.cosmetics_repo.get_cosmetic(cosmetic_id)
         if not data:
+            logger.warning(f"get_cosmetic: No data found for ID {cosmetic_id}")
             return None
-        return Cosmetic(**data)
+        
+        logger.info(f"get_cosmetic: Found data for {cosmetic_id}: name={data.get('name')}, image_url={data.get('image_url')}")
+        cosmetic = Cosmetic(**data)
+        logger.info(f"get_cosmetic: Created Cosmetic object: {cosmetic.name}, image_url={cosmetic.image_url}")
+        return cosmetic
     
     async def get_cosmetics_by_type(
         self, cosmetic_type: CosmeticType
@@ -202,37 +211,25 @@ class CosmeticsService:
         Returns:
             InventoryItem if successful, None if already owned or not found.
         """
-        print(f"[purchase_cosmetic] Starting purchase: user={user_id}, cosmetic={cosmetic_id}")
-        
         # Check if cosmetic exists
         cosmetic = await self.get_cosmetic(cosmetic_id)
         if not cosmetic:
-            print(f"[purchase_cosmetic] Cosmetic not found: {cosmetic_id}")
             return None
-        
-        print(f"[purchase_cosmetic] Found cosmetic: {cosmetic.name}")
         
         # Check if already owned
         if await self.cosmetics_repo.check_ownership(user_id, cosmetic_id):
-            print(f"[purchase_cosmetic] Already owned by user")
             return None  # Already owned
         
         # Add to inventory
-        print(f"[purchase_cosmetic] Adding to inventory...")
         inventory_data = await self.cosmetics_repo.add_to_inventory(user_id, cosmetic_id)
         if not inventory_data:
-            print(f"[purchase_cosmetic] Failed to add to inventory!")
             return None
-        
-        print(f"[purchase_cosmetic] Added to inventory: {inventory_data}")
         
         # Increment owned count
         await self.cosmetics_repo.increment_owned_count(cosmetic_id)
         
         # Invalidate inventory cache
         await self._invalidate_inventory_cache(user_id)
-        
-        print(f"[purchase_cosmetic] Purchase complete!")
         
         return InventoryItem(
             id=inventory_data["id"],
@@ -284,28 +281,19 @@ class CosmeticsService:
         Returns:
             Updated Loadout or None if cosmetic not owned.
         """
-        print(f"[equip_cosmetic] Starting equip: user={user_id}, cosmetic={cosmetic_id}")
-        
         # Check ownership
         if not await self.cosmetics_repo.check_ownership(user_id, cosmetic_id):
-            print(f"[equip_cosmetic] User does not own cosmetic")
             return None
         
         # Get cosmetic to determine slot
         cosmetic = await self.get_cosmetic(cosmetic_id)
         if not cosmetic:
-            print(f"[equip_cosmetic] Cosmetic not found")
             return None
-        
-        print(f"[equip_cosmetic] Equipping {cosmetic.name} (type: {cosmetic.type})")
         
         # Determine slot from cosmetic type
         slot = self.SLOT_MAP.get(cosmetic.type)
         if not slot:
-            print(f"[equip_cosmetic] No slot mapping for type: {cosmetic.type}")
             return None
-        
-        print(f"[equip_cosmetic] Using slot: {slot}")
         
         # Get current loadout to find previously equipped item
         current_loadout = await self.cosmetics_repo.get_loadout(user_id)
@@ -313,13 +301,11 @@ class CosmeticsService:
             old_cosmetic_id = current_loadout.get(slot)
             if old_cosmetic_id:
                 # Unmark old item as equipped
-                print(f"[equip_cosmetic] Unequipping old item: {old_cosmetic_id}")
                 await self.cosmetics_repo.update_equipped_status(
                     user_id, old_cosmetic_id, False
                 )
         
         # Update loadout
-        print(f"[equip_cosmetic] Updating loadout...")
         await self.cosmetics_repo.update_loadout(user_id, slot, cosmetic_id)
         
         # Mark new item as equipped in inventory

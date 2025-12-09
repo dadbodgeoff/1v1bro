@@ -190,6 +190,35 @@ class GameService(BaseService):
         # Update player stats
         await self.persistence.update_player_stats(session, result.winner_id)
         
+        # Update ELO ratings and record match result (Requirements: 5.3)
+        # This populates match_results table and updates ELO in user_profiles
+        try:
+            from app.services.leaderboard_service import LeaderboardService
+            leaderboard_service = LeaderboardService(self.client)
+            
+            player_ids = list(session.player_states.keys())
+            p1_id = player_ids[0] if len(player_ids) > 0 else ""
+            p2_id = player_ids[1] if len(player_ids) > 1 else ""
+            
+            elo_result = await leaderboard_service.update_ratings(
+                match_id=result.game_id,
+                player1_id=p1_id,
+                player2_id=p2_id,
+                winner_id=result.winner_id,
+                duration_seconds=result.duration_seconds,
+            )
+            if elo_result:
+                logger.info(
+                    f"ELO updated for game {result.game_id}: "
+                    f"P1 {elo_result.player1_pre_elo}->{elo_result.player1_post_elo}, "
+                    f"P2 {elo_result.player2_pre_elo}->{elo_result.player2_post_elo}"
+                )
+                # Attach ELO result to game result for potential use
+                result.elo_result = elo_result
+        except Exception as e:
+            logger.error(f"Failed to update ELO for game {result.game_id}: {e}")
+            # Don't fail the game end if ELO update fails
+        
         # Get player info
         player_ids = list(session.player_states.keys())
         player1_id = player_ids[0] if len(player_ids) > 0 else ""

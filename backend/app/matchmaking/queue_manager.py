@@ -217,6 +217,58 @@ class QueueManager:
             self._queue.clear()
             logger.info(f"Cleared {count} tickets from queue")
             return count
+    
+    async def remove_stale(self, player_id: str, reason: str = "stale_connection") -> Optional[MatchTicket]:
+        """
+        Remove a stale player from the queue.
+        
+        Similar to remove() but with specific logging for stale connections.
+        
+        Args:
+            player_id: Player UUID to remove
+            reason: Reason for removal (for logging)
+            
+        Returns:
+            Removed MatchTicket if found, None otherwise
+        """
+        async with self._lock:
+            ticket = self._queue.pop(player_id, None)
+            if ticket:
+                logger.warning(
+                    f"Removed stale player {player_id} from queue "
+                    f"(reason: {reason}, waited: {ticket.wait_seconds:.1f}s, "
+                    f"queue size: {len(self._queue)})"
+                )
+            return ticket
+    
+    async def add_with_position(self, ticket: MatchTicket, original_position: int) -> bool:
+        """
+        Add a ticket back to the queue preserving its original position.
+        
+        Used for rollback scenarios where a player needs to be re-queued
+        at their original position.
+        
+        Args:
+            ticket: MatchTicket to add
+            original_position: Original queue position (1-indexed)
+            
+        Returns:
+            True if added, False if player already in queue
+        """
+        async with self._lock:
+            if ticket.player_id in self._queue:
+                logger.warning(f"Player {ticket.player_id} already in queue during re-queue")
+                return False
+            
+            # The ticket's queue_time determines position, so we preserve it
+            # This ensures FIFO ordering is maintained
+            self._queue[ticket.player_id] = ticket
+            
+            logger.info(
+                f"Re-queued player {ticket.player_id} at position {original_position} "
+                f"(queue size: {len(self._queue)})"
+            )
+            return True
 
 
 # Global queue manager instance

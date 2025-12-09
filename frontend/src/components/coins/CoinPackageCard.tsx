@@ -38,25 +38,11 @@ export function CoinPackageCard({
       {/* Content */}
       <div className="flex flex-col items-center p-6 flex-1">
         {/* Coin Icon */}
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center mb-4 shadow-lg">
-          <svg
-            className="w-8 h-8 text-yellow-900"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <text
-              x="12"
-              y="16"
-              textAnchor="middle"
-              fontSize="10"
-              fill="white"
-              fontWeight="bold"
-            >
-              $
-            </text>
-          </svg>
-        </div>
+        <img
+          src="https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/playercard/coins.jpg"
+          alt="Coins"
+          className="w-16 h-16 rounded-full object-cover mb-4 shadow-lg"
+        />
 
         {/* Package Name */}
         <h3 className="text-lg font-bold text-white mb-2">{pkg.name}</h3>

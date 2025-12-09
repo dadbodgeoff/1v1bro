@@ -74,6 +74,8 @@ class Reward(BaseSchema):
     type: RewardType = Field(..., description="Type of reward")
     value: Union[str, int] = Field(..., description="Cosmetic ID or amount")
     cosmetic: Optional[Cosmetic] = Field(None, description="Populated if type is cosmetic")
+    # Legacy fields for frontend compatibility
+    cosmetic_preview_url: Optional[str] = Field(None, description="Direct URL to cosmetic preview image")
 
 
 class BattlePassTier(BaseSchema):

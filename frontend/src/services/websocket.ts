@@ -70,7 +70,6 @@ class WebSocketService {
       this.ws = new WebSocket(wsUrl, [`auth.${token}`])
 
       this.ws.onopen = () => {
-        console.log('[WS] Connected to', lobbyCode)
         this.reconnectAttempts = 0
         this.connectPromise = null
         this.startBatchLoop()
@@ -88,13 +87,12 @@ class WebSocketService {
           }
           
           this.dispatch(message.type, message.payload)
-        } catch (e) {
-          console.error('[WS] Failed to parse message:', e)
+        } catch {
+          // Silently handle parse errors
         }
       }
 
       this.ws.onclose = (event) => {
-        console.log('[WS] Closed:', event.code, event.reason)
         this.stopBatchLoop()
         
         // Handle server capacity errors (code 4003)
@@ -118,10 +116,9 @@ class WebSocketService {
         }
       }
 
-      this.ws.onerror = (error) => {
-        console.error('[WS] Error:', error)
+      this.ws.onerror = () => {
         this.connectPromise = null
-        reject(error)
+        reject(new Error('WebSocket connection failed'))
       }
     })
 
@@ -163,11 +160,12 @@ class WebSocketService {
     if (this.reconnectAttempts < WS_RECONNECT_ATTEMPTS && this.lobbyCode) {
       this.reconnectAttempts++
       const delay = WS_RECONNECT_BASE_DELAY * Math.pow(2, this.reconnectAttempts - 1)
-      console.log(`[WS] Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`)
 
       setTimeout(() => {
         if (this.lobbyCode && !this.isIntentionallyClosed) {
-          this.connect(this.lobbyCode).catch(console.error)
+          this.connect(this.lobbyCode).catch(() => {
+            // Silently handle reconnection errors
+          })
         }
       }, delay)
     } else {
@@ -192,8 +190,6 @@ class WebSocketService {
   send(type: WSMessageType, payload?: unknown) {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify({ type, payload }))
-    } else {
-      console.warn('[WS] Not connected, cannot send:', type)
     }
   }
 
@@ -206,7 +202,6 @@ class WebSocketService {
     const roundedX = Math.round(x * 10) / 10
     const roundedY = Math.round(y * 10) / 10
 
-    console.log('[wsService.sendPosition] Called with:', roundedX, roundedY, 'ws connected:', this.isConnected)
     // Just update the batch - the batch loop will send it
     this.positionBatch = { x: roundedX, y: roundedY, seq: sequence }
   }

@@ -65,20 +65,11 @@ export function BalanceDisplay({
       `}
     >
       {showIcon && (
-        <div
-          className={`
-            ${config.icon} rounded-full bg-gradient-to-br from-yellow-400 to-amber-500
-            flex items-center justify-center
-          `}
-        >
-          <svg
-            className="w-3/4 h-3/4 text-yellow-900"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <circle cx="12" cy="12" r="10" />
-          </svg>
-        </div>
+        <img
+          src="https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/playercard/coins.jpg"
+          alt="Coins"
+          className={`${config.icon} rounded-full object-cover`}
+        />
       )}
       <span className={`${config.text} text-yellow-400`}>
         {formatCoins(balance)}

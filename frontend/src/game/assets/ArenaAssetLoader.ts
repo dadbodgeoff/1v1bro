@@ -73,14 +73,12 @@ export class ArenaAssetLoader {
       try {
         const canvas = await loadImageWithTransparency(asset.src, asset.bgType)
         this.assets.set(asset.key, canvas)
-        console.log(`[ArenaAssets] Loaded: ${asset.key}`)
-      } catch (err) {
-        console.warn(`[ArenaAssets] Failed to load ${asset.key}:`, err)
+      } catch {
+        // Asset failed to load - will use fallback
       }
     })
 
     await Promise.all(loadPromises)
-    console.log(`[ArenaAssets] Loaded ${this.assets.size}/${ARENA_ASSETS.length} assets`)
   }
 
   /**
@@ -141,10 +139,8 @@ export class ArenaAssetLoader {
     try {
       const image = await dynamicAssets.loadImage(url)
       this.assets.set(key, image)
-      console.log(`[ArenaAssets] Loaded dynamic asset: ${key}`)
       return true
-    } catch (error) {
-      console.warn(`[ArenaAssets] Failed to load dynamic asset ${key}:`, error)
+    } catch {
       return false
     }
   }

@@ -27,10 +27,17 @@ interface UseMatchmakingReturn {
   matchData: { lobbyCode: string; opponentName: string } | null;
   cooldownSeconds: number | null;
   selectedCategory: string | null;
+  isReconnecting: boolean;
+  connectionError: string | null;
   
   joinQueue: (category?: string, mapSlug?: string) => Promise<void>;
   leaveQueue: () => Promise<void>;
 }
+
+// Reconnection configuration
+const MAX_RECONNECT_ATTEMPTS = 3;
+const RECONNECT_DELAYS = [1000, 2000, 4000]; // Exponential backoff
+const HEARTBEAT_TIMEOUT = 30000; // 30 seconds
 
 export function useMatchmaking(): UseMatchmakingReturn {
   const navigate = useNavigate();
@@ -51,10 +58,15 @@ export function useMatchmaking(): UseMatchmakingReturn {
   const [queueTime, setQueueTime] = useState(0);
   const [cooldownSeconds, setCooldownSeconds] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isReconnecting, setIsReconnecting] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const pendingCategoryRef = useRef<string>('fortnite');
   const pendingMapSlugRef = useRef<string>('nexus-arena');
+  const reconnectAttemptsRef = useRef(0);
+  const lastHeartbeatRef = useRef<number>(Date.now());
+  const heartbeatTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // Update queue time every second
   useEffect(() => {
@@ -75,6 +87,42 @@ export function useMatchmaking(): UseMatchmakingReturn {
   
   // Ref to track if we're in the process of joining
   const isJoiningRef = useRef(false);
+  
+  // Reset heartbeat timeout
+  const resetHeartbeatTimeout = useCallback(() => {
+    if (heartbeatTimeoutRef.current) {
+      clearTimeout(heartbeatTimeoutRef.current);
+    }
+    lastHeartbeatRef.current = Date.now();
+    
+    // Set timeout to detect dead connection
+    heartbeatTimeoutRef.current = setTimeout(() => {
+      if (wsRef.current && status === 'queuing') {
+        // Trigger reconnection
+        wsRef.current.close();
+      }
+    }, HEARTBEAT_TIMEOUT);
+  }, [status]);
+  
+  // Attempt reconnection with exponential backoff
+  const attemptReconnect = useCallback(() => {
+    if (reconnectAttemptsRef.current >= MAX_RECONNECT_ATTEMPTS) {
+      setIsReconnecting(false);
+      setConnectionError('Connection lost. Please try again.');
+      reset();
+      return;
+    }
+    
+    const delay = RECONNECT_DELAYS[reconnectAttemptsRef.current] || RECONNECT_DELAYS[RECONNECT_DELAYS.length - 1];
+    reconnectAttemptsRef.current += 1;
+    setIsReconnecting(true);
+    
+    setTimeout(() => {
+      if (status === 'queuing' || isReconnecting) {
+        connectAndJoinQueue(pendingCategoryRef.current, pendingMapSlugRef.current);
+      }
+    }, delay);
+  }, [status, isReconnecting, reset]);
   
   // Connect to matchmaking WebSocket and handle all queue operations
   const connectAndJoinQueue = useCallback((category: string = 'fortnite', mapSlug: string = 'nexus-arena') => {
@@ -99,26 +147,41 @@ export function useMatchmaking(): UseMatchmakingReturn {
     const host = isDev ? 'localhost:8000' : window.location.host;
     const wsUrl = `${protocol}//${host}/ws/matchmaking`;
     
-    console.log('[Matchmaking] Connecting to WebSocket...');
     // Pass token via Sec-WebSocket-Protocol header instead of query params
     // This prevents token exposure in server logs, browser history, and referrer headers
     const ws = new WebSocket(wsUrl, [`auth.${token}`]);
     wsRef.current = ws;
     
     ws.onopen = () => {
-      console.log('[Matchmaking] WebSocket connected');
+      // Check if this was a reconnection BEFORE resetting the counter
+      const wasReconnecting = reconnectAttemptsRef.current > 0;
+      
+      // Reset reconnection state on successful connection
+      reconnectAttemptsRef.current = 0;
+      setIsReconnecting(false);
+      setConnectionError(null);
+      resetHeartbeatTimeout();
+      
+      // Resync state with server after reconnection
+      if (wasReconnecting) {
+        matchmakingAPI.getStatus().then(serverStatus => {
+          if (serverStatus.in_queue && serverStatus.position !== null) {
+            updateQueueStatus(serverStatus.position, serverStatus.estimated_wait, serverStatus.queue_size);
+          }
+        }).catch(() => {
+          // Silently handle resync errors
+        });
+      }
     };
     
     ws.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data);
-        console.log('[Matchmaking] Received:', message.type);
         
         switch (message.type) {
           case 'matchmaking_connected':
             // Connection confirmed - now join the queue with category and map
             if (isJoiningRef.current) {
-              console.log('[Matchmaking] Sending queue_join message with category:', pendingCategoryRef.current, 'map:', pendingMapSlugRef.current);
               ws.send(JSON.stringify({ 
                 type: 'queue_join', 
                 payload: { 
@@ -145,7 +208,6 @@ export function useMatchmaking(): UseMatchmakingReturn {
           
           case 'match_found': {
             const payload = message.payload as MatchFoundPayload;
-            console.log('[Matchmaking] Match found!', payload);
             setMatchFound({
               lobbyCode: payload.lobby_code,
               opponentId: payload.opponent_id,
@@ -163,10 +225,27 @@ export function useMatchmaking(): UseMatchmakingReturn {
           case 'queue_cancelled':
             reset();
             break;
+          
+          case 'match_cancelled': {
+            // Match was cancelled due to opponent disconnection
+            // Stay in queue - we were re-queued by the server
+            // The server will send queue_status updates
+            break;
+          }
+          
+          case 'heartbeat_ping':
+            // Respond to server heartbeat
+            ws.send(JSON.stringify({ type: 'heartbeat_pong' }));
+            resetHeartbeatTimeout();
+            break;
+          
+          case 'health_ping':
+            // Respond to health check ping
+            ws.send(JSON.stringify({ type: 'health_pong' }));
+            break;
             
           case 'error': {
             const payload = message.payload as { code: string; message: string };
-            console.error('[Matchmaking] Error:', payload);
             isJoiningRef.current = false;
             // Check for cooldown
             if (payload.code.startsWith('QUEUE_COOLDOWN:')) {
@@ -177,21 +256,29 @@ export function useMatchmaking(): UseMatchmakingReturn {
             break;
           }
         }
-      } catch (e) {
-        console.error('[Matchmaking] Failed to parse message:', e);
+      } catch {
+        // Silently handle parse errors
       }
     };
     
-    ws.onclose = () => {
-      console.log('[Matchmaking] WebSocket closed');
+    ws.onclose = (event) => {
       isJoiningRef.current = false;
+      
+      // Clear heartbeat timeout
+      if (heartbeatTimeoutRef.current) {
+        clearTimeout(heartbeatTimeoutRef.current);
+      }
+      
+      // Attempt reconnection if we were in queue and it wasn't a clean close
+      if (status === 'queuing' && event.code !== 1000) {
+        attemptReconnect();
+      }
     };
     
-    ws.onerror = (error) => {
-      console.error('[Matchmaking] WebSocket error:', error);
+    ws.onerror = () => {
       isJoiningRef.current = false;
     };
-  }, [setQueuing, updateQueueStatus, setMatchFound, reset, navigate]);
+  }, [setQueuing, updateQueueStatus, setMatchFound, reset, navigate, resetHeartbeatTimeout, attemptReconnect, status]);
   
   // Cleanup WebSocket when not queuing
   useEffect(() => {
@@ -199,6 +286,13 @@ export function useMatchmaking(): UseMatchmakingReturn {
       wsRef.current.close();
       wsRef.current = null;
     }
+    
+    // Cleanup heartbeat timeout
+    return () => {
+      if (heartbeatTimeoutRef.current) {
+        clearTimeout(heartbeatTimeoutRef.current);
+      }
+    };
   }, [status]);
   
   // Check cooldown on mount
@@ -265,6 +359,8 @@ export function useMatchmaking(): UseMatchmakingReturn {
     matchData: matchData ? { lobbyCode: matchData.lobbyCode, opponentName: matchData.opponentName } : null,
     cooldownSeconds,
     selectedCategory,
+    isReconnecting,
+    connectionError,
     joinQueue,
     leaveQueue,
   };

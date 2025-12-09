@@ -37,10 +37,7 @@ MAX_REQUEST_SIZE = 1 * 1024 * 1024  # 1MB for regular requests
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
-    # Startup
-    print(f"Starting {settings.APP_NAME}...")
-    
-    # Initialize matchmaking service with service client to bypass RLS
+    # Startup - Initialize matchmaking service with service client to bypass RLS
     service_client = get_supabase_service_client()
     mm_service = init_matchmaking_service(service_client)
     await mm_service.start()
@@ -48,14 +45,10 @@ async def lifespan(app: FastAPI):
     # Initialize event handlers with Supabase client for XP/progression tracking
     from app.events.handlers import set_supabase_client
     set_supabase_client(service_client)
-    print("Event handlers initialized with Supabase client")
     
     yield
     
-    # Shutdown
-    print(f"Shutting down {settings.APP_NAME}...")
-    
-    # Stop matchmaking service
+    # Shutdown - Stop matchmaking service
     if matchmaking_service:
         await matchmaking_service.stop()
 
@@ -182,6 +175,7 @@ async def matchmaking_websocket_endpoint(
     - error: When an error occurs
     """
     from app.services.matchmaking_service import get_matchmaking_service
+    from app.matchmaking.heartbeat_monitor import heartbeat_monitor
     
     # Extract token from Sec-WebSocket-Protocol header (security: not in URL)
     token = extract_token_from_subprotocol(websocket)
@@ -207,7 +201,6 @@ async def matchmaking_websocket_endpoint(
     matchmaking_lobby = "__MATCHMAKING__"
     
     try:
-        print(f"[WS-MM] Connecting user {user_id} to matchmaking")
         # Accept with the auth subprotocol to complete the handshake
         await manager.connect(websocket, matchmaking_lobby, user_id, subprotocol=f"auth.{token}")
         
@@ -226,6 +219,15 @@ async def matchmaking_websocket_endpoint(
                 if msg_type == "ping":
                     await manager.send_personal(websocket, {"type": "pong"})
                 
+                elif msg_type == "health_pong":
+                    # Response to health check ping from ConnectionManager
+                    manager.record_pong(user_id)
+                
+                elif msg_type == "heartbeat_pong":
+                    # Response to heartbeat ping from HeartbeatMonitor
+                    await heartbeat_monitor.record_pong(user_id)
+                    manager.update_last_message_time(user_id)
+                
                 elif msg_type == "queue_join":
                     # Join queue via WebSocket (ensures connection is ready)
                     try:
@@ -240,7 +242,7 @@ async def matchmaking_websocket_endpoint(
                             map_slug=map_slug,
                         )
                         # queue_joined event is sent by the service
-                        print(f"[WS-MM] User {user_id} joined queue via WebSocket (category: {category}, map: {map_slug})")
+                        pass
                     except ValueError as e:
                         error_msg = str(e)
                         await manager.send_personal(websocket, {
@@ -252,23 +254,20 @@ async def matchmaking_websocket_endpoint(
                     try:
                         service = get_matchmaking_service()
                         await service.leave_queue(user_id, "user_cancelled")
-                        print(f"[WS-MM] User {user_id} left queue via WebSocket")
-                    except Exception as e:
-                        print(f"[WS-MM] Error leaving queue: {e}")
+                    except Exception:
+                        pass  # Silently handle leave queue errors
                     
             except WebSocketDisconnect:
                 break
-            except Exception as e:
-                print(f"[WS-MM] Error receiving message: {e}")
+            except Exception:
                 break
                 
     except WebSocketDisconnect:
-        print(f"[WS-MM] WebSocketDisconnect for user {user_id}")
-    except Exception as e:
-        print(f"[WS-MM] Exception for user {user_id}: {e}")
+        pass
+    except Exception:
+        pass
     finally:
         manager.disconnect(websocket)
-        print(f"[WS-MM] User {user_id} disconnected from matchmaking")
 
 
 # WebSocket endpoint
@@ -324,38 +323,26 @@ async def websocket_endpoint(
     
     # Connect to lobby
     try:
-        print(f"[WS] Connecting user {user_id} to lobby {lobby_code}")
         # Accept with the auth subprotocol to complete the handshake
         await manager.connect(websocket, lobby_code, user_id, subprotocol=f"auth.{token}")
-        print(f"[WS] Connected, calling handle_connect")
         
         # Send initial lobby state and notify others
         try:
             await handler.handle_connect(lobby_code, user_id, None)
-            print(f"[WS] handle_connect completed successfully")
         except Exception as e:
-            print(f"Error in handle_connect: {e}")
-            import traceback
-            traceback.print_exc()
             # Send error to client but keep connection open
             await manager.send_personal(websocket, {
                 "type": "error",
                 "payload": {"code": "CONNECT_ERROR", "message": str(e)}
             })
         
-        print(f"[WS] Entering message loop")
         # Message loop
         while True:
             data = await websocket.receive_json()
-            print(f"[WS] Received message: {data.get('type')}")
             await handler.handle_message(websocket, data, lobby_code, user_id)
             
     except WebSocketDisconnect:
-        print(f"[WS] WebSocketDisconnect for user {user_id}")
         manager.disconnect(websocket)
         await handler.handle_disconnect(lobby_code, user_id)
-    except Exception as e:
-        print(f"[WS] Exception for user {user_id}: {e}")
+    except Exception:
         manager.disconnect(websocket)
-        import traceback
-        traceback.print_exc()

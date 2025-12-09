@@ -124,3 +124,133 @@ class CooldownInfo:
             "reason": self.reason,
             "remaining_seconds": self.remaining_seconds,
         }
+
+
+@dataclass
+class HealthCheckResult:
+    """
+    Result of a connection health check.
+    
+    Used to verify a player's WebSocket connection is responsive
+    before creating a match.
+    """
+    user_id: str
+    healthy: bool
+    latency_ms: Optional[float] = None
+    failure_reason: Optional[str] = None  # "not_connected", "ping_timeout", "send_failed"
+    checked_at: datetime = field(default_factory=datetime.utcnow)
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary for logging."""
+        return {
+            "user_id": self.user_id,
+            "healthy": self.healthy,
+            "latency_ms": self.latency_ms,
+            "failure_reason": self.failure_reason,
+            "checked_at": self.checked_at.isoformat(),
+        }
+
+
+@dataclass
+class ConnectionState:
+    """
+    Detailed connection state for logging and debugging.
+    
+    Captures the full state of a user's WebSocket connection
+    at a point in time.
+    """
+    user_id: str
+    connected: bool
+    lobby_code: Optional[str] = None
+    connected_at: Optional[datetime] = None
+    last_message_at: Optional[datetime] = None
+    missed_heartbeats: int = 0
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary for logging."""
+        return {
+            "user_id": self.user_id,
+            "connected": self.connected,
+            "lobby_code": self.lobby_code,
+            "connected_at": self.connected_at.isoformat() if self.connected_at else None,
+            "last_message_at": self.last_message_at.isoformat() if self.last_message_at else None,
+            "missed_heartbeats": self.missed_heartbeats,
+        }
+
+
+@dataclass
+class MatchResult:
+    """
+    Result of atomic match creation.
+    
+    Captures the outcome of a match creation attempt,
+    including rollback information if the match failed.
+    """
+    success: bool
+    lobby_code: Optional[str] = None
+    player1_notified: bool = False
+    player2_notified: bool = False
+    failure_reason: Optional[str] = None
+    rollback_performed: bool = False
+    requeued_player_id: Optional[str] = None
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary for logging."""
+        return {
+            "success": self.success,
+            "lobby_code": self.lobby_code,
+            "player1_notified": self.player1_notified,
+            "player2_notified": self.player2_notified,
+            "failure_reason": self.failure_reason,
+            "rollback_performed": self.rollback_performed,
+            "requeued_player_id": self.requeued_player_id,
+        }
+
+
+@dataclass
+class HeartbeatStatus:
+    """
+    Tracks heartbeat state for a queued player.
+    
+    Used by HeartbeatMonitor to detect stale connections.
+    """
+    user_id: str
+    last_ping_sent: Optional[datetime] = None
+    last_pong_received: Optional[datetime] = None
+    missed_count: int = 0
+    is_stale: bool = False
+    
+    def record_ping_sent(self) -> None:
+        """Record that a ping was sent."""
+        self.last_ping_sent = datetime.utcnow()
+    
+    def record_pong_received(self) -> None:
+        """Record that a pong was received, resetting missed count."""
+        self.last_pong_received = datetime.utcnow()
+        self.missed_count = 0
+        self.is_stale = False
+    
+    def record_missed_heartbeat(self, max_missed: int = 2) -> bool:
+        """
+        Record a missed heartbeat.
+        
+        Args:
+            max_missed: Number of missed heartbeats before marking stale
+            
+        Returns:
+            True if player is now marked stale
+        """
+        self.missed_count += 1
+        if self.missed_count >= max_missed:
+            self.is_stale = True
+        return self.is_stale
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary for logging."""
+        return {
+            "user_id": self.user_id,
+            "last_ping_sent": self.last_ping_sent.isoformat() if self.last_ping_sent else None,
+            "last_pong_received": self.last_pong_received.isoformat() if self.last_pong_received else None,
+            "missed_count": self.missed_count,
+            "is_stale": self.is_stale,
+        }

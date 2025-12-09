@@ -1,0 +1,149 @@
+# Implementation Plan
+
+- [x] 1. Add connection health checking infrastructure
+  - [x] 1.1 Create HealthCheckResult and ConnectionState data models
+    - Add dataclasses to `backend/app/matchmaking/models.py`
+    - Include user_id, healthy status, latency_ms, failure_reason, checked_at
+    - _Requirements: 1.1, 1.3_
+  - [x] 1.2 Add ping_user method to ConnectionManager
+    - Implement ping-pong exchange with configurable timeout
+    - Track pending pings with asyncio.Event for response
+    - Return True if pong received within timeout, False otherwise
+    - _Requirements: 1.3_
+  - [x] 1.3 Create ConnectionHealthChecker class
+    - Implement verify_health() using ping_user with 2-second timeout
+    - Implement verify_multiple() for parallel health checks
+    - Return HealthCheckResult with latency and failure reason
+    - _Requirements: 1.1, 1.3_
+  - [x] 1.4 Write property test for health check timeout
+    - **Property 3: Health check timeout enforcement**
+    - **Validates: Requirements 1.3**
+
+- [x] 2. Implement heartbeat monitoring for queued players
+  - [x] 2.1 Create HeartbeatStatus data model
+    - Add to `backend/app/matchmaking/models.py`
+    - Track last_ping_sent, last_pong_received, missed_count, is_stale
+    - _Requirements: 3.1, 3.2_
+  - [x] 2.2 Create HeartbeatMonitor class
+    - Implement start/stop for background heartbeat task
+    - Send pings every 15 seconds to all queued players
+    - Track pong responses via record_pong()
+    - Mark players stale after 2 missed heartbeats
+    - _Requirements: 3.1, 3.2_
+  - [x] 2.3 Integrate HeartbeatMonitor with MatchmakingService
+    - Start monitor when service starts
+    - Register players when they join queue
+    - Unregister players when they leave or are matched
+    - _Requirements: 3.1_
+  - [x] 2.4 Handle heartbeat pong messages in matchmaking WebSocket
+    - Add handler for "heartbeat_pong" message type
+    - Call heartbeat_monitor.record_pong(user_id)
+    - _Requirements: 3.1_
+  - [x] 2.5 Write property test for stale detection
+    - **Property 5: Stale detection after missed heartbeats**
+    - **Validates: Requirements 3.2, 3.3**
+
+- [x] 3. Implement stale player cleanup
+  - [x] 3.1 Add remove_stale method to QueueManager
+    - Remove player from queue
+    - Return the removed ticket for logging
+    - _Requirements: 3.3_
+  - [x] 3.2 Create stale cleanup task in HeartbeatMonitor
+    - Periodically check for stale players (every 5 seconds)
+    - Remove stale players from queue
+    - Send queue_cancelled event with reason "connection_timeout"
+    - Clean up database ticket
+    - _Requirements: 3.3, 1.4_
+  - [x] 3.3 Add comprehensive logging for stale removal
+    - Log player ID, time in queue, last successful heartbeat
+    - _Requirements: 5.2_
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 5. Implement atomic match creation with rollback
+  - [x] 5.1 Add add_with_position method to QueueManager
+    - Insert ticket at specific position for rollback scenarios
+    - Preserve original queue_time for fair re-queuing
+    - _Requirements: 2.4_
+  - [x] 5.2 Create AtomicMatchCreator class
+    - Implement create_match() with two-phase commit pattern
+    - Phase 1: Verify both connections healthy
+    - Phase 2: Create lobby, send notifications, confirm delivery
+    - Return MatchResult with success/failure details
+    - _Requirements: 2.1, 2.2_
+  - [x] 5.3 Implement rollback logic in AtomicMatchCreator
+    - On notification failure: cancel lobby, re-queue healthy player
+    - Preserve original queue position
+    - Send match_cancelled event with appropriate reason
+    - _Requirements: 2.2, 2.4, 6.1_
+  - [x] 5.4 Write property test for pre-match connection verification
+    - **Property 1: Pre-match connection verification**
+    - **Validates: Requirements 1.1**
+  - [x] 5.5 Write property test for disconnected player handling
+    - **Property 2: Disconnected player skip and re-queue**
+    - **Validates: Requirements 1.2, 1.4**
+  - [x] 5.6 Write property test for atomic rollback with position preservation
+    - **Property 4: Atomic match rollback with position preservation**
+    - **Validates: Requirements 2.2, 2.4**
+
+- [ ] 6. Integrate AtomicMatchCreator with MatchmakingService
+  - [x] 6.1 Replace _create_match with AtomicMatchCreator
+    - Inject health checker and atomic creator into service
+    - Update _queue_processor to use atomic match creation
+    - _Requirements: 1.1, 2.1_
+  - [x] 6.2 Add match_cancelled event type
+    - Define event structure with reason field
+    - Handle in matchmaking WebSocket endpoint
+    - _Requirements: 6.1_
+  - [x] 6.3 Add comprehensive logging for match failures
+    - Log failure reason, both player IDs, connection states, timestamps
+    - Log rollback actions and re-queued player
+    - _Requirements: 5.1, 5.3, 5.4_
+  - [x] 6.4 Write property test for notification content
+    - **Property 6: Match cancelled notification content**
+    - **Validates: Requirements 6.1**
+  - [x] 6.5 Write property test for rollback notification timing
+    - **Property 7: Rollback notification timing**
+    - **Validates: Requirements 6.3**
+
+- [x] 7. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 8. Implement client-side reconnection logic
+  - [x] 8.1 Add reconnection state to matchmaking hook
+    - Track reconnection attempts and backoff delay
+    - Add isReconnecting state
+    - _Requirements: 4.1_
+  - [x] 8.2 Implement exponential backoff reconnection
+    - Attempt reconnection up to 3 times
+    - Use delays: 1s, 2s, 4s (exponential backoff)
+    - Reset to idle state after all attempts fail
+    - _Requirements: 4.1, 4.3_
+  - [x] 8.3 Add state resync on successful reconnection
+    - Check queue status via REST API after reconnect
+    - Update local state to match server state
+    - _Requirements: 4.2_
+  - [x] 8.4 Write property test for client reconnection
+    - **Property 8: Client reconnection with exponential backoff**
+    - **Validates: Requirements 4.1**
+
+- [x] 9. Implement client-side heartbeat handling
+  - [x] 9.1 Add heartbeat response handling to matchmaking hook
+    - Respond to "heartbeat_ping" with "heartbeat_pong"
+    - Track last heartbeat received time
+    - _Requirements: 3.1_
+  - [x] 9.2 Implement client-side heartbeat timeout detection
+    - Monitor time since last heartbeat ping received
+    - Trigger reconnection if no heartbeat for 30 seconds
+    - _Requirements: 4.4_
+  - [x] 9.3 Handle match_cancelled event on client
+    - Display appropriate message based on reason
+    - Reset to queuing state if re-queued
+    - _Requirements: 6.1, 6.2_
+  - [x] 9.4 Write property test for client heartbeat timeout
+    - **Property 9: Client heartbeat timeout detection**
+    - **Validates: Requirements 4.4**
+
+- [x] 10. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

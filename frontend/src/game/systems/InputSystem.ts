@@ -64,7 +64,6 @@ export class InputSystem {
   private handleKeyDown = (e: KeyboardEvent): void => {
     const key = e.key.toLowerCase()
     if (this.isMovementKey(key)) {
-      console.log('[InputSystem] Movement key down:', key, 'keys now:', Array.from(this.keys))
       e.preventDefault()
       this.keys.add(key)
       this.emitVelocity()

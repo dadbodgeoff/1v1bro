@@ -202,11 +202,9 @@ export class DynamicAssetLoader {
       
       // Check if this looks like a sprite sheet or a single image
       const isSpriteSheet = this.isSpriteSheet(img, metadata, config)
-      console.log(`[DynamicAssetLoader] Image ${spriteUrl}: ${img.width}x${img.height}, isSpriteSheet: ${isSpriteSheet}`)
       
       if (!isSpriteSheet) {
         // Single image - create a single frame from it
-        console.log(`[DynamicAssetLoader] Treating as single image skin`)
         const frame = this.createFrameFromImage(img, spriteUrl)
         return {
           frames: [frame],
@@ -301,7 +299,6 @@ export class DynamicAssetLoader {
     const shouldRemoveBackground = this.shouldRemoveBackground(sourceUrl)
     
     if (shouldRemoveBackground) {
-      console.log(`[DynamicAssetLoader] Removing background from image: ${sourceUrl}`)
       return removeBackground(img, 'auto')
     }
     
@@ -362,7 +359,6 @@ export class DynamicAssetLoader {
   clearCache(): void {
     this.imageCache.clear()
     this.spriteCache.clear()
-    console.log('[DynamicAssetLoader] Cache cleared')
   }
 
   /**

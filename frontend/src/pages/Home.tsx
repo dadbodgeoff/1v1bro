@@ -12,6 +12,7 @@
  * - MatchHistoryWidget for recent matches
  * - FriendsWidget for online friends
  * - Responsive 3-column desktop, 2-column tablet, 1-column mobile layout
+ * - First-time user onboarding modal
  * 
  * Requirements: 1.1-1.5, 10.1-10.4
  */
@@ -28,9 +29,11 @@ import {
   MatchHistoryWidget,
   FriendsWidget,
 } from '@/components/dashboard/enterprise'
+import { OnboardingModal, useOnboarding } from '@/components/onboarding'
 
 export function Home() {
   const { fetchFriends } = useFriends()
+  const { showOnboarding, closeOnboarding } = useOnboarding()
 
   useEffect(() => {
     fetchFriends()
@@ -38,6 +41,9 @@ export function Home() {
 
   return (
     <DashboardLayout activeNav="play">
+      {/* First-time user onboarding */}
+      {showOnboarding && <OnboardingModal onClose={closeOnboarding} />}
+
       {/* Dashboard Grid - Requirements 10.1, 10.2, 10.3 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Hero Play Section and Match History */}

@@ -3,7 +3,9 @@ WebSocket connection manager.
 Handles connection lifecycle and message broadcasting.
 """
 
+import asyncio
 import json
+import time
 from typing import Dict, Optional, Set, Tuple
 
 from fastapi import WebSocket
@@ -44,6 +46,11 @@ class ConnectionManager:
         self.connection_info: Dict[WebSocket, tuple] = {}
         # user_id -> websocket (for reconnection)
         self.user_connections: Dict[str, WebSocket] = {}
+        # Pending health check pings: user_id -> asyncio.Event
+        self._pending_pings: Dict[str, asyncio.Event] = {}
+        # Track connection timestamps for health monitoring
+        self._connection_times: Dict[str, float] = {}
+        self._last_message_times: Dict[str, float] = {}
     
     def can_accept_connection(self, lobby_code: str) -> Tuple[bool, str]:
         """
@@ -116,6 +123,10 @@ class ConnectionManager:
         self.connection_info[websocket] = (lobby_code, user_id)
         self.user_connections[user_id] = websocket
         
+        # Track connection time for health monitoring
+        self._connection_times[user_id] = time.time()
+        self._last_message_times[user_id] = time.time()
+        
         # Update presence service
         presence_service.user_connected(user_id, lobby_code)
         
@@ -145,6 +156,11 @@ class ConnectionManager:
             del self.connection_info[websocket]
             if user_id in self.user_connections:
                 del self.user_connections[user_id]
+            
+            # Clean up health monitoring data
+            self._connection_times.pop(user_id, None)
+            self._last_message_times.pop(user_id, None)
+            self._pending_pings.pop(user_id, None)
             
             # Update presence service
             presence_service.user_disconnected(user_id)
@@ -261,6 +277,112 @@ class ConnectionManager:
                 if info:
                     users.add(info[1])
         return users
+
+    def get_connection_count(self) -> int:
+        """Get total number of active connections."""
+        return sum(len(conns) for conns in self.active_connections.values())
+
+    async def ping_user(self, user_id: str, timeout: float = 2.0) -> Tuple[bool, Optional[float]]:
+        """
+        Send a health check ping and wait for pong response.
+        
+        Args:
+            user_id: Target user UUID
+            timeout: Maximum seconds to wait for pong response
+            
+        Returns:
+            Tuple of (success, latency_ms) where success is True if pong received
+        """
+        websocket = self.user_connections.get(user_id)
+        if not websocket:
+            logger.debug(f"ping_user: User {user_id} not connected")
+            return False, None
+        
+        # Create event for this ping
+        ping_event = asyncio.Event()
+        self._pending_pings[user_id] = ping_event
+        
+        start_time = time.time()
+        
+        try:
+            # Send health check ping
+            sent = await self.send_personal(websocket, {
+                "type": "health_ping",
+                "payload": {"timestamp": start_time}
+            })
+            
+            if not sent:
+                logger.debug(f"ping_user: Failed to send ping to {user_id}")
+                return False, None
+            
+            # Wait for pong with timeout
+            try:
+                await asyncio.wait_for(ping_event.wait(), timeout=timeout)
+                latency_ms = (time.time() - start_time) * 1000
+                logger.debug(f"ping_user: User {user_id} responded in {latency_ms:.1f}ms")
+                return True, latency_ms
+            except asyncio.TimeoutError:
+                logger.debug(f"ping_user: User {user_id} timed out after {timeout}s")
+                return False, None
+                
+        finally:
+            # Clean up pending ping
+            self._pending_pings.pop(user_id, None)
+
+    def record_pong(self, user_id: str) -> None:
+        """
+        Record a pong response from a user.
+        
+        Called when a health_pong message is received.
+        
+        Args:
+            user_id: User who sent the pong
+        """
+        # Update last message time
+        self._last_message_times[user_id] = time.time()
+        
+        # Signal the pending ping event if exists
+        ping_event = self._pending_pings.get(user_id)
+        if ping_event:
+            ping_event.set()
+
+    def get_connection_state(self, user_id: str) -> dict:
+        """
+        Get detailed connection state for a user.
+        
+        Args:
+            user_id: Target user UUID
+            
+        Returns:
+            Dict with connection state details
+        """
+        connected = user_id in self.user_connections
+        websocket = self.user_connections.get(user_id)
+        lobby_code = None
+        
+        if websocket:
+            info = self.connection_info.get(websocket)
+            if info:
+                lobby_code = info[0]
+        
+        return {
+            "user_id": user_id,
+            "connected": connected,
+            "lobby_code": lobby_code,
+            "connected_at": self._connection_times.get(user_id),
+            "last_message_at": self._last_message_times.get(user_id),
+        }
+
+    def update_last_message_time(self, user_id: str) -> None:
+        """
+        Update the last message timestamp for a user.
+        
+        Called when any message is received from the user.
+        
+        Args:
+            user_id: User who sent a message
+        """
+        self._last_message_times[user_id] = time.time()
 
 
 # Global connection manager instance

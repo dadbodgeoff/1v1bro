@@ -56,12 +56,6 @@ export class PlayerRenderer extends BaseRenderer {
    * Requirements: 5.1
    */
   setDynamicSkin(playerId: string, spriteSheetUrl: string, metadataUrl?: string): void {
-    console.log('[PlayerRenderer] setDynamicSkin called:', { playerId, spriteSheetUrl, metadataUrl })
-    console.log('[PlayerRenderer] Current state before set:', {
-      hasDynamicConfig: this.dynamicSkinConfigs.has(playerId),
-      currentSkin: this.playerSkins.get(playerId),
-      hasAnimator: this.animators.has(playerId),
-    })
     const config: DynamicSkinConfig = { spriteSheetUrl, metadataUrl }
     this.dynamicSkinConfigs.set(playerId, config)
     this.playerSkins.set(playerId, `dynamic:${spriteSheetUrl}`)
@@ -80,19 +74,16 @@ export class PlayerRenderer extends BaseRenderer {
     
     // Already loaded - just clear animator to use cached frames
     if (this.dynamicSkinFrames.has(cacheKey)) {
-      console.log(`[PlayerRenderer] Using cached dynamic skin: ${cacheKey}`)
       this.animators.delete(playerId)
       return
     }
     
     // Already loading - wait for it
     if (this.loadingDynamicSkins.has(cacheKey)) {
-      console.log(`[PlayerRenderer] Already loading: ${cacheKey}`)
       return
     }
     
     this.loadingDynamicSkins.add(cacheKey)
-    console.log(`[PlayerRenderer] Starting to load dynamic skin: ${cacheKey}`)
     
     try {
       const result = await dynamicAssets.loadSpriteSheet(
@@ -106,18 +97,15 @@ export class PlayerRenderer extends BaseRenderer {
         for (const [pid, cfg] of this.dynamicSkinConfigs) {
           if (cfg.spriteSheetUrl === cacheKey) {
             this.animators.delete(pid)
-            console.log(`[PlayerRenderer] Cleared animator for ${pid} to use new skin`)
           }
         }
-        console.log(`[PlayerRenderer] Successfully loaded dynamic skin: ${cacheKey} (${result.frames.length} frames)`)
       } else {
-        console.warn(`[PlayerRenderer] Dynamic skin has no frames, will use fallback: ${cacheKey}`)
         // Clear the config so we fall back to default
         this.dynamicSkinConfigs.delete(playerId)
         this.playerSkins.delete(playerId)
       }
-    } catch (error) {
-      console.error(`[PlayerRenderer] Failed to load dynamic skin:`, error)
+    } catch {
+      // Failed to load - fall back to default skin
       // Clear the config so we fall back to default
       this.dynamicSkinConfigs.delete(playerId)
       this.playerSkins.delete(playerId)
@@ -172,7 +160,6 @@ export class PlayerRenderer extends BaseRenderer {
 
     // Get or create animator for this player
     let animator = this.animators.get(player.id)
-    const creatingNewAnimator = !animator
     if (!animator) {
       // Don't create animator with default skin if dynamic skin is loading
       // This prevents the green/pink flash while custom skin loads
@@ -180,20 +167,7 @@ export class PlayerRenderer extends BaseRenderer {
       if (frames && frames.length > 0) {
         animator = new SpriteAnimator(frames, 12)
         this.animators.set(player.id, animator)
-        console.log('[PlayerRenderer] Created animator for', player.id, 'with skin:', skinId, 'frames:', frames.length)
       }
-    }
-
-    // Log first few times to help debug skin loading
-    if (creatingNewAnimator || !animator) {
-      console.log('[PlayerRenderer] createPlayerData:', {
-        playerId: player.id,
-        isPlayer1: player.isPlayer1,
-        isLocal: player.isLocal,
-        hasDynamicSkin,
-        skinId,
-        hasAnimator: !!animator,
-      })
     }
 
     const lastPos = this.lastPositions.get(player.id) ?? { ...player.position }
@@ -223,17 +197,14 @@ export class PlayerRenderer extends BaseRenderer {
     if (dynamicConfig) {
       const dynamicFrames = this.dynamicSkinFrames.get(dynamicConfig.spriteSheetUrl)
       if (dynamicFrames && dynamicFrames.length > 0) {
-        console.log(`[PlayerRenderer] Using dynamic skin frames for ${playerId}`)
         return dynamicFrames
       }
       // Dynamic skin is configured but still loading - return null to use fallback circle
       // This prevents the default green/pink from showing while loading
       if (this.loadingDynamicSkins.has(dynamicConfig.spriteSheetUrl)) {
-        console.log(`[PlayerRenderer] Dynamic skin still loading for ${playerId}, using fallback`)
         return null
       }
       // Dynamic skin failed to load - fall through to default
-      console.log(`[PlayerRenderer] Dynamic skin not available for ${playerId}, using default`)
     }
 
     // Use static bundled skin

@@ -24,6 +24,7 @@ import {
 } from '@/components/battlepass/enterprise'
 import { BattlePassTrack } from '@/components/battlepass/BattlePassTrack'
 import { PremiumUpsell } from '@/components/battlepass/PremiumUpsell'
+import { BattlePassWelcomeModal, useBattlePassWelcome } from '@/components/battlepass/BattlePassWelcomeModal'
 import { Confetti } from '@/components/ui/Confetti'
 import { TierCardSkeleton, XPProgressSkeleton } from '@/components/ui/Skeleton'
 
@@ -32,6 +33,7 @@ export function BattlePass() {
   const toast = useToast()
   const confetti = useConfetti()
   const { refreshBalance } = useBalance()
+  const { showWelcome, closeWelcome } = useBattlePassWelcome()
 
   const {
     season,
@@ -199,7 +201,7 @@ export function BattlePass() {
             badgeVariant="premium"
           >
             <PremiumUpsell
-              price={950}
+              price={650}
               rewards={premiumRewards}
               onUpgrade={handlePurchasePremium}
             />
@@ -214,6 +216,9 @@ export function BattlePass() {
           originY={confetti.originY}
           onComplete={confetti.onComplete}
         />
+
+        {/* Welcome Modal */}
+        {showWelcome && <BattlePassWelcomeModal onClose={closeWelcome} />}
       </div>
     </div>
   )

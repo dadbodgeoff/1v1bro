@@ -4,16 +4,18 @@
  * Quiz panel is HTML/CSS outside canvas for crisp text and touch support
  */
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { GameArena } from '@/components/game/GameArena'
-import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
+import { ArenaScoreboard, type KillFeedEntry } from '@/components/game/ArenaScoreboard'
 import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
 import { LatencyIndicator } from '@/components/game/LatencyIndicator'
 import { useArenaGame } from '@/hooks/useArenaGame'
 import { useGameStore } from '@/stores/gameStore'
+import { wsService } from '@/services/websocket'
 import type { Vector2, FireEvent, HitEvent, DeathEvent } from '@/game'
+import type { StateUpdatePayload, CombatRespawnPayload } from '@/types/websocket'
 
 export function ArenaGame() {
   const { code } = useParams<{ code: string }>()
@@ -72,10 +74,34 @@ export function ArenaGame() {
     mapConfig,
   } = useArenaGame(code)
 
-  const { localPlayerId } = useGameStore()
+  const { localPlayerId, localPlayerName, opponentName } = useGameStore()
 
-  const [localHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
-  const [opponentHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
+  const [localHealth, setLocalHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
+  const [opponentHealth, setOpponentHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
+  
+  // Kill feed state
+  const [killFeed, setKillFeed] = useState<KillFeedEntry[]>([])
+  const killFeedIdRef = useRef(0)
+  
+  // Add entry to kill feed
+  const addKillFeedEntry = useCallback((text: string, type: KillFeedEntry['type']) => {
+    const entry: KillFeedEntry = {
+      id: `kf_${killFeedIdRef.current++}`,
+      text,
+      type,
+      timestamp: Date.now(),
+    }
+    setKillFeed(prev => [...prev.slice(-9), entry]) // Keep last 10
+  }, [])
+  
+  // Clean up old kill feed entries
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now()
+      setKillFeed(prev => prev.filter(e => now - e.timestamp < 4000))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   // Position updates are now batched by the WebSocket service at 60fps
   // No manual throttling needed - just send every position change
@@ -86,8 +112,8 @@ export function ArenaGame() {
     [sendPosition]
   )
 
-  const handlePowerUpCollect = useCallback((powerUpId: number) => {
-    console.log('Collected powerup:', powerUpId)
+  const handlePowerUpCollect = useCallback((_powerUpId: number) => {
+    // Power-up collected
   }, [])
 
   const handleCombatFire = useCallback(
@@ -108,8 +134,13 @@ export function ArenaGame() {
         source: 'projectile',
       })
       sendCombatEvent('shot', { hit: true })
+      
+      // Add to kill feed - determine who landed the hit
+      const isLocalHit = event.targetId !== localPlayerId
+      const attackerName = isLocalHit ? (localPlayerName || 'You') : (opponentName || 'Opponent')
+      addKillFeedEntry(`${attackerName} landed a hit!`, 'hit')
     },
-    [sendCombatEvent]
+    [sendCombatEvent, localPlayerId, localPlayerName, opponentName, addKillFeedEntry]
   )
 
   const handleCombatDeath = useCallback(
@@ -118,9 +149,46 @@ export function ArenaGame() {
         victim_id: event.playerId,
         weapon: 'projectile',
       })
+      
+      // Add elimination to kill feed
+      const isLocalDeath = event.playerId === localPlayerId
+      const victimName = isLocalDeath ? (localPlayerName || 'You') : (opponentName || 'Opponent')
+      const killerName = isLocalDeath ? (opponentName || 'Opponent') : (localPlayerName || 'You')
+      addKillFeedEntry(`${killerName} eliminated ${victimName}!`, 'kill')
     },
-    [sendCombatEvent]
+    [sendCombatEvent, localPlayerId, localPlayerName, opponentName, addKillFeedEntry]
   )
+  
+  // Subscribe to WebSocket events for HUD updates
+  useEffect(() => {
+    if (!code) return
+    
+    // Listen for state updates to track health
+    const unsubState = wsService.on('state_update', (payload) => {
+      const data = payload as StateUpdatePayload
+      if (data.combat) {
+        for (const [pid, combat] of Object.entries(data.combat.players)) {
+          if (pid === localPlayerId) {
+            setLocalHealth({ playerId: pid, health: combat.health, maxHealth: combat.max_health })
+          } else {
+            setOpponentHealth({ playerId: pid, health: combat.health, maxHealth: combat.max_health })
+          }
+        }
+      }
+    })
+    
+    // Listen for respawn events
+    const unsubRespawn = wsService.on('combat_respawn', (payload) => {
+      const data = payload as CombatRespawnPayload
+      const playerName = data.player_id === localPlayerId ? (localPlayerName || 'You') : (opponentName || 'Opponent')
+      addKillFeedEntry(`${playerName} respawned`, 'respawn')
+    })
+    
+    return () => {
+      unsubState()
+      unsubRespawn()
+    }
+  }, [code, localPlayerId, localPlayerName, opponentName, addKillFeedEntry])
 
   // Loading state
   if (status === 'idle' || status === 'waiting') {
@@ -171,13 +239,14 @@ export function ArenaGame() {
 
       {/* Main game UI */}
     <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden safe-area-top">
-      {/* Scoreboard header - scores only, no question */}
+      {/* Scoreboard header - health bars and activity feed */}
       <ArenaScoreboard
         localHealth={localHealth}
         opponentHealth={opponentHealth}
         showHealth={true}
-        showQuestion={false}
+        showQuestion={showQuestion}
         onAnswer={sendAnswer}
+        killFeed={killFeed}
       />
 
       {/* Main game area - canvas fills available space */}
@@ -216,6 +285,25 @@ export function ArenaGame() {
 
           {/* Round result toast - overlaid on canvas */}
           <RoundResultOverlay visible={showRoundResult} />
+
+          {/* Mobile kill feed - top right of canvas (hidden on desktop where it's in scoreboard) */}
+          {killFeed.length > 0 && (
+            <div className="absolute top-2 right-2 z-10 flex flex-col gap-1 sm:hidden">
+              {killFeed.slice(-3).map((entry) => (
+                <div
+                  key={entry.id}
+                  className={`px-2 py-1 rounded text-[10px] font-medium backdrop-blur-sm bg-black/60 border border-white/10 ${
+                    entry.type === 'kill' ? 'text-red-400' :
+                    entry.type === 'hit' ? 'text-orange-400' :
+                    entry.type === 'quiz' ? 'text-green-400' :
+                    'text-blue-400'
+                  }`}
+                >
+                  {entry.text}
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Controls hint + Latency - bottom left corner of canvas */}
           <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 flex items-center gap-2 z-10 safe-area-bottom">

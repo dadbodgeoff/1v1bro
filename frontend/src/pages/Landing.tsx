@@ -13,12 +13,12 @@ import {
   GlobalBackground,
   LandingHeader,
   HeroSection,
-  LiveDemoSection,
   HowItWorksSection,
   FeaturesSection,
   UseCasesSection,
   FinalCTASection,
   LandingFooter,
+  FloatingProjectiles,
 } from '@/components/landing/enterprise'
 
 export function Landing() {
@@ -34,17 +34,17 @@ export function Landing() {
       {/* Global animated background */}
       <GlobalBackground />
 
+      {/* Floating projectile effects */}
+      <FloatingProjectiles count={5} />
+
       {/* Fixed Header */}
       <LandingHeader />
 
       {/* Main Content */}
       <main>
-        {/* Hero Section - Full viewport */}
-        <HeroSection />
-
-        {/* Live Demo - AI vs AI showcase */}
+        {/* Hero Section - Full viewport with integrated LiveDemo */}
         <section id="demo">
-          <LiveDemoSection />
+          <HeroSection />
         </section>
 
         {/* How It Works - 3 steps */}

@@ -17,17 +17,18 @@ export interface LandingFooterProps {
 
 const FOOTER_LINKS = {
   play: [
+    { label: 'Try Free', href: '/play' },
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Leaderboards', href: '/leaderboards' },
     { label: 'Battle Pass', href: '/battlepass' },
   ],
   learn: [
     { label: 'How It Works', href: '#how-it-works', scroll: true },
-    { label: 'FAQ', href: '#', placeholder: true },
   ],
   legal: [
-    { label: 'Privacy Policy', href: '#', placeholder: true },
-    { label: 'Terms of Service', href: '#', placeholder: true },
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Refund Policy', href: '/refunds' },
   ],
 }
 
@@ -90,13 +91,6 @@ export function LandingFooter({ className }: LandingFooterProps) {
                     >
                       {link.label}
                     </button>
-                  ) : link.placeholder ? (
-                    <span
-                      className="text-[14px] text-[#525252] cursor-not-allowed"
-                      title="Coming Soon"
-                    >
-                      {link.label}
-                    </span>
                   ) : (
                     <Link
                       to={link.href}
@@ -116,21 +110,12 @@ export function LandingFooter({ className }: LandingFooterProps) {
             <ul className="space-y-3">
               {FOOTER_LINKS.legal.map((link) => (
                 <li key={link.label}>
-                  {link.placeholder ? (
-                    <span
-                      className="text-[14px] text-[#525252] cursor-not-allowed"
-                      title="Coming Soon"
-                    >
-                      {link.label}
-                    </span>
-                  ) : (
-                    <Link
-                      to={link.href}
-                      className="text-[14px] text-[#737373] hover:text-white transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  )}
+                  <Link
+                    to={link.href}
+                    className="text-[14px] text-[#737373] hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>

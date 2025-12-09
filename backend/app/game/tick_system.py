@@ -279,8 +279,7 @@ class TickSystem:
                 player.last_input_sequence = input_data.sequence
                 player.last_input_tick = game.tick_count
                 player.last_valid_position = (input_data.x, input_data.y)
-            else:
-                print(f"[TICK] Rejected input from {input_data.player_id}: {reason}")
+            # Input rejection logged via logger if needed
             
             if player.is_kicked and self._kick_callback:
                 await self._kick_callback(game.lobby_id, player.player_id, "violations")
@@ -447,9 +446,7 @@ class TickSystem:
             "payload": payload,
         }
         
-        # Log every 300 ticks (once per 5 seconds at 60Hz tick rate)
-        if game.tick_count % 300 == 0:
-            print(f"[TICK] State at tick {game.tick_count}: {players_state}")
+        # Periodic state logging removed for production
         
         try:
             await self._broadcast_callback(game.lobby_id, state)

@@ -15,12 +15,18 @@ export function Register() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
+
+    if (!acceptedTerms) {
+      setError('You must accept the Terms of Service and Privacy Policy')
+      return
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match')
@@ -119,6 +125,32 @@ export function Register() {
               autoComplete="new-password"
               className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white placeholder:text-neutral-600 focus:outline-none focus:border-white/[0.2] transition-colors"
             />
+          </div>
+
+          {/* Terms Acceptance */}
+          <div className="flex items-start gap-3 pt-2">
+            <input
+              type="checkbox"
+              id="terms"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-1 w-4 h-4 rounded border-white/20 bg-white/[0.04] text-purple-500 focus:ring-purple-500 focus:ring-offset-0 focus:ring-offset-transparent"
+            />
+            <label htmlFor="terms" className="text-xs text-neutral-400 leading-relaxed">
+              I agree to the{' '}
+              <Link to="/terms" className="text-purple-400 hover:text-purple-300 underline" target="_blank">
+                Terms of Service
+              </Link>
+              {' '}and{' '}
+              <Link to="/privacy" className="text-purple-400 hover:text-purple-300 underline" target="_blank">
+                Privacy Policy
+              </Link>
+              , and acknowledge that all purchases are final per the{' '}
+              <Link to="/refunds" className="text-purple-400 hover:text-purple-300 underline" target="_blank">
+                Refund Policy
+              </Link>
+              .
+            </label>
           </div>
 
           <button

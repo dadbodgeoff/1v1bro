@@ -13,6 +13,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { cn } from '@/utils/helpers'
+import { CharacterSilhouettes } from './CharacterSilhouettes'
 
 export interface BackgroundSceneProps {
   /** Additional CSS classes */
@@ -66,6 +67,7 @@ export function BackgroundScene({
         'bg-[#0A0A0B]',
         className
       )}
+      aria-hidden="true"
     >
       {/* Far Layer - Mountains with horizon glow */}
       <div
@@ -149,6 +151,13 @@ export function BackgroundScene({
           style={parallaxStyle(1.2)}
         >
           <EmberParticles count={30} />
+        </div>
+      )}
+
+      {/* Character Silhouettes */}
+      {!prefersReducedMotion && (
+        <div className="absolute inset-0 z-35">
+          <CharacterSilhouettes reducedMotion={prefersReducedMotion} />
         </div>
       )}
 

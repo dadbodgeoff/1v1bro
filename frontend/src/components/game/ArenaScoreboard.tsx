@@ -1,16 +1,23 @@
 /**
- * ArenaScoreboard - Minimal scoreboard with integrated question display
- * Question appears in center, scores on sides
- * New question triggers attention-grabbing animation
+ * ArenaScoreboard - Combat HUD with health bars and activity feed
+ * Health bars prominently displayed, activity feed on the right
  */
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useGameStore } from '@/stores/gameStore'
+import { cn } from '@/utils/helpers'
 
-interface PlayerHealth {
+export interface PlayerHealth {
   playerId: string
   health: number
   maxHealth: number
+}
+
+export interface KillFeedEntry {
+  id: string
+  text: string
+  type: 'kill' | 'hit' | 'quiz' | 'respawn'
+  timestamp: number
 }
 
 interface ArenaScoreboardProps {
@@ -19,6 +26,7 @@ interface ArenaScoreboardProps {
   showHealth?: boolean
   showQuestion?: boolean
   onAnswer?: (answer: string, timeMs: number) => void
+  killFeed?: KillFeedEntry[]
 }
 
 export function ArenaScoreboard({
@@ -27,6 +35,7 @@ export function ArenaScoreboard({
   showHealth = true,
   showQuestion = false,
   onAnswer,
+  killFeed = [],
 }: ArenaScoreboardProps) {
   const {
     localPlayerName,
@@ -34,7 +43,6 @@ export function ArenaScoreboard({
     opponentName,
     opponentScore,
     questionNumber,
-    totalQuestions,
     currentQuestion,
     answerSubmitted,
     selectAnswer,
@@ -101,68 +109,94 @@ export function ArenaScoreboard({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [answerSubmitted, showQuestion, currentQuestion, handleSelect])
 
-  const renderHealthBar = (health?: PlayerHealth) => {
+  const renderHealthBar = (health?: PlayerHealth, isLocal?: boolean) => {
     if (!showHealth || !health) return null
     const percentage = Math.max(0, Math.min(100, (health.health / health.maxHealth) * 100))
+    const isLow = percentage < 30
+    const color = isLocal ? '#10B981' : '#EF4444' // emerald for local, red for opponent
+    
     return (
-      <div className="w-12 h-1 bg-white/[0.08] rounded-full overflow-hidden">
-        <div
-          className="h-full bg-white/40 rounded-full transition-all duration-200"
-          style={{ width: `${percentage}%` }}
-        />
+      <div className="flex-1 max-w-[100px]">
+        <div className="h-2.5 bg-white/10 rounded-full overflow-hidden">
+          <div
+            className={cn(
+              'h-full rounded-full transition-all duration-200',
+              isLow && 'animate-pulse'
+            )}
+            style={{ 
+              width: `${percentage}%`,
+              backgroundColor: isLow ? '#EF4444' : color,
+            }}
+          />
+        </div>
+        <div className="text-[10px] text-white/50 mt-0.5 text-center tabular-nums">
+          {health.health}/{health.maxHealth}
+        </div>
       </div>
     )
   }
 
+  // Activity feed - shows last 3 entries
+  const visibleFeed = killFeed.slice(-3)
+
   return (
-    <div className={`bg-[#0a0a0a] border-b border-white/[0.06] transition-all duration-300 ${
-      isNewQuestion ? 'bg-white/[0.03]' : ''
-    }`}>
-      {/* Main bar - grid layout for perfect centering */}
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-2 gap-4">
-        {/* Local player - left aligned */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span className="text-xs text-neutral-400">{localPlayerName || 'You'}</span>
+    <div className={cn(
+      'bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-white/[0.06] transition-all duration-300',
+      isNewQuestion && 'bg-white/[0.03]'
+    )}>
+      {/* Main bar - health bars and scores */}
+      <div className="flex items-center justify-between px-3 py-2 gap-2">
+        {/* Local player - left side */}
+        <div className="flex items-center gap-2 flex-1">
+          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
+            {(localPlayerName || 'You').charAt(0).toUpperCase()}
           </div>
-          {renderHealthBar(localHealth)}
-          <span className="text-lg font-semibold text-white tabular-nums">{localScore}</span>
+          {renderHealthBar(localHealth, true)}
+          <span className="text-base font-bold text-white tabular-nums min-w-[32px] text-center">{localScore}</span>
         </div>
 
-        {/* Center - Round info only (question displayed in arena) */}
-        <div className="flex justify-center">
-          <div className={`flex items-center gap-2 px-3 py-1 rounded transition-all duration-300 ${
-            isNewQuestion ? 'bg-white/[0.06]' : 'bg-transparent'
-          }`}>
-            <span className="text-[10px] text-neutral-500 uppercase tracking-wider">Q</span>
-            <span className={`text-sm font-mono tabular-nums transition-colors ${
-              isNewQuestion ? 'text-white' : 'text-neutral-400'
-            }`}>{questionNumber}</span>
-            <span className="text-neutral-600">/</span>
-            <span className="text-xs font-mono text-neutral-500">{totalQuestions}</span>
-            {showQuestion && currentQuestion && (
-              <span className={`ml-2 text-sm font-mono tabular-nums px-2 py-0.5 rounded ${
-                timeRemaining <= 5 ? 'text-red-400 bg-red-500/10' : 'text-neutral-500'
-              }`}>
-                {timeRemaining}s
-              </span>
-            )}
+        {/* Center - VS or round info */}
+        <div className="flex flex-col items-center px-3">
+          <span className="text-xs font-bold text-white/60">VS</span>
+          {showQuestion && currentQuestion && (
+            <span className={cn(
+              'text-[10px] font-mono tabular-nums mt-0.5',
+              timeRemaining <= 5 ? 'text-red-400' : 'text-white/40'
+            )}>
+              {timeRemaining}s
+            </span>
+          )}
+        </div>
+
+        {/* Opponent - right side */}
+        <div className="flex items-center gap-2 flex-1 justify-end">
+          <span className="text-base font-bold text-white tabular-nums min-w-[32px] text-center">{opponentScore}</span>
+          {renderHealthBar(opponentHealth, false)}
+          <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
+            {(opponentName || 'Opp').charAt(0).toUpperCase()}
           </div>
         </div>
 
-        {/* Opponent - right aligned */}
-        <div className="flex items-center gap-3 justify-end">
-          <span className="text-lg font-semibold text-white tabular-nums">{opponentScore}</span>
-          {renderHealthBar(opponentHealth)}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-neutral-400">{opponentName || 'Opponent'}</span>
-            <div className="w-2 h-2 rounded-full bg-red-400" />
+        {/* Activity Feed - far right */}
+        {visibleFeed.length > 0 && (
+          <div className="hidden sm:flex flex-col gap-0.5 ml-3 pl-3 border-l border-white/10 min-w-[140px] max-w-[180px]">
+            {visibleFeed.map((entry) => (
+              <div
+                key={entry.id}
+                className={cn(
+                  'text-[9px] leading-tight truncate',
+                  entry.type === 'kill' && 'text-red-400',
+                  entry.type === 'hit' && 'text-orange-400',
+                  entry.type === 'quiz' && 'text-green-400',
+                  entry.type === 'respawn' && 'text-blue-400'
+                )}
+              >
+                {entry.text}
+              </div>
+            ))}
           </div>
-        </div>
+        )}
       </div>
-
-
     </div>
   )
 }
