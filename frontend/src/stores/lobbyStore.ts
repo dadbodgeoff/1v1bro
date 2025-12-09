@@ -16,6 +16,8 @@ interface LobbyState {
   status: 'idle' | 'waiting' | 'in_progress'
   // Trivia category for this lobby
   category: string
+  // Arena map for this lobby
+  mapSlug: string
   // Player assignment from game_start
   player1Id: string | null
   player2Id: string | null
@@ -29,6 +31,7 @@ interface LobbyState {
   setIsHost: (isHost: boolean) => void
   setStatus: (status: LobbyState['status']) => void
   setCategory: (category: string) => void
+  setMapSlug: (mapSlug: string) => void
   setPlayerAssignment: (player1Id: string, player2Id: string) => void
   setPlayerSkins: (skins: Record<string, PlayerSkin | null>) => void
   reset: () => void
@@ -42,6 +45,7 @@ const initialState = {
   isHost: false,
   status: 'idle' as const,
   category: 'fortnite',
+  mapSlug: 'nexus-arena',
   player1Id: null,
   player2Id: null,
   playerSkins: {} as Record<string, PlayerSkin | null>,
@@ -62,6 +66,8 @@ export const useLobbyStore = create<LobbyState>((set) => ({
   setStatus: (status) => set({ status }),
 
   setCategory: (category) => set({ category }),
+
+  setMapSlug: (mapSlug) => set({ mapSlug }),
 
   setPlayerAssignment: (player1Id, player2Id) => set({ player1Id, player2Id }),
 

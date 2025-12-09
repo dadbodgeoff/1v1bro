@@ -33,6 +33,9 @@ export interface Reward {
   cosmetic_name?: string
 }
 
+// Supabase storage URL for coin reward image
+const COINS_IMAGE_URL = '/api/v1/storage/cosmetics/playercard/coins.jpg'
+
 interface RewardDisplayBoxProps {
   reward: Reward | null
   size?: DisplaySize
@@ -418,7 +421,27 @@ function RewardIcon({ reward, size }: RewardIconProps) {
 
   switch (reward.type) {
     case 'coins':
-      return <CoinIcon className="text-[#f59e0b]" style={{ width: iconSize, height: iconSize }} />
+      // Use the coins.jpg image from Supabase storage
+      return (
+        <div 
+          className="relative rounded-lg overflow-hidden"
+          style={{ width: size, height: size }}
+        >
+          <img
+            src={COINS_IMAGE_URL}
+            alt={`${reward.value} Coins`}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            onError={(e) => {
+              // Fallback to SVG icon if image fails to load
+              e.currentTarget.style.display = 'none'
+              e.currentTarget.parentElement?.classList.add('coins-fallback')
+            }}
+          />
+          {/* Subtle gold glow overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#f59e0b]/20 via-transparent to-transparent pointer-events-none" />
+        </div>
+      )
     case 'xp_boost':
       return <XPBoostIcon className="text-[#a855f7]" style={{ width: iconSize, height: iconSize }} />
     case 'title':
@@ -477,15 +500,6 @@ function CheckIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-  )
-}
-
-function CoinIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
-      <circle cx="12" cy="12" r="10" />
-      <text x="12" y="16" textAnchor="middle" fill="#000" fontSize="10" fontWeight="bold">$</text>
     </svg>
   )
 }

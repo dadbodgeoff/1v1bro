@@ -403,6 +403,24 @@ export class ArenaManager {
   }
 
   /**
+   * Get all hazard zones for visual system integration
+   * @returns Array of hazard zone data
+   */
+  getHazardZones(): Array<{
+    id: string
+    type: string
+    bounds: { x: number; y: number; width: number; height: number }
+    intensity: number
+  }> {
+    return this.hazardManager.getAllHazards().map(h => ({
+      id: h.id,
+      type: h.type,
+      bounds: h.bounds,
+      intensity: h.intensity,
+    }))
+  }
+
+  /**
    * Rebuild spatial hash after barrier changes
    */
   private rebuildSpatialHash(): void {

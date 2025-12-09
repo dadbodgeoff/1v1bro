@@ -16,6 +16,9 @@ import { OptimizedImage } from '@/components/ui/OptimizedImage'
 
 export type PlayerCardSize = 'small' | 'medium' | 'large'
 
+// Default playercard image from Supabase storage for users without an equipped card
+const DEFAULT_PLAYERCARD_URL = '/api/v1/storage/cosmetics/playercard/default.jpg'
+
 interface PlayerCardBannerProps {
   /** The equipped playercard cosmetic, or null for default placeholder */
   playercard: Cosmetic | null
@@ -40,9 +43,35 @@ const SIZE_CONFIG: Record<PlayerCardSize, { width: number; height: number; nameS
 }
 
 /**
- * Default placeholder when no playercard is equipped
+ * Default playercard when no playercard is equipped.
+ * Uses the default.jpg image from Supabase storage.
  */
-function DefaultPlaceholder({ playerName }: { playerName: string }) {
+function DefaultPlayercard({ playerName, width, height }: { playerName: string; width: number; height: number }) {
+  return (
+    <div
+      className="w-full h-full relative"
+      data-testid="playercard-default"
+    >
+      <OptimizedImage
+        src={DEFAULT_PLAYERCARD_URL}
+        alt="Default Player Card"
+        width={width}
+        height={height}
+        lazy={false}
+        timeout={10000}
+        objectFit="cover"
+        showSkeleton={true}
+        skeletonColor="#4b556330"
+        fallback={<DefaultPlaceholderFallback playerName={playerName} />}
+      />
+    </div>
+  )
+}
+
+/**
+ * Fallback placeholder if the default.jpg image fails to load
+ */
+function DefaultPlaceholderFallback({ playerName }: { playerName: string }) {
   return (
     <div
       className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-neutral-800 to-neutral-900"
@@ -100,11 +129,11 @@ export function PlayerCardBanner({
             objectFit="cover"
             showSkeleton={true}
             skeletonColor={`${rarityColor}30`}
-            fallback={<DefaultPlaceholder playerName={playerName} />}
+            fallback={<DefaultPlayercard playerName={playerName} width={width} height={height} />}
           />
         ) : (
-          /* Default Placeholder */
-          <DefaultPlaceholder playerName={playerName} />
+          /* Default Playercard Image */
+          <DefaultPlayercard playerName={playerName} width={width} height={height} />
         )}
 
         {/* Rarity Glow Effect */}

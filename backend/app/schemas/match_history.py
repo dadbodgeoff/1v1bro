@@ -1,10 +1,10 @@
 """
 Match history schemas for profile match history display.
-Requirements: Profile Enterprise - Match History Section
+Requirements: Profile Enterprise - Match History Section, 7.5 - Return recap_data
 """
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import Field
 
@@ -27,6 +27,10 @@ class MatchHistoryItem(BaseSchema):
     won: bool = Field(..., description="Whether the current user won")
     xp_earned: int = Field(default=0, description="XP earned from this match")
     played_at: datetime = Field(..., description="When the match was played")
+    recap_data: Optional[Dict[str, Any]] = Field(
+        None, 
+        description="Recap data for this match (Requirements: 7.5)"
+    )
 
 
 class MatchHistoryResponse(BaseSchema):

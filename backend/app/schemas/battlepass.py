@@ -49,7 +49,7 @@ class Season(BaseSchema):
     start_date: datetime = Field(..., description="Season start date")
     end_date: datetime = Field(..., description="Season end date")
     is_active: bool = Field(default=False, description="Whether season is currently active")
-    xp_per_tier: int = Field(default=1000, description="XP required per tier")
+    xp_per_tier: int = Field(default=400, description="XP required per tier")
     created_at: Optional[datetime] = None
 
 
@@ -61,7 +61,7 @@ class SeasonCreate(BaseSchema):
     theme: Optional[str] = Field(None, max_length=100)
     start_date: datetime
     end_date: datetime
-    xp_per_tier: int = Field(default=1000, ge=100)
+    xp_per_tier: int = Field(default=400, ge=100)
 
 
 # ============================================

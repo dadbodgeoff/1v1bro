@@ -43,7 +43,7 @@ export const AccountDangerZone: React.FC<AccountDangerZoneProps> = ({
       } else {
         setError('Failed to request data export');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to request data export');
     } finally {
       setIsProcessing(false);
@@ -70,7 +70,7 @@ export const AccountDangerZone: React.FC<AccountDangerZoneProps> = ({
       } else {
         setError('Failed to delete account. Please verify your password.');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to delete account');
     } finally {
       setIsProcessing(false);

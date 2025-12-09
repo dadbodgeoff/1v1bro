@@ -1,0 +1,95 @@
+{
+  "id": "volcanic",
+  "name": "Volcanic Cavern",
+  "version": "1.0.0",
+  "palette": {
+    "primary": "#ff4400",
+    "secondary": "#ff6600",
+    "background": "#1a0a0a",
+    "platform": "#2d2d2d",
+    "hazard": "#ff2200",
+    "interactive": "#00ffff"
+  },
+  "tileConfig": {
+    "seed": 42,
+    "crackDensity": 0.3,
+    "weatheringIntensity": 0.5,
+    "edgeErosion": true
+  },
+  "lighting": {
+    "ambientColor": "#1a0505",
+    "ambientIntensity": 0.3,
+    "rimLightingEnabled": true,
+    "rimLightColor": "#ff6600",
+    "rimLightWidth": 3
+  },
+  "parallax": {
+    "layers": [
+      {
+        "id": "far",
+        "depth": 0,
+        "scrollRatio": 0.1,
+        "sprite": "backgrounds/far_mountains.png"
+      },
+      {
+        "id": "mid",
+        "depth": 1,
+        "scrollRatio": 0.3,
+        "sprite": "backgrounds/mid_rocks.png"
+      },
+      {
+        "id": "foreground",
+        "depth": 3,
+        "scrollRatio": 1.2,
+        "elements": ["stalactites", "steam"]
+      }
+    ]
+  },
+  "props": [
+    {
+      "id": "chain_hanging",
+      "category": "structural",
+      "sprite": "chain_hanging.png",
+      "size": { "width": 32, "height": 128 },
+      "anchor": { "x": 0.5, "y": 0 },
+      "animation": { "frames": 4, "frameRate": 8, "loop": true }
+    },
+    {
+      "id": "crystal_cluster",
+      "category": "organic",
+      "sprite": "crystal_cluster.png",
+      "size": { "width": 48, "height": 64 },
+      "anchor": { "x": 0.5, "y": 1 }
+    },
+    {
+      "id": "steam_vent",
+      "category": "atmospheric",
+      "sprite": "steam_vent.png",
+      "size": { "width": 32, "height": 32 },
+      "anchor": { "x": 0.5, "y": 1 },
+      "particles": { "type": "steam", "rate": 5, "lifetime": { "min": 2, "max": 4 } }
+    },
+    {
+      "id": "broken_pillar",
+      "category": "structural",
+      "sprite": "broken_pillar.png",
+      "size": { "width": 64, "height": 96 },
+      "anchor": { "x": 0.5, "y": 1 }
+    },
+    {
+      "id": "lava_rock",
+      "category": "organic",
+      "sprite": "lava_rock.png",
+      "size": { "width": 40, "height": 32 },
+      "anchor": { "x": 0.5, "y": 1 }
+    }
+  ],
+  "animations": {
+    "lavaFrames": 8,
+    "steamLifetime": { "min": 2, "max": 4 },
+    "eventProbabilities": {
+      "debris_fall": 0.1,
+      "lava_burst": 0.05
+    }
+  }
+}

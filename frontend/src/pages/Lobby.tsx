@@ -29,6 +29,7 @@ export function Lobby() {
     isHost,
     userId,
     category,
+    mapSlug,
     leaveLobby,
     setReady,
     startGame,
@@ -91,9 +92,9 @@ export function Lobby() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col safe-area-top">
       {/* Header */}
-      <header className="border-b border-white/[0.06] px-6 py-4">
+      <header className="border-b border-white/[0.06] px-6 py-4 safe-area-x">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button
             onClick={leaveLobby}
@@ -123,22 +124,23 @@ export function Lobby() {
             opponent={opponent}
             isWaitingForOpponent={players.length < 2}
             category={category}
+            mapSlug={mapSlug}
           />
         </div>
 
         {/* Actions */}
-        <div className="w-full max-w-xs space-y-3">
+        <div className="w-full max-w-xs space-y-3 safe-area-bottom">
           {!isHost && !isReady && (
             <button
               onClick={setReady}
-              className="w-full py-3.5 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors"
+              className="w-full py-3.5 min-h-[44px] bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors"
             >
               Ready Up
             </button>
           )}
 
           {!isHost && isReady && (
-            <div className="w-full py-3.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium rounded-lg text-center">
+            <div className="w-full py-3.5 min-h-[44px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium rounded-lg text-center">
               Ready
             </div>
           )}
@@ -146,20 +148,20 @@ export function Lobby() {
           {isHost && canStart && (
             <button
               onClick={startGame}
-              className="w-full py-3.5 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors"
+              className="w-full py-3.5 min-h-[44px] bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors"
             >
               Start Game
             </button>
           )}
 
           {isHost && !canStart && players.length === 2 && (
-            <div className="w-full py-3.5 bg-white/[0.02] border border-white/[0.06] text-neutral-500 font-medium rounded-lg text-center">
+            <div className="w-full py-3.5 min-h-[44px] bg-white/[0.02] border border-white/[0.06] text-neutral-500 font-medium rounded-lg text-center">
               Waiting for opponent to ready...
             </div>
           )}
 
           {isHost && players.length < 2 && (
-            <div className="w-full py-3.5 bg-white/[0.02] border border-white/[0.06] text-neutral-500 font-medium rounded-lg text-center">
+            <div className="w-full py-3.5 min-h-[44px] bg-white/[0.02] border border-white/[0.06] text-neutral-500 font-medium rounded-lg text-center">
               Invite a friend to play
             </div>
           )}

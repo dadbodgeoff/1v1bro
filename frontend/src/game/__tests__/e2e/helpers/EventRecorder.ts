@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * EventRecorder - Records arena events for assertion in E2E tests
  * 

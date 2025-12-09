@@ -82,10 +82,18 @@ class GameResult(BaseSchema, TimestampMixin):
     player2_total_time_ms: int = Field(default=0, description="Player 2 total answer time in ms")
     is_tie: bool = Field(default=False, description="Whether game ended in tie")
     won_by_time: bool = Field(default=False, description="Whether winner was decided by faster time")
+    duration_seconds: int = Field(default=0, description="Game duration in seconds")
     questions_data: Optional[list[dict]] = Field(None, description="Questions used")
     answers_data: Optional[dict[str, list]] = Field(None, description="Player answers")
     # XP results for both players (UNIFIED PROGRESSION)
     xp_results: Optional[dict[str, dict]] = Field(None, description="XP award results keyed by player_id")
+    # Recap payloads for both players (MATCH AUTO-END RECAP)
+    recaps: Optional[dict[str, dict]] = Field(None, description="Recap payloads keyed by player_id")
+    
+    @property
+    def game_id(self) -> str:
+        """Alias for id for backward compatibility."""
+        return self.id
 
 
 class GameHistoryItem(BaseSchema, TimestampMixin):

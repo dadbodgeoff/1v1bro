@@ -1,11 +1,15 @@
 """
 Combat tracker utility.
 Tracks combat events during a game session for stats aggregation.
+Also updates game session scores when kills occur.
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, TYPE_CHECKING
 import time
+
+if TYPE_CHECKING:
+    from app.services.game.session import SessionManager
 
 
 def get_timestamp_ms() -> int:
@@ -85,12 +89,17 @@ class CombatTracker:
         killer_id: str,
         victim_id: str,
         weapon: str = "projectile",
-    ) -> None:
-        """Record a kill event."""
+    ) -> Optional[int]:
+        """
+        Record a kill event and update game score.
+        
+        Returns:
+            New total score if kill points were awarded, None otherwise
+        """
         if lobby_id not in cls._sessions:
-            return
+            return None
         if killer_id not in cls._sessions[lobby_id]:
-            return
+            return None
         
         cls._sessions[lobby_id][killer_id].events.append(
             KillEvent(
@@ -100,6 +109,17 @@ class CombatTracker:
                 weapon=weapon,
             )
         )
+        
+        # Update game session score with kill points
+        from app.services.game.session import SessionManager
+        from app.core.config import get_settings
+        
+        settings = get_settings()
+        new_score = SessionManager.record_kill(
+            lobby_id, killer_id, settings.POINTS_PER_KILL
+        )
+        
+        return new_score
 
     @classmethod
     def record_damage(
@@ -217,6 +237,46 @@ class CombatTracker:
             "shots_hit": 0,
             "powerups_collected": 0,
         }
+
+    @classmethod
+    def get_stats(cls, lobby_id: str) -> Optional[Dict[str, dict]]:
+        """
+        Get combat stats for all players in a game.
+        
+        Args:
+            lobby_id: Lobby UUID
+            
+        Returns:
+            Dict of player_id -> combat summary, or None if lobby not found
+        """
+        if lobby_id not in cls._sessions:
+            return None
+        
+        stats = {}
+        for player_id in cls._sessions[lobby_id].keys():
+            summary = cls.get_summary(lobby_id, player_id)
+            # Calculate max kill streak
+            events = cls._sessions[lobby_id][player_id].events
+            max_streak = cls._calculate_max_streak(events)
+            summary["max_streak"] = max_streak
+            stats[player_id] = summary
+        
+        return stats
+    
+    @classmethod
+    def _calculate_max_streak(cls, events: List[CombatEvent]) -> int:
+        """Calculate max kill streak from events."""
+        current_streak = 0
+        max_streak = 0
+        
+        for event in events:
+            if isinstance(event, KillEvent):
+                current_streak += 1
+                max_streak = max(max_streak, current_streak)
+            # Deaths reset streak - but we track kills, not deaths here
+            # So we just count consecutive kills
+        
+        return max_streak
 
     @classmethod
     def cleanup(cls, lobby_id: str) -> None:

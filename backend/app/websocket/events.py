@@ -115,8 +115,9 @@ def build_game_start(
     player2_id: str,
     player_skins: Optional[Dict[str, Dict]] = None,
     category: str = "fortnite",
+    map_slug: str = "nexus-arena",
 ) -> Dict:
-    """Build game_start message with explicit player assignments, skin data, and trivia category."""
+    """Build game_start message with explicit player assignments, skin data, trivia category, and arena map."""
     return build_message(WSEventType.GAME_START, {
         "total_questions": total_questions,
         "players": players,
@@ -124,6 +125,7 @@ def build_game_start(
         "player2_id": player2_id,
         "player_skins": player_skins or {},
         "category": category,
+        "map_slug": map_slug,
     })
 
 
@@ -149,8 +151,9 @@ def build_round_result(
     answers: Dict[str, Optional[str]],
     total_scores: Dict[str, int],
     rewards: Optional[Dict[str, Dict]] = None,
+    is_final_question: bool = False,
 ) -> Dict:
-    """Build round_result message with optional quiz rewards."""
+    """Build round_result message with optional quiz rewards and final question flag."""
     return build_message(WSEventType.ROUND_RESULT, {
         "q_num": q_num,
         "correct_answer": correct_answer,
@@ -158,6 +161,7 @@ def build_round_result(
         "answers": answers,
         "total_scores": total_scores,
         "rewards": rewards or {},
+        "is_final_question": is_final_question,
     })
 
 
@@ -167,14 +171,16 @@ def build_game_end(
     is_tie: bool = False,
     total_times: Optional[Dict[str, int]] = None,
     won_by_time: bool = False,
+    recaps: Optional[Dict[str, Dict]] = None,
 ) -> Dict:
-    """Build game_end message."""
+    """Build game_end message with optional recap data."""
     return build_message(WSEventType.GAME_END, {
         "winner_id": winner_id,
         "final_scores": final_scores,
         "is_tie": is_tie,
         "total_times": total_times or {},
         "won_by_time": won_by_time,
+        "recaps": recaps or {},
     })
 
 
@@ -193,8 +199,9 @@ def build_lobby_state(
     can_start: bool,
     host_id: str,
     category: str = "fortnite",
+    map_slug: str = "nexus-arena",
 ) -> Dict:
-    """Build lobby_state message with trivia category."""
+    """Build lobby_state message with trivia category and arena map."""
     return build_message(WSEventType.LOBBY_STATE, {
         "lobby_id": lobby_id,
         "status": status,
@@ -202,6 +209,7 @@ def build_lobby_state(
         "can_start": can_start,
         "host_id": host_id,
         "category": category,
+        "map_slug": map_slug,
     })
 
 

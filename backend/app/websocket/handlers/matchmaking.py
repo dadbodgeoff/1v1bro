@@ -26,7 +26,11 @@ class MatchmakingHandler(BaseHandler):
             profile = await user_repo.get_by_id(user_id)
             player_name = profile.get("display_name", "Unknown") if profile else "Unknown"
 
-            await service.join_queue(user_id, player_name)
+            # Extract category and map from payload
+            category = payload.get("category", "fortnite")
+            map_slug = payload.get("map_slug", "nexus-arena")
+
+            await service.join_queue(user_id, player_name, category=category, map_slug=map_slug)
 
         except ValueError as e:
             error_msg = str(e)

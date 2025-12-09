@@ -94,6 +94,7 @@ class ConnectionManager:
         websocket: WebSocket,
         lobby_code: str,
         user_id: str,
+        subprotocol: Optional[str] = None,
     ) -> None:
         """
         Accept and register a WebSocket connection.
@@ -102,8 +103,9 @@ class ConnectionManager:
             websocket: WebSocket connection
             lobby_code: Lobby code to join
             user_id: User UUID
+            subprotocol: Optional subprotocol to accept (for auth token handshake)
         """
-        await websocket.accept()
+        await websocket.accept(subprotocol=subprotocol)
         
         # Add to lobby connections
         if lobby_code not in self.active_connections:

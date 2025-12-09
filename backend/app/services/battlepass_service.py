@@ -39,7 +39,7 @@ XP_MAX = 300
 
 # Default tier settings
 MAX_TIER = 100
-DEFAULT_XP_PER_TIER = 1000
+DEFAULT_XP_PER_TIER = 400  # ~3-4 games per tier at avg 100-130 XP/game
 
 
 class BattlePassService:
@@ -209,14 +209,24 @@ class BattlePassService:
         AUTO-UNLOCK: When tiers are gained, free rewards are automatically
         claimed and added to inventory. Premium rewards require manual claim.
         """
+        logger.info(f"[XP] award_xp called: user={user_id}, amount={amount}, source={source}, match={match_id}")
+        
         season = await self.get_current_season()
         if not season:
+            logger.warning(f"[XP] No active season found, cannot award XP to {user_id}")
             return None
         
+        logger.info(f"[XP] Active season: {season.name} (id={season.id})")
+        
         # Get current progress
-        progress_data = await self.battlepass_repo.get_or_create_progress(
-            user_id, season.id
-        )
+        try:
+            progress_data = await self.battlepass_repo.get_or_create_progress(
+                user_id, season.id
+            )
+            logger.info(f"[XP] Got progress for {user_id}: tier={progress_data.get('current_tier')}, xp={progress_data.get('current_xp')}")
+        except Exception as e:
+            logger.error(f"[XP] Failed to get/create progress for {user_id}: {e}")
+            raise
         
         previous_tier = progress_data.get("current_tier", 0)
         current_xp = progress_data.get("current_xp", 0)
@@ -240,17 +250,28 @@ class BattlePassService:
             new_xp = 0  # No overflow XP at max tier
         
         # Update progress
-        await self.battlepass_repo.update_progress(
-            user_id, season.id, new_tier, new_xp
-        )
+        logger.info(f"[XP] Updating progress: {user_id} tier {previous_tier}->{new_tier}, xp {current_xp}->{new_xp}")
+        try:
+            await self.battlepass_repo.update_progress(
+                user_id, season.id, new_tier, new_xp
+            )
+            logger.info(f"[XP] Progress updated successfully for {user_id}")
+        except Exception as e:
+            logger.error(f"[XP] Failed to update progress for {user_id}: {e}")
+            raise
         
         # Log XP gain (Requirements: 4.10)
-        await self.battlepass_repo.log_xp_gain(
-            user_id=user_id,
-            source=source.value,
-            amount=amount,
-            match_id=match_id,
-        )
+        try:
+            await self.battlepass_repo.log_xp_gain(
+                user_id=user_id,
+                source=source.value,
+                amount=amount,
+                match_id=match_id,
+            )
+            logger.info(f"[XP] XP log created for {user_id}: {amount} from {source.value}")
+        except Exception as e:
+            logger.error(f"[XP] Failed to log XP for {user_id}: {e}")
+            # Don't raise - logging failure shouldn't block XP award
         
         # AUTO-UNLOCK: Claim rewards for newly gained tiers
         claimed = progress_data.get("claimed_rewards", []) or []
@@ -404,14 +425,22 @@ class BattlePassService:
         
         Combines calculate_match_xp and award_xp.
         """
+        logger.info(f"[XP] award_match_xp called: user={user_id}, won={won}, kills={kills}, streak={streak}, duration={duration_seconds}s, match={match_id}")
+        
         # Calculate XP
         calc = self.calculate_match_xp(won, kills, streak, duration_seconds)
+        logger.info(f"[XP] Calculated XP for {user_id}: base={calc.base_xp}, kills={calc.kill_bonus}, streak={calc.streak_bonus}, duration={calc.duration_bonus}, total={calc.total_xp}")
         
         # Determine source
         source = XPSource.MATCH_WIN if won else XPSource.MATCH_LOSS
         
         # Award XP
-        return await self.award_xp(user_id, calc.total_xp, source, match_id)
+        result = await self.award_xp(user_id, calc.total_xp, source, match_id)
+        if result:
+            logger.info(f"[XP] Successfully awarded {result.xp_awarded} XP to {user_id}, tier {result.previous_tier}->{result.new_tier}")
+        else:
+            logger.warning(f"[XP] award_xp returned None for {user_id}")
+        return result
     
     # ============================================
     # Reward Claiming

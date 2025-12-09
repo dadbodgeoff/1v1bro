@@ -44,8 +44,8 @@ describe('PlayerCardBanner', () => {
             />
           )
 
-          // Image should be rendered with correct src
-          const image = screen.getByTestId('playercard-image')
+          // Image should be rendered with correct src (uses OptimizedImage component)
+          const image = screen.getByTestId('optimized-image')
           expect(image).toBeDefined()
           expect(image.getAttribute('src')).toBe(cosmetic.image_url)
 
@@ -86,8 +86,8 @@ describe('PlayerCardBanner', () => {
             />
           )
 
-          // Both should be present
-          expect(screen.getByTestId('playercard-image')).toBeDefined()
+          // Both should be present (image uses OptimizedImage component)
+          expect(screen.getByTestId('optimized-image')).toBeDefined()
           expect(screen.getByTestId('playercard-name')).toBeDefined()
           expect(screen.getByTestId('playercard-name').textContent).toContain(playerName)
 
@@ -99,14 +99,14 @@ describe('PlayerCardBanner', () => {
   })
 
   /**
-   * **Feature: lobby-playercard-redesign, Property 2: PlayerCardBanner fallback to placeholder**
+   * **Feature: lobby-playercard-redesign, Property 2: PlayerCardBanner fallback to default card**
    * **Validates: Requirements 1.2, 4.3**
    * 
    * *For any* null or undefined playercard input, the PlayerCardBanner component
-   * SHALL render a default placeholder design without errors.
+   * SHALL render a default playercard image without errors.
    */
-  describe('Property 2: PlayerCardBanner fallback to placeholder', () => {
-    it('should render placeholder when playercard is null', () => {
+  describe('Property 2: PlayerCardBanner fallback to default card', () => {
+    it('should render default playercard when playercard is null', () => {
       fc.assert(
         fc.property(playerNameArb, (playerName) => {
           const { unmount } = render(
@@ -116,9 +116,8 @@ describe('PlayerCardBanner', () => {
             />
           )
 
-          // Placeholder should be rendered instead of image
-          expect(screen.getByTestId('playercard-placeholder')).toBeDefined()
-          expect(screen.queryByTestId('playercard-image')).toBeNull()
+          // Default playercard should be rendered instead of custom image
+          expect(screen.getByTestId('playercard-default')).toBeDefined()
 
           // Name should still be rendered
           expect(screen.getByTestId('playercard-name').textContent).toContain(playerName)
@@ -129,7 +128,7 @@ describe('PlayerCardBanner', () => {
       )
     })
 
-    it('should show first letter of name in placeholder', () => {
+    it('should render banner container with correct structure', () => {
       fc.assert(
         fc.property(playerNameArb, (playerName) => {
           const { unmount } = render(
@@ -139,9 +138,10 @@ describe('PlayerCardBanner', () => {
             />
           )
 
-          const placeholder = screen.getByTestId('playercard-placeholder')
-          const firstLetter = playerName[0]?.toUpperCase() || '?'
-          expect(placeholder.textContent).toContain(firstLetter)
+          // Banner should be present
+          expect(screen.getByTestId('playercard-banner')).toBeDefined()
+          // Default card should be present
+          expect(screen.getByTestId('playercard-default')).toBeDefined()
 
           unmount()
         }),

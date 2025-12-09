@@ -93,7 +93,7 @@ export function CollectionStats({
     <div className={cn('space-y-6', className)}>
       {/* Total Items Card */}
       <div className="bg-[var(--color-bg-elevated)] rounded-xl p-4 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-2xl">
+        <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center text-2xl">
           📦
         </div>
         <div>
@@ -192,8 +192,8 @@ export function CollectionStats({
               className={cn(
                 'h-full rounded-full transition-all duration-500',
                 completionPercentage === 100
-                  ? 'bg-gradient-to-r from-[#10b981] to-[#34d399]'
-                  : 'bg-gradient-to-r from-[#6366f1] to-[#a855f7]'
+                  ? 'bg-[#10b981]'
+                  : 'bg-[#6366f1]'
               )}
               style={{ width: `${completionPercentage}%` }}
             />

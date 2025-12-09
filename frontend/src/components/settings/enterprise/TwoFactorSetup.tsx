@@ -52,7 +52,7 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
       } else {
         setError('Failed to start 2FA setup');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to start 2FA setup');
     } finally {
       setIsProcessing(false);
@@ -73,7 +73,7 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
       } else {
         setError('Invalid verification code');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Verification failed');
     } finally {
       setIsProcessing(false);
@@ -95,7 +95,7 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
       } else {
         setError('Invalid code');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to disable 2FA');
     } finally {
       setIsProcessing(false);

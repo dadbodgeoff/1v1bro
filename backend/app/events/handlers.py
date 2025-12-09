@@ -65,6 +65,34 @@ async def handle_match_completed(data: Dict[str, Any]) -> None:
     logger.info(f"  Player1: {player1_id}, Score: {player1_score}, Won: {winner_id == player1_id}")
     logger.info(f"  Player2: {player2_id}, Score: {player2_score}, Won: {winner_id == player2_id}")
     
+    # Update ELO ratings and record match result (Requirements: 8.4)
+    if _supabase_client and player1_id and player2_id:
+        try:
+            from app.services.leaderboard_service import LeaderboardService
+            
+            leaderboard_service = LeaderboardService(_supabase_client)
+            
+            elo_result = await leaderboard_service.update_ratings(
+                match_id=match_id,
+                player1_id=player1_id,
+                player2_id=player2_id,
+                winner_id=winner_id,
+                duration_seconds=duration,
+            )
+            
+            if elo_result:
+                logger.info(
+                    f"  ELO updated: P1 {elo_result.player1_pre_elo} -> {elo_result.player1_post_elo} "
+                    f"({'+' if elo_result.elo_delta_p1 >= 0 else ''}{elo_result.elo_delta_p1}), "
+                    f"P2 {elo_result.player2_pre_elo} -> {elo_result.player2_post_elo} "
+                    f"({'+' if elo_result.elo_delta_p2 >= 0 else ''}{elo_result.elo_delta_p2})"
+                )
+            else:
+                logger.warning(f"ELO update returned no result for match {match_id}")
+                
+        except Exception as e:
+            logger.error(f"Failed to update ELO for match {match_id}: {e}")
+    
     # Award XP to both players (Requirements: 8.5)
     if _supabase_client and player1_id and player2_id:
         try:

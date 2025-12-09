@@ -22,33 +22,29 @@ interface ShopHeaderProps {
 
 const themeStyles = {
   default: {
-    // Clean white to silver - premium, not AI slop
-    gradient: 'from-white via-[#e2e8f0] to-[#94a3b8]',
-    barGradient: 'from-[#f59e0b] via-[#d97706] to-[#b45309]',
+    // Clean white text - no gradients
+    textColor: 'text-white',
+    barColor: 'bg-[#f59e0b]',
     accent: '#f59e0b',
   },
   winter: {
-    // Ice blue to white
-    gradient: 'from-white via-[#e0f2fe] to-[#bae6fd]',
-    barGradient: 'from-[#38bdf8] via-[#0ea5e9] to-[#0284c7]',
+    textColor: 'text-white',
+    barColor: 'bg-[#0ea5e9]',
     accent: '#0ea5e9',
   },
   summer: {
-    // Warm white to gold
-    gradient: 'from-white via-[#fef3c7] to-[#fcd34d]',
-    barGradient: 'from-[#f59e0b] via-[#d97706] to-[#b45309]',
+    textColor: 'text-white',
+    barColor: 'bg-[#f59e0b]',
     accent: '#f59e0b',
   },
   halloween: {
-    // White to orange
-    gradient: 'from-white via-[#fed7aa] to-[#fdba74]',
-    barGradient: 'from-[#f97316] via-[#ea580c] to-[#c2410c]',
+    textColor: 'text-white',
+    barColor: 'bg-[#f97316]',
     accent: '#f97316',
   },
   neon: {
-    // Clean white - let the bar provide color
-    gradient: 'from-white via-[#f1f5f9] to-[#cbd5e1]',
-    barGradient: 'from-[#f59e0b] via-[#d97706] to-[#b45309]',
+    textColor: 'text-white',
+    barColor: 'bg-[#f59e0b]',
     accent: '#f59e0b',
   },
 }
@@ -65,10 +61,10 @@ export function ShopHeader({
 
   return (
     <header className="relative mb-10">
-      {/* Background Gradient Bar - gold accent, not AI rainbow */}
+      {/* Accent Bar */}
       <div className={cn(
-        'absolute top-0 left-0 right-0 h-1 rounded-full bg-gradient-to-r',
-        theme.barGradient
+        'absolute top-0 left-0 right-0 h-1 rounded-full',
+        theme.barColor
       )} />
       
       <div className="flex items-center justify-between pt-6 pb-2">
@@ -77,8 +73,7 @@ export function ShopHeader({
           {/* Page Title - H1 level, largest in hierarchy */}
           <h1 className={cn(
             'text-4xl md:text-5xl font-extrabold tracking-tight',
-            'bg-gradient-to-r bg-clip-text text-transparent',
-            theme.gradient
+            theme.textColor
           )}>
             {seasonName}
           </h1>
@@ -120,7 +115,7 @@ export function ShopHeader({
       </div>
       
       {/* Subtle divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mt-4" />
+      <div className="h-px bg-white/10 mt-4" />
     </header>
   )
 }

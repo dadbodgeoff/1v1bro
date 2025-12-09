@@ -104,6 +104,8 @@ class ScoringService:
         scores = {}
         answers = {}
         total_scores = {}
+        kill_scores = {}
+        kill_counts = {}
         
         for player_id, state in session.player_states.items():
             if state.answers and len(state.answers) >= q_num:
@@ -114,6 +116,8 @@ class ScoringService:
                 scores[player_id] = 0
                 answers[player_id] = None
             total_scores[player_id] = state.score
+            kill_scores[player_id] = state.kill_score
+            kill_counts[player_id] = state.kill_count
         
         return {
             "q_num": q_num,
@@ -121,6 +125,8 @@ class ScoringService:
             "scores": scores,
             "answers": answers,
             "total_scores": total_scores,
+            "kill_scores": kill_scores,
+            "kill_counts": kill_counts,
         }
     
     def aggregate_trivia_stats(self, answers: List[PlayerAnswer]) -> TriviaStatsDelta:

@@ -228,11 +228,11 @@ class TestBannerUpload:
     async def test_confirm_banner_upload(self, profile_service, mock_storage, mock_cache):
         """Should process banner and update profile."""
         with patch.object(profile_service.profile_repo, 'update_banner_url', new_callable=AsyncMock) as mock_update:
-            mock_update.return_value = {"id": "user-123", "banner_url": "https://cdn.example.com/banner_1920x540.webp"}
+            mock_update.return_value = {"id": "user-123", "banner_url": "https://cdn.example.com/banner_960x270.webp"}
             
             result = await profile_service.confirm_banner_upload("user-123", "banners/user-123/abc.jpg")
             
-            assert result.url == "https://cdn.example.com/banner_1920x540.webp"
+            assert result.url == "https://cdn.example.com/banner_960x270.webp"
             assert len(result.variants) == 2
             mock_storage.process_banner.assert_called_once()
             mock_storage.delete_old_versions.assert_called_once()

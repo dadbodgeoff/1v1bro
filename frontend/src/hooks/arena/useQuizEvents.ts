@@ -88,6 +88,11 @@ export function useQuizEvents(lobbyCode?: string) {
         localScore: data.final_scores[localId || ''] || 0,
         opponentScore: Object.entries(data.final_scores).find(([id]) => id !== localId)?.[1] || 0,
       })
+      
+      // Extract and store recap for local player (MATCH AUTO-END RECAP)
+      if (data.recaps && localId && data.recaps[localId]) {
+        useGameStore.getState().setRecap(data.recaps[localId])
+      }
     })
 
     return () => {

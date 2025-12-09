@@ -81,6 +81,7 @@ export interface LobbyStatePayload {
   can_start: boolean
   host_id: string
   category?: string
+  map_slug?: string
 }
 
 export interface QuestionPayload {
@@ -121,6 +122,7 @@ export interface GameStartPayload {
   player1_id: string
   player2_id: string
   player_skins?: Record<string, PlayerSkinPayload | null>
+  map_slug?: string
 }
 
 /**
@@ -154,6 +156,8 @@ export interface GameEndPayload {
   loser_xp?: XPAwardResultPayload | null
   // Player-specific XP (keyed by player_id)
   xp_results?: Record<string, XPAwardResultPayload>
+  // Recap payloads for both players (MATCH AUTO-END RECAP)
+  recaps?: Record<string, import('./recap').RecapPayload>
 }
 
 export interface PositionUpdatePayload {

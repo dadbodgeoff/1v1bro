@@ -89,7 +89,7 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
   const isWarning = timeRemaining <= 10 && timeRemaining > 5
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#12101a] to-[#0a0a0a] border-t border-purple-500/20">
+    <div className="w-full bg-gradient-to-b from-[#12101a] to-[#0a0a0a] border-t border-purple-500/20 safe-area-bottom">
       {/* Timer bar - full width */}
       <div className="h-1 bg-white/[0.04]">
         <div
@@ -137,8 +137,8 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
                 onClick={() => handleSelect(letter)}
                 disabled={answerSubmitted}
                 className={`
-                  flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all
-                  lg:min-w-[160px] lg:max-w-[200px]
+                  flex items-center gap-2 px-3 py-2.5 rounded-lg text-left transition-all
+                  min-h-[44px] lg:min-w-[160px] lg:max-w-[200px]
                   ${isSelected
                     ? 'bg-purple-600/40 border-2 border-purple-400/60 shadow-lg shadow-purple-500/20'
                     : 'bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.12]'

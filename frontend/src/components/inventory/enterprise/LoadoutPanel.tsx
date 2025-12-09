@@ -20,6 +20,10 @@ import type { Loadout, InventoryItem, CosmeticType, Rarity } from '@/types/cosme
 import { getCosmeticTypeName } from '@/types/cosmetic'
 import { rarityBorders } from './InventoryItemBox'
 import { DynamicImage } from '@/components/shop/DynamicImage'
+import { SkinPreview, type SkinId } from '@/components/shop/SkinPreview'
+
+// Types that are coming soon and not yet implemented
+const COMING_SOON_TYPES: CosmeticType[] = ['nameplate', 'effect', 'trail']
 
 interface LoadoutPanelProps {
   loadout: Loadout | null
@@ -90,14 +94,32 @@ export function LoadoutPanel({
               title={equippedItem ? `Click to change ${getCosmeticTypeName(type)}` : `Click to equip ${getCosmeticTypeName(type)}`}
             >
               {/* Slot Content */}
-              <div className="aspect-square bg-[var(--color-bg-card)] rounded-lg flex items-center justify-center mb-2 overflow-hidden">
+              <div className="aspect-square bg-[var(--color-bg-card)] rounded-lg flex items-center justify-center mb-2 overflow-hidden relative">
+                {/* Coming Soon overlay for unimplemented types */}
+                {COMING_SOON_TYPES.includes(type) && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 rounded-lg">
+                    <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Coming Soon</span>
+                  </div>
+                )}
                 {equippedItem ? (
-                  <DynamicImage
-                    src={equippedItem.cosmetic.image_url}
-                    alt={equippedItem.cosmetic.name}
-                    className="w-full h-full object-contain p-1"
-                    removeBackgroundMode="auto"
-                  />
+                  // Use SkinPreview for skins to show single frame, DynamicImage for others
+                  equippedItem.cosmetic.type === 'skin' ? (
+                    <SkinPreview
+                      spriteSheetUrl={equippedItem.cosmetic.sprite_sheet_url}
+                      metadataUrl={equippedItem.cosmetic.sprite_meta_url}
+                      skinId={equippedItem.cosmetic.skin_id as SkinId | undefined}
+                      size={80}
+                      animate={false}
+                      frameIndex={0}
+                    />
+                  ) : (
+                    <DynamicImage
+                      src={equippedItem.cosmetic.image_url}
+                      alt={equippedItem.cosmetic.name}
+                      className="w-full h-full object-contain p-1"
+                      removeBackgroundMode="auto"
+                    />
+                  )
                 ) : (
                   <span className="text-3xl opacity-30">{SLOT_ICONS[type]}</span>
                 )}

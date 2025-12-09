@@ -49,7 +49,7 @@ def create_season():
         "start_date": now.isoformat(),
         "end_date": (now + timedelta(days=90)).isoformat(),
         "is_active": True,
-        "xp_per_tier": 1000,
+        "xp_per_tier": 400,  # ~3-4 games per tier
     }
     
     result = supabase.table("seasons").insert(season).execute()

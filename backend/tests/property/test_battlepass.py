@@ -205,10 +205,11 @@ class TestTierAdvancement:
         assert new_xp == 0
     
     def test_multiple_tier_advancement(self):
-        """2500 XP from tier 0 advances to tier 2 with 500 leftover."""
+        """XP award advances multiple tiers correctly."""
         current_tier = 0
         current_xp = 0
-        xp_award = 2500
+        # Award enough XP for 2 full tiers + some leftover
+        xp_award = DEFAULT_XP_PER_TIER * 2 + 100
         
         new_xp = current_xp + xp_award
         new_tier = current_tier
@@ -218,7 +219,7 @@ class TestTierAdvancement:
             new_tier += 1
         
         assert new_tier == 2
-        assert new_xp == 500
+        assert new_xp == 100
     
     def test_max_tier_cap(self):
         """Cannot exceed tier 100."""

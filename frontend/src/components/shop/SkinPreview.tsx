@@ -134,9 +134,9 @@ export function SkinPreview({
       size / 2, size * 0.85, 0,
       size / 2, size * 0.85, size * 0.6
     )
-    floorGlow.addColorStop(0, 'rgba(99, 102, 241, 0.5)')    // Bright indigo center
-    floorGlow.addColorStop(0.5, 'rgba(79, 70, 229, 0.25)')  // Purple mid
-    floorGlow.addColorStop(1, 'rgba(30, 30, 60, 0)')        // Fade out
+    floorGlow.addColorStop(0, 'rgba(255, 255, 255, 0.3)')    // Bright white center
+    floorGlow.addColorStop(0.5, 'rgba(200, 200, 200, 0.15)') // Gray mid
+    floorGlow.addColorStop(1, 'rgba(30, 30, 60, 0)')         // Fade out
     ctx.fillStyle = floorGlow
     ctx.fillRect(0, 0, size, size)
     

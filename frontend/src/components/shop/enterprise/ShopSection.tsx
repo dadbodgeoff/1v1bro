@@ -28,7 +28,7 @@ interface ShopSectionProps {
 
 const badgeStyles = {
   default: 'bg-[#6366f1] text-white',
-  hot: 'bg-gradient-to-r from-[#f97316] to-[#ef4444] text-white shadow-lg shadow-orange-500/20',
+  hot: 'bg-[#f97316] text-white shadow-lg shadow-orange-500/20',
   new: 'bg-[#10b981] text-white',
   limited: 'bg-[#f43f5e] text-white animate-pulse',
 }
@@ -54,7 +54,7 @@ export function ShopSection({
         <div className="flex items-center gap-4">
           {/* Icon - larger, more prominent */}
           {icon && (
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--color-bg-elevated)] to-[var(--color-bg-card)] flex items-center justify-center text-[#6366f1] border border-white/5">
+            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-[#6366f1] border border-white/5">
               {icon}
             </div>
           )}

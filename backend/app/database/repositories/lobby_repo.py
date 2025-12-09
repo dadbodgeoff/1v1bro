@@ -78,6 +78,7 @@ class LobbyRepository(BaseRepository):
         code: str,
         host_id: str,
         game_mode: str = "fortnite",
+        map_slug: str = "nexus-arena",
     ) -> dict:
         """
         Create a new lobby.
@@ -86,6 +87,7 @@ class LobbyRepository(BaseRepository):
             code: Unique 6-character code
             host_id: Host user ID
             game_mode: Game mode/category
+            map_slug: Arena map slug (nexus-arena, vortex-arena)
             
         Returns:
             Created lobby dict
@@ -94,7 +96,8 @@ class LobbyRepository(BaseRepository):
             "code": code.upper(),
             "host_id": host_id,
             "status": "waiting",
-            "game_mode": game_mode,
+            "game_mode": game_mode,  # Stores category for trivia question filtering
+            "map_slug": map_slug,  # Store map for arena selection
         }
         result = self._table().insert(data).execute()
         return result.data[0]

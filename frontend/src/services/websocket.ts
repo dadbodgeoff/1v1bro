@@ -63,9 +63,11 @@ class WebSocketService {
       const isDev = import.meta.env.DEV
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
       const host = isDev ? 'localhost:8000' : window.location.host
-      const wsUrl = `${protocol}//${host}/ws/${lobbyCode}?token=${token}`
+      const wsUrl = `${protocol}//${host}/ws/${lobbyCode}`
 
-      this.ws = new WebSocket(wsUrl)
+      // Pass token via Sec-WebSocket-Protocol header instead of query params
+      // This prevents token exposure in server logs, browser history, and referrer headers
+      this.ws = new WebSocket(wsUrl, [`auth.${token}`])
 
       this.ws.onopen = () => {
         console.log('[WS] Connected to', lobbyCode)
@@ -128,9 +130,7 @@ class WebSocketService {
 
   private startBatchLoop(): void {
     // Batch loop sends accumulated position updates at fixed interval
-    let batchCount = 0
     const sendBatch = () => {
-      batchCount++
       if (this.positionBatch && this.ws?.readyState === WebSocket.OPEN) {
         // Delta compression: only send if position changed significantly
         const shouldSend =

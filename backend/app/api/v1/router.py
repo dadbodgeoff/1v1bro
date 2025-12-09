@@ -23,6 +23,7 @@ from app.api.v1.settings import router as settings_router
 from app.api.v1.coins import router as coins_router
 from app.api.v1.webhooks import router as webhooks_router
 from app.api.v1.questions import router as questions_router
+from app.api.v1.storage import router as storage_router
 
 
 router = APIRouter()
@@ -50,6 +51,9 @@ router.include_router(webhooks_router)
 
 # Questions/trivia routes
 router.include_router(questions_router)
+
+# Storage proxy routes
+router.include_router(storage_router)
 
 # Admin routes
 router.include_router(admin_cosmetics_router)

@@ -48,18 +48,19 @@ def storage_url(bucket: str, path: str) -> str:
 # Banners are in cosmetics/banners/ folder
 
 COSMETICS = [
-    # Skins - using your uploaded sprite sheets (8x8 standardized format)
-    # shop_preview_url: For custom designed preview images (upload to cosmetics/previews/)
-    # Currently using sprite animation for all skins
+    # ============================================
+    # BUNDLED SKINS - Use skin_id (loaded from frontend assets)
+    # These have sprite sheets bundled in the frontend build
+    # ============================================
     {
         "name": "Armored Knight",
         "type": "skin",
         "rarity": "epic",
         "description": "A noble warrior clad in golden armor, ready for battle.",
         "image_url": storage_url("cosmetics", "banners/armoredknight.jpg"),
-        "sprite_sheet_url": storage_url("cosmetics", "skins/armorknight.jpeg"),
+        "skin_id": "knightGold",  # Use bundled sprite sheet
         "price_coins": 1200,
-        "is_featured": True,
+        "is_featured": False,
         "sort_order": 1,
     },
     {
@@ -68,7 +69,7 @@ COSMETICS = [
         "rarity": "rare",
         "description": "Tactical combat gear with advanced protection systems.",
         "image_url": storage_url("cosmetics", "banners/armoredsolider.jpg"),
-        "sprite_sheet_url": storage_url("cosmetics", "skins/armorsolider.jpeg"),
+        "skin_id": "soldierPurple",  # Use bundled sprite sheet
         "price_coins": 800,
         "is_featured": False,
         "sort_order": 2,
@@ -79,9 +80,9 @@ COSMETICS = [
         "rarity": "legendary",
         "description": "When fruit goes tactical. The most a-peeling skin in the game!",
         "image_url": storage_url("cosmetics", "banners/banana.jpg"),
-        "sprite_sheet_url": storage_url("cosmetics", "skins/bananasprite1.jpeg"),
+        "skin_id": "bananaTactical",  # Use bundled sprite sheet
         "price_coins": 1500,
-        "is_featured": True,
+        "is_featured": False,
         "sort_order": 3,
     },
     {
@@ -90,7 +91,7 @@ COSMETICS = [
         "rarity": "epic",
         "description": "A digital phantom from the void. Glitch through reality.",
         "image_url": storage_url("cosmetics", "banners/martix.jpg"),
-        "sprite_sheet_url": storage_url("cosmetics", "skins/martix.jpeg"),
+        "skin_id": "wraithMatrix",  # Use bundled sprite sheet
         "price_coins": 1200,
         "is_featured": False,
         "sort_order": 4,
@@ -101,13 +102,86 @@ COSMETICS = [
         "rarity": "legendary",
         "description": "Stealth meets technology. Strike from the shadows.",
         "image_url": storage_url("cosmetics", "banners/ninja.jpg"),
-        "sprite_sheet_url": storage_url("cosmetics", "skins/ninjaspite.jpeg"),
+        "skin_id": "ninjaCyber",  # Use bundled sprite sheet
         "price_coins": 1500,
-        "is_featured": True,
+        "is_featured": False,
         "sort_order": 5,
     },
     
-    # Banners - using your uploaded banner images
+    # ============================================
+    # DYNAMIC CMS SKINS - Use sprite_sheet_url (loaded from Supabase Storage)
+    # These are single images loaded dynamically with background removal
+    # ============================================
+    {
+        "name": "Frostborne Valkyrie",
+        "type": "skin",
+        "rarity": "legendary",
+        "description": "An ice warrior from the frozen realms. Command the frost.",
+        "image_url": storage_url("cosmetics", "skins/Frostborne Valkyrie.jpg"),
+        "sprite_sheet_url": storage_url("cosmetics", "skins/Frostborne Valkyrie.jpg"),
+        "price_coins": 1800,
+        "is_featured": True,
+        "sort_order": 10,
+    },
+    {
+        "name": "Abyssal Leviathan",
+        "type": "skin",
+        "rarity": "legendary",
+        "description": "Rise from the depths. The ocean's fury incarnate.",
+        "image_url": storage_url("cosmetics", "skins/Abyssal Leviathan.jpg"),
+        "sprite_sheet_url": storage_url("cosmetics", "skins/Abyssal Leviathan.jpg"),
+        "price_coins": 1800,
+        "is_featured": True,
+        "sort_order": 11,
+    },
+    {
+        "name": "Molten Warlord",
+        "type": "skin",
+        "rarity": "legendary",
+        "description": "Forged in volcanic fire. Unstoppable destruction.",
+        "image_url": storage_url("cosmetics", "skins/Molten Warlord.jpg"),
+        "sprite_sheet_url": storage_url("cosmetics", "skins/Molten Warlord.jpg"),
+        "price_coins": 1800,
+        "is_featured": True,
+        "sort_order": 12,
+    },
+    {
+        "name": "Plasma Ranger",
+        "type": "skin",
+        "rarity": "epic",
+        "description": "High-tech plasma armor. The future of combat.",
+        "image_url": storage_url("cosmetics", "skins/Plasma Ranger.jpg"),
+        "sprite_sheet_url": storage_url("cosmetics", "skins/Plasma Ranger.jpg"),
+        "price_coins": 1400,
+        "is_featured": False,
+        "sort_order": 13,
+    },
+    {
+        "name": "Solar Champion",
+        "type": "skin",
+        "rarity": "epic",
+        "description": "Harness the power of the sun. Radiant and unstoppable.",
+        "image_url": storage_url("cosmetics", "skins/Solar Champion.jpg"),
+        "sprite_sheet_url": storage_url("cosmetics", "skins/Solar Champion.jpg"),
+        "price_coins": 1400,
+        "is_featured": False,
+        "sort_order": 14,
+    },
+    {
+        "name": "Void Sovereign",
+        "type": "skin",
+        "rarity": "legendary",
+        "description": "Master of the void. Reality bends to your will.",
+        "image_url": storage_url("cosmetics", "skins/Void Sovereign.jpg"),
+        "sprite_sheet_url": storage_url("cosmetics", "skins/Void Sovereign.jpg"),
+        "price_coins": 2000,
+        "is_featured": True,
+        "sort_order": 15,
+    },
+    
+    # ============================================
+    # BANNERS - using your uploaded banner images
+    # ============================================
     {
         "name": "Knight's Crest",
         "type": "banner",

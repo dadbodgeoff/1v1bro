@@ -69,92 +69,63 @@ export function useFriends() {
 
   // Send friend request
   const sendFriendRequest = useCallback(async (userId: string) => {
-    try {
-      const result = await friendsAPI.sendRequest(userId)
-      if (result.status === 'accepted') {
-        // Auto-accepted, refresh friends list
-        await fetchFriends()
-      }
-      return result
-    } catch (error) {
-      throw error
+    const result = await friendsAPI.sendRequest(userId)
+    if (result.status === 'accepted') {
+      // Auto-accepted, refresh friends list
+      await fetchFriends()
     }
+    return result
   }, [fetchFriends])
 
   // Accept friend request
   const acceptRequest = useCallback(async (friendshipId: string) => {
-    try {
-      await friendsAPI.acceptRequest(friendshipId)
-      // Move from pending to friends
-      const request = pendingRequests.find((r) => r.friendship_id === friendshipId)
-      if (request) {
-        removePendingRequest(friendshipId)
-        addFriend({
-          friendship_id: friendshipId,
-          user_id: request.user_id,
-          display_name: request.display_name,
-          avatar_url: request.avatar_url,
-          is_online: false,
-          show_online_status: true,
-          created_at: new Date().toISOString(),
-        })
-      }
-    } catch (error) {
-      throw error
+    await friendsAPI.acceptRequest(friendshipId)
+    // Move from pending to friends
+    const request = pendingRequests.find((r) => r.friendship_id === friendshipId)
+    if (request) {
+      removePendingRequest(friendshipId)
+      addFriend({
+        friendship_id: friendshipId,
+        user_id: request.user_id,
+        display_name: request.display_name,
+        avatar_url: request.avatar_url,
+        is_online: false,
+        show_online_status: true,
+        created_at: new Date().toISOString(),
+      })
     }
   }, [pendingRequests, removePendingRequest, addFriend])
 
   // Decline friend request
   const declineRequest = useCallback(async (friendshipId: string) => {
-    try {
-      await friendsAPI.declineRequest(friendshipId)
-      removePendingRequest(friendshipId)
-    } catch (error) {
-      throw error
-    }
+    await friendsAPI.declineRequest(friendshipId)
+    removePendingRequest(friendshipId)
   }, [removePendingRequest])
 
   // Remove friend
   const removeFriendById = useCallback(async (friendshipId: string) => {
-    try {
-      await friendsAPI.removeFriend(friendshipId)
-      removeFriend(friendshipId)
-    } catch (error) {
-      throw error
-    }
+    await friendsAPI.removeFriend(friendshipId)
+    removeFriend(friendshipId)
   }, [removeFriend])
 
   // Send game invite
   const sendGameInvite = useCallback(async (friendId: string, lobbyCode: string) => {
-    try {
-      const result = await friendsAPI.sendGameInvite(friendId, lobbyCode)
-      return result
-    } catch (error) {
-      throw error
-    }
+    return await friendsAPI.sendGameInvite(friendId, lobbyCode)
   }, [])
 
   // Accept game invite
   const acceptGameInvite = useCallback(async (inviteId: string) => {
-    try {
-      const result = await friendsAPI.acceptInvite(inviteId)
-      removeGameInvite(inviteId)
-      // Navigate to lobby
-      navigate(`/lobby/${result.lobby_code}`)
-      return result
-    } catch (error) {
-      throw error
-    }
+    const result = await friendsAPI.acceptInvite(inviteId)
+    removeGameInvite(inviteId)
+    // Navigate to lobby
+    navigate(`/lobby/${result.lobby_code}`)
+    return result
   }, [removeGameInvite, navigate])
 
   // Decline game invite
   const declineGameInvite = useCallback(async (inviteId: string) => {
-    try {
-      await friendsAPI.declineInvite(inviteId)
-      removeGameInvite(inviteId)
-    } catch (error) {
-      throw error
-    }
+    await friendsAPI.declineInvite(inviteId)
+    removeGameInvite(inviteId)
   }, [removeGameInvite])
 
   // Search users
@@ -170,15 +141,11 @@ export function useFriends() {
 
   // Block user
   const blockUser = useCallback(async (userId: string) => {
-    try {
-      await friendsAPI.blockUser(userId)
-      // Remove from friends if they were a friend
-      const friend = friends.find((f) => f.user_id === userId)
-      if (friend) {
-        removeFriend(friend.friendship_id)
-      }
-    } catch (error) {
-      throw error
+    await friendsAPI.blockUser(userId)
+    // Remove from friends if they were a friend
+    const friend = friends.find((f) => f.user_id === userId)
+    if (friend) {
+      removeFriend(friend.friendship_id)
     }
   }, [friends, removeFriend])
 

@@ -2,324 +2,273 @@
 
 ## Introduction
 
-This specification defines a comprehensive visual differentiation system for Vortex Arena, transforming it from a gameplay-different-but-visually-similar map into a distinctly recognizable cyber-themed arena. The implementation integrates existing but unused visual systems (animated tiles, extended terrain types, backdrop layers) to create a cohesive "cyber vortex" aesthetic that immediately distinguishes Vortex Arena from Nexus Arena.
+This specification defines a complete volcanic/lava themed transformation for Vortex Arena, creating a unique and immersive experience distinct from Nexus Arena. The implementation integrates all available visual systems (animated tiles, extended terrain types, backdrop layers) along with custom terrain zones, themed barriers, and full utilization of trap mechanics to create a "Volcanic Vortex" arena.
 
 **Current State Analysis:**
 
 | Component | Current Implementation | Problem |
 |-----------|----------------------|---------|
-| Backdrop System | Space theme only (SpaceVoidLayer, NebulaLayer, StarFieldLayer) | Both maps look identical in background |
-| Animated Tiles | AnimatedTileRenderer exists with water, lava, fire, electric, portal | NOT integrated into rendering pipeline |
-| Extended Terrain | TerrainTypes.ts has ice, sand, water, lava, void, grass, stone | NOT added to TileType enum, unused |
-| Map Theme Config | No theme property in MapMetadata | Cannot specify visual style per map |
-| Hazard Rendering | Basic colored rectangles | No animated effects, looks flat |
-| Transport Rendering | Basic circles with gradients | No theme-specific styling |
-| Floor Tiles | Solid color fill | No grid pattern or visual interest |
+| Backdrop System | Space theme only | Both maps look identical in background |
+| Animated Tiles | water, lava, fire, electric, portal exist | NOT integrated - lava/fire perfect for volcanic theme |
+| Extended Terrain | ice, sand, water, lava, void, grass, stone defined | NOT in TileType enum, completely unused |
+| Tile Rendering | Basic colored rectangles | No animated effects, no terrain variety |
+| Hazard Zones | Generic colored zones | Not themed to match map aesthetic |
+| Barriers | Generic gray/blue colors | Not themed, no volcanic rock appearance |
+| Traps | Pressure + timed traps exist | Not fully utilized for volcanic theme |
+| Transport | Generic teleporter/jump pad visuals | Not themed to volcanic aesthetic |
 
-**Visual Theme Comparison:**
+**Vortex Arena Volcanic Theme Vision:**
 
-| Element | Nexus Arena (Space) | Vortex Arena (Cyber) |
-|---------|---------------------|----------------------|
-| Background | Deep space void, nebula clouds, stars | Dark void with hex grid, circuit patterns |
-| Color Palette | Blues, purples, white stars | Purple, cyan, magenta, electric yellow |
-| Hazard Effects | Static colored zones | Animated electric/portal effects |
-| Floor Pattern | Solid dark blue | Subtle pulsing hex grid overlay |
-| Transport Pads | Blue/green gradients | Electric arcs, circuit glow |
-| Center Feature | None | Swirling portal vortex effect |
-
-The upgrade encompasses:
-
-1. **Theme-Aware Backdrop System** - BackdropSystem accepts theme parameter, creates appropriate layers
-2. **Cyber Backdrop Layers** - New CyberVoidLayer using existing HexGridLayer and CircuitLayer
-3. **Animated Tile Integration** - HazardManager uses AnimatedTileRenderer for visual effects
-4. **Portal Vortex Effect** - Central area renders with animated portal swirl
-5. **Theme-Specific Transport Rendering** - Teleporters and jump pads styled per theme
-6. **Floor Grid Overlay** - Subtle hex pattern on floor tiles for cyber theme
-7. **Map Configuration Theme Property** - MapMetadata.theme determines visual presentation
+| Element | Description |
+|---------|-------------|
+| Background | Dark volcanic cavern with lava glow, smoke particles, ember effects |
+| Floor Terrain | Mix of stone, obsidian, cooled lava rock with cracks |
+| Lava Zones | Animated lava pools using lava tile animation (damage hazards) |
+| Fire Hazards | Animated fire effects on damage zones |
+| Steam Vents | Slow zones rendered as steam/smoke effects |
+| Volcanic Barriers | Dark obsidian rock barriers with orange glow edges |
+| Lava Traps | Pressure plates that trigger lava bursts |
+| Magma Teleporters | Teleporters with swirling magma portal effect |
+| Eruption Jump Pads | Jump pads with volcanic eruption visual |
+| Center Vortex | Massive lava whirlpool at map center |
 
 ## Glossary
 
-- **Backdrop_System**: The layered background rendering system at `frontend/src/game/backdrop/BackdropSystem.ts`
-- **Backdrop_Layer**: An individual rendering layer (SpaceVoidLayer, NebulaLayer, HexGridLayer, CircuitLayer, etc.)
-- **Map_Theme**: A string enum ('space' | 'cyber' | 'void') determining visual presentation
-- **Animated_Tile_Renderer**: The singleton at `frontend/src/game/terrain/AnimatedTiles.ts` providing frame-based tile animations
-- **Animated_Tile_Type**: One of 'water', 'lava', 'fire', 'electric', 'portal' animation styles
-- **Hazard_Manager**: The system at `frontend/src/game/hazards/HazardManager.ts` managing hazard zones
-- **Transport_Manager**: The system at `frontend/src/game/transport/TransportManager.ts` managing teleporters and jump pads
-- **Hex_Grid_Layer**: Existing backdrop layer rendering animated hexagonal grid pattern
-- **Circuit_Layer**: Existing backdrop layer rendering animated circuit network with nodes and connections
-- **Vortex_Center**: The central area of Vortex Arena (tiles 7-8, rows 3-5) featuring the portal effect
-- **Cyber_Color_Palette**: The color scheme for cyber theme: primary cyan (#00ffff), secondary magenta (#ff00ff), accent purple (#8844ff), glow yellow (#ffff44)
+- **Volcanic_Theme**: The visual theme for Vortex Arena featuring lava, fire, obsidian, and volcanic effects
+- **Animated_Tile_Renderer**: The system at `frontend/src/game/terrain/AnimatedTiles.ts` providing lava, fire, water, electric, portal animations
+- **Extended_Terrain**: Additional terrain types (lava, stone, void) from `TerrainTypes.ts` to be integrated
+- **Lava_Pool**: A damage hazard zone rendered with animated lava tile effects
+- **Steam_Vent**: A slow hazard zone rendered with animated water/steam effects
+- **Obsidian_Barrier**: A barrier rendered with dark volcanic rock texture and orange glow
+- **Magma_Teleporter**: A teleporter with swirling lava portal animation
+- **Eruption_Pad**: A jump pad with volcanic eruption particle effect
+- **Volcanic_Backdrop**: New backdrop layers featuring cavern walls, lava glow, smoke, embers
+- **Lava_Vortex**: The central feature of the map - a massive animated lava whirlpool
 
 ## Requirements
 
-### Requirement 1: Theme-Aware Backdrop System
+### Requirement 1: Volcanic Backdrop System
 
-**User Story:** As a developer, I want the BackdropSystem to accept a theme parameter, so that different maps can have different visual backgrounds without code duplication.
+**User Story:** As a player, I want Vortex Arena to have a volcanic cavern background, so that the map feels like a dangerous underground lava environment.
 
 #### Acceptance Criteria
 
-1.1. WHEN BackdropSystem is constructed THEN the constructor SHALL accept an optional `theme` parameter of type MapTheme with default value 'space'
+1.1. WHEN the volcanic backdrop renders THEN the system SHALL display a dark cavern background with deep red/orange ambient glow from below
 
-1.2. WHEN theme is 'space' THEN BackdropSystem SHALL create layers in order:
-- SpaceVoidLayer (parallax: 0)
-- NebulaLayer (parallax: 0.1)
-- StarFieldLayer (parallax: 0.3)
-- CosmicDustLayer (parallax: 0.5)
-- ShootingStarLayer (parallax: 0.7)
+1.2. WHEN the volcanic backdrop renders THEN the system SHALL display animated smoke/haze particles drifting upward
 
-1.3. WHEN theme is 'cyber' THEN BackdropSystem SHALL create layers in order:
-- CyberVoidLayer (parallax: 0) - deep dark purple/black gradient
-- HexGridLayer (parallax: 0.1) - animated hex pattern
-- CircuitLayer (parallax: 0.3) - animated circuit network
-- DataStreamLayer (parallax: 0.5) - falling data particles
+1.3. WHEN the volcanic backdrop renders THEN the system SHALL display ember particles floating and fading
 
-1.4. WHEN theme is 'void' THEN BackdropSystem SHALL create layers in order:
-- SpaceVoidLayer (parallax: 0) - pure black
-- ParticleLayer (parallax: 0.2) - sparse floating particles
+1.4. WHEN the volcanic backdrop renders THEN the system SHALL display subtle lava glow pulsing effect at the edges
 
-1.5. WHEN BackdropSystem.render() is called THEN the system SHALL render all layers in order with their configured parallax offsets
+1.5. WHEN the volcanic backdrop updates THEN the system SHALL animate smoke drift, ember float, and glow pulse at appropriate frame rates
 
 ---
 
-### Requirement 2: Cyber Void Layer Implementation
+### Requirement 2: Lava Terrain Integration
 
-**User Story:** As a player, I want the cyber theme to have a distinctive dark background with subtle color, so that it feels different from the space theme.
+**User Story:** As a player, I want to see animated lava pools in Vortex Arena, so that dangerous areas are visually dramatic and clearly identifiable.
 
 #### Acceptance Criteria
 
-2.1. WHEN CyberVoidLayer is created THEN the system SHALL create a new file at `frontend/src/game/backdrop/layers/CyberVoidLayer.ts`
+2.1. WHEN a damage hazard zone renders in volcanic theme THEN the system SHALL use the AnimatedTileRenderer with 'lava' type
 
-2.2. WHEN CyberVoidLayer.render() is called THEN the system SHALL fill the canvas with a radial gradient:
-- Center color: #0a0a1a (very dark blue-purple)
-- Edge color: #050510 (near black)
-- Gradient center: canvas center
-- Gradient radius: 150% of canvas diagonal
+2.2. WHEN lava tiles animate THEN the system SHALL cycle through lava colors (#ff4400, #ff6600, #ff8800, #ff6600) at 150ms per frame
 
-2.3. WHEN CyberVoidLayer.render() is called THEN the system SHALL overlay a subtle vignette effect:
-- Edge darkness: 20% opacity black
-- Vignette radius: 80% of canvas size
+2.3. WHEN lava tiles render THEN the system SHALL display animated bubble effects rising from the surface
 
-2.4. WHEN CyberVoidLayer.update() is called THEN the system SHALL animate a subtle color pulse:
-- Pulse frequency: 0.1 Hz (10 second cycle)
-- Pulse intensity: ±5% brightness variation
+2.4. WHEN lava tiles render THEN the system SHALL display hot crack patterns with brighter orange glow
+
+2.5. WHEN lava tiles render THEN the system SHALL apply a radial glow effect with color #ff4400 at 50% intensity
 
 ---
 
-### Requirement 3: Map Configuration Theme Property
+### Requirement 3: Fire Hazard Effects
 
-**User Story:** As a developer, I want to specify a visual theme in the map configuration, so that each map can define its own visual style.
+**User Story:** As a player, I want fire effects on certain hazard zones, so that the volcanic theme has variety beyond just lava.
 
 #### Acceptance Criteria
 
-3.1. WHEN MapMetadata interface is defined THEN the interface SHALL include an optional `theme` property of type MapTheme
+3.1. WHEN rendering fire hazard tiles THEN the system SHALL use the AnimatedTileRenderer with 'fire' type
 
-3.2. WHEN MapTheme type is defined THEN the type SHALL be a union of string literals: 'space' | 'cyber' | 'void'
+3.2. WHEN fire tiles animate THEN the system SHALL cycle through fire colors at 100ms per frame with 6 frames
 
-3.3. WHEN a MapConfig has no theme specified THEN the system SHALL default to 'space' theme
+3.3. WHEN fire tiles render THEN the system SHALL display animated flame tongue effects flickering upward
 
-3.4. WHEN VORTEX_ARENA config is defined THEN the metadata SHALL include `theme: 'cyber'`
-
-3.5. WHEN NEXUS_ARENA config is defined THEN the metadata SHALL NOT include a theme property (defaults to 'space')
+3.4. WHEN fire tiles render THEN the system SHALL apply orange glow effect (#ff6600) at 40% intensity
 
 ---
 
-### Requirement 4: GameEngine Theme Integration
+### Requirement 4: Steam Vent Slow Zones
 
-**User Story:** As a developer, I want the GameEngine to create the appropriate BackdropSystem based on map theme, so that the visual presentation matches the map configuration.
+**User Story:** As a player, I want slow zones to appear as steam vents, so that they fit the volcanic theme while being clearly different from lava.
 
 #### Acceptance Criteria
 
-4.1. WHEN GameEngine is constructed with a MapConfig THEN the system SHALL read the theme from `mapConfig.metadata.theme`
+4.1. WHEN a slow hazard zone renders in volcanic theme THEN the system SHALL display steam/smoke particle effects
 
-4.2. WHEN GameEngine creates BackdropSystem THEN the system SHALL pass the theme parameter to the BackdropSystem constructor
+4.2. WHEN steam vent renders THEN the system SHALL use white/gray color palette with upward particle drift
 
-4.3. WHEN the theme is undefined THEN the system SHALL pass 'space' as the default theme
+4.3. WHEN steam vent renders THEN the system SHALL apply subtle blur/haze effect to indicate reduced visibility
 
-4.4. WHEN a new map is loaded via loadMap() THEN the system SHALL NOT recreate the BackdropSystem (backdrop is set at construction)
+4.4. WHEN steam vent animates THEN the system SHALL pulse steam intensity to create "venting" effect
 
 ---
 
-### Requirement 5: Animated Hazard Rendering
+### Requirement 5: Obsidian Volcanic Barriers
 
-**User Story:** As a player, I want hazard zones in Vortex Arena to have animated visual effects, so that dangerous areas are visually interesting and clearly visible.
+**User Story:** As a player, I want barriers to look like volcanic obsidian rock, so that cover elements match the volcanic environment.
 
 #### Acceptance Criteria
 
-5.1. WHEN HazardManager.render() is called for a 'damage' hazard THEN the system SHALL:
-- Render base hazard rectangle with hazard color
-- Call AnimatedTileRenderer.render() with type 'electric' for cyber theme
-- Call AnimatedTileRenderer.render() with type 'fire' for space theme
+5.1. WHEN a full barrier renders in volcanic theme THEN the system SHALL display dark obsidian texture (#1a1a1a to #2d2d2d gradient)
 
-5.2. WHEN HazardManager.render() is called for a 'slow' hazard THEN the system SHALL:
-- Render base hazard rectangle with hazard color
-- Call AnimatedTileRenderer.render() with type 'portal' for cyber theme
-- Call AnimatedTileRenderer.render() with type 'water' for space theme
+5.2. WHEN a barrier renders THEN the system SHALL display orange/red glow along edges simulating heat
 
-5.3. WHEN HazardManager.render() is called for an 'emp' hazard THEN the system SHALL:
-- Render base hazard rectangle with hazard color
-- Call AnimatedTileRenderer.render() with type 'electric' for both themes
-- Apply yellow glow overlay (#ffff44) at 30% opacity
+5.3. WHEN a half barrier renders THEN the system SHALL display cracked rock texture with visible lava glow through cracks
 
-5.4. WHEN AnimatedTileRenderer.update() is called THEN the system SHALL advance animation time by deltaTime * 1000 (converting to milliseconds)
+5.4. WHEN a destructible barrier renders THEN the system SHALL display increasingly visible cracks and glow as health decreases
 
-5.5. WHEN HazardManager is initialized THEN the system SHALL store a reference to the current map theme for render decisions
+5.5. WHEN a destructible barrier is destroyed THEN the system SHALL trigger a lava burst particle effect
 
 ---
 
-### Requirement 6: Vortex Center Portal Effect
+### Requirement 6: Volcanic Trap Mechanics
 
-**User Story:** As a player, I want the center of Vortex Arena to have a distinctive swirling portal effect, so that the map's namesake feature is visually prominent.
+**User Story:** As a player, I want traps to have volcanic effects, so that trap triggers feel dramatic and match the theme.
 
 #### Acceptance Criteria
 
-6.1. WHEN Vortex Arena renders THEN the system SHALL identify the vortex center region as tiles at columns 7-8, rows 3-5 (pixel coordinates 560-720, 240-480)
+6.1. WHEN a pressure trap triggers in volcanic theme THEN the system SHALL display a lava geyser burst effect
 
-6.2. WHEN the vortex center is rendered THEN the system SHALL draw a portal effect consisting of:
-- Multiple concentric swirl rings (3-5 rings)
-- Rings rotating at different speeds (outer faster than inner)
-- Color cycling through portal animation colors (#8844ff, #aa66ff, #cc88ff, etc.)
+6.2. WHEN a timed trap activates THEN the system SHALL display ground crack effect before eruption
 
-6.3. WHEN the portal effect renders THEN the system SHALL apply a radial glow:
-- Glow color: #aa66ff (portal glow color)
-- Glow intensity: 50% opacity at center, fading to 0% at edges
-- Glow radius: 120 pixels from center
+6.3. WHEN trap damage is applied THEN the system SHALL display fire/lava splash particles at the impact point
 
-6.4. WHEN the portal effect updates THEN the system SHALL:
-- Rotate rings based on elapsed time
-- Cycle colors based on animation frame
-- Pulse glow intensity (±20% variation)
+6.4. WHEN a trap is on cooldown THEN the system SHALL display smoldering embers effect indicating recharge
 
 ---
 
-### Requirement 7: Theme-Specific Transport Rendering
+### Requirement 7: Magma Portal Teleporters
 
-**User Story:** As a player, I want teleporters and jump pads to have visual effects matching the map theme, so that transport elements feel cohesive with the arena style.
+**User Story:** As a player, I want teleporters to look like swirling magma portals, so that transport elements match the volcanic aesthetic.
 
 #### Acceptance Criteria
 
-7.1. WHEN TransportManager.render() renders a teleporter in cyber theme THEN the system SHALL:
-- Draw base circle with cyan color (#00ffff)
-- Add electric arc effects around the perimeter (using electric animation)
-- Apply pulsing glow effect at 40% opacity
+7.1. WHEN a teleporter renders in volcanic theme THEN the system SHALL display swirling lava/magma animation using portal effect with orange/red colors
 
-7.2. WHEN TransportManager.render() renders a teleporter in space theme THEN the system SHALL:
-- Draw base circle with blue gradient
-- Add subtle particle effect
-- Apply steady glow effect at 30% opacity
+7.2. WHEN teleporter renders THEN the system SHALL display heat distortion effect around the portal edge
 
-7.3. WHEN TransportManager.render() renders a jump pad in cyber theme THEN the system SHALL:
-- Draw base circle with magenta color (#ff00ff)
-- Add directional arrow indicator
-- Apply circuit pattern overlay
-- Pulse brightness based on cooldown state
+7.3. WHEN a player uses a teleporter THEN the system SHALL display a lava splash effect at departure and arrival points
 
-7.4. WHEN TransportManager.render() renders a jump pad in space theme THEN the system SHALL:
-- Draw base circle with green gradient
-- Add directional arrow indicator
-- Apply energy swirl effect
-
-7.5. WHEN a player uses a teleporter THEN the system SHALL trigger a flash effect at both endpoints:
-- Flash duration: 200ms
-- Flash color: theme-appropriate (cyan for cyber, blue for space)
-- Flash intensity: 80% opacity fading to 0%
+7.4. WHEN teleporter is on cooldown THEN the system SHALL display dimmed magma with slower swirl animation
 
 ---
 
-### Requirement 8: Floor Grid Overlay for Cyber Theme
+### Requirement 8: Eruption Jump Pads
 
-**User Story:** As a player, I want floor tiles in Vortex Arena to have a subtle grid pattern, so that the cyber aesthetic is consistent throughout the map.
+**User Story:** As a player, I want jump pads to look like volcanic vents that erupt, so that the launch feels powerful and thematic.
 
 #### Acceptance Criteria
 
-8.1. WHEN floor tiles render in cyber theme THEN the system SHALL overlay a hex grid pattern on floor tiles
+8.1. WHEN a jump pad renders in volcanic theme THEN the system SHALL display a volcanic vent with glowing magma core
 
-8.2. WHEN the hex grid overlay renders THEN the system SHALL:
-- Use stroke color matching cyber palette (#00ffff at 5% opacity)
-- Draw hexagons at 40px size (half tile size)
-- Offset alternating rows for proper hex tessellation
+8.2. WHEN a player activates a jump pad THEN the system SHALL display an eruption effect with lava particles shooting upward
 
-8.3. WHEN the hex grid overlay animates THEN the system SHALL:
-- Pulse opacity between 3% and 7% (subtle effect)
-- Pulse frequency: 0.5 Hz (2 second cycle)
-- Phase offset based on hex position for wave effect
+8.3. WHEN jump pad is idle THEN the system SHALL display bubbling lava and steam wisps
 
-8.4. WHEN floor tiles render in space theme THEN the system SHALL NOT render any grid overlay
+8.4. WHEN jump pad direction indicator renders THEN the system SHALL use fire/lava colored arrow
 
 ---
 
-### Requirement 9: Color Palette Constants
+### Requirement 9: Central Lava Vortex Feature
 
-**User Story:** As a developer, I want theme color palettes defined as constants, so that colors are consistent and easy to modify.
+**User Story:** As a player, I want the center of Vortex Arena to have a massive lava whirlpool, so that the map's namesake feature is visually spectacular.
 
 #### Acceptance Criteria
 
-9.1. WHEN cyber theme colors are needed THEN the system SHALL use constants from a CYBER_COLORS object:
-```typescript
-CYBER_COLORS = {
-  primary: '#00ffff',      // Cyan
-  secondary: '#ff00ff',    // Magenta
-  accent: '#8844ff',       // Purple
-  glow: '#ffff44',         // Electric yellow
-  background: '#0a0a1a',   // Dark blue-purple
-  gridLine: '#00ffff',     // Cyan for grid
-}
-```
+9.1. WHEN the vortex center renders THEN the system SHALL display a large swirling lava whirlpool animation
 
-9.2. WHEN space theme colors are needed THEN the system SHALL use existing BACKDROP_COLORS constants
+9.2. WHEN the lava vortex renders THEN the system SHALL display multiple concentric swirl rings rotating at different speeds
 
-9.3. WHEN rendering theme-specific elements THEN the system SHALL select colors based on current theme, not hardcoded values
+9.3. WHEN the lava vortex renders THEN the system SHALL display debris/rock particles being pulled toward center
+
+9.4. WHEN the lava vortex renders THEN the system SHALL apply intense orange/red glow radiating outward
+
+9.5. WHEN the lava vortex renders THEN the system SHALL display occasional lava splash effects at the edges
 
 ---
 
-### Requirement 10: Animation System Integration
+### Requirement 10: Stone Floor Terrain
 
-**User Story:** As a developer, I want the AnimatedTileRenderer integrated into the game update loop, so that tile animations are smooth and synchronized.
+**User Story:** As a player, I want floor tiles to look like volcanic stone, so that the entire arena feels like a volcanic environment.
 
 #### Acceptance Criteria
 
-10.1. WHEN GameEngine.update() is called THEN the system SHALL call AnimatedTileRenderer.update(deltaTime)
+10.1. WHEN floor tiles render in volcanic theme THEN the system SHALL display dark stone texture (#2a2a2a to #3a3a3a)
 
-10.2. WHEN ArenaManager.update() is called THEN the system SHALL call AnimatedTileRenderer.update(deltaTime) if not already called by GameEngine
+10.2. WHEN floor tiles render THEN the system SHALL display subtle crack patterns with faint orange glow
 
-10.3. WHEN AnimatedTileRenderer.getFrame() is called THEN the system SHALL return the current frame index based on:
-- Total elapsed time
-- Animation config frameDuration
-- Animation config frames count
+10.3. WHEN floor tiles render THEN the system SHALL vary texture slightly per tile for natural appearance
 
-10.4. WHEN AnimatedTileRenderer.getColor() is called THEN the system SHALL return the color for the current frame from the animation config colors array
+10.4. WHEN floor tiles near lava zones render THEN the system SHALL display increased glow/heat effect
 
 ---
 
-### Requirement 11: Render Pipeline Theme Awareness
+### Requirement 11: Volcanic Color Palette
 
-**User Story:** As a developer, I want the RenderPipeline to be aware of the current theme, so that theme-specific rendering decisions can be made throughout the pipeline.
+**User Story:** As a developer, I want volcanic theme colors defined as constants, so that colors are consistent throughout the arena.
 
 #### Acceptance Criteria
 
-11.1. WHEN RenderPipeline is constructed THEN the system SHALL accept and store the current map theme
+11.1. WHEN volcanic theme colors are needed THEN the system SHALL use VOLCANIC_COLORS constants with lavaCore (#ff4400), lavaGlow (#ff6600), lavaDark (#cc3300), fire (#ffaa00), ember (#ff8844), obsidian (#1a1a1a), stone (#2d2d2d), smoke (#4a4a4a), steam (#888888), crack (#ff2200)
 
-11.2. WHEN RenderPipeline.render() is called THEN the system SHALL pass theme information to renderers that need it
-
-11.3. WHEN theme-specific rendering is needed THEN renderers SHALL check the theme and branch accordingly
-
-11.4. WHEN a renderer does not support theme-specific rendering THEN the renderer SHALL use default (space theme) visuals
+11.2. WHEN rendering volcanic elements THEN the system SHALL select colors from VOLCANIC_COLORS, not hardcoded values
 
 ---
 
-### Requirement 12: Performance Considerations
+### Requirement 12: Map Configuration for Volcanic Theme
 
-**User Story:** As a player, I want the visual effects to run smoothly without impacting gameplay performance, so that the game remains responsive.
+**User Story:** As a developer, I want the map configuration to specify volcanic theme, so that the rendering system knows to use volcanic visuals.
 
 #### Acceptance Criteria
 
-12.1. WHEN animated effects render THEN the system SHALL limit particle counts to maximum 50 per effect type
+12.1. WHEN MapTheme type is defined THEN the type SHALL include 'volcanic' as a valid option
 
-12.2. WHEN hex grid overlay renders THEN the system SHALL only render hexes within the visible viewport plus 1 tile margin
+12.2. WHEN VORTEX_ARENA config is defined THEN the metadata SHALL include `theme: 'volcanic'`
 
-12.3. WHEN portal effect renders THEN the system SHALL use no more than 5 concentric rings
+12.3. WHEN GameEngine loads a map with volcanic theme THEN the system SHALL create VolcanicBackdropSystem
 
-12.4. WHEN circuit layer renders THEN the system SHALL limit node count to maximum 100 nodes
+12.4. WHEN renderers receive volcanic theme THEN the system SHALL use volcanic-specific rendering for all elements
 
-12.5. WHEN effects are disabled in settings (reduced motion) THEN the system SHALL skip animated effects and render static versions
+---
 
+### Requirement 13: Animated Tile System Integration
+
+**User Story:** As a developer, I want the AnimatedTileRenderer integrated into the game loop, so that all volcanic animations are smooth and synchronized.
+
+#### Acceptance Criteria
+
+13.1. WHEN GameEngine.update() is called THEN the system SHALL call AnimatedTileRenderer.update(deltaTime)
+
+13.2. WHEN HazardManager renders THEN the system SHALL use AnimatedTileRenderer for lava and fire effects
+
+13.3. WHEN TransportManager renders THEN the system SHALL use AnimatedTileRenderer for portal effects
+
+13.4. WHEN the vortex center renders THEN the system SHALL use AnimatedTileRenderer for lava swirl
+
+---
+
+### Requirement 14: Performance Optimization
+
+**User Story:** As a player, I want volcanic effects to run smoothly, so that visual fidelity doesn't impact gameplay.
+
+#### Acceptance Criteria
+
+14.1. WHEN particle effects render THEN the system SHALL limit total particles to 200 across all effect types
+
+14.2. WHEN animated tiles render THEN the system SHALL only render tiles within viewport plus 1 tile margin
+
+14.3. WHEN glow effects render THEN the system SHALL use cached gradients where possible
+
+14.4. WHEN reduced motion setting is enabled THEN the system SHALL display static volcanic visuals without animation

@@ -8,14 +8,17 @@
  * - Relative timestamp ("2 hours ago", "Yesterday")
  * - Left border accent based on outcome
  * - Hover effect with background highlight
+ * - Expandable recap summary (Requirements: 7.5)
  * 
  * Props:
  * - match: MatchResult data
  * - className: Additional CSS classes
  */
 
+import { useState } from 'react'
 import { cn } from '@/utils/helpers'
 import { getAvatarUrl } from '@/types/profile'
+import type { RecapPayload } from '@/types/recap'
 
 export interface MatchResult {
   id: string
@@ -27,6 +30,7 @@ export interface MatchResult {
   won: boolean
   xp_earned: number
   played_at: string
+  recap_data?: RecapPayload | null
 }
 
 interface MatchHistoryItemProps {
@@ -99,47 +103,110 @@ export function MatchHistoryItem({
   className,
 }: MatchHistoryItemProps) {
   const outcome = getOutcomeStyle(match.won)
+  const [expanded, setExpanded] = useState(false)
+  const hasRecap = !!match.recap_data
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-4 p-4 rounded-lg',
-        'bg-[var(--color-bg-card)] border-l-4',
-        outcome.border,
-        'hover:bg-[var(--color-bg-elevated)] transition-colors duration-150',
-        className
+    <div className={cn('rounded-lg overflow-hidden', className)}>
+      {/* Main Row */}
+      <div
+        onClick={() => hasRecap && setExpanded(!expanded)}
+        className={cn(
+          'flex items-center gap-4 p-4',
+          'bg-[var(--color-bg-card)] border-l-4',
+          outcome.border,
+          'hover:bg-[var(--color-bg-elevated)] transition-colors duration-150',
+          hasRecap && 'cursor-pointer'
+        )}
+      >
+        {/* Opponent Avatar */}
+        <img
+          src={getAvatarUrl(match.opponent.avatar_url, 'small')}
+          alt={match.opponent.display_name}
+          className="w-10 h-10 rounded-full bg-[var(--color-bg-elevated)]"
+        />
+
+        {/* Opponent Name */}
+        <div className="flex-1 min-w-0">
+          <div className="text-base font-medium text-white truncate">
+            {match.opponent.display_name}
+          </div>
+          <div className="text-xs text-[var(--color-text-muted)]">
+            {formatRelativeTime(match.played_at)}
+          </div>
+        </div>
+
+        {/* XP Earned */}
+        <div className="flex items-center gap-1 text-sm font-medium text-[#818cf8]">
+          <span>✨</span>
+          <span>{outcome.xpPrefix}{match.xp_earned} XP</span>
+        </div>
+
+        {/* Outcome Badge */}
+        <span className={cn(
+          'px-3 py-1 text-sm font-bold rounded-full',
+          outcome.badge
+        )}>
+          {outcome.text}
+        </span>
+
+        {/* Expand indicator */}
+        {hasRecap && (
+          <span className={cn(
+            'text-[var(--color-text-muted)] transition-transform',
+            expanded && 'rotate-180'
+          )}>
+            ▼
+          </span>
+        )}
+      </div>
+
+      {/* Recap Summary (Requirements: 7.5) */}
+      {expanded && match.recap_data && (
+        <div className="bg-[var(--color-bg-elevated)] px-4 py-3 border-t border-white/5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            {/* Question Stats */}
+            <div>
+              <div className="text-[var(--color-text-muted)] text-xs mb-1">Accuracy</div>
+              <div className="text-white font-medium">
+                {match.recap_data.question_stats.correct_count}/{match.recap_data.question_stats.total_questions}
+                <span className="text-[var(--color-text-muted)] ml-1">
+                  ({match.recap_data.question_stats.accuracy_percent.toFixed(0)}%)
+                </span>
+              </div>
+            </div>
+
+            {/* Combat Stats */}
+            <div>
+              <div className="text-[var(--color-text-muted)] text-xs mb-1">K/D</div>
+              <div className="text-white font-medium">
+                {match.recap_data.combat_stats.kills}/{match.recap_data.combat_stats.deaths}
+                <span className="text-[var(--color-text-muted)] ml-1">
+                  ({match.recap_data.combat_stats.deaths === 0 
+                    ? (match.recap_data.combat_stats.kills > 0 ? '∞' : '0.00')
+                    : match.recap_data.combat_stats.kd_ratio.toFixed(2)})
+                </span>
+              </div>
+            </div>
+
+            {/* XP Breakdown */}
+            <div>
+              <div className="text-[var(--color-text-muted)] text-xs mb-1">XP Breakdown</div>
+              <div className="text-white font-medium">
+                +{match.recap_data.xp_breakdown.total} XP
+              </div>
+            </div>
+
+            {/* Shot Accuracy */}
+            <div>
+              <div className="text-[var(--color-text-muted)] text-xs mb-1">Shot Accuracy</div>
+              <div className="text-white font-medium">
+                {match.recap_data.combat_stats.shot_accuracy.toFixed(0)}%
+              </div>
+            </div>
+          </div>
+        </div>
       )}
-    >
-      {/* Opponent Avatar */}
-      <img
-        src={getAvatarUrl(match.opponent.avatar_url, 'small')}
-        alt={match.opponent.display_name}
-        className="w-10 h-10 rounded-full bg-[var(--color-bg-elevated)]"
-      />
-
-      {/* Opponent Name */}
-      <div className="flex-1 min-w-0">
-        <div className="text-base font-medium text-white truncate">
-          {match.opponent.display_name}
-        </div>
-        <div className="text-xs text-[var(--color-text-muted)]">
-          {formatRelativeTime(match.played_at)}
-        </div>
-      </div>
-
-      {/* XP Earned */}
-      <div className="flex items-center gap-1 text-sm font-medium text-[#818cf8]">
-        <span>✨</span>
-        <span>{outcome.xpPrefix}{match.xp_earned} XP</span>
-      </div>
-
-      {/* Outcome Badge */}
-      <span className={cn(
-        'px-3 py-1 text-sm font-bold rounded-full',
-        outcome.badge
-      )}>
-        {outcome.text}
-      </span>
     </div>
   )
 }

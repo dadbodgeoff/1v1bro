@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Frontend - Nginx serving static React build
   frontend:
@@ -54,6 +52,10 @@ services:
       - XP_WIN=${XP_WIN:-100}
       - XP_LOSS=${XP_LOSS:-50}
       - ELO_STARTING=${ELO_STARTING:-1200}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY:-}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:5173}
     volumes:
       - ./secrets:/secrets:ro
     depends_on:

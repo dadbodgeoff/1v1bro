@@ -22,12 +22,15 @@
  */
 
 import { cn } from '@/utils/helpers'
-import type { InventoryItem, Rarity } from '@/types/cosmetic'
+import type { InventoryItem, Rarity, CosmeticType } from '@/types/cosmetic'
 import { getCosmeticTypeName } from '@/types/cosmetic'
 import { SkinPreview, type SkinId } from '@/components/shop/SkinPreview'
 import { DynamicImage } from '@/components/shop/DynamicImage'
 import { Badge } from '@/components/ui/Badge'
 import { EquipCTA } from './EquipCTA'
+
+// Types that are coming soon and not yet implemented
+const COMING_SOON_TYPES: CosmeticType[] = ['nameplate', 'effect', 'trail']
 
 export type DisplaySize = 'xl' | 'lg' | 'md' | 'sm'
 
@@ -243,6 +246,12 @@ export function InventoryItemBox({
         {/* Image/Preview Area */}
         <div className={cn('flex-1 flex items-center justify-center', config.imageWrapper)}>
           <div className="relative">
+            {/* Coming Soon overlay for unimplemented types */}
+            {COMING_SOON_TYPES.includes(cosmetic.type) && (
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 rounded-lg">
+                <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Coming Soon</span>
+              </div>
+            )}
             {hasDynamicSprite ? (
               <SkinPreview
                 spriteSheetUrl={cosmetic.sprite_sheet_url}

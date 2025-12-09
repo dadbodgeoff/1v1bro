@@ -487,8 +487,8 @@ describe('StatsDashboard Property Tests', () => {
               keys.includes('games_played') &&
               keys.includes('games_won') &&
               keys.includes('win_rate') &&
-              keys.includes('current_tier') &&
-              keys.includes('total_xp') &&
+              keys.includes('elo_rating') &&
+              keys.includes('bp_tier') &&
               keys.includes('best_streak')
             )
           }
@@ -497,17 +497,16 @@ describe('StatsDashboard Property Tests', () => {
       )
     })
 
-    it('shows dash for tier and XP when no active season', () => {
+    it('shows dash for tier when no active season', () => {
       fc.assert(
         fc.property(
           profileArb,
           (profile) => {
             // No battle pass progress = no active season
             const stats = getStatsConfig(profile as Profile, null)
-            const tierStat = stats.find(s => s.key === 'current_tier')
-            const xpStat = stats.find(s => s.key === 'total_xp')
+            const tierStat = stats.find(s => s.key === 'bp_tier')
             
-            return tierStat?.value === '—' && xpStat?.value === '—'
+            return tierStat?.value === '—'
           }
         ),
         { numRuns: 100 }
@@ -524,7 +523,7 @@ describe('StatsDashboard Property Tests', () => {
           })),
           (profile, battlePassProgress) => {
             const stats = getStatsConfig(profile as Profile, battlePassProgress as PlayerBattlePass)
-            const tierStat = stats.find(s => s.key === 'current_tier')
+            const tierStat = stats.find(s => s.key === 'bp_tier')
             
             return tierStat?.value === `Tier ${battlePassProgress.current_tier}`
           }
@@ -545,8 +544,8 @@ describe('StatsDashboard Property Tests', () => {
             const activeStats = getStatsConfig(profile as Profile, activeProgress as PlayerBattlePass)
             const inactiveStats = getStatsConfig(profile as Profile, inactiveProgress as PlayerBattlePass)
             
-            const activeTier = activeStats.find(s => s.key === 'current_tier')
-            const inactiveTier = inactiveStats.find(s => s.key === 'current_tier')
+            const activeTier = activeStats.find(s => s.key === 'bp_tier')
+            const inactiveTier = inactiveStats.find(s => s.key === 'bp_tier')
             
             return activeTier?.clickable === true && inactiveTier?.clickable === false
           }

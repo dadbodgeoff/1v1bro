@@ -54,6 +54,8 @@ class StatsRepository(BaseRepository):
         shots_fired_delta: int = 0,
         shots_hit_delta: int = 0,
         powerups_delta: int = 0,
+        elo_delta: int = 0,
+        new_tier: str = None,
     ) -> None:
         """
         Atomically increment player stats using stored procedure.
@@ -61,6 +63,8 @@ class StatsRepository(BaseRepository):
         Args:
             user_id: User UUID
             *_delta: Amount to add to each stat
+            elo_delta: ELO rating change
+            new_tier: New tier name if tier changed
         """
         self.client.rpc(
             "increment_player_stats",
@@ -79,6 +83,8 @@ class StatsRepository(BaseRepository):
                 "p_shots_fired_delta": shots_fired_delta,
                 "p_shots_hit_delta": shots_hit_delta,
                 "p_powerups_delta": powerups_delta,
+                "p_elo_delta": elo_delta,
+                "p_new_tier": new_tier,
             }
         ).execute()
 

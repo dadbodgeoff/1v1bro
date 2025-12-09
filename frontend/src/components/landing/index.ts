@@ -12,6 +12,7 @@ export { TechShowcase } from './TechShowcase'
 export { FooterCTA } from './FooterCTA'
 export { LoadingScreen } from './LoadingScreen'
 export { StickyMobileCTA } from './StickyMobileCTA'
+export { LandingDemo } from './LandingDemo'
 
 // Types
 export * from './types'

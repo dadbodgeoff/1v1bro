@@ -67,7 +67,7 @@ class Settings(BaseSettings):
     XP_PER_SECOND: float = 0.1
     XP_MIN: int = 50
     XP_MAX: int = 300
-    XP_PER_TIER: int = 1000
+    XP_PER_TIER: int = 400  # ~3-4 games per tier at avg 100-130 XP/game
 
     # ELO Settings (Requirements: 5.1, 5.4)
     ELO_STARTING: int = 1200
@@ -78,15 +78,19 @@ class Settings(BaseSettings):
     ELO_K_FACTOR_HIGH: int = 16
 
     # Game Settings
-    QUESTIONS_PER_GAME: int = 10
+    QUESTIONS_PER_GAME: int = 15
     QUESTION_TIME_SECONDS: int = 30
     QUESTION_TIME_MS: int = 30000  # Computed from QUESTION_TIME_SECONDS
     RECONNECT_TIMEOUT_SECONDS: int = 30
     LOBBY_ABANDON_TIMEOUT_SECONDS: int = 60
+    
+    # Question Freshness Settings (Requirements: 3.1)
+    QUESTION_LOOKBACK_DAYS: int = 7  # Days to look back for avoiding repeat questions
 
     # Scoring
     MAX_SCORE_PER_QUESTION: int = 1000
     SCORE_TIME_DIVISOR: int = 30
+    POINTS_PER_KILL: int = 50  # Kill bonus points added to game score
 
     # CORS (for development)
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173"]

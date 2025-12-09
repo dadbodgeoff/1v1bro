@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom'
 import { useGameStore } from '@/stores/gameStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useLobbyStore } from '@/stores/lobbyStore'
+import { getMapConfig } from '@/game/config/maps/map-loader'
 import { wsService } from '@/services/websocket'
 import type { PositionUpdatePayload } from '@/types/websocket'
 
@@ -30,12 +31,15 @@ export function useArenaGame(lobbyCode?: string) {
   const navigate = useNavigate()
   const userId = useAuthStore((s) => s.user?.id)
   const userName = useAuthStore((s) => s.user?.display_name)
-  const { players, player1Id, player2Id, playerSkins } = useLobbyStore()
+  const { players, player1Id, player2Id, playerSkins, mapSlug } = useLobbyStore()
   const { setLocalPlayer, setOpponent, reset } = useGameStore()
 
   // Player state
   const [isPlayer1, setIsPlayer1] = useState(true)
   const [opponentId, setOpponentId] = useState<string | null>(null)
+  
+  // Map configuration - load from slug
+  const mapConfig = getMapConfig(mapSlug)
   
   // Compute skins from playerSkins (received in game_start) for consistency
   // Both local player and opponent skins come from the same verified source
@@ -200,6 +204,10 @@ export function useArenaGame(lobbyCode?: string) {
     // Cosmetics
     equippedSkin,
     opponentSkin,
+
+    // Map
+    mapSlug,
+    mapConfig,
   }
 }
 

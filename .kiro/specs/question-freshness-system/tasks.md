@@ -1,0 +1,95 @@
+# Implementation Plan
+
+- [x] 1. Enhance QuestionsRepository with batch recording and analytics
+  - [x] 1.1 Add `record_questions_batch()` method for efficient bulk history insertion
+    - Accept list of history records with user_id, question_id, shown_at, was_correct, answer_time_ms, match_id
+    - Use upsert to handle potential duplicates
+    - _Requirements: 1.3, 1.4, 2.1, 2.2_
+  - [x] 1.2 Add `update_question_analytics()` method to update question counters
+    - Increment times_shown
+    - Conditionally increment times_correct
+    - Calculate rolling average for avg_answer_time_ms
+    - _Requirements: 5.1, 5.2, 5.3_
+  - [x] 1.3 Write property test for history recording completeness
+    - **Property 2: History recording completeness**
+    - **Validates: Requirements 1.3, 1.4**
+  - [x] 1.4 Write property test for question analytics update
+    - **Property 8: Question analytics update**
+    - **Validates: Requirements 5.1, 5.2, 5.3**
+
+- [x] 2. Enhance question selection algorithm for freshness
+  - [x] 2.1 Add `get_seen_question_ids()` method to repository
+    - Query user_question_history for question IDs seen by any user in list
+    - Filter by category and lookback period
+    - Return as Set for O(1) lookup
+    - _Requirements: 1.1, 4.1_
+  - [x] 2.2 Update `get_questions_for_match()` to use smart selection
+    - First pass: exclude all seen questions
+    - If not enough: include oldest-seen questions sorted by shown_at ASC
+    - Shuffle final selection
+    - _Requirements: 1.1, 1.2, 4.1, 4.2, 4.3_
+  - [x] 2.3 Write property test for fresh question exclusion
+    - **Property 1: Fresh questions are excluded from recent history**
+    - **Validates: Requirements 1.1, 4.1**
+  - [x] 2.4 Write property test for multi-player fresh prioritization
+    - **Property 7: Multi-player fresh prioritization**
+    - **Validates: Requirements 4.2, 4.3**
+
+- [x] 3. Implement adaptive lookback and graceful degradation
+  - [x] 3.1 Add `get_adaptive_lookback_days()` to QuestionService
+    - Base lookback: 7 days
+    - For pools < 100 questions: scale proportionally (pool_size / 100 * 7)
+    - Minimum lookback: 1 day
+    - _Requirements: 3.1, 3.2_
+  - [x] 3.2 Update question selection to handle pool exhaustion
+    - When all questions seen, reset by selecting oldest-seen
+    - Log warning when pool exhaustion > 80%
+    - _Requirements: 1.2, 3.3_
+  - [x] 3.3 Write property test for adaptive lookback calculation
+    - **Property 5: Adaptive lookback calculation**
+    - **Validates: Requirements 3.2**
+  - [x] 3.4 Write property test for pool exhaustion graceful degradation
+    - **Property 6: Pool exhaustion graceful degradation**
+    - **Validates: Requirements 1.2, 3.3**
+
+- [x] 4. Integrate history recording into GameService
+  - [x] 4.1 Add `record_match_questions()` method to QuestionService
+    - Accept user_ids, questions, answers, match_id
+    - Build history records for each user-question pair
+    - Call repository batch insert
+    - Update question analytics for each answered question
+    - _Requirements: 1.3, 1.4, 2.1, 2.2, 5.1, 5.2, 5.3_
+  - [x] 4.2 Call `record_match_questions()` in GameService.end_game()
+    - Extract questions from session
+    - Extract answers from player states
+    - Pass match_id from result
+    - Wrap in try/except to not fail game end
+    - _Requirements: 1.3, 1.4_
+  - [x] 4.3 Write property test for answer recording completeness
+    - **Property 3: Answer recording completeness**
+    - **Validates: Requirements 2.1, 2.2**
+
+- [x] 5. Add history retrieval and ordering
+  - [x] 5.1 Ensure `get_user_history()` returns records ordered by shown_at DESC
+    - Verify existing implementation has correct ordering
+    - Add explicit ORDER BY if missing
+    - _Requirements: 2.3_
+  - [x] 5.2 Write property test for history ordering
+    - **Property 4: History ordering**
+    - **Validates: Requirements 2.3**
+
+- [x] 6. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 7. Add configuration and logging
+  - [x] 7.1 Add QUESTION_LOOKBACK_DAYS to config
+    - Default: 7 days
+    - Environment variable override: QUESTION_LOOKBACK_DAYS
+    - _Requirements: 3.1_
+  - [x] 7.2 Add logging for question selection metrics
+    - Log fresh_count vs repeat_count per match
+    - Log pool exhaustion percentage warnings
+    - _Requirements: 3.3_
+
+- [x] 8. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

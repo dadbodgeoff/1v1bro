@@ -26,7 +26,8 @@ class MockImage {
   }
 }
 
-// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore - Mock Image class for testing
 global.Image = MockImage
 
 describe('DynamicAssetLoader', () => {

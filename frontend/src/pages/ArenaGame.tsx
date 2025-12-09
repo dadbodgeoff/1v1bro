@@ -47,6 +47,8 @@ export function ArenaGame() {
     // Cosmetics
     equippedSkin,
     opponentSkin,
+    // Map
+    mapConfig,
   } = useArenaGame(code)
 
   const { localPlayerId } = useGameStore()
@@ -123,7 +125,7 @@ export function ArenaGame() {
   const showRoundResult = status === 'round_result'
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden">
+    <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden safe-area-top">
       {/* Scoreboard header - scores only, no question */}
       <ArenaScoreboard
         localHealth={localHealth}
@@ -164,26 +166,34 @@ export function ArenaGame() {
             setRemoteEmoteCallback={setRemoteEmoteCallback}
             equippedSkin={equippedSkin}
             opponentSkin={opponentSkin}
+            mapConfig={mapConfig}
           />
 
           {/* Round result toast - overlaid on canvas */}
           <RoundResultOverlay visible={showRoundResult} />
 
           {/* Controls hint + Latency - bottom left corner of canvas */}
-          <div className="absolute bottom-3 left-3 hidden lg:flex items-center gap-2 z-10">
+          <div className="absolute bottom-3 left-3 flex items-center gap-2 z-10 safe-area-bottom">
             <LatencyIndicator />
-            <div className="px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">
+            {/* Desktop controls */}
+            <div className="hidden lg:block px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">
               <p className="text-[9px] text-neutral-500 font-mono">
                 WASD move · Click shoot · 1-4 answer
+              </p>
+            </div>
+            {/* Mobile controls */}
+            <div className="lg:hidden px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">
+              <p className="text-[9px] text-neutral-500 font-mono">
+                Tap to shoot · Drag to move
               </p>
             </div>
           </div>
 
           {/* Leave button - bottom right corner of canvas */}
-          <div className="absolute bottom-3 right-3 z-10">
+          <div className="absolute bottom-3 right-3 z-10 safe-area-bottom">
             <button
               onClick={leaveGame}
-              className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors"
+              className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px]"
             >
               Leave
             </button>

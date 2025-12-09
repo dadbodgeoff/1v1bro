@@ -135,12 +135,19 @@ class QuizHandler(BaseHandler):
             result = self.game_service.get_round_result(lobby_id)
             
             # Dispatch quiz rewards (combat buffs)
+            # Note: tick_system uses lobby_code as key, not lobby_id
             rewards = {}
-            game = tick_system._games.get(lobby_id)
+            game = tick_system._games.get(lobby_code)
             if game and game.buff_manager:
                 dispatcher = QuizRewardDispatcher(game.buff_manager)
                 rewards = dispatcher.dispatch_for_round(result, settings.QUESTION_TIME_MS)
                 logger.info(f"Quiz rewards dispatched: {rewards}")
+
+            # Detect if this is the final question (Q15)
+            # Requirements: 1.5 - Include is_final_question flag
+            session = self.game_service.get_session(lobby_id)
+            total_questions = len(session.questions) if session else 15
+            is_final_question = result["q_num"] >= total_questions
 
             await self.manager.broadcast_to_lobby(
                 lobby_code,
@@ -151,6 +158,7 @@ class QuizHandler(BaseHandler):
                     answers=result["answers"],
                     total_scores=result["total_scores"],
                     rewards=rewards,  # Include rewards in broadcast
+                    is_final_question=is_final_question,  # Signal imminent game end
                 )
             )
 
@@ -160,18 +168,31 @@ class QuizHandler(BaseHandler):
             if self.game_service.advance_question(lobby_id):
                 await self.send_question(lobby_code, lobby_id)
             else:
+                logger.info(f"[QUIZ] Q{result['q_num']} was final question, triggering game end for {lobby_code}")
                 await self.process_game_end(lobby_code, lobby_id)
 
         except Exception as e:
             logger.error(f"Error processing round end: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
 
     async def process_game_end(self, lobby_code: str, lobby_id: str) -> None:
-        """Process end of game and send final results with XP awards."""
+        """Process end of game and send final results with XP awards and recaps."""
+        logger.info(f"[GAME_END] Starting process_game_end for lobby_code={lobby_code}, lobby_id={lobby_id}")
         try:
+            # Stop the arena tick system first
+            tick_system.stop_game(lobby_code)
+            logger.info(f"[GAME_END] Stopped tick system for: {lobby_code}")
+            
+            logger.info(f"[GAME_END] Calling game_service.end_game for lobby_id={lobby_id}")
             result = await self.game_service.end_game(lobby_id)
+            logger.info(f"[GAME_END] end_game completed. Winner: {result.winner_id}, XP results: {result.xp_results is not None}")
+            
             await self.lobby_service.complete_game(lobby_id)
+            logger.info(f"[GAME_END] Lobby marked as complete")
 
-            # Build game_end message with XP results
+            # Build game_end message with XP results and recaps
+            # Requirements: 1.2 - Transition players to recap screen
             game_end_msg = build_game_end(
                 winner_id=result.winner_id,
                 final_scores={
@@ -184,16 +205,21 @@ class QuizHandler(BaseHandler):
                     result.player2_id: result.player2_total_time_ms,
                 },
                 won_by_time=result.won_by_time,
+                recaps=result.recaps if hasattr(result, 'recaps') else None,
             )
             
             # Add XP results if available from game result
             if hasattr(result, 'xp_results') and result.xp_results:
                 game_end_msg["payload"]["xp_results"] = result.xp_results
+                logger.info(f"[GAME_END] XP results attached to game_end message")
 
             await self.manager.broadcast_to_lobby(lobby_code, game_end_msg)
+            logger.info(f"[GAME_END] Broadcast game_end message to lobby {lobby_code}")
 
         except Exception as e:
-            logger.error(f"Error processing game end: {e}")
+            logger.error(f"[GAME_END] Error processing game end: {e}")
+            import traceback
+            logger.error(f"[GAME_END] Traceback: {traceback.format_exc()}")
 
     async def handle_resync_request(self, lobby_code: str, user_id: str, payload: dict) -> None:
         """

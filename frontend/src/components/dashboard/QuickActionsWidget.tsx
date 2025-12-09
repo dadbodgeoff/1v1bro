@@ -8,7 +8,7 @@ import { AnimatePresence } from 'framer-motion'
 import { useLobby } from '@/hooks/useLobby'
 import { useMatchmaking } from '@/hooks/useMatchmaking'
 import { useCategories } from '@/hooks/useCategories'
-import { QueueStatus, MatchFoundModal, CategorySelector } from '@/components/matchmaking'
+import { QueueStatus, MatchFoundModal, CategorySelector, MapSelector } from '@/components/matchmaking'
 
 interface QuickActionsWidgetProps {
   className?: string
@@ -31,6 +31,7 @@ export function QuickActionsWidget({ className = '' }: QuickActionsWidgetProps) 
   const { categories, isLoading: categoriesLoading } = useCategories()
   
   const [selectedCategory, setSelectedCategory] = useState('fortnite')
+  const [selectedMap, setSelectedMap] = useState('nexus-arena')
   const [joinCode, setJoinCode] = useState('')
   const [error, setError] = useState('')
   const [isCreating, setIsCreating] = useState(false)
@@ -42,7 +43,7 @@ export function QuickActionsWidget({ className = '' }: QuickActionsWidgetProps) 
     setError('')
     setIsFindingMatch(true)
     try {
-      await joinQueue(selectedCategory)
+      await joinQueue(selectedCategory, selectedMap)
     } catch (err) {
       if (err instanceof Error && !err.message.includes('cooldown')) {
         setError(err.message)
@@ -104,6 +105,13 @@ export function QuickActionsWidget({ className = '' }: QuickActionsWidgetProps) 
           categories={categories}
           disabled={isInQueue}
           isLoading={categoriesLoading}
+        />
+
+        {/* Map Selection */}
+        <MapSelector
+          selectedMap={selectedMap}
+          onSelect={setSelectedMap}
+          disabled={isInQueue}
         />
 
         {/* Find Match - Primary Action */}

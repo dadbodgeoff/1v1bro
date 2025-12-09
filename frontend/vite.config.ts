@@ -12,6 +12,29 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    // Disable source maps in production for security
+    sourcemap: false,
+    // Minification settings
+    minify: 'esbuild',
+    // Target modern browsers for smaller bundles
+    target: 'es2020',
+    // Rollup options for production optimization
+    rollupOptions: {
+      output: {
+        // Chunk splitting for better caching
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['framer-motion', 'clsx'],
+          state: ['zustand'],
+        },
+      },
+    },
+  },
+  // Drop console.log in production
+  esbuild: {
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+  },
   server: {
     proxy: {
       '/api': {

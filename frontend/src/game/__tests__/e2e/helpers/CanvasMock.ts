@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * CanvasMock - Mock canvas context for render testing in E2E tests
  * 

@@ -71,7 +71,16 @@ export async function fetchRecentMatches(limit: number = 5): Promise<RecentMatch
   }
 }
 
-function parseRecentMatch(data: any): RecentMatch {
+interface RawRecentMatch {
+  id?: string
+  winner?: string
+  loser?: string
+  winner_avatar?: string
+  loser_avatar?: string
+  timestamp?: string | number
+}
+
+function parseRecentMatch(data: RawRecentMatch): RecentMatch {
   return {
     id: data.id ?? crypto.randomUUID(),
     winner: data.winner ?? 'Unknown',

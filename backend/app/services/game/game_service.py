@@ -151,25 +151,32 @@ class GameService(BaseService):
         return self.scoring.get_round_result(session)
 
     def get_final_scores(self, lobby_id: str) -> dict:
-        """Get final scores for all players."""
+        """Get final scores for all players including kill breakdown."""
         session = SessionManager.get(lobby_id)
         if not session:
             raise GameStateError("Game session not found")
         
         return {
-            player_id: state.score
+            player_id: {
+                "total": state.score,
+                "quiz_score": state.score - state.kill_score,
+                "kill_score": state.kill_score,
+                "kill_count": state.kill_count,
+            }
             for player_id, state in session.player_states.items()
         }
 
     async def end_game(self, lobby_id: str) -> GameResult:
         """
-        End game and persist results.
+        End game and persist results with full recap data.
         
         Requirements: 8.2 - Publish match.completed event on game end.
         Requirements: 8.5 - Award XP to both players.
+        Requirements: 1.4, 2.5, 3.5, 4.5, 5.5, 6.6 - Build and include recap in game end.
         """
         from app.services.powerup_service import powerup_service
         from app.services.battlepass_service import BattlePassService
+        from app.services.recap_builder import RecapBuilder
         
         session = SessionManager.get(lobby_id)
         if not session:
@@ -194,21 +201,30 @@ class GameService(BaseService):
         player1_score = player1_state.score if player1_state and hasattr(player1_state, 'score') else 0
         player2_score = player2_state.score if player2_state and hasattr(player2_state, 'score') else 0
         
-        # Get combat stats for XP calculation
+        # Get combat stats for XP calculation and recap
         combat_stats = CombatTracker.get_stats(lobby_id)
-        player1_kills = combat_stats.get(player1_id, {}).get("kills", 0) if combat_stats else 0
-        player2_kills = combat_stats.get(player2_id, {}).get("kills", 0) if combat_stats else 0
-        player1_streak = combat_stats.get(player1_id, {}).get("max_streak", 0) if combat_stats else 0
-        player2_streak = combat_stats.get(player2_id, {}).get("max_streak", 0) if combat_stats else 0
+        player1_combat = combat_stats.get(player1_id, {}) if combat_stats else {}
+        player2_combat = combat_stats.get(player2_id, {}) if combat_stats else {}
+        player1_kills = player1_combat.get("kills", 0)
+        player2_kills = player2_combat.get("kills", 0)
+        player1_streak = player1_combat.get("max_streak", 0)
+        player2_streak = player2_combat.get("max_streak", 0)
         
         # Award XP to both players (Requirements: 8.5)
         xp_results = {}
+        xp_result1 = None
+        xp_result2 = None
+        logger.info(f"[XP] Starting XP award for game {result.game_id}")
+        logger.info(f"[XP] Player1: {player1_id}, kills={player1_kills}, streak={player1_streak}")
+        logger.info(f"[XP] Player2: {player2_id}, kills={player2_kills}, streak={player2_streak}")
+        logger.info(f"[XP] Duration: {result.duration_seconds}s, Winner: {result.winner_id}")
         try:
-            battlepass_service = BattlePassService(self._client)
+            battlepass_service = BattlePassService(self.client)
             
             # Player 1 XP
             if player1_id:
                 player1_won = result.winner_id == player1_id
+                logger.info(f"[XP] Awarding XP to player1 {player1_id}, won={player1_won}")
                 xp_result1 = await battlepass_service.award_match_xp(
                     user_id=player1_id,
                     won=player1_won,
@@ -249,6 +265,71 @@ class GameService(BaseService):
             logger.error(f"Failed to award XP for game {result.game_id}: {e}")
             # Don't fail the game end if XP awarding fails
         
+        # Build recap payloads for both players (Requirements: 1.4, 2.5, 3.5, 4.5, 5.5, 6.6)
+        recaps = {}
+        try:
+            recap_builder = RecapBuilder()
+            
+            # Get player names (use IDs as fallback)
+            player1_name = player1_id[:8] if player1_id else "Player 1"
+            player2_name = player2_id[:8] if player2_id else "Player 2"
+            
+            # Build recap for player 1
+            if player1_id:
+                player1_recap = recap_builder.build_recap(
+                    player_id=player1_id,
+                    session=session,
+                    xp_result=xp_result1,
+                    combat_tracker_stats=player1_combat,
+                    opponent_id=player2_id,
+                    opponent_name=player2_name,
+                    opponent_avatar=None,
+                    opponent_score=player2_score,
+                    opponent_combat_stats=player2_combat,
+                    winner_id=result.winner_id,
+                    is_tie=result.is_tie,
+                    won_by_time=result.won_by_time,
+                )
+                recaps[player1_id] = player1_recap.model_dump()
+            
+            # Build recap for player 2
+            if player2_id:
+                player2_recap = recap_builder.build_recap(
+                    player_id=player2_id,
+                    session=session,
+                    xp_result=xp_result2,
+                    combat_tracker_stats=player2_combat,
+                    opponent_id=player1_id,
+                    opponent_name=player1_name,
+                    opponent_avatar=None,
+                    opponent_score=player1_score,
+                    opponent_combat_stats=player1_combat,
+                    winner_id=result.winner_id,
+                    is_tie=result.is_tie,
+                    won_by_time=result.won_by_time,
+                )
+                recaps[player2_id] = player2_recap.model_dump()
+            
+            # Persist recap data to database (Requirements: 7.3)
+            if recaps and result.game_id:
+                await self.persistence.save_recap_data(
+                    game_id=result.game_id,
+                    player1_id=player1_id,
+                    player1_recap=recaps.get(player1_id, {}),
+                    player2_id=player2_id,
+                    player2_recap=recaps.get(player2_id, {}),
+                )
+            
+            # Attach recaps to result for WebSocket broadcast
+            result.recaps = recaps if recaps else None
+            
+            logger.info(f"Built recap payloads for game {result.game_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to build recap for game {result.game_id}: {e}")
+            # Don't fail the game end if recap building fails
+            result.recaps = None
+        
         # Publish match.completed event (Requirements: 8.2)
         event = MatchCompletedEvent(
             match_id=result.game_id,
@@ -266,6 +347,33 @@ class GameService(BaseService):
         except Exception as e:
             logger.error(f"Failed to publish match.completed event: {e}")
             # Don't fail the game end if event publishing fails
+        
+        # Record question history for freshness tracking (Requirements: 1.3, 1.4)
+        try:
+            # Build answer data from player states
+            answers = []
+            for player_id in player_ids:
+                player_state = session.player_states.get(player_id)
+                player_answers = []
+                if player_state and hasattr(player_state, 'answers'):
+                    for answer in player_state.answers:
+                        player_answers.append({
+                            'was_correct': answer.is_correct if hasattr(answer, 'is_correct') else None,
+                            'time_ms': answer.time_ms if hasattr(answer, 'time_ms') else None,
+                        })
+                answers.append(player_answers)
+            
+            # Record questions shown to both players
+            await self.question_service.record_match_questions(
+                user_ids=player_ids,
+                questions=session.questions,
+                answers=answers if any(answers) else None,
+                match_id=result.game_id,
+            )
+            logger.info(f"Recorded question history for game {result.game_id}")
+        except Exception as e:
+            logger.error(f"Failed to record question history for game {result.game_id}: {e}")
+            # Don't fail the game end if history recording fails
         
         # Cleanup
         powerup_service.cleanup_lobby(lobby_id)

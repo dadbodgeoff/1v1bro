@@ -1,11 +1,12 @@
 /**
  * useMatchHistory hook - Fetches match history for the current user.
- * Requirements: Profile Enterprise - Match History Section
+ * Requirements: Profile Enterprise - Match History Section, 7.5 - Return recap_data
  * 
  * Features:
  * - Paginated match history fetching
  * - Exponential backoff retry for network failures
  * - Load more functionality
+ * - Includes recap_data for each match (Requirements: 7.5)
  */
 
 import { useState, useCallback, useRef } from 'react'

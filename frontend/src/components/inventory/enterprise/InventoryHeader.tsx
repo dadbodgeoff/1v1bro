@@ -2,14 +2,14 @@
  * InventoryHeader - Enterprise Inventory Header Component
  * 
  * Features:
- * - Page title with gradient text (H1 level) - 4xl-5xl extrabold
+ * - Page title (H1 level) - 4xl-5xl extrabold white text
  * - Item count subtitle with sm medium weight, muted color
- * - 1.5px gradient accent bar below title
+ * - Subtle accent bar below title
  * - View toggle (grid/compact) with icon buttons
  * - Optional CollectionStats integration
  * 
  * Typography Hierarchy:
- * - H1: "My Collection" in 4xl-5xl (36-48px) extrabold with gradient text (indigo→purple)
+ * - H1: "My Collection" in 4xl-5xl (36-48px) extrabold white
  * - Subtitle: Item count in sm (14px) medium weight, muted color
  */
 
@@ -43,8 +43,8 @@ export function InventoryHeader({
       {/* Title Row */}
       <div className="flex items-start justify-between">
         <div>
-          {/* H1: Page Title with Gradient */}
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+          {/* H1: Page Title */}
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">
             My Collection
           </h1>
           
@@ -87,8 +87,8 @@ export function InventoryHeader({
         </div>
       </div>
 
-      {/* Gradient Accent Bar */}
-      <div className="h-[1.5px] bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-full" />
+      {/* Accent Bar */}
+      <div className="h-[1.5px] bg-white/20 rounded-full" />
 
       {/* Optional Inline Stats */}
       {stats && (

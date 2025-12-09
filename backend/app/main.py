@@ -6,7 +6,7 @@ Requirements: 7.5, 7.9, 7.10, 14.6
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, Request
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
@@ -142,16 +142,31 @@ async def metrics():
 app.include_router(v1_router, prefix=settings.API_V1_PREFIX)
 
 
+def extract_token_from_subprotocol(websocket: WebSocket) -> str | None:
+    """
+    Extract JWT token from Sec-WebSocket-Protocol header.
+    
+    The client sends the token as a subprotocol with format: auth.{jwt_token}
+    This prevents token exposure in server logs, browser history, and referrer headers.
+    """
+    protocols = websocket.headers.get("sec-websocket-protocol", "")
+    for protocol in protocols.split(","):
+        protocol = protocol.strip()
+        if protocol.startswith("auth."):
+            return protocol[5:]  # Remove "auth." prefix
+    return None
+
+
 # Matchmaking WebSocket endpoint
 @app.websocket("/ws/matchmaking")
 async def matchmaking_websocket_endpoint(
     websocket: WebSocket,
-    token: str = Query(None),
 ):
     """
     WebSocket endpoint for matchmaking queue updates.
     
-    Connect with: ws://host/ws/matchmaking?token={jwt_token}
+    Connect with: ws://host/ws/matchmaking
+    Authentication: Pass JWT token via Sec-WebSocket-Protocol header as 'auth.{token}'
     
     Send messages:
     - join_queue: Join the matchmaking queue
@@ -167,6 +182,9 @@ async def matchmaking_websocket_endpoint(
     - error: When an error occurs
     """
     from app.services.matchmaking_service import get_matchmaking_service
+    
+    # Extract token from Sec-WebSocket-Protocol header (security: not in URL)
+    token = extract_token_from_subprotocol(websocket)
     
     # Validate token
     user_id = None
@@ -190,7 +208,8 @@ async def matchmaking_websocket_endpoint(
     
     try:
         print(f"[WS-MM] Connecting user {user_id} to matchmaking")
-        await manager.connect(websocket, matchmaking_lobby, user_id)
+        # Accept with the auth subprotocol to complete the handshake
+        await manager.connect(websocket, matchmaking_lobby, user_id, subprotocol=f"auth.{token}")
         
         # Send confirmation - client should join queue after receiving this
         await manager.send_personal(websocket, {
@@ -207,19 +226,21 @@ async def matchmaking_websocket_endpoint(
                 if msg_type == "ping":
                     await manager.send_personal(websocket, {"type": "pong"})
                 
-                elif msg_type == "join_queue":
+                elif msg_type == "queue_join":
                     # Join queue via WebSocket (ensures connection is ready)
                     try:
                         service = get_matchmaking_service()
                         payload = data.get("payload", {})
                         category = payload.get("category", "fortnite")
+                        map_slug = payload.get("map_slug", "nexus-arena")
                         ticket = await service.join_queue(
                             player_id=user_id,
                             player_name=user_email or "Unknown",
                             category=category,
+                            map_slug=map_slug,
                         )
                         # queue_joined event is sent by the service
-                        print(f"[WS-MM] User {user_id} joined queue via WebSocket (category: {category})")
+                        print(f"[WS-MM] User {user_id} joined queue via WebSocket (category: {category}, map: {map_slug})")
                     except ValueError as e:
                         error_msg = str(e)
                         await manager.send_personal(websocket, {
@@ -255,17 +276,20 @@ async def matchmaking_websocket_endpoint(
 async def websocket_endpoint(
     websocket: WebSocket,
     lobby_code: str,
-    token: str = Query(None),
 ):
     """
     WebSocket endpoint for real-time game communication.
     
-    Connect with: ws://host/ws/{lobby_code}?token={jwt_token}
+    Connect with: ws://host/ws/{lobby_code}
+    Authentication: Pass JWT token via Sec-WebSocket-Protocol header as 'auth.{token}'
     
     Close codes:
     - 4001: Authentication required/invalid
     - 4003: Server full or lobby full
     """
+    # Extract token from Sec-WebSocket-Protocol header (security: not in URL)
+    token = extract_token_from_subprotocol(websocket)
+    
     # Validate token
     user_id = None
     
@@ -292,16 +316,17 @@ async def websocket_endpoint(
     
     # Create services
     client = get_supabase_client()
-    service_client = get_supabase_service_client()  # Use service client for cosmetics to bypass RLS
+    service_client = get_supabase_service_client()  # Use service client to bypass RLS
     lobby_service = LobbyService(client)
-    game_service = GameService(client)
+    game_service = GameService(service_client)  # Use service client for XP/battlepass updates
     cosmetics_service = CosmeticsService(service_client)
     handler = GameHandler(lobby_service, game_service, cosmetics_service)
     
     # Connect to lobby
     try:
         print(f"[WS] Connecting user {user_id} to lobby {lobby_code}")
-        await manager.connect(websocket, lobby_code, user_id)
+        # Accept with the auth subprotocol to complete the handshake
+        await manager.connect(websocket, lobby_code, user_id, subprotocol=f"auth.{token}")
         print(f"[WS] Connected, calling handle_connect")
         
         # Send initial lobby state and notify others

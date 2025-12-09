@@ -155,7 +155,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
       correctCount,
       totalQuestions: state.questions.length,
       timeSpent: Math.round((Date.now() - state.startTime) / 1000),
-      difficulty: state.config.difficulty || 'mixed' as any,
+      difficulty: state.config.difficulty || 'casual',
       rank: calculateRank(percentage),
       breakdown,
     }

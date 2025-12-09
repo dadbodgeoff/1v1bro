@@ -76,7 +76,13 @@ class MatchmakingService:
         
         logger.info("Matchmaking service stopped")
     
-    async def join_queue(self, player_id: str, player_name: str, category: str = "fortnite") -> MatchTicket:
+    async def join_queue(
+        self,
+        player_id: str,
+        player_name: str,
+        category: str = "fortnite",
+        map_slug: str = "nexus-arena",
+    ) -> MatchTicket:
         """
         Add player to matchmaking queue.
         
@@ -84,6 +90,7 @@ class MatchmakingService:
             player_id: Player UUID
             player_name: Display name
             category: Trivia category (fortnite, nfl, etc.)
+            map_slug: Arena map slug (nexus-arena, vortex-arena)
             
         Returns:
             Created MatchTicket
@@ -100,12 +107,13 @@ class MatchmakingService:
         if await queue_manager.contains(player_id):
             raise ValueError("ALREADY_IN_QUEUE")
         
-        # Create ticket with category
+        # Create ticket with category and map
         ticket = MatchTicket(
             player_id=player_id,
             player_name=player_name,
             queue_time=datetime.utcnow(),
             game_mode=category,  # Use game_mode field for category
+            map_slug=map_slug,  # Arena map selection
         )
         
         # Add to queue
@@ -282,12 +290,13 @@ class MatchmakingService:
             await self.repo.update_ticket_status(player1.player_id, "matched")
             await self.repo.update_ticket_status(player2.player_id, "matched")
             
-            print(f"[Matchmaking] Creating lobby with category: {player1.game_mode}")
-            # Create lobby with player1 as host and matched category
+            print(f"[Matchmaking] Creating lobby with category: {player1.game_mode}, map: {player1.map_slug}")
+            # Create lobby with player1 as host, matched category, and map
             lobby = await self.lobby_service.create_lobby(
                 host_id=player1.player_id,
                 game_mode=player1.game_mode,
                 category=player1.game_mode,  # Pass category for trivia questions
+                map_slug=player1.map_slug,  # Pass map for arena selection
             )
             print(f"[Matchmaking] Lobby created: {lobby.get('code')}")
             
@@ -298,17 +307,19 @@ class MatchmakingService:
             )
             print(f"[Matchmaking] Player2 joined lobby")
             
-            # Send match_found events
+            # Send match_found events with map_slug
             match_event_p1 = MatchFoundEvent(
                 lobby_code=lobby["code"],
                 opponent_id=player2.player_id,
                 opponent_name=player2.player_name,
+                map_slug=player1.map_slug,
             )
             
             match_event_p2 = MatchFoundEvent(
                 lobby_code=lobby["code"],
                 opponent_id=player1.player_id,
                 opponent_name=player1.player_name,
+                map_slug=player1.map_slug,
             )
             
             # Send match_found events with retry for players not yet connected

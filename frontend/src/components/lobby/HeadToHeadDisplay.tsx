@@ -17,12 +17,20 @@ interface HeadToHeadDisplayProps {
   isWaitingForOpponent: boolean
   /** Trivia category for this lobby */
   category?: string
+  /** Arena map for this lobby */
+  mapSlug?: string
 }
 
 /** Category display info */
 const categoryInfo: Record<string, { name: string; icon: string }> = {
   fortnite: { name: 'Fortnite', icon: '🎮' },
   nfl: { name: 'NFL Football', icon: '🏈' },
+}
+
+/** Map display info */
+const mapInfo: Record<string, { name: string; icon: string }> = {
+  'nexus-arena': { name: 'Nexus Arena', icon: '🌌' },
+  'vortex-arena': { name: 'Vortex Arena', icon: '🌋' },
 }
 
 /**
@@ -47,21 +55,32 @@ export function HeadToHeadDisplay({
   opponent,
   isWaitingForOpponent,
   category = 'fortnite',
+  mapSlug = 'nexus-arena',
 }: HeadToHeadDisplayProps) {
   const catInfo = categoryInfo[category] || { name: category, icon: '❓' }
+  const arenaInfo = mapInfo[mapSlug] || { name: mapSlug, icon: '🗺️' }
   
   return (
     <div 
       className="flex flex-col items-center gap-4"
       data-testid="head-to-head-display"
     >
-      {/* Category Badge */}
-      <div 
-        className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.08] rounded-full"
-        data-testid="category-badge"
-      >
-        <span className="text-lg">{catInfo.icon}</span>
-        <span className="text-sm font-medium text-neutral-300">{catInfo.name} Trivia</span>
+      {/* Category & Map Badges */}
+      <div className="flex items-center gap-3">
+        <div 
+          className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.08] rounded-full"
+          data-testid="category-badge"
+        >
+          <span className="text-lg">{catInfo.icon}</span>
+          <span className="text-sm font-medium text-neutral-300">{catInfo.name} Trivia</span>
+        </div>
+        <div 
+          className="flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.08] rounded-full"
+          data-testid="map-badge"
+        >
+          <span className="text-lg">{arenaInfo.icon}</span>
+          <span className="text-sm font-medium text-neutral-300">{arenaInfo.name}</span>
+        </div>
       </div>
       
       {/* Players */}

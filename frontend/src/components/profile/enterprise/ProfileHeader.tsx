@@ -83,7 +83,9 @@ export function ProfileHeader({
   const [showTierOnAvatar, setShowTierOnAvatar] = useState(false)
 
   const tierProgress = calculateTierProgress(battlePassProgress)
-  const currentTier = battlePassProgress?.current_tier ?? 0
+  // Treat tier 0 as tier 1 for display (legacy users before unified progression)
+  const rawTier = battlePassProgress?.current_tier ?? 0
+  const currentTier = rawTier === 0 ? 1 : rawTier
   const hasActiveSeason = battlePassProgress?.season?.is_active ?? false
 
   // Animate progress on mount

@@ -28,7 +28,7 @@ interface UseMatchmakingReturn {
   cooldownSeconds: number | null;
   selectedCategory: string | null;
   
-  joinQueue: (category?: string) => Promise<void>;
+  joinQueue: (category?: string, mapSlug?: string) => Promise<void>;
   leaveQueue: () => Promise<void>;
 }
 
@@ -54,6 +54,7 @@ export function useMatchmaking(): UseMatchmakingReturn {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const pendingCategoryRef = useRef<string>('fortnite');
+  const pendingMapSlugRef = useRef<string>('nexus-arena');
   
   // Update queue time every second
   useEffect(() => {
@@ -76,13 +77,14 @@ export function useMatchmaking(): UseMatchmakingReturn {
   const isJoiningRef = useRef(false);
   
   // Connect to matchmaking WebSocket and handle all queue operations
-  const connectAndJoinQueue = useCallback((category: string = 'fortnite') => {
+  const connectAndJoinQueue = useCallback((category: string = 'fortnite', mapSlug: string = 'nexus-arena') => {
     pendingCategoryRef.current = category;
+    pendingMapSlugRef.current = mapSlug;
     setSelectedCategory(category);
     
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      // Already connected, just send join message with category
-      wsRef.current.send(JSON.stringify({ type: 'join_queue', payload: { category } }));
+      // Already connected, just send join message with category and map
+      wsRef.current.send(JSON.stringify({ type: 'queue_join', payload: { category, map_slug: mapSlug } }));
       return;
     }
     
@@ -95,10 +97,12 @@ export function useMatchmaking(): UseMatchmakingReturn {
     const isDev = import.meta.env.DEV;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = isDev ? 'localhost:8000' : window.location.host;
-    const wsUrl = `${protocol}//${host}/ws/matchmaking?token=${token}`;
+    const wsUrl = `${protocol}//${host}/ws/matchmaking`;
     
     console.log('[Matchmaking] Connecting to WebSocket...');
-    const ws = new WebSocket(wsUrl);
+    // Pass token via Sec-WebSocket-Protocol header instead of query params
+    // This prevents token exposure in server logs, browser history, and referrer headers
+    const ws = new WebSocket(wsUrl, [`auth.${token}`]);
     wsRef.current = ws;
     
     ws.onopen = () => {
@@ -112,10 +116,16 @@ export function useMatchmaking(): UseMatchmakingReturn {
         
         switch (message.type) {
           case 'matchmaking_connected':
-            // Connection confirmed - now join the queue with category
+            // Connection confirmed - now join the queue with category and map
             if (isJoiningRef.current) {
-              console.log('[Matchmaking] Sending join_queue message with category:', pendingCategoryRef.current);
-              ws.send(JSON.stringify({ type: 'join_queue', payload: { category: pendingCategoryRef.current } }));
+              console.log('[Matchmaking] Sending queue_join message with category:', pendingCategoryRef.current, 'map:', pendingMapSlugRef.current);
+              ws.send(JSON.stringify({ 
+                type: 'queue_join', 
+                payload: { 
+                  category: pendingCategoryRef.current,
+                  map_slug: pendingMapSlugRef.current 
+                } 
+              }));
             }
             break;
             
@@ -220,10 +230,10 @@ export function useMatchmaking(): UseMatchmakingReturn {
     }
   }, [cooldownSeconds]);
   
-  const joinQueue = useCallback(async (category: string = 'fortnite') => {
+  const joinQueue = useCallback(async (category: string = 'fortnite', mapSlug: string = 'nexus-arena') => {
     // Connect to WebSocket first, then join queue via WebSocket message
     // This ensures the connection is ready before we're matched
-    connectAndJoinQueue(category);
+    connectAndJoinQueue(category, mapSlug);
   }, [connectAndJoinQueue]);
   
   const leaveQueue = useCallback(async () => {

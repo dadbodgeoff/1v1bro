@@ -397,6 +397,7 @@ class ProfileService:
                 won=won,
                 xp_earned=xp_earned,
                 played_at=match.get("played_at"),
+                recap_data=match.get("recap_data"),  # Requirements: 7.5
             ))
         
         has_more = (offset + len(matches)) < total

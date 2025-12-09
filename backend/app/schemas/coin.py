@@ -52,6 +52,7 @@ class CoinPackage(BaseSchema):
     sort_order: int = Field(default=0, description="Display order")
     is_active: bool = Field(default=True, description="Whether package is available")
     stripe_price_id: Optional[str] = Field(None, description="Stripe Price ID")
+    stripe_product_id: Optional[str] = Field(None, description="Stripe Product ID")
     
     @field_validator('total_coins')
     @classmethod

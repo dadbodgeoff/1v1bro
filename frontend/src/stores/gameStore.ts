@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { RecapPayload } from '@/types/recap'
 
 // Minimal game state for Phase 4 (no position, no power-ups yet)
 interface Question {
@@ -48,6 +49,9 @@ interface GameState {
   // Results
   roundResult: RoundResult | null
   finalResult: FinalResult | null
+  
+  // Recap (MATCH AUTO-END RECAP)
+  recap: RecapPayload | null
 
   // Actions
   setLobbyId: (id: string) => void
@@ -61,6 +65,7 @@ interface GameState {
   updateScores: (localScore: number, opponentScore: number) => void
   setRoundResult: (result: RoundResult) => void
   setFinalResult: (result: FinalResult) => void
+  setRecap: (recap: RecapPayload | null) => void
   reset: () => void
 }
 
@@ -80,6 +85,7 @@ const initialState = {
   answerSubmitted: false,
   roundResult: null,
   finalResult: null,
+  recap: null,
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -119,6 +125,8 @@ export const useGameStore = create<GameState>((set) => ({
 
   setFinalResult: (finalResult) =>
     set({ finalResult, status: 'finished' }),
+
+  setRecap: (recap) => set({ recap }),
 
   reset: () => set(initialState),
 }))

@@ -9,6 +9,20 @@ import type { Cosmetic, InventoryItem, Loadout, ShopFilters } from '../types/cos
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
+/**
+ * Raw loadout with full cosmetic objects (as returned by backend)
+ */
+export interface LoadoutWithDetails {
+  user_id?: string;
+  skin_equipped: Cosmetic | null;
+  emote_equipped: Cosmetic | null;
+  banner_equipped: Cosmetic | null;
+  nameplate_equipped: Cosmetic | null;
+  effect_equipped: Cosmetic | null;
+  trail_equipped: Cosmetic | null;
+  playercard_equipped: Cosmetic | null;
+}
+
 interface UseCosmeticsReturn {
   // Shop
   shopItems: Cosmetic[];
@@ -22,6 +36,8 @@ interface UseCosmeticsReturn {
   
   // Loadout
   loadout: Loadout | null;
+  loadoutWithDetails: LoadoutWithDetails | null;  // Full cosmetic objects for display
+  loadoutLoading: boolean;
   fetchLoadout: () => Promise<void>;
   
   // Actions
@@ -40,6 +56,8 @@ export function useCosmetics(): UseCosmeticsReturn {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [inventoryLoading, setInventoryLoading] = useState(false);
   const [loadout, setLoadout] = useState<Loadout | null>(null);
+  const [loadoutWithDetails, setLoadoutWithDetails] = useState<LoadoutWithDetails | null>(null);
+  const [loadoutLoading, setLoadoutLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Get token from auth store instead of localStorage
@@ -114,6 +132,7 @@ export function useCosmetics(): UseCosmeticsReturn {
 
   const fetchLoadout = useCallback(async () => {
     setError(null);
+    setLoadoutLoading(true);
     try {
       // Fixed: endpoint is /cosmetics/me/equipped not /cosmetics/equipped
       const response = await fetch(`${API_BASE}/api/v1/cosmetics/me/equipped`, {
@@ -126,6 +145,19 @@ export function useCosmetics(): UseCosmeticsReturn {
       const data = await response.json();
       // Handle API response wrapper
       const rawLoadout = data.data || data;
+      
+      // Store full loadout with cosmetic details for display components
+      const detailedLoadout: LoadoutWithDetails = {
+        user_id: rawLoadout.user_id,
+        skin_equipped: rawLoadout.skin_equipped || null,
+        emote_equipped: rawLoadout.emote_equipped || null,
+        banner_equipped: rawLoadout.banner_equipped || null,
+        nameplate_equipped: rawLoadout.nameplate_equipped || null,
+        effect_equipped: rawLoadout.effect_equipped || null,
+        trail_equipped: rawLoadout.trail_equipped || null,
+        playercard_equipped: rawLoadout.playercard_equipped || null,
+      };
+      setLoadoutWithDetails(detailedLoadout);
       
       // Transform backend schema (skin_equipped: Cosmetic) to frontend schema (skin: string)
       // Backend returns full Cosmetic objects, frontend expects just IDs
@@ -142,6 +174,8 @@ export function useCosmetics(): UseCosmeticsReturn {
       setLoadout(transformedLoadout);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoadoutLoading(false);
     }
   }, [getAuthHeaders]);
 
@@ -253,6 +287,8 @@ export function useCosmetics(): UseCosmeticsReturn {
     inventoryLoading,
     fetchInventory,
     loadout,
+    loadoutWithDetails,
+    loadoutLoading,
     fetchLoadout,
     purchaseCosmetic,
     equipCosmetic,

@@ -88,10 +88,10 @@ class QueueManager:
     
     async def find_match(self) -> Optional[Tuple[MatchTicket, MatchTicket]]:
         """
-        Find two players to match using FIFO ordering within same category.
+        Find two players to match using FIFO ordering within same category AND map.
         
-        Only matches players with the same game_mode (category).
-        Returns the two longest-waiting players in the same category.
+        Only matches players with the same game_mode (category) AND map_slug.
+        Returns the two longest-waiting players in the same category+map combination.
         
         Returns:
             Tuple of (player1, player2) tickets if match found, None otherwise
@@ -106,22 +106,23 @@ class QueueManager:
                 key=lambda t: t.queue_time
             )
             
-            # Group by category and find first category with 2+ players
-            categories: Dict[str, List[MatchTicket]] = {}
+            # Group by category+map combination and find first with 2+ players
+            # Key is (game_mode, map_slug) tuple
+            groups: Dict[Tuple[str, str], List[MatchTicket]] = {}
             for ticket in sorted_tickets:
-                cat = ticket.game_mode
-                if cat not in categories:
-                    categories[cat] = []
-                categories[cat].append(ticket)
+                key = (ticket.game_mode, ticket.map_slug)
+                if key not in groups:
+                    groups[key] = []
+                groups[key].append(ticket)
             
-            # Find first category with at least 2 players (by oldest player)
+            # Find first group with at least 2 players (by oldest player)
             for ticket in sorted_tickets:
-                cat = ticket.game_mode
-                if len(categories.get(cat, [])) >= 2:
-                    # Match the two longest-waiting players in this category
-                    cat_tickets = categories[cat]
-                    player1 = cat_tickets[0]
-                    player2 = cat_tickets[1]
+                key = (ticket.game_mode, ticket.map_slug)
+                if len(groups.get(key, [])) >= 2:
+                    # Match the two longest-waiting players in this group
+                    group_tickets = groups[key]
+                    player1 = group_tickets[0]
+                    player2 = group_tickets[1]
                     
                     # Remove both from queue atomically
                     del self._queue[player1.player_id]
@@ -130,7 +131,7 @@ class QueueManager:
                     logger.info(
                         f"Matched players {player1.player_id} (waited {player1.wait_seconds:.1f}s) "
                         f"and {player2.player_id} (waited {player2.wait_seconds:.1f}s) "
-                        f"in category {cat}"
+                        f"in category {ticket.game_mode}, map {ticket.map_slug}"
                     )
                     
                     return (player1, player2)

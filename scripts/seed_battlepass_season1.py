@@ -390,7 +390,7 @@ def create_season():
         "start_date": now.isoformat(),
         "end_date": (now + timedelta(days=90)).isoformat(),
         "is_active": True,
-        "xp_per_tier": 1000,
+        "xp_per_tier": 400,  # ~3-4 games per tier
     }
     
     # Check if season exists
@@ -642,7 +642,7 @@ def main():
     print("  • Total Cosmetics: 20 (6 skins + 6 playercards + 8 emotes)")
     print("  • Static Rewards: 15 (coins, XP boosts)")
     print("  • Total Tiers: 35")
-    print("  • XP per Tier: 1000")
+    print("  • XP per Tier: 400 (~3-4 games per tier)")
     print("  • Season Duration: 90 days")
     print("=" * 60)
 

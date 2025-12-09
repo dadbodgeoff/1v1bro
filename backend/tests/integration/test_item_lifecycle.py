@@ -94,13 +94,13 @@ class TestBattlePassRewardFlow:
             DEFAULT_XP_PER_TIER,
         )
         
-        # Given: User at tier 1 with 900 XP (100 away from tier 2)
+        # Given: User at tier 1 with XP just below threshold
         # When: User wins a match (100 XP)
         # Then: User should advance to tier 2
         
         # This tests the calculation logic
-        current_xp = 900
-        xp_per_tier = DEFAULT_XP_PER_TIER  # 1000
+        xp_per_tier = DEFAULT_XP_PER_TIER
+        current_xp = xp_per_tier - XP_WIN  # Just below threshold
         xp_to_add = XP_WIN  # 100
         
         new_xp = current_xp + xp_to_add
@@ -165,13 +165,14 @@ class TestBattlePassRewardFlow:
         from app.services.battlepass_service import DEFAULT_XP_PER_TIER
         
         # Given: User at tier 1 with 0 XP
-        # When: User receives 2500 XP (enough for 2 full tiers)
+        # When: User receives enough XP for exactly 2 full tiers + some leftover
         # Then: Tiers 2 and 3 should be claimable
         
         current_tier = 1
         current_xp = 0
-        xp_to_add = 2500
-        xp_per_tier = DEFAULT_XP_PER_TIER  # 1000
+        xp_per_tier = DEFAULT_XP_PER_TIER
+        leftover = 50
+        xp_to_add = (xp_per_tier * 2) + leftover  # Exactly 2 tiers + leftover
         
         new_xp = current_xp + xp_to_add
         new_tier = current_tier
@@ -184,7 +185,7 @@ class TestBattlePassRewardFlow:
         claimable = list(range(current_tier + 1, new_tier + 1))
         
         assert new_tier == 3, "User should be at tier 3"
-        assert new_xp == 500, "Remaining XP should be 500"
+        assert new_xp == leftover, f"Remaining XP should be {leftover}"
         assert claimable == [2, 3], "Tiers 2 and 3 should be claimable"
 
 

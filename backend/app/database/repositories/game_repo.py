@@ -72,6 +72,18 @@ class GameRepository(BaseRepository):
         result = self._table().select("*").eq("lobby_id", lobby_id).execute()
         return result.data[0] if result.data else None
 
+    async def update_recap_data(self, game_id: str, recap_data: dict) -> None:
+        """
+        Update recap_data JSONB column for a game.
+        
+        Requirements: 7.3 - Persist recap data to games table.
+        
+        Args:
+            game_id: The game record ID
+            recap_data: Dict mapping player_id to RecapPayload
+        """
+        self._table().update({"recap_data": recap_data}).eq("id", game_id).execute()
+
     async def get_user_history(
         self,
         user_id: str,

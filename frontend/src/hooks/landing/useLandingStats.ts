@@ -37,7 +37,7 @@ function getCachedStats(): LandingStats | null {
       return {
         ...parsed,
         lastUpdated: new Date(parsed.lastUpdated),
-        recentMatches: parsed.recentMatches.map((m: any) => ({
+        recentMatches: parsed.recentMatches.map((m: { timestamp: string; winner: string; loser: string; category: string }) => ({
           ...m,
           timestamp: new Date(m.timestamp),
         })),

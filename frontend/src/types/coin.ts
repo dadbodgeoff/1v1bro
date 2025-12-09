@@ -18,6 +18,7 @@ export interface CoinPackage {
   sort_order: number;
   is_active: boolean;
   stripe_price_id?: string;
+  stripe_product_id?: string;
 }
 
 /**

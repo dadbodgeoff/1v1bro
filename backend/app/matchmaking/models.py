@@ -20,7 +20,8 @@ class MatchTicket:
     player_name: str
     queue_time: datetime
     id: str = field(default_factory=lambda: str(uuid4()))
-    game_mode: str = "fortnite"
+    game_mode: str = "fortnite"  # trivia category
+    map_slug: str = "nexus-arena"  # arena map
     
     @property
     def wait_seconds(self) -> float:
@@ -34,6 +35,7 @@ class MatchTicket:
             "player_id": self.player_id,
             "player_name": self.player_name,
             "game_mode": self.game_mode,
+            "map_slug": self.map_slug,
             "queue_time": self.queue_time.isoformat(),
             "status": "waiting",
         }
@@ -50,6 +52,7 @@ class MatchTicket:
             player_id=data["player_id"],
             player_name=data.get("player_name", "Unknown"),
             game_mode=data.get("game_mode", "fortnite"),
+            map_slug=data.get("map_slug", "nexus-arena"),
             queue_time=queue_time,
         )
 
@@ -88,6 +91,7 @@ class MatchFoundEvent:
     lobby_code: str
     opponent_id: str
     opponent_name: str
+    map_slug: str = "nexus-arena"
     
     def to_dict(self) -> dict:
         """Convert to WebSocket payload."""
@@ -95,6 +99,7 @@ class MatchFoundEvent:
             "lobby_code": self.lobby_code,
             "opponent_id": self.opponent_id,
             "opponent_name": self.opponent_name,
+            "map_slug": self.map_slug,
         }
 
 

@@ -74,7 +74,7 @@ export function Sidebar({ activeItem, isCollapsed, onToggle, badges = {} }: Side
         className={`
           fixed lg:relative z-50 h-screen
           bg-[var(--color-bg-card)] border-r border-[var(--color-border-subtle)]
-          flex flex-col overflow-hidden
+          flex flex-col overflow-hidden safe-area-y
           ${isCollapsed ? 'lg:w-0' : 'lg:w-60'}
         `}
       >

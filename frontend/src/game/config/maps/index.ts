@@ -21,3 +21,13 @@ export {
 // Export map configurations
 export { NEXUS_ARENA } from './nexus-arena'
 export { VORTEX_ARENA } from './vortex-arena'
+
+// Export map loading utilities
+export {
+  getMapConfig,
+  getAvailableMaps,
+  isValidMapSlug,
+  getMapInfo,
+  AVAILABLE_MAPS,
+  type MapInfo,
+} from './map-loader'

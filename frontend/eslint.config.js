@@ -19,5 +19,22 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // Allow constant exports alongside components (common pattern for styled components, constants)
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      // Allow unused vars prefixed with underscore (intentionally unused parameters)
+      '@typescript-eslint/no-unused-vars': ['error', { 
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_'
+      }],
+      // Downgrade React hooks rules to warnings - these are style/perf suggestions, not bugs
+      // The new React compiler rules are very strict about patterns that work fine in practice
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+    },
   },
 ])

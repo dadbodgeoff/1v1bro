@@ -32,6 +32,10 @@ class PlayerGameState:
     has_shield: bool = False
     has_double_points: bool = False
     time_penalty_ms: int = 0
+    
+    # Combat scoring
+    kill_count: int = 0
+    kill_score: int = 0  # Points earned from kills (separate from quiz score)
 
 
 @dataclass
@@ -98,3 +102,30 @@ class SessionManager:
     def exists(cls, lobby_id: str) -> bool:
         """Check if session exists."""
         return lobby_id in cls._sessions
+    
+    @classmethod
+    def record_kill(cls, lobby_id: str, killer_id: str, points_per_kill: int = 50) -> Optional[int]:
+        """
+        Record a kill and add points to the killer's score.
+        
+        Args:
+            lobby_id: The lobby/game ID
+            killer_id: The player who got the kill
+            points_per_kill: Points to award per kill (default 50)
+            
+        Returns:
+            New total score if successful, None if session/player not found
+        """
+        session = cls._sessions.get(lobby_id)
+        if not session:
+            return None
+        
+        player_state = session.player_states.get(killer_id)
+        if not player_state:
+            return None
+        
+        player_state.kill_count += 1
+        player_state.kill_score += points_per_kill
+        player_state.score += points_per_kill
+        
+        return player_state.score

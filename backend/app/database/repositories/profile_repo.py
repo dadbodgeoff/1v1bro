@@ -260,6 +260,9 @@ class ProfileRepository:
     def _match_results(self):
         return self._client.table("match_results")
 
+    def _games(self):
+        return self._client.table("games")
+
     async def get_match_history(
         self, user_id: str, limit: int = 10, offset: int = 0
     ) -> tuple[list[dict], int]:
@@ -267,7 +270,9 @@ class ProfileRepository:
         Get match history for a user.
         
         Fetches matches where user was player1 or player2, ordered by played_at desc.
-        Includes opponent profile info via join.
+        Includes opponent profile info and recap_data from games table.
+        
+        Requirements: 7.5 - Return recap_data for each historical match.
         
         Args:
             user_id: User UUID
@@ -301,11 +306,14 @@ class ProfileRepository:
         
         # Get opponent profiles
         opponent_ids = set()
+        match_ids = []
         for match in matches:
             if match.get("player1_id") == user_id:
                 opponent_ids.add(match.get("player2_id"))
             else:
                 opponent_ids.add(match.get("player1_id"))
+            if match.get("match_id"):
+                match_ids.append(match.get("match_id"))
         
         opponent_profiles = {}
         if opponent_ids:
@@ -318,10 +326,32 @@ class ProfileRepository:
             for profile in (profiles_result.data or []):
                 opponent_profiles[profile["id"]] = profile
         
-        # Attach opponent profile to each match
+        # Fetch recap_data from games table (Requirements: 7.5)
+        recap_data_map = {}
+        if match_ids:
+            games_result = (
+                self._games()
+                .select("id, recap_data")
+                .in_("id", match_ids)
+                .execute()
+            )
+            for game in (games_result.data or []):
+                if game.get("recap_data"):
+                    recap_data_map[game["id"]] = game["recap_data"]
+        
+        # Attach opponent profile and recap_data to each match
         for match in matches:
             opponent_id = match.get("player2_id") if match.get("player1_id") == user_id else match.get("player1_id")
             match["opponent_profile"] = opponent_profiles.get(opponent_id, {})
+            
+            # Attach user's recap_data if available
+            match_id = match.get("match_id")
+            if match_id and match_id in recap_data_map:
+                all_recaps = recap_data_map[match_id]
+                # Get the recap for this specific user
+                match["recap_data"] = all_recaps.get(user_id)
+            else:
+                match["recap_data"] = None
         
         return matches, total
 

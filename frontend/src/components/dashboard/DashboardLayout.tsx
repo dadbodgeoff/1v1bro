@@ -33,7 +33,7 @@ export function DashboardLayout({ children, activeNav = 'play' }: DashboardLayou
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-base)] flex">
+    <div className="min-h-screen bg-[var(--color-bg-base)] flex safe-area-x">
       {/* Sidebar */}
       <Sidebar
         activeItem={activeNav}
@@ -47,7 +47,7 @@ export function DashboardLayout({ children, activeNav = 'play' }: DashboardLayou
         <DashboardHeader onMenuToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
         {/* Page Content - 24px padding, 1280px max-width */}
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-6 safe-area-bottom">
           <div className="max-w-[1280px] mx-auto">{children}</div>
         </main>
       </div>

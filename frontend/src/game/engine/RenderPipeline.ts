@@ -18,6 +18,7 @@ import { BackdropSystem } from '../backdrop'
 import { ArenaManager } from '../arena'
 import { CombatSystem, BuffManager } from '../combat'
 import type { RenderContext, PlayerState, PowerUpState, Vector2, HealthState } from './types'
+import type { VisualSystemCoordinator } from '../visual'
 
 export class RenderPipeline {
   private ctx: CanvasRenderingContext2D
@@ -40,6 +41,9 @@ export class RenderPipeline {
 
   // Buff manager reference
   private buffManager: BuffManager | null = null
+
+  // AAA Visual System Coordinator
+  private visualCoordinator: VisualSystemCoordinator | null = null
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -65,6 +69,10 @@ export class RenderPipeline {
 
   setBuffManager(buffManager: BuffManager): void {
     this.buffManager = buffManager
+  }
+
+  setVisualCoordinator(coordinator: VisualSystemCoordinator): void {
+    this.visualCoordinator = coordinator
   }
 
   setScale(scale: number): void {
@@ -114,11 +122,21 @@ export class RenderPipeline {
     this.ctx.imageSmoothingQuality = 'high'
     this.ctx.scale(this.scale, this.scale)
 
-    // Layer 0: Background
-    this.backdropSystem.render(this.ctx)
+    // Layer 0: Background (AAA parallax if enabled, otherwise standard backdrop)
+    if (this.visualCoordinator?.isEnabled()) {
+      this.visualCoordinator.renderBackground(this.ctx)
+    } else {
+      this.backdropSystem.render(this.ctx)
+    }
+
+    // Layer 0.5: Background props (AAA visual system)
+    this.visualCoordinator?.renderBackgroundProps(this.ctx)
 
     // Layer 1-3: Arena (hazards, barriers, etc.)
     this.arenaManager.render(this.ctx)
+
+    // Layer 3.5: Gameplay props (AAA visual system)
+    this.visualCoordinator?.renderGameplayProps(this.ctx)
 
     // Layer 4: Hub
     this.hubRenderer.setContext(context)
@@ -175,6 +193,15 @@ export class RenderPipeline {
       this.combatEffectsRenderer.setContext(context)
       this.combatEffectsRenderer.render()
     }
+
+    // Layer 6.5: Foreground props (AAA visual system - stalactites, steam)
+    this.visualCoordinator?.renderForegroundProps(this.ctx)
+
+    // Layer 7: Environmental events (debris, lava bursts)
+    this.visualCoordinator?.renderEnvironmentalEvents(this.ctx)
+
+    // Layer 8: Post-processing - Vignette (final pass)
+    this.visualCoordinator?.applyVignette(this.ctx)
 
     this.ctx.restore()
   }

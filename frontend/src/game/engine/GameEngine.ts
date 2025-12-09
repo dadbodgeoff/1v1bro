@@ -32,6 +32,9 @@ import { TelemetryManager } from './TelemetryManager'
 import { wireCombatCallbacks } from './CombatWiring'
 import type { GameEngineCallbacks, PlayerState, PowerUpState, Vector2, Projectile } from './types'
 
+// AAA Visual System
+import { VisualSystemCoordinator } from '../visual'
+
 export class GameEngine {
   private canvas: HTMLCanvasElement
   private scale = 1
@@ -51,6 +54,9 @@ export class GameEngine {
   private buffManager: BuffManager
   private emoteManager: EmoteManager
   private emoteRenderer: EmoteRenderer
+
+  // AAA Visual System Coordinator
+  private visualCoordinator: VisualSystemCoordinator
 
   // State
   private assetsLoaded = false
@@ -78,11 +84,20 @@ export class GameEngine {
     this.emoteManager = new EmoteManager()
     this.emoteRenderer = new EmoteRenderer()
 
+    // Initialize AAA Visual System Coordinator
+    this.visualCoordinator = new VisualSystemCoordinator({
+      width: ARENA_SIZE.width,
+      height: ARENA_SIZE.height,
+      themeId: theme === 'volcanic' ? 'volcanic' : 'space',
+      enableAAA: theme === 'volcanic', // Enable AAA visuals for volcanic theme
+    })
+
     // Initialize modules
     this.gameLoop = new GameLoop()
     this.playerController = new PlayerController(this.inputSystem, this.arenaManager)
     this.renderPipeline = new RenderPipeline(ctx, this.backdropSystem, this.arenaManager, this.combatSystem)
     this.renderPipeline.setBuffManager(this.buffManager)
+    this.renderPipeline.setVisualCoordinator(this.visualCoordinator)
     this.serverSync = new ServerSync(
       this.combatSystem,
       this.renderPipeline.getCombatEffectsRenderer(),
@@ -144,11 +159,39 @@ export class GameEngine {
 
   private async loadAssets(): Promise<void> {
     try {
-      await Promise.all([loadGameAssets(), arenaAssets.load()])
+      await Promise.all([
+        loadGameAssets(),
+        arenaAssets.load(),
+        this.visualCoordinator.initialize(),
+      ])
+      
+      // Register hazards with visual system after map is loaded
+      this.registerVisualsFromMap()
+      
       this.assetsLoaded = true
       this.callbacks.onAssetsLoaded?.()
     } catch {
       this.assetsLoaded = true
+    }
+  }
+
+  /**
+   * Register hazards and props from map config with visual system
+   */
+  private registerVisualsFromMap(): void {
+    if (!this.visualCoordinator.isEnabled()) return
+
+    // Get hazard zones from arena manager and register with visual system
+    const hazardZones = this.arenaManager.getHazardZones()
+    if (hazardZones.length > 0) {
+      this.visualCoordinator.registerHazards(
+        hazardZones.map(hz => ({
+          id: hz.id,
+          type: hz.type as 'damage' | 'slow' | 'bounce',
+          bounds: hz.bounds,
+          intensity: hz.intensity ?? 1,
+        }))
+      )
     }
   }
 
@@ -279,6 +322,9 @@ export class GameEngine {
     this.emoteManager.update(deltaTime, this.getPlayerPositions())
     this.renderPipeline.setPlayers(this.localPlayer, this.opponent)
     this.renderPipeline.updateAnimations(deltaTime)
+    
+    // Update AAA visual systems
+    this.visualCoordinator.update(deltaTime)
   }
 
   private render(): void {

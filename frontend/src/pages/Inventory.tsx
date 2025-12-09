@@ -134,7 +134,7 @@ export const Inventory: React.FC = () => {
       case 'name-desc':
         items.sort((a, b) => b.cosmetic.name.localeCompare(a.cosmetic.name))
         break
-      case 'rarity':
+      case 'rarity': {
         const rarityOrder: Record<Rarity, number> = {
           legendary: 5,
           epic: 4,
@@ -144,6 +144,7 @@ export const Inventory: React.FC = () => {
         }
         items.sort((a, b) => rarityOrder[b.cosmetic.rarity] - rarityOrder[a.cosmetic.rarity])
         break
+      }
     }
 
     // Always show equipped items first when not filtering by status

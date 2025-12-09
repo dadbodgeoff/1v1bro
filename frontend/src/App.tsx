@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { usePresence } from '@/hooks/usePresence'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/stores/authStore'
-import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings } from '@/pages'
+import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
 import { MatchHistory } from '@/pages/MatchHistory'
 import { CoinShop } from '@/pages/CoinShop'
 import { CoinSuccess } from '@/pages/CoinSuccess'
@@ -155,6 +155,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        {/* Friends page */}
+        <Route
+          path="/friends"
+          element={
+            <ProtectedRoute>
+              <Friends />
             </ProtectedRoute>
           }
         />

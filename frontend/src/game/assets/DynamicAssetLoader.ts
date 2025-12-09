@@ -104,7 +104,7 @@ export class DynamicAssetLoader {
   private async loadImageWithRetry(url: string, attempt = 0): Promise<HTMLImageElement> {
     try {
       return await this.loadImageOnce(url)
-    } catch (error) {
+    } catch (_error) {
       if (attempt < this.maxRetries) {
         const delay = this.baseDelay * Math.pow(2, attempt)
         console.warn(`[DynamicAssetLoader] Retry ${attempt + 1}/${this.maxRetries} for ${url} in ${delay}ms`)

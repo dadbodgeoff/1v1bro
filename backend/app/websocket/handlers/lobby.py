@@ -162,8 +162,8 @@ class LobbyHandler(BaseHandler):
 
             await self.lobby_service.start_game(lobby["id"], user_id)
 
-            # Use lobby's category for trivia questions
-            category = lobby.get("category", "fortnite")
+            # Use lobby's game_mode for trivia questions (game_mode stores the category)
+            category = lobby.get("game_mode", "fortnite")
             session = await self.game_service.create_session(
                 lobby_id=lobby["id"],
                 player1_id=lobby["host_id"],
@@ -195,7 +195,8 @@ class LobbyHandler(BaseHandler):
                     player1_id=lobby["host_id"],
                     player2_id=lobby["opponent_id"],
                     player_skins=player_skins,
-                    category=lobby.get("category", "fortnite"),
+                    category=lobby.get("game_mode", "fortnite"),
+                    map_slug=lobby.get("map_slug", "nexus-arena"),
                 )
             )
 
@@ -263,7 +264,8 @@ class LobbyHandler(BaseHandler):
                     players=enriched_players,
                     can_start=lobby.get("can_start", False),
                     host_id=lobby["host_id"],
-                    category=lobby.get("category", "fortnite"),
+                    category=lobby.get("game_mode", "fortnite"),
+                    map_slug=lobby.get("map_slug", "nexus-arena"),
                 )
             )
 

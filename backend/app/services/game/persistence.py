@@ -3,9 +3,12 @@ Game persistence service.
 Handles database operations and stats updates.
 """
 
+import logging
 from typing import List, Optional
 
 from supabase import Client
+
+logger = logging.getLogger(__name__)
 
 from app.database.repositories.game_repo import GameRepository
 from app.database.repositories.stats_repo import StatsRepository
@@ -60,6 +63,10 @@ class GamePersistenceService:
             player2_combat_stats=p2_combat,
         )
         
+        # Calculate game duration (total time from both players / 1000 for seconds)
+        total_time_ms = p1_state.total_time_ms + p2_state.total_time_ms
+        duration_seconds = total_time_ms // 1000 if total_time_ms > 0 else 0
+        
         return GameResult(
             id=game_record["id"],
             lobby_id=session.lobby_id,
@@ -72,6 +79,7 @@ class GamePersistenceService:
             player2_total_time_ms=p2_state.total_time_ms,
             is_tie=is_tie,
             won_by_time=won_by_time,
+            duration_seconds=duration_seconds,
         )
     
     async def update_player_stats(self, session: GameSession, winner_id: Optional[str]) -> None:
@@ -96,14 +104,48 @@ class GamePersistenceService:
                 shots_fired_delta=combat_summary.get("shots_fired", 0),
                 shots_hit_delta=combat_summary.get("shots_hit", 0),
                 powerups_delta=combat_summary.get("powerups_collected", 0),
+                elo_delta=0,  # ELO not implemented yet
+                new_tier=None,  # Tier not implemented yet
             )
             
-            await self.stats_repo.update_win_streak(player_id, game_won)
+            try:
+                await self.stats_repo.update_win_streak(player_id, game_won)
+            except Exception as e:
+                logger.error(f"Failed to update win streak for {player_id}: {e}")
             
             if trivia_stats.fastest_in_game:
-                await self.stats_repo.update_fastest_answer(
-                    player_id, trivia_stats.fastest_in_game
-                )
+                try:
+                    await self.stats_repo.update_fastest_answer(
+                        player_id, trivia_stats.fastest_in_game
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to update fastest answer for {player_id}: {e}")
+    
+    async def save_recap_data(
+        self,
+        game_id: str,
+        player1_id: str,
+        player1_recap: dict,
+        player2_id: str,
+        player2_recap: dict,
+    ) -> None:
+        """
+        Save recap data for both players to the games table.
+        
+        Requirements: 7.3 - Persist recap data to games table recap_data JSONB column.
+        
+        Args:
+            game_id: The game record ID
+            player1_id: Player 1's user ID
+            player1_recap: Player 1's RecapPayload as dict
+            player2_id: Player 2's user ID
+            player2_recap: Player 2's RecapPayload as dict
+        """
+        recap_data = {
+            player1_id: player1_recap,
+            player2_id: player2_recap,
+        }
+        await self.game_repo.update_recap_data(game_id, recap_data)
     
     async def get_user_history(self, user_id: str, limit: int = 20) -> List[dict]:
         """Get game history for a user with opponent details and ELO changes."""

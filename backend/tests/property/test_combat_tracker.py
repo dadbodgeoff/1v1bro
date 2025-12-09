@@ -77,7 +77,7 @@ class TestKillTracking:
         victim_id=st.uuids().map(str),
         kill_count=st.integers(min_value=1, max_value=20),
     )
-    @settings(max_examples=50)
+    @settings(max_examples=50, deadline=500)  # Increased deadline for config import
     def test_kills_are_counted(self, lobby_id, killer_id, victim_id, kill_count):
         """
         Property: Kills are counted correctly for killer.

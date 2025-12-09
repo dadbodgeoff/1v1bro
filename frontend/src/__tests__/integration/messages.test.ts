@@ -4,9 +4,14 @@
  * 
  * Run with: npx vitest run src/__tests__/integration/messages.test.ts
  * Requires backend to be running on localhost:8000
+ * 
+ * @skip - Skipped by default as it requires a running backend
  */
 
 import { describe, it, expect, beforeAll } from 'vitest'
+
+// Skip integration tests unless explicitly enabled
+const SKIP_INTEGRATION = (import.meta.env?.RUN_INTEGRATION_TESTS !== 'true')
 
 const API_BASE = 'http://localhost:8000/api/v1'
 
@@ -66,7 +71,7 @@ async function createFriendship(token1: string, token2: string, user2Id: string)
   if (!acceptRes.success) throw new Error(`Failed to accept friend request: ${acceptRes.error}`)
 }
 
-describe('Messages API Integration', () => {
+describe.skipIf(SKIP_INTEGRATION)('Messages API Integration', () => {
   let user1: { token: string; userId: string; email: string }
   let user2: { token: string; userId: string; email: string }
 

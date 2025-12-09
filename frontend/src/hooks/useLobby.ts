@@ -18,12 +18,14 @@ export function useLobby(lobbyCode?: string) {
     isHost,
     status,
     category,
+    mapSlug,
     setLobby,
     setPlayers,
     setCanStart,
     setIsHost,
     setStatus,
     setCategory,
+    setMapSlug,
     setPlayerAssignment,
     setPlayerSkins,
     reset,
@@ -59,6 +61,10 @@ export function useLobby(lobbyCode?: string) {
         // Set trivia category from lobby state
         if (data.category) {
           setCategory(data.category)
+        }
+        // Set arena map from lobby state
+        if (data.map_slug) {
+          setMapSlug(data.map_slug)
         }
         // Get userId from store at time of event
         const currentUserId = useAuthStore.getState().user?.id
@@ -96,6 +102,10 @@ export function useLobby(lobbyCode?: string) {
         if (data.player_skins) {
           setPlayerSkins(data.player_skins)
         }
+        // Set arena map from game_start
+        if (data.map_slug) {
+          setMapSlug(data.map_slug)
+        }
         // Set total questions from server
         if (data.total_questions) {
           useGameStore.getState().setTotalQuestions(data.total_questions)
@@ -116,7 +126,7 @@ export function useLobby(lobbyCode?: string) {
       unsubPlayerReady?.()
       unsubGameStart?.()
     }
-  }, [lobbyCode, navigate, setPlayers, setCanStart, setIsHost, setStatus, setCategory, setPlayerAssignment])
+  }, [lobbyCode, navigate, setPlayers, setCanStart, setIsHost, setStatus, setCategory, setMapSlug, setPlayerAssignment, setPlayerSkins])
 
   const createLobby = useCallback(async () => {
     try {
@@ -176,6 +186,7 @@ export function useLobby(lobbyCode?: string) {
     isHost,
     status,
     category,
+    mapSlug,
     userId,
     createLobby,
     joinLobby,

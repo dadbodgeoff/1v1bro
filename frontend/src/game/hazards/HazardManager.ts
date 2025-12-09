@@ -199,6 +199,15 @@ export class HazardManager {
   }
 
   /**
+   * Get all hazard states
+   * 
+   * @returns Array of all hazard states
+   */
+  getAllHazards(): HazardState[] {
+    return Array.from(this.hazards.values())
+  }
+
+  /**
    * Get all hazards at a position
    * 
    * @param position - Position to check

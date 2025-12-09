@@ -17,7 +17,13 @@ class MockQueryBuilder:
         self._data = data
         self._count = count
         self._result = MagicMock()
-        self._result.data = data
+        # Supabase returns data as a list, so wrap single dict in list
+        if isinstance(data, dict):
+            self._result.data = [data]
+        elif isinstance(data, list):
+            self._result.data = data
+        else:
+            self._result.data = data
         self._result.count = count
     
     def select(self, *args, **kwargs):
@@ -346,7 +352,7 @@ class TestIncrementXp:
             call_count[0] += 1
             if call_count[0] == 1:
                 result = MagicMock()
-                result.data = current_profile
+                result.data = [current_profile]  # Supabase returns list
                 return result
             else:
                 result = MagicMock()
