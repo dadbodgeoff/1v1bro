@@ -17,36 +17,27 @@ import type { Vector2, FireEvent, HitEvent, DeathEvent } from '@/game'
 
 export function ArenaGame() {
   const { code } = useParams<{ code: string }>()
-  const [isPortrait, setIsPortrait] = useState(false)
+  const [showRotateHint, setShowRotateHint] = useState(false)
+  const [hintDismissed, setHintDismissed] = useState(false)
 
-  // Force landscape orientation on mobile
+  // Show landscape recommendation on mobile portrait (dismissible)
   useEffect(() => {
     const checkOrientation = () => {
       const isMobile = window.innerWidth < 1024
       const portrait = window.innerHeight > window.innerWidth
-      setIsPortrait(isMobile && portrait)
+      // Show hint if mobile + portrait + not dismissed
+      setShowRotateHint(isMobile && portrait && !hintDismissed)
     }
 
     checkOrientation()
     window.addEventListener('resize', checkOrientation)
     window.addEventListener('orientationchange', checkOrientation)
 
-    // Try to lock to landscape if supported
-    if (screen.orientation?.lock) {
-      screen.orientation.lock('landscape').catch(() => {
-        // Silently fail - not all browsers support this
-      })
-    }
-
     return () => {
       window.removeEventListener('resize', checkOrientation)
       window.removeEventListener('orientationchange', checkOrientation)
-      // Unlock orientation when leaving
-      if (screen.orientation?.unlock) {
-        screen.orientation.unlock()
-      }
     }
-  }, [])
+  }, [hintDismissed])
 
   const {
     status,
@@ -154,31 +145,31 @@ export function ArenaGame() {
   const showQuestion = status === 'playing'
   const showRoundResult = status === 'round_result'
 
-  // Show rotate device prompt on mobile portrait
-  if (isPortrait) {
-    return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#0a0a0a] px-8">
-        <div className="w-16 h-16 mb-6 text-purple-400">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <rect x="4" y="2" width="16" height="20" rx="2" />
-            <path d="M12 18h.01" />
-          </svg>
-        </div>
-        <p className="text-white text-lg font-medium text-center mb-2">Rotate Your Device</p>
-        <p className="text-neutral-500 text-sm text-center">
-          For the best gameplay experience, please rotate your device to landscape mode.
-        </p>
-        <div className="mt-8 flex items-center gap-2 text-purple-400/60">
-          <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span className="text-xs">Rotate to continue</span>
-        </div>
-      </div>
-    )
-  }
-
   return (
+    <>
+      {/* Rotate device hint overlay - dismissible */}
+      {showRotateHint && (
+        <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center px-8">
+          <div className="w-14 h-14 mb-4 text-purple-400 animate-pulse">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="4" y="2" width="16" height="20" rx="2" />
+              <path d="M12 18h.01" />
+            </svg>
+          </div>
+          <p className="text-white text-base font-medium text-center mb-1">Rotate for Best Experience</p>
+          <p className="text-neutral-400 text-xs text-center mb-6">
+            Landscape mode recommended for gameplay
+          </p>
+          <button
+            onClick={() => setHintDismissed(true)}
+            className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            Continue Anyway
+          </button>
+        </div>
+      )}
+
+      {/* Main game UI */}
     <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden safe-area-top">
       {/* Scoreboard header - scores only, no question */}
       <ArenaScoreboard
@@ -255,5 +246,6 @@ export function ArenaGame() {
         visible={showQuestion}
       />
     </div>
+    </>
   )
 }
