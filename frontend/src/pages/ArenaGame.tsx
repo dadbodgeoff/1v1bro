@@ -4,7 +4,7 @@
  * Quiz panel is HTML/CSS outside canvas for crisp text and touch support
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { GameArena } from '@/components/game/GameArena'
 import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
@@ -17,6 +17,36 @@ import type { Vector2, FireEvent, HitEvent, DeathEvent } from '@/game'
 
 export function ArenaGame() {
   const { code } = useParams<{ code: string }>()
+  const [isPortrait, setIsPortrait] = useState(false)
+
+  // Force landscape orientation on mobile
+  useEffect(() => {
+    const checkOrientation = () => {
+      const isMobile = window.innerWidth < 1024
+      const portrait = window.innerHeight > window.innerWidth
+      setIsPortrait(isMobile && portrait)
+    }
+
+    checkOrientation()
+    window.addEventListener('resize', checkOrientation)
+    window.addEventListener('orientationchange', checkOrientation)
+
+    // Try to lock to landscape if supported
+    if (screen.orientation?.lock) {
+      screen.orientation.lock('landscape').catch(() => {
+        // Silently fail - not all browsers support this
+      })
+    }
+
+    return () => {
+      window.removeEventListener('resize', checkOrientation)
+      window.removeEventListener('orientationchange', checkOrientation)
+      // Unlock orientation when leaving
+      if (screen.orientation?.unlock) {
+        screen.orientation.unlock()
+      }
+    }
+  }, [])
 
   const {
     status,
@@ -124,6 +154,30 @@ export function ArenaGame() {
   const showQuestion = status === 'playing'
   const showRoundResult = status === 'round_result'
 
+  // Show rotate device prompt on mobile portrait
+  if (isPortrait) {
+    return (
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#0a0a0a] px-8">
+        <div className="w-16 h-16 mb-6 text-purple-400">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <rect x="4" y="2" width="16" height="20" rx="2" />
+            <path d="M12 18h.01" />
+          </svg>
+        </div>
+        <p className="text-white text-lg font-medium text-center mb-2">Rotate Your Device</p>
+        <p className="text-neutral-500 text-sm text-center">
+          For the best gameplay experience, please rotate your device to landscape mode.
+        </p>
+        <div className="mt-8 flex items-center gap-2 text-purple-400/60">
+          <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span className="text-xs">Rotate to continue</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden safe-area-top">
       {/* Scoreboard header - scores only, no question */}
@@ -173,18 +227,12 @@ export function ArenaGame() {
           <RoundResultOverlay visible={showRoundResult} />
 
           {/* Controls hint + Latency - bottom left corner of canvas */}
-          <div className="absolute bottom-3 left-3 flex items-center gap-2 z-10 safe-area-bottom">
+          <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 flex items-center gap-2 z-10 safe-area-bottom">
             <LatencyIndicator />
-            {/* Desktop controls */}
+            {/* Desktop controls only - mobile controls are self-explanatory */}
             <div className="hidden lg:block px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">
               <p className="text-[9px] text-neutral-500 font-mono">
                 WASD move · Click shoot · 1-4 answer
-              </p>
-            </div>
-            {/* Mobile controls */}
-            <div className="lg:hidden px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">
-              <p className="text-[9px] text-neutral-500 font-mono">
-                Tap to shoot · Drag to move
               </p>
             </div>
           </div>

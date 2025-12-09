@@ -104,11 +104,11 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
         />
       </div>
 
-      {/* Content */}
-      <div className="px-4 py-3 flex flex-col lg:flex-row gap-3 lg:gap-6 items-start lg:items-center max-w-[1280px] mx-auto">
-        {/* Question section */}
+      {/* Content - more compact on mobile */}
+      <div className="px-3 py-2 lg:px-4 lg:py-3 flex flex-col lg:flex-row gap-2 lg:gap-6 items-start lg:items-center max-w-[1280px] mx-auto">
+        {/* Question section - inline on mobile */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2">
             <span className="text-[10px] font-mono text-purple-400/70 uppercase tracking-wider">
               Q{currentQuestion.qNum}
             </span>
@@ -120,13 +120,13 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
               {timeRemaining}s
             </span>
           </div>
-          <p className="text-white/90 text-sm lg:text-base leading-snug">
+          <p className="text-white/90 text-sm lg:text-base leading-snug mt-0.5">
             {currentQuestion.text}
           </p>
         </div>
 
-        {/* Options - 2x2 grid on mobile, row on desktop */}
-        <div className="w-full lg:w-auto grid grid-cols-2 lg:flex gap-2">
+        {/* Options - 2x2 grid on mobile (compact), row on desktop */}
+        <div className="w-full lg:w-auto grid grid-cols-2 lg:flex gap-1.5 lg:gap-2">
           {options.map((letter, index) => {
             const isSelected = selectedAnswer === letter
             const keyNumber = index + 1
@@ -137,8 +137,8 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
                 onClick={() => handleSelect(letter)}
                 disabled={answerSubmitted}
                 className={`
-                  flex items-center gap-2 px-3 py-2.5 rounded-lg text-left transition-all
-                  min-h-[44px] lg:min-w-[160px] lg:max-w-[200px]
+                  flex items-center gap-1.5 lg:gap-2 px-2 lg:px-3 py-2 lg:py-2.5 rounded-lg text-left transition-all
+                  min-h-[40px] lg:min-h-[44px] lg:min-w-[160px] lg:max-w-[200px]
                   ${isSelected
                     ? 'bg-purple-600/40 border-2 border-purple-400/60 shadow-lg shadow-purple-500/20'
                     : 'bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.12]'
@@ -150,7 +150,7 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
                 {/* Key badge */}
                 <span
                   className={`
-                    w-6 h-6 rounded-md text-xs font-bold flex items-center justify-center shrink-0
+                    w-5 h-5 lg:w-6 lg:h-6 rounded-md text-[10px] lg:text-xs font-bold flex items-center justify-center shrink-0
                     ${isSelected
                       ? 'bg-white text-purple-900'
                       : 'bg-white/10 text-white/60'
@@ -160,7 +160,7 @@ export function ArenaQuizPanel({ onAnswer, visible }: ArenaQuizPanelProps) {
                   {keyNumber}
                 </span>
                 {/* Option text */}
-                <span className="text-sm text-white/85 truncate">
+                <span className="text-xs lg:text-sm text-white/85 truncate">
                   {currentQuestion.options[index]}
                 </span>
               </button>
