@@ -32,9 +32,10 @@ async function enterFullscreenLandscape(): Promise<void> {
     }
     
     // Lock to landscape orientation (if supported)
-    if (screen.orientation && 'lock' in screen.orientation) {
+    const orientation = screen.orientation as ScreenOrientation & { lock?: (orientation: string) => Promise<void> }
+    if (orientation?.lock) {
       try {
-        await screen.orientation.lock('landscape')
+        await orientation.lock('landscape')
       } catch {
         // Orientation lock not supported or denied - that's okay
       }
