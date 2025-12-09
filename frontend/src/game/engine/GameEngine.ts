@@ -242,6 +242,9 @@ export class GameEngine {
 
   setCombatEnabled(enabled: boolean): void { this.combatEnabled = enabled }
 
+  /** Enable mobile mode with boosted aim assist */
+  setMobileMode(isMobile: boolean): void { this.combatSystem.setMobileMode(isMobile) }
+
   handleMouseMove(clientX: number, clientY: number): void {
     const rect = this.canvas.getBoundingClientRect()
     this.mousePosition = { x: (clientX - rect.left) / this.scale, y: (clientY - rect.top) / this.scale }

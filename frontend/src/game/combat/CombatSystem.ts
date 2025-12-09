@@ -36,6 +36,7 @@ export class CombatSystem {
   private aimAssistStrength = 0.4 // How much to pull toward target (0-1)
   private aimAssistAngle = 25 // Degrees - cone within which aim assist activates
   private aimAssistRange = 500 // Max distance for aim assist
+  private isMobileMode = false
 
   constructor() {
     this.weaponManager = new WeaponManager()
@@ -156,6 +157,30 @@ export class CombatSystem {
     if (strength !== undefined) {
       this.aimAssistStrength = Math.max(0, Math.min(1, strength))
     }
+  }
+
+  /**
+   * Enable mobile mode with boosted aim assist
+   * Mobile users get stronger aim assist since touch controls are less precise
+   */
+  setMobileMode(isMobile: boolean): void {
+    this.isMobileMode = isMobile
+    if (isMobile) {
+      // Boost aim assist for mobile: stronger pull, wider cone
+      this.aimAssistStrength = 0.65
+      this.aimAssistAngle = 40
+    } else {
+      // Desktop defaults
+      this.aimAssistStrength = 0.4
+      this.aimAssistAngle = 25
+    }
+  }
+
+  /**
+   * Check if mobile mode is enabled
+   */
+  isMobile(): boolean {
+    return this.isMobileMode
   }
 
   /**

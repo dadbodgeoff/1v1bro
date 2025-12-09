@@ -11,6 +11,7 @@ import { ArenaScoreboard, type KillFeedEntry } from '@/components/game/ArenaScor
 import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
 import { LatencyIndicator } from '@/components/game/LatencyIndicator'
+import { PWAInstallPrompt } from '@/components/game/PWAInstallPrompt'
 import { useArenaGame } from '@/hooks/useArenaGame'
 import { useGameStore } from '@/stores/gameStore'
 import { wsService } from '@/services/websocket'
@@ -238,6 +239,9 @@ export function ArenaGame() {
 
   return (
     <>
+      {/* PWA install prompt for true fullscreen on mobile */}
+      <PWAInstallPrompt />
+
       {/* Rotate device hint overlay - dismissible */}
       {showRotateHint && (
         <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center px-8">

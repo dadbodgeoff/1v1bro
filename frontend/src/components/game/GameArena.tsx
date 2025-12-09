@@ -185,6 +185,12 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
     engineRef.current?.setCombatEnabled(combatEnabled)
   }, [combatEnabled])
 
+  // Detect mobile and enable boosted aim assist
+  useEffect(() => {
+    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    engineRef.current?.setMobileMode(isMobile)
+  }, [playerId]) // Re-check when engine is recreated
+
   // Poll respawn state for UI
   useEffect(() => {
     if (!combatEnabled) {
