@@ -451,4 +451,76 @@ export class ArenaManager {
     this.layerManager.register(RenderLayer.ENTITIES, 20, 
       (ctx) => this.transportManager.render(ctx))
   }
+
+  // ============================================================================
+  // Server-Authoritative Hazard/Trap Sync
+  // ============================================================================
+
+  /**
+   * Add a hazard from server event
+   * Called when server broadcasts arena_hazard_spawn
+   */
+  addServerHazard(hazard: {
+    id: string
+    type: string
+    bounds: { x: number; y: number; width: number; height: number }
+    intensity: number
+  }): void {
+    this.hazardManager.addHazard({
+      id: hazard.id,
+      type: hazard.type as 'damage' | 'slow' | 'emp',
+      bounds: hazard.bounds,
+      intensity: hazard.intensity,
+    })
+  }
+
+  /**
+   * Remove a hazard from server event
+   * Called when server broadcasts arena_hazard_despawn
+   */
+  removeServerHazard(hazardId: string): void {
+    this.hazardManager.removeHazard(hazardId)
+  }
+
+  /**
+   * Add a trap from server event
+   * Called when server broadcasts arena_trap_spawn
+   */
+  addServerTrap(trap: {
+    id: string
+    type: string
+    position: { x: number; y: number }
+    radius: number
+    effect: string
+    effectValue: number
+    cooldown: number
+  }): void {
+    // Map server effect names to client TrapEffect type
+    // Server sends 'damage', client expects 'damage_burst'
+    const effectMap: Record<string, 'damage_burst' | 'knockback' | 'stun'> = {
+      'damage': 'damage_burst',
+      'damage_burst': 'damage_burst',
+      'knockback': 'knockback',
+      'stun': 'stun',
+    }
+    const mappedEffect = effectMap[trap.effect] ?? 'damage_burst'
+    
+    this.trapManager.addTrap({
+      id: trap.id,
+      type: trap.type as 'pressure' | 'timed' | 'projectile',
+      position: trap.position,
+      radius: trap.radius,
+      effect: mappedEffect,
+      effectValue: trap.effectValue,
+      cooldown: trap.cooldown,
+    })
+  }
+
+  /**
+   * Remove a trap from server event
+   * Called when server broadcasts arena_trap_despawn
+   */
+  removeServerTrap(trapId: string): void {
+    this.trapManager.removeTrap(trapId)
+  }
 }

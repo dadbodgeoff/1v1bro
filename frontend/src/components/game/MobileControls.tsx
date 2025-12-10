@@ -1,9 +1,15 @@
 /**
- * MobileControls - Dual control scheme for mobile devices
+ * MobileControls - Enterprise-grade dual control scheme for mobile devices
  * Only renders on touch devices
  *
  * Layout: Movement joystick (bottom-left) + Fire button (bottom-right)
  * Standard mobile game layout for two-thumb control
+ * 
+ * Enterprise features:
+ * - Haptic feedback on fire
+ * - Visual feedback with scale/glow animations
+ * - Smooth joystick with easing
+ * - Proper separation from UI elements
  */
 
 import { useRef, useCallback, useEffect, useState } from 'react'
@@ -14,6 +20,14 @@ interface MobileControlsProps {
   onFire: () => void
   onFireDirection?: (direction: Vector2) => void
   enabled?: boolean
+}
+
+// Haptic feedback helper
+function triggerHaptic(style: 'light' | 'medium' | 'heavy' = 'medium') {
+  if ('vibrate' in navigator) {
+    const duration = style === 'light' ? 10 : style === 'medium' ? 25 : 50
+    navigator.vibrate(duration)
+  }
 }
 
 async function enterFullscreenLandscape(): Promise<void> {
@@ -52,6 +66,8 @@ export function MobileControls({
   enabled = true,
 }: MobileControlsProps) {
   const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [isFirePressed, setIsFirePressed] = useState(false)
+  const [joystickActive, setJoystickActive] = useState(false)
   const joystickRef = useRef<HTMLDivElement>(null)
   const knobRef = useRef<HTMLDivElement>(null)
 
@@ -59,6 +75,7 @@ export function MobileControls({
   const joystickCenterRef = useRef<Vector2>({ x: 0, y: 0 })
   const currentDirectionRef = useRef<Vector2>({ x: 1, y: 0 })
   const hasRequestedFullscreen = useRef(false)
+  const lastMoveRef = useRef<Vector2>({ x: 0, y: 0 })
 
   useEffect(() => {
     const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
@@ -78,6 +95,9 @@ export function MobileControls({
 
   const fireInCurrentDirection = useCallback(() => {
     if (!enabled) return
+
+    // Haptic feedback on fire
+    triggerHaptic('medium')
 
     const dir = currentDirectionRef.current
     const magnitude = Math.sqrt(dir.x * dir.x + dir.y * dir.y)
@@ -105,6 +125,8 @@ export function MobileControls({
             }
           }
           moveTouchIdRef.current = touch.identifier
+          setJoystickActive(true)
+          triggerHaptic('light')
           updateJoystick(touch.clientX, touch.clientY)
           break
         }
@@ -130,10 +152,18 @@ export function MobileControls({
       for (const touch of Array.from(e.changedTouches)) {
         if (touch.identifier === moveTouchIdRef.current) {
           moveTouchIdRef.current = null
+          setJoystickActive(false)
           onMove({ x: 0, y: 0 })
+          lastMoveRef.current = { x: 0, y: 0 }
 
           if (knobRef.current) {
             knobRef.current.style.transform = 'translate(-50%, -50%)'
+            knobRef.current.style.transition = 'transform 0.15s ease-out'
+            setTimeout(() => {
+              if (knobRef.current) {
+                knobRef.current.style.transition = ''
+              }
+            }, 150)
           }
           break
         }
@@ -147,7 +177,7 @@ export function MobileControls({
       const dx = clientX - joystickCenterRef.current.x
       const dy = clientY - joystickCenterRef.current.y
       const distance = Math.sqrt(dx * dx + dy * dy)
-      const maxDistance = 35
+      const maxDistance = 40 // Slightly larger for better feel
 
       let normalizedX = dx / maxDistance
       let normalizedY = dy / maxDistance
@@ -157,10 +187,15 @@ export function MobileControls({
         normalizedY = dy / distance
       }
 
-      const magnitude = Math.sqrt(
-        normalizedX * normalizedX + normalizedY * normalizedY
-      )
-      if (magnitude > 0.2) {
+      // Apply slight exponential curve for better precision at low speeds
+      const magnitude = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY)
+      if (magnitude > 0) {
+        const curved = Math.pow(magnitude, 1.3) // Slight curve for precision
+        normalizedX = (normalizedX / magnitude) * Math.min(curved, 1)
+        normalizedY = (normalizedY / magnitude) * Math.min(curved, 1)
+      }
+
+      if (magnitude > 0.15) {
         currentDirectionRef.current = { x: normalizedX, y: normalizedY }
       }
 
@@ -170,72 +205,127 @@ export function MobileControls({
         knobRef.current.style.transform = `translate(calc(-50% + ${clampedX}px), calc(-50% + ${clampedY}px))`
       }
 
-      onMove({ x: normalizedX, y: normalizedY })
+      // Smooth the output slightly
+      const smoothing = 0.3
+      const smoothedX = lastMoveRef.current.x + (normalizedX - lastMoveRef.current.x) * (1 - smoothing)
+      const smoothedY = lastMoveRef.current.y + (normalizedY - lastMoveRef.current.y) * (1 - smoothing)
+      lastMoveRef.current = { x: smoothedX, y: smoothedY }
+
+      onMove({ x: smoothedX, y: smoothedY })
     },
     [onMove]
   )
 
-  const handleFireTap = useCallback(
+  const handleFireStart = useCallback(
     (e: React.TouchEvent) => {
       e.preventDefault()
       e.stopPropagation()
       if (!enabled) return
+      setIsFirePressed(true)
       fireInCurrentDirection()
     },
     [enabled, fireInCurrentDirection]
   )
 
+  const handleFireEnd = useCallback((e: React.TouchEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsFirePressed(false)
+  }, [])
+
   if (!isTouchDevice) return null
 
   return (
     <>
-      {/* MOVEMENT JOYSTICK - Bottom Left (extra padding for browser chrome) */}
+      {/* MOVEMENT JOYSTICK - Bottom Left */}
       <div
         ref={joystickRef}
         style={{
           position: 'fixed',
-          left: '15px',
-          bottom: 'max(60px, calc(20px + env(safe-area-inset-bottom, 40px)))',
-          width: '100px',
-          height: '100px',
+          left: '20px',
+          bottom: 'max(70px, calc(30px + env(safe-area-inset-bottom, 40px)))',
+          width: '110px',
+          height: '110px',
           zIndex: 9999,
           touchAction: 'none',
         }}
-        className="rounded-full bg-white/10 border border-white/15"
+        className={`rounded-full transition-all duration-150 ${
+          joystickActive 
+            ? 'bg-white/15 border-2 border-white/30 shadow-lg shadow-white/10' 
+            : 'bg-white/8 border border-white/15'
+        }`}
         onTouchStart={handleJoystickStart}
         onTouchMove={handleJoystickMove}
         onTouchEnd={handleJoystickEnd}
         onTouchCancel={handleJoystickEnd}
       >
-        {/* Draggable knob - subtle */}
+        {/* Direction indicators - subtle */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className={`absolute top-2 w-1 h-3 rounded-full transition-opacity ${joystickActive ? 'bg-white/30' : 'bg-white/10'}`} />
+          <div className={`absolute bottom-2 w-1 h-3 rounded-full transition-opacity ${joystickActive ? 'bg-white/30' : 'bg-white/10'}`} />
+          <div className={`absolute left-2 w-3 h-1 rounded-full transition-opacity ${joystickActive ? 'bg-white/30' : 'bg-white/10'}`} />
+          <div className={`absolute right-2 w-3 h-1 rounded-full transition-opacity ${joystickActive ? 'bg-white/30' : 'bg-white/10'}`} />
+        </div>
+        
+        {/* Draggable knob */}
         <div
           ref={knobRef}
-          className="absolute top-1/2 left-1/2 w-12 h-12 rounded-full bg-white/30 border border-white/40"
+          className={`absolute top-1/2 left-1/2 w-14 h-14 rounded-full transition-all duration-75 ${
+            joystickActive 
+              ? 'bg-white/50 border-2 border-white/60 shadow-lg' 
+              : 'bg-white/25 border border-white/35'
+          }`}
           style={{ transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
         />
       </div>
 
-      {/* FIRE BUTTON - Bottom Right (extra padding for browser chrome) */}
+      {/* FIRE BUTTON - Bottom Right, positioned ABOVE Leave button area */}
       <div
         style={{
           position: 'fixed',
-          right: '15px',
-          bottom: 'max(60px, calc(20px + env(safe-area-inset-bottom, 40px)))',
+          right: '20px',
+          // Position higher to avoid Leave button (which is at bottom: 140px on mobile landscape)
+          bottom: 'max(160px, calc(120px + env(safe-area-inset-bottom, 40px)))',
           zIndex: 9999,
           touchAction: 'none',
         }}
-        onTouchStart={handleFireTap}
+        onTouchStart={handleFireStart}
+        onTouchEnd={handleFireEnd}
+        onTouchCancel={handleFireEnd}
       >
         <div
-          className={`w-16 h-16 rounded-full flex items-center justify-center ${
-            enabled
-              ? 'bg-red-500/40 border border-red-400/50 active:bg-red-500/60 active:scale-95'
-              : 'bg-gray-500/20 border border-gray-400/30 opacity-50'
-          } transition-all`}
+          className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-75 ${
+            !enabled
+              ? 'bg-gray-500/20 border border-gray-400/30 opacity-50'
+              : isFirePressed
+                ? 'bg-red-500/70 border-2 border-red-300 scale-90 shadow-xl shadow-red-500/40'
+                : 'bg-gradient-to-br from-red-500/50 to-red-600/50 border-2 border-red-400/60 shadow-lg shadow-red-500/20'
+          }`}
         >
-          <span className="text-white/70 font-bold text-sm select-none">
-            FIRE
-          </span>
+          {/* Glow ring on press */}
+          {isFirePressed && enabled && (
+            <div className="absolute inset-0 rounded-full bg-red-400/30 animate-ping" />
+          )}
+          
+          {/* Crosshair icon */}
+          <svg 
+            viewBox="0 0 24 24" 
+            className={`w-8 h-8 transition-all ${isFirePressed ? 'text-white scale-110' : 'text-white/80'}`}
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2.5"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <line x1="12" y1="2" x2="12" y2="6" />
+            <line x1="12" y1="18" x2="12" y2="22" />
+            <line x1="2" y1="12" x2="6" y2="12" />
+            <line x1="18" y1="12" x2="22" y2="12" />
+          </svg>
+        </div>
+        
+        {/* Label below button */}
+        <div className="text-center mt-1">
+          <span className="text-[10px] text-white/40 font-medium uppercase tracking-wider">Fire</span>
         </div>
       </div>
     </>

@@ -113,6 +113,11 @@ export function ArenaGame() {
     setTrapTriggeredCallback,
     setTeleportCallback,
     setJumpPadCallback,
+    // Server-authoritative hazard/trap spawn callbacks
+    setHazardSpawnCallback,
+    setHazardDespawnCallback,
+    setTrapSpawnCallback,
+    setTrapDespawnCallback,
     // Emote callbacks (Requirement 5.3)
     sendEmote,
     setRemoteEmoteCallback,
@@ -371,6 +376,10 @@ export function ArenaGame() {
             setTrapTriggeredCallback={setTrapTriggeredCallback}
             setTeleportCallback={setTeleportCallback}
             setJumpPadCallback={setJumpPadCallback}
+            setHazardSpawnCallback={setHazardSpawnCallback}
+            setHazardDespawnCallback={setHazardDespawnCallback}
+            setTrapSpawnCallback={setTrapSpawnCallback}
+            setTrapDespawnCallback={setTrapDespawnCallback}
             sendArenaConfig={sendArenaConfig}
             sendEmote={sendEmote}
             setRemoteEmoteCallback={setRemoteEmoteCallback}

@@ -35,6 +35,9 @@ import type { GameEngineCallbacks, PlayerState, PowerUpState, Vector2, Projectil
 // AAA Visual System
 import { VisualSystemCoordinator } from '../visual'
 
+// Tileset system
+import { tilesetLoader } from '../terrain/TilesetLoader'
+
 export class GameEngine {
   private canvas: HTMLCanvasElement
   private scale = 1
@@ -60,6 +63,7 @@ export class GameEngine {
 
   // State
   private assetsLoaded = false
+  private industrialTilesetsReady = false
   private combatEnabled = false
   private mousePosition: Vector2 = { x: 0, y: 0 }
   private localPlayer: PlayerState | null = null
@@ -132,7 +136,9 @@ export class GameEngine {
   }
 
   private loadMap(): void {
-    this.arenaManager.loadMap(this.currentMapConfig)
+    // Disable client-side dynamic spawning - server controls hazard/trap spawns
+    // Client only renders what server tells it to via WebSocket events
+    this.arenaManager.loadMap(this.currentMapConfig, false)
     this.arenaManager.setCallbacks({
       onBarrierDestroyed: (_id, pos) => this.renderPipeline.getCombatEffectsRenderer().addDeathEffect(pos),
       onTrapTriggered: () => this.handleTrapEffects(),
@@ -142,16 +148,23 @@ export class GameEngine {
           this.playerController.setLaunch(velocity)
         }
       },
-      onHazardDamage: (playerId, damage) => this.combatSystem.applyDamage(playerId, damage, 'hazard'),
+      // NOTE: Local hazard damage is disabled - all damage comes from server via handleServerHazardDamage()
+      // This prevents double damage and ensures client/server health sync
+      onHazardDamage: () => {
+        // No-op: Server handles all hazard damage via arena_hazard_damage WebSocket events
+      },
     })
   }
 
   private handleTrapEffects(): void {
+    // NOTE: Local trap damage is disabled - all damage comes from server via handleServerTrapTriggered()
+    // This only handles visual effects for locally-detected trap triggers
     const results = this.arenaManager.getTrapEffectResults()
     for (const result of results) {
-      if (result.type === 'damage_burst') {
-        this.combatSystem.applyDamage(result.playerId, result.value, 'trap')
-      }
+      // Don't apply damage locally - server handles this via arena_trap_triggered
+      // if (result.type === 'damage_burst') {
+      //   this.combatSystem.applyDamage(result.playerId, result.value, 'trap')
+      // }
       this.renderPipeline.getCombatEffectsRenderer().addHitMarker(result.position)
       this.renderPipeline.getCombatEffectsRenderer().addDamageNumber(result.position, result.value)
     }
@@ -159,20 +172,21 @@ export class GameEngine {
 
   private async loadAssets(): Promise<void> {
     try {
+      const theme = this.currentMapConfig?.metadata?.theme ?? 'space'
+      
       // Load core assets
-      const coreLoads = [
+      const coreLoads: Promise<unknown>[] = [
         loadGameAssets(),
         arenaAssets.load(),
         this.visualCoordinator.initialize(),
-      ] as const
+      ]
+      
+      // Load industrial tilesets if theme requires them
+      if (theme === 'industrial') {
+        coreLoads.push(this.loadIndustrialTilesets())
+      }
       
       await Promise.all(coreLoads)
-      
-      // Industrial tileset renderer disabled until feature is ready
-      // const ctx = this.canvas.getContext('2d')
-      // const theme = this.currentMapConfig?.metadata?.theme ?? 'space'
-      // if (theme === 'industrial' && ctx) {
-      // }
       
       // Register hazards with visual system after map is loaded
       this.registerVisualsFromMap()
@@ -182,6 +196,38 @@ export class GameEngine {
     } catch (err) {
       console.error('[GameEngine] Asset loading error:', err)
       this.assetsLoaded = true
+    }
+  }
+
+  /**
+   * Load industrial tilesets for industrial theme maps
+   * Requirements: 1.1, 1.2
+   */
+  private async loadIndustrialTilesets(): Promise<void> {
+    // Core tilesets required for industrial map rendering
+    // Note: wall-tiles and arena-border are optional (used for border rendering)
+    const requiredTilesets = [
+      'floor-tiles',
+      'cover-tiles',
+      'hazard-tiles',
+      'prop-tiles',
+    ]
+    
+    try {
+      console.log('[GameEngine] Loading industrial tilesets...')
+      await tilesetLoader.preloadAll(requiredTilesets)
+      
+      const ctx = this.canvas.getContext('2d')
+      if (ctx) {
+        await this.renderPipeline.initializeIndustrialRenderer(ctx)
+      }
+      
+      this.industrialTilesetsReady = true
+      console.log('[GameEngine] Industrial tilesets loaded successfully')
+    } catch (err) {
+      console.error('[GameEngine] Industrial tileset loading failed:', err)
+      this.industrialTilesetsReady = false
+      // Fall back to procedural rendering - don't throw, just log
     }
   }
 
@@ -220,6 +266,7 @@ export class GameEngine {
 
   // Public API
   areAssetsLoaded(): boolean { return this.assetsLoaded }
+  areIndustrialTilesetsReady(): boolean { return this.industrialTilesetsReady }
 
   setCallbacks(callbacks: GameEngineCallbacks): void {
     this.callbacks = callbacks
@@ -303,6 +350,20 @@ export class GameEngine {
     this.serverSync.handleServerTrapTriggered(trapId, effect, value, affectedPlayers, position, knockbacks)
   }
 
+  // Server-authoritative hazard/trap spawning (delegate to ArenaManager)
+  addServerHazard(hazard: { id: string; type: string; bounds: { x: number; y: number; width: number; height: number }; intensity: number }): void {
+    this.arenaManager.addServerHazard(hazard)
+  }
+  removeServerHazard(hazardId: string): void {
+    this.arenaManager.removeServerHazard(hazardId)
+  }
+  addServerTrap(trap: { id: string; type: string; position: { x: number; y: number }; radius: number; effect: string; effectValue: number; cooldown: number }): void {
+    this.arenaManager.addServerTrap(trap)
+  }
+  removeServerTrap(trapId: string): void {
+    this.arenaManager.removeServerTrap(trapId)
+  }
+
   // Buff state from server
   setServerBuffs(buffs: Record<string, Array<{ type: string; value: number; remaining: number; source: string }>>): void {
     this.buffManager.setFromServer(buffs)
@@ -320,6 +381,7 @@ export class GameEngine {
     
     // Detect mobile/touch device
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    const isLandscape = window.innerWidth > window.innerHeight
     
     // On mobile, use visualViewport for accurate dimensions that account for browser chrome
     // This is critical for landscape mode where address bar/nav bar steal space
@@ -330,6 +392,13 @@ export class GameEngine {
       // visualViewport gives us the actual visible area, excluding browser chrome
       clientWidth = window.visualViewport.width
       clientHeight = window.visualViewport.height
+      
+      // In mobile landscape, account for the quiz panel overlay at top (~50px)
+      // This ensures the full map is visible without cutoff
+      if (isLandscape) {
+        const quizPanelHeight = 50 // ArenaQuizPanel overlay height
+        clientHeight = clientHeight - quizPanelHeight
+      }
     } else {
       // Fallback to container dimensions
       clientWidth = container.clientWidth

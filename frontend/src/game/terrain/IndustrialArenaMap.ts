@@ -14,8 +14,7 @@
 import { 
   FLOOR_TILES, 
   COVER_TILES, 
-  HAZARD_TILES, 
-  PROP_TILES,
+  HAZARD_TILES,
 } from './TilesetLoader'
 
 // ============================================================================
@@ -63,7 +62,6 @@ export interface ArenaMap {
 const F = FLOOR_TILES
 const C = COVER_TILES
 const H = HAZARD_TILES
-const P = PROP_TILES
 
 /** Create a basic floor tile */
 const floor = (floorType: number): MapTile => ({
@@ -89,105 +87,122 @@ const hazard = (floorType: number, hazardType: number, damage: number): MapTile 
   damage,
 })
 
-/** Create a floor tile with a prop (decorative) */
-const prop = (floorType: number, propType: number): MapTile => ({
-  floor: floorType,
-  prop: propType,
-  solid: false,
-  damaging: false,
-})
-
-/** Create a pickup tile */
-const pickup = (floorType: number, pickupType: number): MapTile => ({
-  floor: floorType,
-  hazard: pickupType, // Pickups use hazard layer
-  solid: false,
-  damaging: false,
-})
-
 // ============================================================================
 // Industrial Arena Map Definition
 // ============================================================================
 
 /**
- * 16x9 Industrial Military Arena (matches standard grid size)
+ * 16x9 Industrial Military Arena - Enterprise Quality Design
  * 
- * Layout concept:
- * - Concrete floor base with metal walkways
- * - Cover positions in strategic locations
- * - Hazard zones in center
- * - Spawn points on opposite sides
+ * Grid: 16 columns × 9 rows = 144 tiles total
+ * 
+ * Floor Tiles Available (floor-tiles.jpg 4x4 = 16 tiles):
+ * Index 0: Concrete Plain (gray)      Index 1: Concrete Cracked
+ * Index 2: Concrete Stained           Index 3: Concrete Tire Marks  
+ * Index 4: Metal Diamond (shiny)      Index 5: Metal Rusted (brown)
+ * Index 6: Metal Grate (dark grid)    Index 7: Metal Riveted
+ * Index 8: Tile White (cream)         Index 9: Tile Dirty (beige)
+ * Index 10: Tile Broken               Index 11: Tile Blood (red stain)
+ * Index 12: Drain                     Index 13: Vent
+ * Index 14: Manhole                   Index 15: Arrow Marking
+ * 
+ * NOTE: The TilesetLoader now fixes checkered transparency patterns that were
+ * baked into the JPG image. All concrete tiles (0-3) should now render properly.
+ * 
+ * Design Pattern:
+ * - CONCRETE_STAINED (2) for border frame
+ * - CONCRETE_PLAIN (0) for main play area
+ * - CONCRETE_CRACKED (1) for texture variation
+ * - CONCRETE_TIRE_MARKS (3) for center lane markings
  */
 export const INDUSTRIAL_ARENA: ArenaMap = {
   name: 'Industrial Facility',
   width: 16,
   height: 9,
-  tilesets: ['floor-tiles', 'wall-tiles', 'cover-tiles', 'hazard-tiles', 'prop-tiles', 'arena-border'],
+  tilesets: ['floor-tiles', 'cover-tiles', 'hazard-tiles', 'prop-tiles'],
   spawn1: { x: 1, y: 4 },
   spawn2: { x: 14, y: 4 },
   tiles: [
-    // Row 0 - Top edge
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 0 (y=0): Top border - Stained concrete (darker)
+    // ═══════════════════════════════════════════════════════════════════════
     [
-      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.METAL_DIAMOND), floor(F.METAL_DIAMOND), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED),
+      floor(F.CONCRETE_STAINED),
+    ],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 1 (y=1): Upper lane - plain concrete with corner sandbags
+    // ═══════════════════════════════════════════════════════════════════════
+    [
+      floor(F.CONCRETE_STAINED), obstacle(F.CONCRETE_PLAIN, C.SANDBAGS), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.SANDBAGS),
+      floor(F.CONCRETE_STAINED),
+    ],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 2 (y=2): Upper play area - crates and hazard zone
+    // ═══════════════════════════════════════════════════════════════════════
+    [
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), obstacle(F.CONCRETE_PLAIN, C.WOODEN_CRATE), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_TIRE_MARKS), hazard(F.CONCRETE_STAINED, H.TOXIC_WASTE, 10), hazard(F.CONCRETE_STAINED, H.TOXIC_WASTE, 10), floor(F.CONCRETE_TIRE_MARKS),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.WOODEN_CRATE), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED),
+    ],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 3 (y=3): Upper mid - barrel cover positions
+    // ═══════════════════════════════════════════════════════════════════════
+    [
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN),
+      obstacle(F.CONCRETE_PLAIN, C.OIL_BARREL), floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_TIRE_MARKS),
+      obstacle(F.CONCRETE_PLAIN, C.OIL_BARREL), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED),
+    ],
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 4 (y=4): CENTER ROW - Spawn level, tire marks for lane
+    // ═══════════════════════════════════════════════════════════════════════
+    [
       floor(F.CONCRETE_STAINED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_PLAIN), floor(F.METAL_DIAMOND), floor(F.METAL_DIAMOND), floor(F.CONCRETE_CRACKED),
-      floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_TIRE_MARKS),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED),
     ],
-    // Row 1 - Cover row top
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 5 (y=5): Lower mid - barrel cover positions (mirror of row 3)
+    // ═══════════════════════════════════════════════════════════════════════
     [
-      floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.SANDBAGS), floor(F.METAL_GRATE), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      prop(F.CONCRETE_PLAIN, P.RUBBLE), floor(F.TILE_WHITE), floor(F.TILE_WHITE), floor(F.TILE_WHITE), floor(F.TILE_WHITE),
-      prop(F.CONCRETE_PLAIN, P.BRICKS), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.METAL_GRATE), obstacle(F.CONCRETE_PLAIN, C.SANDBAGS),
-      floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN),
+      obstacle(F.CONCRETE_PLAIN, C.OIL_BARREL), floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_TIRE_MARKS),
+      obstacle(F.CONCRETE_PLAIN, C.OIL_BARREL), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED),
     ],
-    // Row 2 - Hazard row top
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 6 (y=6): Lower play area - crates and fire hazard (mirror of row 2)
+    // ═══════════════════════════════════════════════════════════════════════
     [
-      floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.WOODEN_CRATE), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      floor(F.TILE_WHITE), hazard(F.TILE_BROKEN, H.TOXIC_WASTE, 10), hazard(F.TILE_BROKEN, H.TOXIC_WASTE, 10), hazard(F.TILE_BROKEN, H.TOXIC_WASTE, 10), hazard(F.TILE_BROKEN, H.TOXIC_WASTE, 10),
-      floor(F.TILE_WHITE), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.WOODEN_CRATE), floor(F.CONCRETE_PLAIN),
-      floor(F.CONCRETE_TIRE_MARKS),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), obstacle(F.CONCRETE_PLAIN, C.WOODEN_CRATE), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_TIRE_MARKS), hazard(F.CONCRETE_STAINED, H.FIRE, 15), hazard(F.CONCRETE_STAINED, H.FIRE, 15), floor(F.CONCRETE_TIRE_MARKS),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.WOODEN_CRATE), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED),
     ],
-    // Row 3 - Mid cover
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 7 (y=7): Lower lane - plain concrete with corner sandbags (mirror of row 1)
+    // ═══════════════════════════════════════════════════════════════════════
     [
-      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.OIL_BARREL), floor(F.CONCRETE_PLAIN),
-      floor(F.TILE_WHITE), floor(F.TILE_DIRTY), floor(F.DRAIN), floor(F.DRAIN), floor(F.TILE_DIRTY),
-      floor(F.TILE_WHITE), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.OIL_BARREL), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED), obstacle(F.CONCRETE_PLAIN, C.SANDBAGS), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.SANDBAGS),
+      floor(F.CONCRETE_STAINED),
     ],
-    // Row 4 - Center row (spawn level)
+    // ═══════════════════════════════════════════════════════════════════════
+    // ROW 8 (y=8): Bottom border - Stained concrete (mirror of row 0)
+    // ═══════════════════════════════════════════════════════════════════════
     [
-      floor(F.METAL_DIAMOND), floor(F.METAL_DIAMOND), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), pickup(F.CONCRETE_PLAIN, H.AMMO_CRATE),
-      floor(F.TILE_WHITE), floor(F.METAL_GRATE), floor(F.METAL_GRATE), floor(F.METAL_GRATE), floor(F.METAL_GRATE),
-      floor(F.TILE_WHITE), pickup(F.CONCRETE_PLAIN, H.HEALTH_KIT), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.METAL_DIAMOND),
-      floor(F.METAL_DIAMOND),
-    ],
-    // Row 5 - Mid cover
-    [
-      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.TIRES), floor(F.CONCRETE_PLAIN),
-      floor(F.TILE_WHITE), floor(F.TILE_DIRTY), floor(F.VENT), floor(F.VENT), floor(F.TILE_DIRTY),
-      floor(F.TILE_WHITE), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.TIRES), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      floor(F.CONCRETE_PLAIN),
-    ],
-    // Row 6 - Hazard row bottom
-    [
-      floor(F.CONCRETE_TIRE_MARKS), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.JERSEY_BARRIER), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      floor(F.TILE_WHITE), hazard(F.TILE_BLOOD, H.FIRE, 15), hazard(F.TILE_BLOOD, H.FIRE, 15), hazard(F.TILE_BLOOD, H.FIRE, 15), hazard(F.TILE_BLOOD, H.FIRE, 15),
-      floor(F.TILE_WHITE), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.JERSEY_BARRIER), floor(F.CONCRETE_PLAIN),
-      floor(F.CONCRETE_TIRE_MARKS),
-    ],
-    // Row 7 - Cover row bottom
-    [
-      floor(F.CONCRETE_PLAIN), obstacle(F.CONCRETE_PLAIN, C.SUPPLY_PALLET), floor(F.METAL_GRATE), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      prop(F.CONCRETE_PLAIN, P.PIPES), floor(F.TILE_WHITE), floor(F.TILE_WHITE), floor(F.TILE_WHITE), floor(F.TILE_WHITE),
-      prop(F.CONCRETE_PLAIN, P.JUNK_PILE), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.METAL_GRATE), obstacle(F.CONCRETE_PLAIN, C.SUPPLY_PALLET),
-      floor(F.CONCRETE_PLAIN),
-    ],
-    // Row 8 - Bottom edge
-    [
-      floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_STAINED), floor(F.METAL_RUSTED), floor(F.METAL_RUSTED), floor(F.CONCRETE_PLAIN),
-      floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN), floor(F.CONCRETE_PLAIN),
-      floor(F.CONCRETE_CRACKED), floor(F.CONCRETE_PLAIN), floor(F.METAL_RUSTED), floor(F.METAL_RUSTED), floor(F.CONCRETE_STAINED),
-      floor(F.CONCRETE_PLAIN),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED),
+      floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED), floor(F.CONCRETE_STAINED),
+      floor(F.CONCRETE_STAINED),
     ],
   ],
 }

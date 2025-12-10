@@ -58,8 +58,34 @@ export interface SpawnPointConfig {
 }
 
 /**
+ * ArenaMap tile structure for tileset-based maps
+ */
+export interface ArenaMapTile {
+  floor: number
+  obstacle?: number
+  hazard?: number
+  prop?: number
+  solid: boolean
+  damaging: boolean
+  damage?: number
+}
+
+/**
+ * ArenaMap structure for tileset-based maps
+ */
+export interface ArenaMap {
+  name: string
+  width: number
+  height: number
+  tiles: ArenaMapTile[][]
+  spawn1: { x: number; y: number }
+  spawn2: { x: number; y: number }
+  tilesets: string[]
+}
+
+/**
  * Complete map configuration
- * Requirements: 9.1
+ * Requirements: 9.1, 3.4
  */
 export interface MapConfig {
   metadata: MapMetadata
@@ -71,6 +97,10 @@ export interface MapConfig {
   jumpPads: JumpPadConfig[]
   spawnPoints: SpawnPointConfig[]
   powerUpSpawns: Vector2[]
+  
+  // Tileset support (Requirements: 3.4)
+  tilesetMap?: ArenaMap  // Optional tile-based map data
+  requiredTilesets?: string[]  // Tileset IDs to preload
 }
 
 

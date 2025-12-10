@@ -50,6 +50,11 @@ interface GameArenaProps {
   setTrapTriggeredCallback?: (callback: (data: { id: string; effect: string; value: number; affected_players: string[]; x: number; y: number; knockbacks?: Record<string, { dx: number; dy: number }> }) => void) => void
   setTeleportCallback?: (callback: (playerId: string, toX: number, toY: number) => void) => void
   setJumpPadCallback?: (callback: (playerId: string, vx: number, vy: number) => void) => void
+  // Server hazard/trap spawn callbacks (for server-authoritative spawning)
+  setHazardSpawnCallback?: (callback: (hazard: { id: string; type: string; bounds: { x: number; y: number; width: number; height: number }; intensity: number }) => void) => void
+  setHazardDespawnCallback?: (callback: (id: string) => void) => void
+  setTrapSpawnCallback?: (callback: (trap: { id: string; type: string; x: number; y: number; radius: number; effect: string; effectValue: number }) => void) => void
+  setTrapDespawnCallback?: (callback: (id: string) => void) => void
   // Send arena config to server
   sendArenaConfig?: (config: unknown) => void
   // Question broadcast (in-arena display)
@@ -108,6 +113,10 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
   setTrapTriggeredCallback,
   setTeleportCallback,
   setJumpPadCallback,
+  setHazardSpawnCallback,
+  setHazardDespawnCallback,
+  setTrapSpawnCallback,
+  setTrapDespawnCallback,
   sendArenaConfig,
   questionBroadcast,
   setBuffUpdateCallback,
@@ -413,6 +422,48 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
       })
     }
   }, [setJumpPadCallback, playerId])
+
+  // Register server hazard spawn/despawn callbacks (server-authoritative spawning)
+  useEffect(() => {
+    if (setHazardSpawnCallback) {
+      setHazardSpawnCallback((hazard) => {
+        engineRef.current?.addServerHazard(hazard)
+      })
+    }
+  }, [setHazardSpawnCallback])
+
+  useEffect(() => {
+    if (setHazardDespawnCallback) {
+      setHazardDespawnCallback((id) => {
+        engineRef.current?.removeServerHazard(id)
+      })
+    }
+  }, [setHazardDespawnCallback])
+
+  useEffect(() => {
+    if (setTrapSpawnCallback) {
+      setTrapSpawnCallback((trap) => {
+        // Transform TrapSpawnPayload (x, y) to position format expected by engine
+        engineRef.current?.addServerTrap({
+          id: trap.id,
+          type: trap.type,
+          position: { x: trap.x, y: trap.y },
+          radius: trap.radius,
+          effect: trap.effect,
+          effectValue: trap.effectValue,
+          cooldown: 3.0, // Default cooldown, server doesn't send this
+        })
+      })
+    }
+  }, [setTrapSpawnCallback])
+
+  useEffect(() => {
+    if (setTrapDespawnCallback) {
+      setTrapDespawnCallback((id) => {
+        engineRef.current?.removeServerTrap(id)
+      })
+    }
+  }, [setTrapDespawnCallback])
 
   // Send arena config to server when engine is ready (host only)
   useEffect(() => {

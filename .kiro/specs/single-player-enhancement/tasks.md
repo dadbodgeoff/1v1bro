@@ -1,0 +1,161 @@
+# Implementation Plan
+
+- [x] 1. Create bot configuration system
+  - [x] 1.1 Create BotConfigManager with difficulty presets
+    - Create `frontend/src/game/bot/BotConfigManager.ts`
+    - Define DifficultyLevel and PracticeType types
+    - Implement getDifficultyConfig() returning correct values for easy/medium/hard
+    - Implement getPracticeTypeConfig() for quiz_only/combat_only/full_game
+    - _Requirements: 1.2, 1.3, 1.4, 2.2, 2.3, 2.4_
+  - [x] 1.2 Write property test for difficulty configuration
+    - **Property 1: Difficulty configuration consistency**
+    - **Validates: Requirements 1.2, 1.3, 1.4**
+  - [x] 1.3 Write property test for practice type configuration
+    - **Property 2: Practice type configuration consistency**
+    - **Validates: Requirements 2.2, 2.3, 2.4**
+
+- [x] 2. Create session statistics calculator
+  - [x] 2.1 Create SessionStatsCalculator class
+    - Create `frontend/src/game/bot/SessionStatsCalculator.ts`
+    - Implement recordAnswer() to track correct/incorrect and times
+    - Implement recordKill(), recordDeath(), recordDamage()
+    - Implement calculateFinalStats() returning complete SessionStats
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+  - [x] 2.2 Write property test for accuracy calculation
+    - **Property 3: Accuracy calculation correctness**
+    - **Validates: Requirements 3.1**
+  - [x] 2.3 Write property test for average answer time
+    - **Property 4: Average answer time calculation**
+    - **Validates: Requirements 3.2**
+  - [x] 2.4 Write property test for streak calculation
+    - **Property 5: Streak calculation correctness**
+    - **Validates: Requirements 3.3**
+  - [x] 2.5 Write property test for K/D ratio
+    - **Property 6: K/D ratio calculation**
+    - **Validates: Requirements 3.4**
+
+- [x] 3. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 4. Create personal best storage system
+  - [x] 4.1 Create PersonalBestStore with dual persistence
+    - Create `frontend/src/stores/practiceStore.ts`
+    - Implement localStorage persistence for guest users
+    - Implement API calls for authenticated users
+    - Implement isNewPersonalBest() comparison logic
+    - _Requirements: 4.1, 4.4, 4.5_
+  - [x] 4.2 Write property test for personal best update condition
+    - **Property 7: Personal best update condition**
+    - **Validates: Requirements 4.1**
+  - [x] 4.3 Write property test for guest data round-trip
+    - **Property 8: Guest data persistence round-trip**
+    - **Validates: Requirements 4.4**
+
+- [x] 5. Create adaptive difficulty manager
+  - [x] 5.1 Create AdaptiveDifficultyManager class
+    - Create `frontend/src/game/bot/AdaptiveDifficultyManager.ts`
+    - Track consecutive wins/losses by margin
+    - Implement adjustment calculation (+/- 10pp per 3 rounds)
+    - Enforce bounds (30% min, 85% max)
+    - _Requirements: 5.1, 5.2, 5.4_
+  - [x] 5.2 Write property test for adaptive difficulty increase
+    - **Property 9: Adaptive difficulty increase threshold**
+    - **Validates: Requirements 5.1**
+  - [x] 5.3 Write property test for adaptive difficulty decrease
+    - **Property 10: Adaptive difficulty decrease threshold**
+    - **Validates: Requirements 5.2**
+
+- [x] 6. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 7. Create backend API and database schema
+  - [x] 7.1 Create database migration for practice tables
+    - Create `backend/app/database/migrations/032_practice_stats.sql`
+    - Add practice_personal_bests table
+    - Add practice_sessions table
+    - Add user_tutorial_status table
+    - Add practice_daily_counts table
+    - _Requirements: 4.5, 7.1, 7.4_
+  - [x] 7.2 Create practice API endpoints
+    - Create `backend/app/api/v1/practice.py`
+    - Implement GET/POST /practice/personal-best
+    - Implement POST /practice/session for recording sessions
+    - Implement GET /practice/daily-count for bonus tracking
+    - _Requirements: 4.5, 7.1, 7.4_
+
+- [x] 8. Create tutorial system
+  - [x] 8.1 Create TutorialManager and TutorialOverlay component
+    - Create `frontend/src/game/bot/TutorialManager.ts`
+    - Create `frontend/src/components/game/TutorialOverlay.tsx`
+    - Implement step progression (movement → combat → quiz)
+    - Implement skip and completion logic
+    - Store completion flag in localStorage/backend
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
+  - [x] 8.2 Write property test for tutorial completion persistence
+    - **Property 11: Tutorial completion persistence**
+    - **Validates: Requirements 6.5**
+
+- [x] 9. Create practice rewards system
+  - [x] 9.1 Implement XP calculation and daily bonus logic
+    - Add XP calculation to practice session completion
+    - Implement 25% multiplayer XP rate
+    - Implement personal best bonus (50 XP)
+    - Implement tutorial completion bonus (100 XP)
+    - Implement daily practice bonus (75 XP after 5 sessions)
+    - _Requirements: 7.1, 7.2, 7.3, 7.4_
+  - [x] 9.2 Write property test for XP calculation
+    - **Property 12: Practice XP calculation**
+    - **Validates: Requirements 7.1**
+  - [x] 9.3 Write property test for daily bonus threshold
+    - **Property 13: Daily bonus threshold**
+    - **Validates: Requirements 7.4**
+
+- [x] 10. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 11. Update BotGame UI with new features
+  - [x] 11.1 Update PracticeSetupScreen with difficulty and type selection
+    - Add difficulty level selector (Easy/Medium/Hard)
+    - Add practice type selector (Quiz Only/Combat Only/Full Game)
+    - Display personal best for selected category/difficulty/type
+    - Show first-time tutorial prompt
+    - _Requirements: 1.1, 1.5, 2.1, 2.5, 4.2, 6.1_
+  - [x] 11.2 Update PracticeResultsScreen with detailed stats
+    - Display quiz accuracy, average time, longest streak
+    - Display combat K/D and damage dealt
+    - Display session duration
+    - Show personal best notification if achieved
+    - Show effective difficulty reached
+    - Display XP earned with breakdown
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 4.3, 5.5, 7.5_
+
+- [x] 12. Integrate all systems into BotGame
+  - [x] 12.1 Wire up BotConfigManager to bot behavior
+    - Replace hardcoded BOT_CONFIG with BotConfigManager
+    - Apply difficulty settings to bot AI
+    - Apply practice type settings to game mode
+    - _Requirements: 1.2, 1.3, 1.4, 2.2, 2.3, 2.4_
+  - [x] 12.2 Wire up SessionStatsCalculator to game events
+    - Track answers in real-time
+    - Track combat events
+    - Calculate final stats on game end
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+  - [x] 12.3 Wire up AdaptiveDifficultyManager to round results
+    - Record round results after each question
+    - Apply difficulty adjustments to bot config
+    - Display difficulty indicator in UI
+    - _Requirements: 5.1, 5.2, 5.3, 5.4_
+  - [x] 12.4 Wire up PersonalBestStore to session completion
+    - Check for new personal best on game end
+    - Save to localStorage or backend based on auth state
+    - Trigger celebration UI if new best
+    - _Requirements: 4.1, 4.3, 4.4, 4.5_
+  - [x] 12.5 Wire up rewards system to session completion
+    - Calculate and award XP
+    - Track daily session count
+    - Award bonuses as applicable
+    - Show guest signup prompt for unclaimed rewards
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+
+- [x] 13. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

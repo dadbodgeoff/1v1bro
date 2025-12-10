@@ -13,9 +13,9 @@ import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
 import { useGameStore } from '@/stores/gameStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useCategories } from '@/hooks/useCategories'
-import { NEXUS_ARENA, VORTEX_ARENA, type MapConfig } from '@/game/config/maps'
+import { NEXUS_ARENA, VORTEX_ARENA, INDUSTRIAL_FACILITY, type MapConfig } from '@/game/config/maps'
 import { API_BASE } from '@/utils/constants'
-import type { Vector2, FireEvent, HitEvent, DeathEvent, PowerUpState } from '@/game'
+import type { Vector2, FireEvent, HitEvent, DeathEvent, PowerUpState, Projectile } from '@/game'
 
 // Available maps for practice mode
 const AVAILABLE_MAPS = [
@@ -31,13 +31,12 @@ const AVAILABLE_MAPS = [
     description: 'Radial arena with central hazards and teleporters',
     config: VORTEX_ARENA,
   },
-  // Industrial map hidden behind feature flag until tilesets are ready
-  // {
-  //   id: 'industrial',
-  //   name: 'Industrial Facility',
-  //   description: 'Military facility with cover and hazard zones',
-  //   config: INDUSTRIAL_FACILITY,
-  // },
+  {
+    id: 'industrial',
+    name: 'Industrial Facility',
+    description: 'Military facility with cover and hazard zones',
+    config: INDUSTRIAL_FACILITY,
+  },
 ] as const
 
 // Question type from API
@@ -135,6 +134,9 @@ export function BotGame() {
   const [playerHealth, setPlayerHealth] = useState(100)
   const [botProjectiles, setBotProjectiles] = useState<Array<{ id: number; x: number; y: number; vx: number; vy: number }>>([])
   const projectileIdRef = useRef(0)
+  
+  // Callback ref to inject bot projectiles into game engine for rendering
+  const serverProjectilesCallbackRef = useRef<((projectiles: Projectile[]) => void) | null>(null)
   
   const botStateRef = useRef({
     position: { x: 1050, y: 360 },
@@ -435,6 +437,25 @@ export function BotGame() {
     return () => clearInterval(interval)
   }, [gameStarted, botProjectiles.length, playerPosition])
 
+  // Sync bot projectiles to game engine for rendering
+  useEffect(() => {
+    if (!serverProjectilesCallbackRef.current) return
+    
+    // Convert bot projectiles to the Projectile format expected by the engine
+    const engineProjectiles: Projectile[] = botProjectiles.map(p => ({
+      id: `bot-proj-${p.id}`,
+      ownerId: 'bot',
+      position: { x: p.x, y: p.y },
+      velocity: { x: p.vx, y: p.vy },
+      spawnTime: Date.now(),
+      spawnPosition: { x: p.x, y: p.y },
+      damage: 10,
+      isPredicted: false,
+    }))
+    
+    serverProjectilesCallbackRef.current(engineProjectiles)
+  }, [botProjectiles])
+
   // Schedule bot answer when question starts
   useEffect(() => {
     if (!gameStarted || status !== 'playing' || !currentQuestion || questions.length === 0) return
@@ -567,6 +588,11 @@ export function BotGame() {
 
   const handleCombatDeath = useCallback((_event: DeathEvent) => {
     // Death event handling
+  }, [])
+
+  // Callback setter for injecting bot projectiles into game engine
+  const setServerProjectilesCallback = useCallback((callback: (projectiles: Projectile[]) => void) => {
+    serverProjectilesCallbackRef.current = callback
   }, [])
 
   const handleLeave = useCallback(() => {
@@ -807,6 +833,7 @@ export function BotGame() {
             onCombatFire={handleCombatFire}
             onCombatHit={handleCombatHit}
             onCombatDeath={handleCombatDeath}
+            setServerProjectilesCallback={setServerProjectilesCallback}
           />
 
           {/* Waiting for bot indicator */}

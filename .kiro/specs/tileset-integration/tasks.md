@@ -1,0 +1,134 @@
+# Implementation Plan
+
+- [x] 1. Integrate tileset loading into GameEngine asset pipeline
+  - [x] 1.1 Add industrialTilesetsReady flag to GameEngine
+    - Add private boolean flag to track tileset loading state
+    - Initialize to false in constructor
+    - _Requirements: 1.3_
+  - [x] 1.2 Create loadIndustrialTilesets method in GameEngine
+    - Define required tilesets array: floor-tiles, wall-tiles, cover-tiles, hazard-tiles, prop-tiles, arena-border
+    - Call tilesetLoader.preloadAll() with required tilesets
+    - Call renderPipeline.initializeIndustrialRenderer() on success
+    - Set industrialTilesetsReady flag based on result
+    - Wrap in try/catch for graceful fallback
+    - _Requirements: 1.1, 1.2_
+  - [x] 1.3 Modify loadAssets to conditionally load industrial tilesets
+    - Check if currentMapConfig.metadata.theme === 'industrial'
+    - Add loadIndustrialTilesets() to Promise.all when industrial theme
+    - Ensure assets loaded callback only fires after tilesets are ready
+    - _Requirements: 1.4_
+  - [x] 1.4 Write property test for tileset loading completeness
+    - **Property 1: Tileset Loading Completeness**
+    - **Validates: Requirements 1.1, 1.4**
+
+- [x] 2. Create TileCollisionAdapter for tile-based collision
+  - [x] 2.1 Create TileCollisionAdapter class
+    - Create new file: frontend/src/game/terrain/TileCollisionAdapter.ts
+    - Accept IndustrialArenaRenderer and tileSize in constructor
+    - Implement worldToGrid coordinate conversion
+    - Implement checkCollision method using tile solid flags
+    - _Requirements: 4.1, 4.2_
+  - [x] 2.2 Write property test for coordinate conversion
+    - **Property 5: World to Grid Coordinate Conversion**
+    - **Validates: Requirements 4.2**
+  - [x] 2.3 Write property test for solid tile collision
+    - **Property 4: Solid Tile Collision**
+    - **Validates: Requirements 4.1**
+  - [x] 2.4 Write property test for out of bounds handling
+    - **Property 6: Out of Bounds Non-Walkable**
+    - **Validates: Requirements 4.4**
+
+- [x] 3. Create TileHazardAdapter for tile-based hazards
+  - [x] 3.1 Create TileHazardAdapter class
+    - Create new file: frontend/src/game/terrain/TileHazardAdapter.ts
+    - Accept IndustrialArenaRenderer and tileSize in constructor
+    - Implement getDamageAtPosition method
+    - Implement getHazardZones method for integration with existing system
+    - Handle default damage value of 10 when not specified
+    - _Requirements: 5.1, 5.2_
+  - [x] 3.2 Write property test for hazard damage application
+    - **Property 7: Hazard Damage Application**
+    - **Validates: Requirements 5.1**
+  - [x] 3.3 Write property test for maximum hazard damage
+    - **Property 8: Maximum Hazard Damage**
+    - **Validates: Requirements 5.4**
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 5. Integrate collision and hazard adapters with GameEngine
+  - [x] 5.1 Add adapter instances to GameEngine
+    - Create TileCollisionAdapter when industrial tilesets load
+    - Create TileHazardAdapter when industrial tilesets load
+    - Store as private members
+    - _Requirements: 4.1, 5.1_
+  - [x] 5.2 Modify PlayerController to use tile collision when available
+    - Check if industrialTilesetsReady before using tile collision
+    - Fall back to ArenaManager collision otherwise
+    - _Requirements: 4.1, 4.3_
+  - [x] 5.3 Integrate tile hazards with existing hazard system
+    - Register tile hazard zones with HazardManager on map load
+    - Ensure damage is applied through existing damage pipeline
+    - _Requirements: 5.1, 5.3_
+
+- [x] 6. Extend MapConfig to support tileset maps
+  - [x] 6.1 Add tileset fields to MapConfig interface
+    - Add optional tilesetMap: ArenaMap field
+    - Add optional requiredTilesets: string[] field
+    - Update map-schema.ts
+    - _Requirements: 3.4_
+  - [x] 6.2 Update IndustrialMapConverter to preserve all tile data
+    - Ensure floor, obstacle, hazard, prop indices are preserved
+    - Ensure solid and damaging flags are preserved
+    - Ensure damage values are preserved
+    - _Requirements: 3.2_
+  - [x] 6.3 Write property test for ArenaMap to MapConfig round-trip
+    - **Property 3: ArenaMap to MapConfig Round-Trip**
+    - **Validates: Requirements 3.2**
+
+- [x] 7. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 8. Update RenderPipeline for proper industrial rendering
+  - [x] 8.1 Ensure initializeIndustrialRenderer is called from GameEngine
+    - Verify the method is called during loadIndustrialTilesets
+    - Verify industrialRendererReady flag is set correctly
+    - _Requirements: 2.2_
+  - [x] 8.2 Verify render layer order for industrial theme
+    - Confirm floor → props → obstacles → hazards → border order
+    - Ensure ArenaManager is skipped when industrial renderer is active
+    - _Requirements: 2.1_
+  - [x] 8.3 Write property test for theme-based renderer selection
+    - **Property 10: Industrial Theme Renderer Selection**
+    - **Validates: Requirements 3.1**
+
+- [x] 9. Add TilesetLoader improvements
+  - [x] 9.1 Improve error messages for invalid URLs
+    - Include attempted URL in error message
+    - Include tileset ID in error message
+    - _Requirements: 7.4_
+  - [x] 9.2 Write property test for tile dimension auto-detection
+    - **Property 9: Tile Dimension Auto-Detection**
+    - **Validates: Requirements 6.3, 7.2**
+  - [x] 9.3 Write property test for tile index correctness
+    - **Property 2: Tile Index Correctness**
+    - **Validates: Requirements 2.3**
+
+- [x] 10. Enable industrial map in practice mode
+  - [x] 10.1 Uncomment industrial map in BotGame AVAILABLE_MAPS
+    - Add industrial map back to the selection array
+    - Ensure map config is properly imported
+    - _Requirements: 8.1_
+  - [x] 10.2 Add loading state handling for industrial map
+    - Show loading indicator while tilesets load
+    - Show error state if tilesets fail to load
+    - Disable map selection if tilesets unavailable
+    - _Requirements: 8.2, 8.3_
+  - [x] 10.3 Verify gameplay mechanics work on industrial map
+    - Test movement and collision
+    - Test combat and projectiles
+    - Test hazard damage
+    - _Requirements: 8.4_
+
+- [ ] 11. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

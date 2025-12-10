@@ -83,15 +83,18 @@ export interface LoadedTileset {
 export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
   // ============================================
   // NEW INDUSTRIAL MILITARY TILESETS
+  // These are JPEGs with actual content - NO background removal needed
   // ============================================
   
   // Floor tiles - 4x4 grid (concrete, metal, tile, special)
+  // Auto-detect tile size from sprite sheet dimensions
   'floor-tiles': {
     id: 'floor-tiles',
     columns: 4,
     rows: 4,
     tileWidth: 0, // Auto-detect from image
     tileHeight: 0,
+    removeBackground: false, // IMPORTANT: Don't remove gray floor pixels!
   },
   
   // Wall tiles - 3x3 grid (9-slice concrete walls with barbed wire)
@@ -101,6 +104,7 @@ export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
     rows: 3,
     tileWidth: 0,
     tileHeight: 0,
+    removeBackground: false,
   },
   
   // Cover/obstacle tiles - 4x2 grid (crates, barrels, sandbags, barriers)
@@ -110,6 +114,7 @@ export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
     rows: 2,
     tileWidth: 0,
     tileHeight: 0,
+    removeBackground: false,
   },
   
   // Hazard tiles - 4x2 grid (toxic, oil, fire, electric, pickups)
@@ -119,6 +124,7 @@ export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
     rows: 2,
     tileWidth: 0,
     tileHeight: 0,
+    removeBackground: false,
   },
   
   // Prop/debris tiles - 4x2 grid (rubble, debris, decorative)
@@ -128,6 +134,7 @@ export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
     rows: 2,
     tileWidth: 0,
     tileHeight: 0,
+    removeBackground: false,
   },
   
   // Arena border - 3x3 grid (chain-link fence 9-slice)
@@ -137,6 +144,7 @@ export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
     rows: 3,
     tileWidth: 0,
     tileHeight: 0,
+    removeBackground: false,
   },
   
   // ============================================
@@ -254,10 +262,15 @@ class TilesetLoaderClass {
     const newTilesets = ['floor-tiles', 'wall-tiles', 'cover-tiles', 'hazard-tiles', 'prop-tiles', 'arena-border']
     const extension = newTilesets.includes(tilesetId) ? 'jpg' : 'jpeg'
     
+    // Use removeBackground from config if specified, otherwise default to true for legacy tilesets
+    const shouldRemoveBackground = baseConfig.removeBackground !== undefined 
+      ? baseConfig.removeBackground 
+      : true
+    
     const config: TilesetConfig = {
       ...baseConfig,
       url: this.buildStorageUrl(`${tilesetId}.${extension}`),
-      removeBackground: true,
+      removeBackground: shouldRemoveBackground,
     }
     
     console.log(`[TilesetLoader] ${tilesetId} URL: ${config.url}`)
@@ -330,6 +343,10 @@ class TilesetLoaderClass {
   /**
    * Extract individual tiles from a sprite sheet
    * Auto-detects tile size if tileWidth/tileHeight are 0
+   * 
+   * For industrial tilesets (floor-tiles, etc.), we need special handling:
+   * The JPG images may have checkered patterns baked in where transparency
+   * was intended. We detect and replace these with solid colors.
    */
   private extractTiles(img: HTMLImageElement, config: TilesetConfig): Tile[] {
     const { columns, rows, removeBackground: shouldRemove = true } = config
@@ -339,13 +356,15 @@ class TilesetLoaderClass {
     const tileWidth = config.tileWidth > 0 ? config.tileWidth : Math.floor(img.width / columns)
     const tileHeight = config.tileHeight > 0 ? config.tileHeight : Math.floor(img.height / rows)
 
-    console.log(`[TilesetLoader] ${config.id}: ${img.width}x${img.height} → ${columns}x${rows} grid → ${tileWidth}x${tileHeight} tiles`)
+    console.log(`[TilesetLoader] ${config.id}: ${img.width}x${img.height} → ${columns}x${rows} grid → ${tileWidth}x${tileHeight} tiles, removeBackground=${shouldRemove}`)
 
     // First, process the full image to remove background if needed
     let sourceCanvas: HTMLCanvasElement
     if (shouldRemove) {
       sourceCanvas = removeBackground(img, 'auto')
     } else {
+      // For industrial tilesets, we DON'T remove background or modify pixels
+      // The JPG tiles should be used as-is without any processing
       sourceCanvas = document.createElement('canvas')
       sourceCanvas.width = img.width
       sourceCanvas.height = img.height
@@ -383,6 +402,8 @@ class TilesetLoaderClass {
 
     return tiles
   }
+
+
 
   /**
    * Get a specific tile from a loaded tileset

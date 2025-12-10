@@ -648,6 +648,18 @@ export class IndustrialArenaRenderer {
     await tilesetLoader.preloadAll(map.tilesets)
     this.ready = true
     console.log(`[IndustrialArenaRenderer] Loaded map: ${map.name} (${map.width}x${map.height})`)
+    console.log(`[IndustrialArenaRenderer] Tile size: ${this.tileSize}px`)
+    console.log(`[IndustrialArenaRenderer] Total arena size: ${map.width * this.tileSize}x${map.height * this.tileSize}px`)
+    
+    // Debug: Check if all floor tiles are available
+    const floorTileset = tilesetLoader.isLoaded('floor-tiles')
+    console.log(`[IndustrialArenaRenderer] floor-tiles loaded: ${floorTileset}`)
+    
+    // Check a few specific tiles
+    for (let i = 0; i < 16; i++) {
+      const tile = tilesetLoader.getTile('floor-tiles', i)
+      console.log(`[IndustrialArenaRenderer] floor-tiles[${i}]: ${tile ? `${tile.canvas.width}x${tile.canvas.height}` : 'NULL'}`)
+    }
   }
 
   /**
@@ -680,6 +692,12 @@ export class IndustrialArenaRenderer {
 
   /**
    * Render the complete map
+   * Uses Math.floor for pixel-perfect positioning to avoid sub-pixel gaps
+   * Fills solid background first to prevent backdrop bleeding through
+   * 
+   * IMPORTANT: The floor-tiles.jpg sprite sheet has tiles with transparency baked in
+   * (checkered pattern). We must fill each cell with a solid color BEFORE drawing
+   * the tile to prevent the backdrop from bleeding through.
    */
   render(offsetX = 0, offsetY = 0): void {
     if (!this.ready || !this.map) return
@@ -687,15 +705,35 @@ export class IndustrialArenaRenderer {
     const ts = this.tileSize
     const map = this.map
     
-    // Layer 1: Floor tiles
+    // Use integer offsets to avoid sub-pixel rendering issues
+    const ox = Math.floor(offsetX)
+    const oy = Math.floor(offsetY)
+    
+    // Layer 0: Fill ENTIRE arena with solid dark gray first
+    // This is the base layer that prevents ANY backdrop bleeding
+    this.ctx.fillStyle = '#3d3d3d'
+    this.ctx.fillRect(ox, oy, map.width * ts, map.height * ts)
+    
+    // Layer 1: Floor tiles with per-tile background fill
+    // The sprite sheet has transparency baked in, so we MUST fill each cell
+    // with a color that matches the expected tile appearance
     for (let y = 0; y < map.height; y++) {
       for (let x = 0; x < map.width; x++) {
         const mapTile = map.tiles[y]?.[x]
         if (!mapTile) continue
         
+        const drawX = Math.floor(ox + x * ts)
+        const drawY = Math.floor(oy + y * ts)
+        
+        // Choose background color based on tile type for better visual consistency
+        // This fills the transparent areas of the tile with an appropriate color
+        const bgColor = this.getTileBackgroundColor(mapTile.floor)
+        this.ctx.fillStyle = bgColor
+        this.ctx.fillRect(drawX, drawY, ts, ts)
+        
         const tile = tilesetLoader.getTile('floor-tiles', mapTile.floor)
         if (tile) {
-          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+          this.ctx.drawImage(tile.canvas, drawX, drawY, ts, ts)
         }
       }
     }
@@ -708,7 +746,9 @@ export class IndustrialArenaRenderer {
         
         const tile = tilesetLoader.getTile('prop-tiles', mapTile.prop)
         if (tile) {
-          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+          const drawX = Math.floor(ox + x * ts)
+          const drawY = Math.floor(oy + y * ts)
+          this.ctx.drawImage(tile.canvas, drawX, drawY, ts, ts)
         }
       }
     }
@@ -721,7 +761,9 @@ export class IndustrialArenaRenderer {
         
         const tile = tilesetLoader.getTile('cover-tiles', mapTile.obstacle)
         if (tile) {
-          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+          const drawX = Math.floor(ox + x * ts)
+          const drawY = Math.floor(oy + y * ts)
+          this.ctx.drawImage(tile.canvas, drawX, drawY, ts, ts)
         }
       }
     }
@@ -734,7 +776,9 @@ export class IndustrialArenaRenderer {
         
         const tile = tilesetLoader.getTile('hazard-tiles', mapTile.hazard)
         if (tile) {
-          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+          const drawX = Math.floor(ox + x * ts)
+          const drawY = Math.floor(oy + y * ts)
+          this.ctx.drawImage(tile.canvas, drawX, drawY, ts, ts)
         }
       }
     }
@@ -891,5 +935,40 @@ export class IndustrialArenaRenderer {
     }
     
     return hazards
+  }
+
+  /**
+   * Get appropriate background color for a floor tile index
+   * This fills transparent areas of tiles with a matching solid color
+   * 
+   * Floor tile indices (from FLOOR_TILES):
+   * 0-3: Concrete (gray)
+   * 4-7: Metal (silver/brown)
+   * 8-11: Tile (cream/beige)
+   * 12-15: Special (dark gray)
+   * 
+   * NOTE: The floor-tiles.jpg has checkered transparency patterns baked into
+   * some tiles. We use colors that closely match the tile content to hide
+   * these patterns when they show through.
+   */
+  private getTileBackgroundColor(floorIndex: number): string {
+    // Row 0: Concrete tiles (0-3) - match the gray concrete color closely
+    if (floorIndex >= 0 && floorIndex <= 3) {
+      // Use a gray that matches the concrete tiles in the sprite sheet
+      return '#7a7a7a'
+    }
+    // Row 1: Metal tiles (4-7)
+    if (floorIndex >= 4 && floorIndex <= 7) {
+      // Metal diamond (4) = silver, Metal rusted (5) = brown, Grate (6-7) = dark
+      if (floorIndex === 4) return '#8a8a8a' // Silver metal
+      if (floorIndex === 5) return '#6b4423' // Rusted brown
+      return '#4a4a4a' // Dark for grates
+    }
+    // Row 2: Tile tiles (8-11) - cream/beige
+    if (floorIndex >= 8 && floorIndex <= 11) {
+      return '#c4b8a8' // Cream/beige for white tiles
+    }
+    // Row 3: Special tiles (12-15) - dark gray
+    return '#4a4a4a'
   }
 }
