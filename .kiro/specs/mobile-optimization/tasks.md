@@ -1,0 +1,341 @@
+# Implementation Plan
+
+- [x] 1. Foundation Layer - Responsive Hooks and Utilities
+  - [x] 1.1 Create useViewport hook with device detection, dimensions, orientation, and touch capability
+    - Create `frontend/src/hooks/useViewport.ts`
+    - Implement viewport state interface with width, height, deviceType, orientation, isTouch, isMobile, isTablet, isDesktop
+    - Add safe area inset detection using CSS env() values
+    - Implement debounced resize listener (100ms)
+    - Use matchMedia for efficient breakpoint detection
+    - _Requirements: 1.1, 1.2, 1.3_
+  - [x] 1.2 Write property test for useViewport hook completeness
+    - **Property 1: Viewport hook returns complete state**
+    - **Validates: Requirements 1.1**
+  - [x] 1.3 Write property test for resize event debouncing
+    - **Property 12: Resize event debouncing**
+    - **Validates: Requirements 1.2**
+  - [x] 1.4 Create useTouch hook for touch capability and gesture detection
+    - Create `frontend/src/hooks/useTouch.ts`
+    - Detect touch capability via ontouchstart and maxTouchPoints
+    - Detect pointer type (fine vs coarse)
+    - Check prefers-reduced-motion preference
+    - _Requirements: 1.3_
+  - [x] 1.5 Create breakpoint constants and utility functions
+    - Create `frontend/src/utils/breakpoints.ts`
+    - Define BREAKPOINTS object (mobile: 640, tablet: 1024, desktop: 1440, wide: 1920)
+    - Define TOUCH_TARGET constants (min: 44, recommended: 48, comfortable: 56)
+    - Define SPACING constants (touchGap: 8, safeArea: 16)
+    - Create helper functions: isMobileBreakpoint(), isTabletBreakpoint(), etc.
+    - _Requirements: 1.5_
+  - [x] 1.6 Create responsive CSS variables system
+    - Create `frontend/src/styles/responsive.css`
+    - Define --spacing-base, --spacing-xs through --spacing-xl
+    - Define --touch-target-min, --touch-target-recommended
+    - Define --font-scale and fluid font size variables
+    - Define --safe-area-top/right/bottom/left with env() fallbacks
+    - Add media queries for mobile/tablet adjustments
+    - Import in main styles entry point
+    - _Requirements: 1.4_
+
+- [x] 2. Checkpoint - Ensure foundation tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 3. Core UI Components - Touch Target Compliance
+  - [x] 3.1 Enhance Button component with touch target enforcement
+    - Update `frontend/src/components/ui/Button.tsx`
+    - Add touchOptimized prop that forces 44px+ touch target
+    - Use useViewport to detect touch devices
+    - Apply minimum height/width on touch devices
+    - Ensure proper padding for small visual sizes
+    - Add touch feedback styles (active:scale-95, etc.)
+    - _Requirements: 2.1, 2.3_
+  - [x] 3.2 Write property test for button touch target sizing
+    - **Property 2: Touch target minimum size enforcement**
+    - **Validates: Requirements 2.1, 2.3, 2.5**
+  - [x] 3.3 Enhance Input component with mobile optimization
+    - Update `frontend/src/components/ui/Input.tsx`
+    - Set minimum height of 48px on mobile
+    - Ensure font size is 16px+ to prevent iOS zoom
+    - Add proper touch target sizing
+    - Handle keyboard appearance (inputMode, enterKeyHint)
+    - _Requirements: 2.4_
+  - [x] 3.4 Enhance Modal component with mobile-first layout
+    - Update `frontend/src/components/ui/Modal.tsx`
+    - Add mobileFullScreen prop (default true on mobile)
+    - Implement full-width, max-height 90vh on mobile
+    - Add safe area padding to modal content
+    - Stack action buttons vertically on mobile
+    - Position close button with 44px+ touch target
+    - Add touch-outside-to-dismiss
+    - _Requirements: 8.1, 8.2, 8.3, 8.5_
+  - [x] 3.5 Write property test for modal mobile sizing
+    - **Property 9: Modal mobile sizing**
+    - **Validates: Requirements 8.1, 8.3**
+  - [x] 3.6 Create TouchTarget wrapper component
+    - Create `frontend/src/components/ui/TouchTarget.tsx`
+    - Wrapper that ensures minimum 44px touch area
+    - Extends touch area with invisible padding when visual size is smaller
+    - Use for icon buttons and small interactive elements
+    - _Requirements: 2.3, 2.5_
+
+- [x] 4. Safe Area Handling
+  - [x] 4.1 Create SafeAreaView wrapper component
+    - Create `frontend/src/components/ui/SafeAreaView.tsx`
+    - Apply safe area insets based on position (top, bottom, left, right)
+    - Support edges prop to specify which edges to pad
+    - Use CSS env() with fallbacks
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [x] 4.2 Write property test for safe area inset application
+    - **Property 3: Safe area inset application**
+    - **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5**
+  - [x] 4.3 Update DashboardHeader with safe area top padding
+    - Update `frontend/src/components/dashboard/DashboardHeader.tsx`
+    - Add padding-top using safe area inset
+    - Ensure header content is not obscured by notch
+    - _Requirements: 3.1_
+  - [x] 4.4 Update fixed bottom elements with safe area bottom padding
+    - Audit and update all fixed bottom elements
+    - Add padding-bottom using safe area inset
+    - Include: bottom navigation, floating CTAs, mobile controls
+    - _Requirements: 3.2_
+
+- [x] 5. Checkpoint - Ensure component tests pass
+  - All 53 tests pass (14 viewport + 22 touch compliance + 17 safe area)
+
+- [x] 6. Typography System
+  - [x] 6.1 Create fluid typography utility functions
+    - Create `frontend/src/utils/typography.ts`
+    - Implement fluidFontSize() using clamp()
+    - Define min/max sizes for each heading level
+    - Define body text minimum (16px on mobile)
+    - Create responsive line-height calculator
+    - _Requirements: 4.1, 4.2, 4.3_
+  - [x] 6.2 Write property test for fluid typography scaling
+    - **Property 5: Fluid typography scaling**
+    - **Validates: Requirements 4.1**
+  - [x] 6.3 Write property test for typography minimum size on mobile
+    - **Property 4: Typography minimum size on mobile**
+    - **Validates: Requirements 4.2**
+  - [x] 6.4 Update global typography styles with fluid scaling
+    - Typography utilities created in `frontend/src/utils/typography.ts`
+    - CSS variables can be generated via generateTypographyVariables()
+    - Body text minimum 16px enforced
+    - Responsive line-height calculator implemented
+    - _Requirements: 4.1, 4.2, 4.4, 4.5_
+
+- [ ] 7. Game Arena Mobile Optimization
+  - [ ] 7.1 Create GameArenaLayout wrapper component
+    - Create `frontend/src/components/game/GameArenaLayout.tsx`
+    - Detect orientation and show rotate prompt in portrait
+    - Apply safe area insets for landscape notch handling
+    - Manage mobile controls visibility
+    - Handle fullscreen entry on mobile
+    - _Requirements: 5.1, 5.6_
+  - [ ] 7.2 Update game canvas scaling for responsive viewports
+    - Update `frontend/src/components/game/GameArena.tsx`
+    - Implement aspect-ratio-preserving scaling
+    - Account for safe area insets in canvas positioning
+    - Ensure canvas fits viewport without overflow
+    - _Requirements: 5.2_
+  - [ ] 7.3 Write property test for game canvas aspect ratio preservation
+    - **Property 6: Game canvas aspect ratio preservation**
+    - **Validates: Requirements 5.2**
+  - [ ] 7.4 Enhance MobileControls with safe area positioning
+    - Update `frontend/src/components/game/MobileControls.tsx`
+    - Use safe area insets for control positioning
+    - Ensure joystick bottom-left, fire button bottom-right
+    - Verify 44px+ touch targets on both controls
+    - Add haptic feedback on supported devices
+    - _Requirements: 5.3, 3.5_
+  - [ ] 7.5 Write property test for mobile control positioning
+    - **Property 7: Mobile control positioning**
+    - **Validates: Requirements 5.3, 5.5**
+  - [ ] 7.6 Update ArenaQuizPanel for mobile compact layout
+    - Update `frontend/src/components/game/ArenaQuizPanel.tsx`
+    - Create compact mobile layout variant
+    - Increase answer button touch targets to 48px+
+    - Adjust font sizes for mobile readability
+    - Position to avoid overlap with controls
+    - _Requirements: 5.4_
+  - [ ] 7.7 Update game HUD for mobile positioning
+    - Update HUD components (Scoreboard, Timer, etc.)
+    - Reposition elements to avoid control overlap
+    - Scale HUD elements appropriately for mobile
+    - Ensure safe area compliance
+    - _Requirements: 5.5_
+  - [ ] 7.8 Create RotateDevicePrompt component
+    - Create `frontend/src/components/game/RotateDevicePrompt.tsx`
+    - Display when game arena is in portrait orientation
+    - Show animated rotate icon and instruction text
+    - Auto-dismiss when orientation changes to landscape
+    - _Requirements: 5.6_
+
+- [ ] 8. Checkpoint - Ensure game arena tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 9. Dashboard and Navigation Mobile Optimization
+  - [ ] 9.1 Create BottomNavigation component
+    - Create `frontend/src/components/dashboard/BottomNavigation.tsx`
+    - Display 5 or fewer navigation items
+    - Use icons with labels
+    - Ensure 48px+ touch targets
+    - Apply safe area bottom padding
+    - Highlight active item
+    - _Requirements: 6.5_
+  - [ ] 9.2 Update DashboardLayout with adaptive navigation
+    - Update `frontend/src/components/dashboard/DashboardLayout.tsx`
+    - Use useViewport to detect device type
+    - Show sidebar on desktop/tablet
+    - Show bottom navigation on mobile
+    - Add hamburger menu option for tablet
+    - _Requirements: 6.1_
+  - [ ] 9.3 Write property test for dashboard layout adaptation
+    - **Property 8: Dashboard layout adaptation**
+    - **Validates: Requirements 6.1, 6.3**
+  - [ ] 9.4 Update Sidebar for mobile hamburger menu mode
+    - Update `frontend/src/components/dashboard/Sidebar.tsx`
+    - Add slide-in animation for mobile
+    - Add overlay backdrop with touch-to-close
+    - Ensure navigation items have 48px height
+    - _Requirements: 6.2, 6.3_
+  - [ ] 9.5 Update DashboardHeader for mobile simplification
+    - Update `frontend/src/components/dashboard/DashboardHeader.tsx`
+    - Show only essential actions on mobile
+    - Add overflow menu for secondary actions
+    - Include hamburger menu toggle on mobile
+    - _Requirements: 6.2_
+  - [ ] 9.6 Update dashboard widgets for vertical stacking
+    - Update dashboard widget components
+    - Stack widgets vertically on mobile
+    - Adjust widget sizing for mobile viewport
+    - Ensure proper spacing between widgets
+    - _Requirements: 6.4_
+
+- [ ] 10. Feature Pages Mobile Optimization
+  - [ ] 10.1 Update Shop page for mobile grid layout
+    - Update `frontend/src/pages/Shop.tsx`
+    - Use 1-column or 2-column grid on mobile
+    - Ensure item cards have touch-friendly sizing
+    - Update filters for mobile (collapsible or bottom sheet)
+    - _Requirements: 7.1_
+  - [ ] 10.2 Update BattlePass track for horizontal scroll
+    - Update `frontend/src/components/battlepass/BattlePassTrack.tsx`
+    - Implement horizontal scroll with snap points
+    - Add clear tier indicators
+    - Ensure touch-friendly tier cards
+    - _Requirements: 7.2_
+  - [ ] 10.3 Update Profile page for mobile layout
+    - Update `frontend/src/pages/Profile.tsx`
+    - Stack stats and sections vertically
+    - Add collapsible sections for dense content
+    - Ensure touch-friendly interaction
+    - _Requirements: 7.3_
+  - [ ] 10.4 Update purchase modals for mobile full-screen
+    - Update `frontend/src/components/shop/PurchaseModal.tsx`
+    - Make full-screen or near-full-screen on mobile
+    - Use large action buttons (full-width)
+    - Ensure safe area compliance
+    - _Requirements: 7.4_
+  - [ ] 10.5 Update inventory grids for mobile sizing
+    - Update `frontend/src/components/cosmetics/InventoryGrid.tsx`
+    - Ensure items are minimum 64×64px
+    - Add clear selection states
+    - Adjust grid columns for mobile viewport
+    - _Requirements: 7.5_
+
+- [ ] 11. Checkpoint - Ensure feature page tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 12. Modals and Overlays Mobile Optimization
+  - [ ] 12.1 Update OnboardingModal for mobile swipe navigation
+    - Update `frontend/src/components/onboarding/OnboardingModal.tsx`
+    - Add swipe gesture support for step navigation
+    - Ensure mobile-optimized layout
+    - Apply safe area padding
+    - _Requirements: 8.4_
+  - [ ] 12.2 Update MatchFoundModal for mobile layout
+    - Update `frontend/src/components/matchmaking/MatchFoundModal.tsx`
+    - Optimize layout for mobile viewport
+    - Ensure touch-friendly buttons
+    - _Requirements: 8.1_
+  - [ ] 12.3 Audit and update all remaining modals
+    - Review all modal components in codebase
+    - Apply consistent mobile optimization pattern
+    - Ensure safe area compliance
+    - Verify touch target sizes
+    - _Requirements: 8.1, 8.2, 8.3_
+
+- [ ] 13. Performance Optimization
+  - [ ] 13.1 Update animations to use GPU-accelerated properties
+    - Audit all CSS animations and transitions
+    - Replace non-GPU properties with transform/opacity
+    - Add will-change hints where appropriate
+    - Reduce animation complexity on mobile
+    - _Requirements: 9.2_
+  - [ ] 13.2 Write property test for animation GPU acceleration
+    - **Property 10: Animation GPU acceleration**
+    - **Validates: Requirements 9.2**
+  - [ ] 13.3 Implement responsive image srcset
+    - Update `frontend/src/components/ui/OptimizedImage.tsx`
+    - Add srcset with 1x, 2x, 3x variants
+    - Use sizes attribute for responsive sizing
+    - Implement lazy loading for below-fold images
+    - _Requirements: 9.3_
+  - [ ] 13.4 Write property test for image responsive srcset
+    - **Property 11: Image responsive srcset**
+    - **Validates: Requirements 9.3**
+  - [ ] 13.5 Update game engine for mobile performance
+    - Update game engine particle and effect systems
+    - Reduce particle counts on mobile
+    - Simplify effects on lower-end devices
+    - Implement frame rate monitoring and auto-adjustment
+    - _Requirements: 9.4_
+
+- [ ] 14. Landing Page Mobile Polish
+  - [ ] 14.1 Audit and update landing page responsive styles
+    - Review all landing page components
+    - Ensure consistent mobile breakpoint handling
+    - Fix any hardcoded pixel values
+    - Verify touch target compliance
+    - _Requirements: All landing-related_
+  - [ ] 14.2 Update landing page hero section for mobile
+    - Optimize hero layout for mobile viewport
+    - Adjust typography for mobile readability
+    - Ensure CTA buttons are touch-friendly
+    - _Requirements: 2.1, 4.1_
+  - [ ] 14.3 Update landing page feature sections for mobile
+    - Stack feature cards vertically on mobile
+    - Adjust card sizing for touch interaction
+    - Ensure proper spacing
+    - _Requirements: 7.1_
+
+- [ ] 15. Orientation and Resize Handling
+  - [ ] 15.1 Implement orientation change handling
+    - Add orientation change listener to useViewport
+    - Ensure smooth layout transitions (< 300ms)
+    - Prevent content jumping during orientation change
+    - _Requirements: 10.1_
+  - [ ] 15.2 Implement keyboard appearance handling
+    - Detect virtual keyboard open/close
+    - Adjust layout to prevent input obscuring
+    - Scroll focused input into view
+    - _Requirements: 10.3_
+  - [ ] 15.3 Write property test for resize handling
+    - **Property 12: Resize event debouncing** (if not covered in 1.3)
+    - **Validates: Requirements 10.4**
+
+- [ ] 16. Final Checkpoint - Full test suite
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 17. Documentation and Cleanup
+  - [ ] 17.1 Update component documentation with mobile props
+    - Add JSDoc comments for new mobile-related props
+    - Document responsive behavior in component files
+    - _Requirements: All_
+  - [ ] 17.2 Create mobile optimization guide in docs
+    - Document breakpoint system usage
+    - Document touch target requirements
+    - Document safe area handling patterns
+    - Provide code examples for common patterns
+    - _Requirements: All_
+

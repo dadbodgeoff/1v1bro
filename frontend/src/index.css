@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
+@import "./styles/responsive.css";
 
 /* Legacy color overrides removed - using design tokens from tokens.css */
 

@@ -1,0 +1,242 @@
+/**
+ * Responsive CSS Variables System
+ * Mobile-first responsive design tokens
+ *
+ * Features:
+ * - Fluid spacing that adapts to device
+ * - Touch target sizing
+ * - Fluid typography scale
+ * - Safe area inset variables
+ * - Breakpoint-specific adjustments
+ *
+ * @module styles/responsive
+ * Requirements: 1.4
+ */
+
+:root {
+  /* ============================================
+   * Responsive Spacing
+   * Base spacing that scales with device
+   * ============================================ */
+  --spacing-base: 16px;
+  --spacing-xs: calc(var(--spacing-base) * 0.25);  /* 4px */
+  --spacing-sm: calc(var(--spacing-base) * 0.5);   /* 8px */
+  --spacing-md: var(--spacing-base);               /* 16px */
+  --spacing-lg: calc(var(--spacing-base) * 1.5);   /* 24px */
+  --spacing-xl: calc(var(--spacing-base) * 2);     /* 32px */
+  --spacing-2xl: calc(var(--spacing-base) * 3);    /* 48px */
+
+  /* ============================================
+   * Touch Target Sizing
+   * Minimum sizes for interactive elements
+   * ============================================ */
+  --touch-target-min: 44px;          /* Apple HIG minimum */
+  --touch-target-recommended: 48px;  /* Material Design recommended */
+  --touch-target-comfortable: 56px;  /* Comfortable for all users */
+  --touch-gap: 8px;                  /* Minimum gap between touch targets */
+
+  /* ============================================
+   * Font Scale
+   * Multiplier for responsive typography
+   * ============================================ */
+  --font-scale: 1;
+
+  /* ============================================
+   * Fluid Typography
+   * Uses clamp() for smooth scaling between breakpoints
+   * Format: clamp(min, preferred, max)
+   * ============================================ */
+  
+  /* Body text - minimum 16px on mobile for iOS zoom prevention */
+  --fluid-text-xs: clamp(11px, calc(10px + 0.25vw), 12px);
+  --fluid-text-sm: clamp(13px, calc(12px + 0.25vw), 14px);
+  --fluid-text-base: clamp(16px, calc(14px + 0.5vw), 18px);
+  --fluid-text-lg: clamp(17px, calc(16px + 0.5vw), 20px);
+  --fluid-text-xl: clamp(18px, calc(17px + 0.75vw), 24px);
+  
+  /* Headings - scale more dramatically */
+  --fluid-text-2xl: clamp(20px, calc(18px + 1vw), 30px);
+  --fluid-text-3xl: clamp(24px, calc(20px + 1.5vw), 36px);
+  --fluid-text-4xl: clamp(28px, calc(24px + 2vw), 48px);
+  --fluid-text-5xl: clamp(32px, calc(28px + 2.5vw), 60px);
+  --fluid-text-6xl: clamp(36px, calc(32px + 3vw), 72px);
+
+  /* ============================================
+   * Line Heights
+   * Slightly larger on mobile for readability
+   * ============================================ */
+  --line-height-tight-mobile: 1.3;
+  --line-height-normal-mobile: 1.6;
+  --line-height-relaxed-mobile: 1.8;
+
+  /* ============================================
+   * Safe Area Insets
+   * CSS env() values with fallbacks
+   * ============================================ */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+
+  /* Computed safe area values for JS access */
+  --safe-area-inset-top: 0;
+  --safe-area-inset-right: 0;
+  --safe-area-inset-bottom: 0;
+  --safe-area-inset-left: 0;
+
+  /* ============================================
+   * Breakpoint Values (for reference)
+   * Actual breakpoints are in media queries
+   * ============================================ */
+  --breakpoint-mobile: 640px;
+  --breakpoint-tablet: 1024px;
+  --breakpoint-desktop: 1440px;
+  --breakpoint-wide: 1920px;
+
+  /* ============================================
+   * Container Widths
+   * ============================================ */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+
+  /* ============================================
+   * Modal Sizing (Responsive)
+   * ============================================ */
+  --modal-max-height: 90vh;
+  --modal-mobile-width: 100%;
+  --modal-mobile-margin: 0;
+  --modal-mobile-radius: 16px 16px 0 0;
+}
+
+/* ============================================
+ * Mobile Adjustments (< 640px)
+ * ============================================ */
+@media (max-width: 639px) {
+  :root {
+    /* Reduce base spacing on mobile */
+    --spacing-base: 12px;
+    
+    /* Slightly reduce font scale */
+    --font-scale: 0.95;
+    
+    /* Increase line heights for mobile readability */
+    --line-height-tight: var(--line-height-tight-mobile);
+    --line-height-normal: var(--line-height-normal-mobile);
+    --line-height-relaxed: var(--line-height-relaxed-mobile);
+  }
+}
+
+/* ============================================
+ * Tablet Adjustments (640px - 1023px)
+ * ============================================ */
+@media (min-width: 640px) and (max-width: 1023px) {
+  :root {
+    --spacing-base: 14px;
+    --font-scale: 0.975;
+  }
+}
+
+/* ============================================
+ * Desktop Adjustments (1024px+)
+ * ============================================ */
+@media (min-width: 1024px) {
+  :root {
+    --spacing-base: 16px;
+    --font-scale: 1;
+  }
+}
+
+/* ============================================
+ * Wide Screen Adjustments (1440px+)
+ * ============================================ */
+@media (min-width: 1440px) {
+  :root {
+    --spacing-base: 16px;
+    --font-scale: 1;
+  }
+}
+
+/* ============================================
+ * Touch Device Adjustments
+ * Applied when coarse pointer is detected
+ * ============================================ */
+@media (pointer: coarse) {
+  :root {
+    /* Ensure minimum touch targets on touch devices */
+    --btn-height-sm: max(var(--btn-height-sm), var(--touch-target-min));
+    --btn-height-md: max(var(--btn-height-md), var(--touch-target-min));
+    --input-height-sm: max(var(--input-height-sm), var(--touch-target-min));
+    --input-height-md: max(var(--input-height-md), var(--touch-target-min));
+  }
+}
+
+/* ============================================
+ * Reduced Motion Preferences
+ * ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms;
+    --transition-normal: 0ms;
+    --transition-slow: 0ms;
+    --transition-slower: 0ms;
+  }
+}
+
+/* ============================================
+ * Utility Classes
+ * ============================================ */
+
+/* Fluid typography utilities */
+.text-fluid-xs { font-size: var(--fluid-text-xs); }
+.text-fluid-sm { font-size: var(--fluid-text-sm); }
+.text-fluid-base { font-size: var(--fluid-text-base); }
+.text-fluid-lg { font-size: var(--fluid-text-lg); }
+.text-fluid-xl { font-size: var(--fluid-text-xl); }
+.text-fluid-2xl { font-size: var(--fluid-text-2xl); }
+.text-fluid-3xl { font-size: var(--fluid-text-3xl); }
+.text-fluid-4xl { font-size: var(--fluid-text-4xl); }
+.text-fluid-5xl { font-size: var(--fluid-text-5xl); }
+.text-fluid-6xl { font-size: var(--fluid-text-6xl); }
+
+/* Touch target utility */
+.touch-target {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+.touch-target-recommended {
+  min-width: var(--touch-target-recommended);
+  min-height: var(--touch-target-recommended);
+}
+
+/* Responsive spacing utilities */
+.p-responsive { padding: var(--spacing-md); }
+.px-responsive { padding-left: var(--spacing-md); padding-right: var(--spacing-md); }
+.py-responsive { padding-top: var(--spacing-md); padding-bottom: var(--spacing-md); }
+.m-responsive { margin: var(--spacing-md); }
+.mx-responsive { margin-left: var(--spacing-md); margin-right: var(--spacing-md); }
+.my-responsive { margin-top: var(--spacing-md); margin-bottom: var(--spacing-md); }
+.gap-responsive { gap: var(--spacing-md); }
+
+/* Mobile-only visibility */
+@media (min-width: 640px) {
+  .mobile-only { display: none !important; }
+}
+
+/* Desktop-only visibility */
+@media (max-width: 639px) {
+  .desktop-only { display: none !important; }
+}
+
+/* Tablet and up visibility */
+@media (max-width: 1023px) {
+  .tablet-up-only { display: none !important; }
+}
+
+/* Mobile and tablet visibility */
+@media (min-width: 1024px) {
+  .mobile-tablet-only { display: none !important; }
+}

@@ -49,22 +49,8 @@ interface PracticeQuestion {
   category: string
 }
 
-// Fallback questions if API fails
-const FALLBACK_QUESTIONS: PracticeQuestion[] = [
-  { id: 1, text: 'What is the rarest item in Fortnite?', options: ['Gold Scar', 'Mythic Goldfish', 'Purple Pump', 'Blue AR'], correct_answer: 'B', category: 'fortnite' },
-  { id: 2, text: 'Which game has a Battle Royale mode?', options: ['Minecraft', 'Fortnite', 'Tetris', 'Chess'], correct_answer: 'B', category: 'fortnite' },
-  { id: 3, text: 'What does "GG" stand for?', options: ['Good Game', 'Get Going', 'Great Goal', 'Go Go'], correct_answer: 'A', category: 'fortnite' },
-  { id: 4, text: 'How many players in a standard BR match?', options: ['50', '100', '150', '200'], correct_answer: 'B', category: 'fortnite' },
-  { id: 5, text: 'What is a "Victory Royale"?', options: ['A dance', 'Winning the game', 'A weapon', 'A location'], correct_answer: 'B', category: 'fortnite' },
-  { id: 6, text: 'What year was Fortnite released?', options: ['2015', '2016', '2017', '2018'], correct_answer: 'C', category: 'fortnite' },
-  { id: 7, text: 'What is the name of the storm in Fortnite?', options: ['The Circle', 'The Storm', 'The Zone', 'The Ring'], correct_answer: 'B', category: 'fortnite' },
-  { id: 8, text: 'Which company made Fortnite?', options: ['Activision', 'EA Games', 'Epic Games', 'Ubisoft'], correct_answer: 'C', category: 'fortnite' },
-  { id: 9, text: 'What is the in-game currency called?', options: ['V-Coins', 'V-Bucks', 'F-Bucks', 'Gold'], correct_answer: 'B', category: 'fortnite' },
-  { id: 10, text: 'What material is strongest when built?', options: ['Wood', 'Stone', 'Metal', 'All equal'], correct_answer: 'C', category: 'fortnite' },
-]
-
 // Number of questions per game (configurable)
-const QUESTIONS_PER_GAME = 10
+const QUESTIONS_PER_GAME = 15
 
 // Bot behavior patterns
 type BotBehavior = 'patrol' | 'chase' | 'evade' | 'strafe'
@@ -168,6 +154,7 @@ export function BotGame() {
   const [selectedCategory, setSelectedCategory] = useState('fortnite')
   const [questions, setQuestions] = useState<PracticeQuestion[]>([])
   const [questionsLoading, setQuestionsLoading] = useState(false)
+  const [questionsError, setQuestionsError] = useState<string | null>(null)
   const localHealth = { playerId: userId, health: playerHealth, maxHealth: 100 }
   const opponentHealth = { playerId: 'bot', health: botHealth, maxHealth: 100 }
   const [powerUps] = useState<PowerUpState[]>([])
@@ -185,6 +172,9 @@ export function BotGame() {
   // Fetch questions from API
   const fetchQuestions = useCallback(async (category: string) => {
     setQuestionsLoading(true)
+    setQuestionsError(null)
+    setQuestions([])
+    
     try {
       const response = await fetch(`${API_BASE}/api/v1/questions/practice/${category}?count=${QUESTIONS_PER_GAME}`, {
         headers: {
@@ -195,14 +185,21 @@ export function BotGame() {
       
       if (response.ok) {
         const data = await response.json()
-        setQuestions(data.questions || FALLBACK_QUESTIONS)
+        const fetchedQuestions = data.questions || []
+        
+        if (fetchedQuestions.length === 0) {
+          setQuestionsError(`No questions available for ${category}. Please select a different category.`)
+          return
+        }
+        
+        setQuestions(fetchedQuestions)
       } else {
-        console.warn('Failed to fetch questions, using fallback')
-        setQuestions(FALLBACK_QUESTIONS)
+        console.warn('Failed to fetch questions:', response.status)
+        setQuestionsError('Failed to load questions. Please try again.')
       }
     } catch (err) {
       console.error('Error fetching questions:', err)
-      setQuestions(FALLBACK_QUESTIONS)
+      setQuestionsError('Network error. Please check your connection and try again.')
     } finally {
       setQuestionsLoading(false)
     }
@@ -223,9 +220,17 @@ export function BotGame() {
     // Fetch questions for selected category
     await fetchQuestions(selectedCategory)
     
-    setGameStarted(true)
-    setStatus('playing')
-  }, [selectedMap, selectedCategory, fetchQuestions, setStatus])
+    // Game will only start if questions were loaded successfully
+    // The useEffect below handles starting when questions are ready
+  }, [selectedMap, selectedCategory, fetchQuestions])
+  
+  // Start game when questions are loaded successfully
+  useEffect(() => {
+    if (questions.length > 0 && questionsLoading === false && !questionsError && !gameStarted) {
+      setGameStarted(true)
+      setStatus('playing')
+    }
+  }, [questions, questionsLoading, questionsError, gameStarted, setStatus])
 
   // Send first question when questions are loaded and game starts
   useEffect(() => {
@@ -499,7 +504,8 @@ export function BotGame() {
     // Next question after delay
     setTimeout(() => {
       const nextIndex = questionIndex + 1
-      if (nextIndex < QUESTIONS_PER_GAME && nextIndex < questions.length) {
+      // Use actual questions.length instead of hardcoded QUESTIONS_PER_GAME
+      if (nextIndex < questions.length) {
         setQuestionIndex(nextIndex)
         const nextQ = questions[nextIndex]
         setQuestion({
@@ -584,27 +590,39 @@ export function BotGame() {
             {categoriesLoading ? (
               <div className="col-span-2 text-center py-4 text-neutral-500 text-sm">Loading categories...</div>
             ) : (
-              categories.map((cat) => (
-                <button
-                  key={cat.slug}
-                  onClick={() => setSelectedCategory(cat.slug)}
-                  className={`p-4 rounded-xl border transition-all text-left ${
-                    selectedCategory === cat.slug
-                      ? 'bg-purple-500/20 border-purple-500/40 ring-1 ring-purple-500/30'
-                      : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div
-                      className={`w-2 h-2 rounded-full ${
-                        selectedCategory === cat.slug ? 'bg-purple-400' : 'bg-neutral-600'
-                      }`}
-                    />
-                    <span className="text-sm font-medium text-white">{cat.name}</span>
-                  </div>
-                  <p className="text-xs text-neutral-500">{cat.question_count.toLocaleString()} questions</p>
-                </button>
-              ))
+              categories.map((cat) => {
+                const hasQuestions = cat.question_count > 0
+                return (
+                  <button
+                    key={cat.slug}
+                    onClick={() => hasQuestions && setSelectedCategory(cat.slug)}
+                    disabled={!hasQuestions}
+                    className={`p-4 rounded-xl border transition-all text-left ${
+                      !hasQuestions
+                        ? 'bg-white/[0.01] border-white/[0.03] opacity-50 cursor-not-allowed'
+                        : selectedCategory === cat.slug
+                          ? 'bg-purple-500/20 border-purple-500/40 ring-1 ring-purple-500/30'
+                          : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          !hasQuestions
+                            ? 'bg-neutral-700'
+                            : selectedCategory === cat.slug
+                              ? 'bg-purple-400'
+                              : 'bg-neutral-600'
+                        }`}
+                      />
+                      <span className={`text-sm font-medium ${hasQuestions ? 'text-white' : 'text-neutral-500'}`}>{cat.name}</span>
+                    </div>
+                    <p className="text-xs text-neutral-500">
+                      {hasQuestions ? `${cat.question_count.toLocaleString()} questions` : 'No questions available'}
+                    </p>
+                  </button>
+                )
+              })
             )}
           </div>
         </div>
@@ -640,10 +658,26 @@ export function BotGame() {
           </div>
         </div>
 
+        {/* Error display */}
+        {questionsError && (
+          <div className="w-full max-w-md mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
+            <p className="text-red-400 text-sm text-center mb-3">{questionsError}</p>
+            <button
+              onClick={() => {
+                setQuestionsError(null)
+                fetchQuestions(selectedCategory)
+              }}
+              className="w-full px-4 py-2 bg-red-500/20 text-red-300 text-sm font-medium rounded-lg hover:bg-red-500/30 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
         <div className="flex gap-3">
           <button
             onClick={startGame}
-            disabled={questionsLoading}
+            disabled={questionsLoading || !!questionsError}
             className="px-6 py-2.5 bg-white text-black text-sm font-medium rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {questionsLoading ? 'Loading...' : 'Start Game'}

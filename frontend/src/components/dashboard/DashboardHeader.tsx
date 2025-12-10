@@ -1,12 +1,14 @@
 /**
  * DashboardHeader - Header showing user profile summary with avatar, rank, and level.
  * Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 5.4
+ * Mobile Requirements: 3.1 (safe area top padding)
  * 
  * 2025 Redesign Updates:
  * - Avatar: 32px, rounded-full
  * - Coin balance with coin icon
  * - Notification bell with unread count
  * - No cyan/purple legacy colors (uses indigo/amber)
+ * - Safe area top padding for notched devices
  */
 
 import { useNavigate } from 'react-router-dom'
@@ -14,9 +16,11 @@ import { useAuthStore } from '@/stores/authStore'
 import { useProfile } from '@/hooks/useProfile'
 import { useBalance } from '@/hooks/useBalance'
 import { useBattlePass } from '@/hooks/useBattlePass'
+import { useViewport } from '@/hooks/useViewport'
 import { useEffect, useState, useCallback } from 'react'
 import { getRankTier, RANK_TIERS, type RankTier } from '@/types/leaderboard'
 import { leaderboardAPI } from '@/services/api'
+import { TOUCH_TARGET } from '@/utils/breakpoints'
 
 // Coin icon component
 function CoinIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -80,6 +84,7 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
   const { user, logout } = useAuthStore()
   const { profile, fetchProfile } = useProfile()
   const { progress, fetchProgress } = useBattlePass()
+  const { isMobile, isTouch } = useViewport()
   const [eloRating, setEloRating] = useState<number | null>(null)
   const [rankTier, setRankTier] = useState<RankTier>('bronze')
   const [unreadNotifications, setUnreadNotifications] = useState(0)
@@ -134,12 +139,27 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
   // Format coin balance with commas
   const formattedCoins = coinBalance.toLocaleString()
 
+  // Safe area styles for notched devices
+  const safeAreaStyles: React.CSSProperties = {
+    // Add safe area top padding on mobile
+    paddingTop: isMobile ? `max(0px, calc(env(safe-area-inset-top, 0px)))` : undefined,
+  }
+
+  // Touch target styles for mobile buttons
+  const touchButtonStyles: React.CSSProperties = isTouch
+    ? { minWidth: `${TOUCH_TARGET.min}px`, minHeight: `${TOUCH_TARGET.min}px` }
+    : {}
+
   return (
-    <header className="h-16 bg-[var(--color-bg-card)] border-b border-[var(--color-border-subtle)] flex items-center px-4 gap-4">
-      {/* Mobile menu button */}
+    <header
+      className="h-16 bg-[var(--color-bg-card)] border-b border-[var(--color-border-subtle)] flex items-center px-4 gap-4"
+      style={safeAreaStyles}
+    >
+      {/* Mobile menu button - touch optimized */}
       <button
         onClick={onMenuToggle}
-        className="lg:hidden p-2 text-[var(--color-text-secondary)] hover:text-white transition-colors"
+        className="lg:hidden p-2 text-[var(--color-text-secondary)] hover:text-white transition-colors touch-manipulation"
+        style={touchButtonStyles}
         aria-label="Toggle menu"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,9 +176,10 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
         <span className="text-sm font-medium text-white">{formattedCoins}</span>
       </div>
 
-      {/* Notification Bell */}
+      {/* Notification Bell - touch optimized */}
       <button
-        className="relative p-2 text-[var(--color-text-secondary)] hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors"
+        className="relative p-2 text-[var(--color-text-secondary)] hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors touch-manipulation"
+        style={touchButtonStyles}
         aria-label={`Notifications${unreadNotifications > 0 ? ` (${unreadNotifications} unread)` : ''}`}
       >
         <BellIcon className="w-5 h-5" />
@@ -169,10 +190,11 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
         )}
       </button>
 
-      {/* Settings */}
+      {/* Settings - touch optimized */}
       <button
         onClick={handleSettingsClick}
-        className="p-2 text-[var(--color-text-secondary)] hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors"
+        className="p-2 text-[var(--color-text-secondary)] hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors touch-manipulation"
+        style={touchButtonStyles}
         aria-label="Settings"
       >
         <SettingsIcon className="w-5 h-5" />

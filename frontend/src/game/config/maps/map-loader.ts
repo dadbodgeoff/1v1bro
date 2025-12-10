@@ -32,7 +32,14 @@ export interface MapInfo {
 }
 
 /**
+ * Feature flag for industrial map.
+ * Set to true when tilesets are ready for production.
+ */
+const INDUSTRIAL_MAP_ENABLED = false
+
+/**
  * Available maps with display metadata.
+ * Industrial map is feature-flagged until tilesets are ready.
  */
 export const AVAILABLE_MAPS: MapInfo[] = [
   {
@@ -49,13 +56,14 @@ export const AVAILABLE_MAPS: MapInfo[] = [
     thumbnail: '/maps/vortex-arena-thumb.png',
     theme: 'volcanic',
   },
-  {
+  // Industrial map hidden behind feature flag until tilesets are ready
+  ...(INDUSTRIAL_MAP_ENABLED ? [{
     slug: 'industrial-facility',
     name: 'Industrial Facility',
     description: 'Military facility with strategic cover and hazard zones',
     thumbnail: '/maps/industrial-facility-thumb.png',
-    theme: 'industrial',
-  },
+    theme: 'industrial' as const,
+  }] : []),
 ]
 
 /**
