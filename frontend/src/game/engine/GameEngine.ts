@@ -308,12 +308,29 @@ export class GameEngine {
     const container = this.canvas.parentElement
     if (!container) return
     const { clientWidth, clientHeight } = container
-    const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height
-    let width = clientWidth, height = clientWidth / aspectRatio
-    if (height > clientHeight) { height = clientHeight; width = clientHeight * aspectRatio }
-    this.canvas.width = width
-    this.canvas.height = height
-    this.scale = width / ARENA_SIZE.width
+    
+    // Detect mobile/touch device
+    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    
+    if (isMobile) {
+      // Mobile: Fill entire screen (Brawl Stars style)
+      // Game will be slightly stretched/cropped but controls overlay on top
+      this.canvas.width = clientWidth
+      this.canvas.height = clientHeight
+      // Use the larger scale to ensure arena fills screen (may crop edges)
+      const scaleX = clientWidth / ARENA_SIZE.width
+      const scaleY = clientHeight / ARENA_SIZE.height
+      this.scale = Math.max(scaleX, scaleY)
+    } else {
+      // Desktop: Maintain aspect ratio (letterbox)
+      const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height
+      let width = clientWidth, height = clientWidth / aspectRatio
+      if (height > clientHeight) { height = clientHeight; width = clientHeight * aspectRatio }
+      this.canvas.width = width
+      this.canvas.height = height
+      this.scale = width / ARENA_SIZE.width
+    }
+    
     this.renderPipeline.setScale(this.scale)
   }
 

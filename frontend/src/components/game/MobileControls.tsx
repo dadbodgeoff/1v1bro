@@ -189,59 +189,51 @@ export function MobileControls({
 
   return (
     <>
-      {/* MOVEMENT JOYSTICK - Bottom Left */}
+      {/* MOVEMENT JOYSTICK - Bottom Left (Brawl Stars style - semi-transparent) */}
       <div
         ref={joystickRef}
         style={{
           position: 'fixed',
-          left: '24px',
-          bottom: '24px',
-          width: '110px',
-          height: '110px',
+          left: '20px',
+          bottom: '20px',
+          width: '120px',
+          height: '120px',
           zIndex: 9999,
           touchAction: 'none',
         }}
-        className="rounded-full bg-black/50 border-2 border-white/30 backdrop-blur-sm"
+        className="rounded-full bg-black/30 border-2 border-white/20"
         onTouchStart={handleJoystickStart}
         onTouchMove={handleJoystickMove}
         onTouchEnd={handleJoystickEnd}
         onTouchCancel={handleJoystickEnd}
       >
-        {/* Direction arrows */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-white/30 text-xs">
-          <span className="absolute top-2">↑</span>
-          <span className="absolute bottom-2">↓</span>
-          <span className="absolute left-2">←</span>
-          <span className="absolute right-2">→</span>
-        </div>
-
-        {/* Draggable knob */}
+        {/* Draggable knob - more visible */}
         <div
           ref={knobRef}
-          className="absolute top-1/2 left-1/2 w-12 h-12 rounded-full bg-white/80 border-2 border-white shadow-lg"
+          className="absolute top-1/2 left-1/2 w-14 h-14 rounded-full bg-white/60 border-2 border-white/80 shadow-lg"
           style={{ transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
         />
       </div>
 
-      {/* FIRE BUTTON - Bottom Right */}
+      {/* FIRE BUTTON - Bottom Right (Brawl Stars style) */}
       <div
         style={{
           position: 'fixed',
-          right: '24px',
-          bottom: '24px',
+          right: '20px',
+          bottom: '20px',
           zIndex: 9999,
           touchAction: 'none',
         }}
         onTouchStart={handleFireTap}
       >
         <div
-          className={`w-24 h-24 rounded-full flex items-center justify-center shadow-xl ${
+          className={`w-20 h-20 rounded-full flex items-center justify-center ${
             enabled
-              ? 'bg-red-600 border-4 border-red-400 active:bg-red-700 active:scale-95'
-              : 'bg-gray-600 border-4 border-gray-400 opacity-50'
+              ? 'bg-red-500/70 border-3 border-red-300/80 active:bg-red-600/80 active:scale-95'
+              : 'bg-gray-500/50 border-3 border-gray-400/50 opacity-50'
           } transition-all`}
         >
-          <span className="text-white font-bold text-lg select-none">
+          <span className="text-white font-bold text-base select-none drop-shadow-md">
             FIRE
           </span>
         </div>
