@@ -293,8 +293,16 @@ export function ArenaGame() {
         </div>
       )}
 
-      {/* Main game UI - use dvh for mobile to account for browser chrome */}
-    <div className="h-dvh w-dvw flex flex-col bg-[#0a0a0a] overflow-hidden" style={{ height: '100dvh', width: '100dvw' }}>
+      {/* Main game UI - maximize screen real estate, especially on mobile browsers */}
+    <div 
+      className={`flex flex-col bg-[#0a0a0a] overflow-hidden ${isMobileLandscape ? 'fixed inset-0' : 'h-dvh w-dvw'}`}
+      style={{ 
+        height: isMobileLandscape ? '100%' : '100dvh', 
+        width: isMobileLandscape ? '100%' : '100dvw',
+        // On mobile landscape, use fixed positioning to ignore browser chrome
+        ...(isMobileLandscape && { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 })
+      }}
+    >
       {/* Scoreboard header - hidden on mobile landscape for fullscreen game */}
       <div className={isMobileLandscape ? 'hidden' : ''}>
         <ArenaScoreboard
@@ -344,28 +352,42 @@ export function ArenaGame() {
           {/* Round result toast - overlaid on canvas */}
           <RoundResultOverlay visible={showRoundResult} />
 
-          {/* Mobile landscape floating health bars - minimal overlay */}
+          {/* Mobile landscape floating HUD - ultra compact, positioned to avoid browser chrome */}
           {isMobileLandscape && localHealth && opponentHealth && (
-            <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full">
-              {/* Local player health */}
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] text-green-400 font-medium">YOU</span>
-                <div className="w-16 h-2 bg-black/50 rounded-full overflow-hidden">
+            <div 
+              className="absolute z-20 flex items-center gap-3 px-2 py-1 bg-black/60 backdrop-blur-sm rounded-lg"
+              style={{ 
+                top: 'max(8px, env(safe-area-inset-top, 8px))',
+                left: '50%',
+                transform: 'translateX(-50%)'
+              }}
+            >
+              {/* Local player - green */}
+              <div className="flex items-center gap-1.5">
+                <div className="w-5 h-5 rounded-full bg-green-500/30 border border-green-500 flex items-center justify-center">
+                  <span className="text-[8px] text-green-400 font-bold">Y</span>
+                </div>
+                <div className="w-12 h-1.5 bg-black/50 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-green-500 transition-all duration-200"
                     style={{ width: `${(localHealth.health / localHealth.maxHealth) * 100}%` }}
                   />
                 </div>
               </div>
-              {/* Opponent health */}
-              <div className="flex items-center gap-2">
-                <div className="w-16 h-2 bg-black/50 rounded-full overflow-hidden">
+              
+              <span className="text-[10px] text-white/40 font-medium">vs</span>
+              
+              {/* Opponent - red */}
+              <div className="flex items-center gap-1.5">
+                <div className="w-12 h-1.5 bg-black/50 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-red-500 transition-all duration-200"
                     style={{ width: `${(opponentHealth.health / opponentHealth.maxHealth) * 100}%` }}
                   />
                 </div>
-                <span className="text-[10px] text-red-400 font-medium">OPP</span>
+                <div className="w-5 h-5 rounded-full bg-red-500/30 border border-red-500 flex items-center justify-center">
+                  <span className="text-[8px] text-red-400 font-bold">O</span>
+                </div>
               </div>
             </div>
           )}

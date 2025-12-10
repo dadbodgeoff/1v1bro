@@ -189,13 +189,13 @@ export function MobileControls({
 
   return (
     <>
-      {/* MOVEMENT JOYSTICK - Bottom Left (very transparent, above safe area) */}
+      {/* MOVEMENT JOYSTICK - Bottom Left (extra padding for browser chrome) */}
       <div
         ref={joystickRef}
         style={{
           position: 'fixed',
           left: '15px',
-          bottom: 'calc(40px + env(safe-area-inset-bottom, 20px))',
+          bottom: 'max(60px, calc(20px + env(safe-area-inset-bottom, 40px)))',
           width: '100px',
           height: '100px',
           zIndex: 9999,
@@ -215,12 +215,12 @@ export function MobileControls({
         />
       </div>
 
-      {/* FIRE BUTTON - Bottom Right (very transparent, above safe area) */}
+      {/* FIRE BUTTON - Bottom Right (extra padding for browser chrome) */}
       <div
         style={{
           position: 'fixed',
           right: '15px',
-          bottom: 'calc(40px + env(safe-area-inset-bottom, 20px))',
+          bottom: 'max(60px, calc(20px + env(safe-area-inset-bottom, 40px)))',
           zIndex: 9999,
           touchAction: 'none',
         }}

@@ -723,6 +723,55 @@ button:has(svg:only-child),
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+/* ============================================
+ * Mobile Browser Fullscreen Optimizations
+ * Maximize screen real estate when browser chrome is visible
+ * ============================================ */
+
+/* Use dynamic viewport height for mobile browsers */
+.h-dvh {
+  height: 100dvh;
+  height: 100vh; /* Fallback */
+}
+
+.w-dvw {
+  width: 100dvw;
+  width: 100vw; /* Fallback */
+}
+
+/* Prevent overscroll/bounce on iOS Safari */
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide browser UI when scrolling (helps on some browsers) */
+@supports (height: 100dvh) {
+  .game-fullscreen {
+    height: 100dvh;
+    width: 100dvw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+  }
+}
+
+/* Mobile landscape specific - maximize canvas area */
+@media screen and (max-width: 1024px) and (orientation: landscape) {
+  /* Reduce any padding/margins to maximize game area */
+  .mobile-landscape-compact {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Ensure game fills available space */
+  .mobile-landscape-fill {
+    height: 100dvh;
+    width: 100dvw;
+  }
+}
+
 
 /* ============================================
  * Character Silhouette Animations
