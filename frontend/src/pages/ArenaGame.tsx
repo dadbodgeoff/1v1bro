@@ -24,6 +24,9 @@ export function ArenaGame() {
   const [hintDismissed, setHintDismissed] = useState(false)
   const [isMobileLandscape, setIsMobileLandscape] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  
+  // Track actual viewport dimensions for mobile (accounts for browser chrome)
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 })
 
   // Track fullscreen state
   useEffect(() => {
@@ -42,6 +45,7 @@ export function ArenaGame() {
 
   // Show landscape recommendation on mobile portrait (dismissible)
   // Also track if we're in mobile landscape mode for overlay quiz
+  // Track visualViewport for accurate mobile dimensions
   useEffect(() => {
     const checkOrientation = () => {
       const isMobile = window.innerWidth < 1024
@@ -53,15 +57,36 @@ export function ArenaGame() {
       
       // Use overlay quiz mode on mobile landscape (especially fullscreen)
       setIsMobileLandscape(isMobile && landscape)
+      
+      // Update viewport size from visualViewport (accurate on mobile)
+      if (window.visualViewport) {
+        setViewportSize({ 
+          width: window.visualViewport.width, 
+          height: window.visualViewport.height 
+        })
+      } else {
+        setViewportSize({ 
+          width: window.innerWidth, 
+          height: window.innerHeight 
+        })
+      }
     }
 
     checkOrientation()
     window.addEventListener('resize', checkOrientation)
     window.addEventListener('orientationchange', checkOrientation)
+    
+    // Listen to visualViewport resize for browser chrome changes
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', checkOrientation)
+    }
 
     return () => {
       window.removeEventListener('resize', checkOrientation)
       window.removeEventListener('orientationchange', checkOrientation)
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', checkOrientation)
+      }
     }
   }, [hintDismissed])
 
@@ -295,12 +320,17 @@ export function ArenaGame() {
 
       {/* Main game UI - maximize screen real estate, especially on mobile browsers */}
     <div 
-      className={`flex flex-col bg-[#0a0a0a] overflow-hidden ${isMobileLandscape ? 'fixed inset-0' : 'h-dvh w-dvw'}`}
+      className={`flex flex-col bg-[#0a0a0a] overflow-hidden ${isMobileLandscape ? 'fixed' : 'h-dvh w-dvw'}`}
       style={{ 
-        height: isMobileLandscape ? '100%' : '100dvh', 
-        width: isMobileLandscape ? '100%' : '100dvw',
-        // On mobile landscape, use fixed positioning to ignore browser chrome
-        ...(isMobileLandscape && { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 })
+        // Use tracked visualViewport dimensions on mobile for accurate sizing that excludes browser chrome
+        // This is critical - browser chrome can steal 30%+ of screen height in landscape
+        ...(isMobileLandscape && viewportSize.height > 0 ? {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: `${viewportSize.width}px`,
+          height: `${viewportSize.height}px`,
+        } : {})
       }}
     >
       {/* Scoreboard header - hidden on mobile landscape for fullscreen game */}

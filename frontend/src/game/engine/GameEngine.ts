@@ -317,10 +317,24 @@ export class GameEngine {
   resize(): void {
     const container = this.canvas.parentElement
     if (!container) return
-    const { clientWidth, clientHeight } = container
     
     // Detect mobile/touch device
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    
+    // On mobile, use visualViewport for accurate dimensions that account for browser chrome
+    // This is critical for landscape mode where address bar/nav bar steal space
+    let clientWidth: number
+    let clientHeight: number
+    
+    if (isMobile && window.visualViewport) {
+      // visualViewport gives us the actual visible area, excluding browser chrome
+      clientWidth = window.visualViewport.width
+      clientHeight = window.visualViewport.height
+    } else {
+      // Fallback to container dimensions
+      clientWidth = container.clientWidth
+      clientHeight = container.clientHeight
+    }
     
     if (isMobile) {
       // Mobile: Fill entire screen (Brawl Stars style)

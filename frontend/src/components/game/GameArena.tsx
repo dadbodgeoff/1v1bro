@@ -445,11 +445,23 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
     }
   }, [questionBroadcast])
 
-  // Handle resize
+  // Handle resize - including visualViewport for mobile browser chrome changes
   useEffect(() => {
     const handleResize = () => engineRef.current?.resize()
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    
+    // On mobile, visualViewport resize fires when browser chrome appears/disappears
+    // This is critical for landscape mode where address bar steals space
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize)
+    }
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize)
+      }
+    }
   }, [])
 
   // Mobile controls handlers
