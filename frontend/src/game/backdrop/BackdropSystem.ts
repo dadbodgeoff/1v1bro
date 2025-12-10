@@ -17,6 +17,10 @@ import {
   LavaGlowLayer,
   EmberParticleLayer,
   SmokeHazeLayer,
+  IndustrialConcreteLayer,
+  IndustrialLightingLayer,
+  IndustrialDustLayer,
+  IndustrialSparkLayer,
 } from './layers'
 
 interface LayerEntry {
@@ -38,6 +42,8 @@ export class BackdropSystem {
     // Create layers based on theme
     if (theme === 'volcanic') {
       this.createVolcanicLayers()
+    } else if (theme === 'industrial') {
+      this.createIndustrialLayers()
     } else {
       this.createSpaceLayers()
     }
@@ -78,6 +84,23 @@ export class BackdropSystem {
 
     // 4. Floating ember particles (medium parallax)
     this.layerEntries.push({ layer: new EmberParticleLayer(this.config), parallax: 0.4 })
+  }
+
+  /**
+   * Create industrial theme layers
+   */
+  private createIndustrialLayers(): void {
+    // 1. Dark concrete/metal background (fixed, no parallax)
+    this.layerEntries.push({ layer: new IndustrialConcreteLayer(this.config), parallax: 0 })
+
+    // 2. Dim overhead lighting (fixed)
+    this.layerEntries.push({ layer: new IndustrialLightingLayer(this.config), parallax: 0 })
+
+    // 3. Floating dust particles (slow parallax)
+    this.layerEntries.push({ layer: new IndustrialDustLayer(this.config), parallax: 0.2 })
+
+    // 4. Occasional sparks (medium parallax)
+    this.layerEntries.push({ layer: new IndustrialSparkLayer(this.config), parallax: 0.3 })
   }
 
   /**

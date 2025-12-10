@@ -204,50 +204,48 @@ export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
 
 /**
  * Singleton loader for tileset assets
+ * Loads sprite sheets from Supabase Storage
  */
 class TilesetLoaderClass {
   private cache = new Map<string, LoadedTileset>()
   private loading = new Map<string, Promise<LoadedTileset>>()
-  private supabaseUrl: string | null = null
-
-  /**
-   * Set the Supabase URL for building storage URLs
-   */
-  setSupabaseUrl(url: string): void {
-    this.supabaseUrl = url.replace(/\/$/, '') // Remove trailing slash
-  }
+  
+  // Supabase Storage base URL for tilesets
+  private readonly TILESET_BASE_URL = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/tilesets'
 
   /**
    * Build a storage URL for a tileset
    */
   private buildStorageUrl(filename: string): string {
-    if (!this.supabaseUrl) {
-      // Fallback to environment variable
-      const envUrl = import.meta.env.VITE_SUPABASE_URL
-      if (envUrl) {
-        this.supabaseUrl = envUrl.replace(/\/$/, '')
-      } else {
-        throw new Error('Supabase URL not configured. Call setSupabaseUrl() first.')
-      }
-    }
-    return `${this.supabaseUrl}/storage/v1/object/public/cosmetics/tilesets/${filename}`
+    const url = `${this.TILESET_BASE_URL}/${filename}`
+    console.log('[TilesetLoader] Loading from:', url)
+    return url
   }
 
   /**
    * Load a tileset by ID
    */
   async load(tilesetId: string): Promise<LoadedTileset> {
+    console.log(`[TilesetLoader] Loading tileset: ${tilesetId}`)
+    
     // Check cache first
     const cached = this.cache.get(tilesetId)
-    if (cached) return cached
+    if (cached) {
+      console.log(`[TilesetLoader] ${tilesetId} found in cache`)
+      return cached
+    }
 
     // Check if already loading
     const existing = this.loading.get(tilesetId)
-    if (existing) return existing
+    if (existing) {
+      console.log(`[TilesetLoader] ${tilesetId} already loading, waiting...`)
+      return existing
+    }
 
     // Get config
     const baseConfig = TILESET_CONFIGS[tilesetId]
     if (!baseConfig) {
+      console.error(`[TilesetLoader] Unknown tileset: ${tilesetId}`)
       throw new Error(`Unknown tileset: ${tilesetId}`)
     }
 
@@ -261,6 +259,8 @@ class TilesetLoaderClass {
       url: this.buildStorageUrl(`${tilesetId}.${extension}`),
       removeBackground: true,
     }
+    
+    console.log(`[TilesetLoader] ${tilesetId} URL: ${config.url}`)
 
     // Start loading
     const loadPromise = this.loadTileset(config)
@@ -269,7 +269,11 @@ class TilesetLoaderClass {
     try {
       const result = await loadPromise
       this.cache.set(tilesetId, result)
+      console.log(`[TilesetLoader] ${tilesetId} loaded successfully: ${result.tileCount} tiles`)
       return result
+    } catch (err) {
+      console.error(`[TilesetLoader] Failed to load ${tilesetId}:`, err)
+      throw err
     } finally {
       this.loading.delete(tilesetId)
     }
@@ -291,13 +295,17 @@ class TilesetLoaderClass {
    * Internal: Load and process a tileset
    */
   private async loadTileset(config: TilesetConfig): Promise<LoadedTileset> {
+    console.log(`[TilesetLoader] Starting image load: ${config.url}`)
+    
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = 'anonymous'
 
       img.onload = () => {
+        console.log(`[TilesetLoader] Image loaded: ${config.id} (${img.width}x${img.height})`)
         try {
           const tiles = this.extractTiles(img, config)
+          console.log(`[TilesetLoader] Extracted ${tiles.length} tiles from ${config.id}`)
           resolve({
             config,
             tiles,
@@ -305,11 +313,13 @@ class TilesetLoaderClass {
             loaded: true,
           })
         } catch (err) {
+          console.error(`[TilesetLoader] Error extracting tiles from ${config.id}:`, err)
           reject(err)
         }
       }
 
-      img.onerror = () => {
+      img.onerror = (e) => {
+        console.error(`[TilesetLoader] Failed to load image: ${config.url}`, e)
         reject(new Error(`Failed to load tileset: ${config.url}`))
       }
 

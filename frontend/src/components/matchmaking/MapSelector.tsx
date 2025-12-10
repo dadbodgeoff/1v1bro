@@ -13,14 +13,21 @@ interface MapSelectorProps {
 }
 
 // Theme-based styling
-const themeStyles: Record<string, { gradient: string; accent: string }> = {
+const themeStyles: Record<string, { gradient: string; accent: string; icon: string }> = {
   space: {
     gradient: 'from-indigo-500/20 to-purple-500/20',
     accent: 'border-indigo-500',
+    icon: '🌌',
   },
   volcanic: {
     gradient: 'from-orange-500/20 to-red-500/20',
     accent: 'border-orange-500',
+    icon: '🌋',
+  },
+  industrial: {
+    gradient: 'from-neutral-500/20 to-stone-500/20',
+    accent: 'border-neutral-500',
+    icon: '🏭',
   },
 }
 
@@ -70,7 +77,7 @@ export function MapSelector({
                 {/* Map thumbnail placeholder */}
                 <div className={`w-10 h-10 rounded bg-gradient-to-br ${theme.gradient} flex items-center justify-center`}>
                   <span className="text-lg">
-                    {map.theme === 'volcanic' ? '🌋' : '🌌'}
+                    {theme.icon}
                   </span>
                 </div>
                 <div>

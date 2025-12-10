@@ -15,6 +15,9 @@ export { LavaGlowLayer } from './LavaGlowLayer'
 export { EmberParticleLayer } from './EmberParticleLayer'
 export { SmokeHazeLayer } from './SmokeHazeLayer'
 
+// Industrial theme layers
+export { IndustrialConcreteLayer, IndustrialLightingLayer, IndustrialDustLayer, IndustrialSparkLayer } from './IndustrialLayers'
+
 // Legacy layers (kept for reference)
 export { DeepSpaceLayer } from './DeepSpaceLayer'
 export { HexGridLayer } from './HexGridLayer'

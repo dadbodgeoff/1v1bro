@@ -4,15 +4,17 @@
  * Handles:
  * - Drawing floor tiles from loaded tilesets
  * - 9-slice rendering for walls and water
+ * - Multi-layer rendering (floor → props → obstacles → hazards)
  * - Animated tile support (future)
  * - Tile variation for visual interest
  * 
  * @module terrain/TileRenderer
  */
 
-import { tilesetLoader, GRASS_TILES, SCIFI_TILES, WATER_TILES, WALL_TILES, BUSH_TILES, BOX_TILES } from './TilesetLoader'
+import { tilesetLoader, GRASS_TILES, SCIFI_TILES, WATER_TILES, WALL_TILES, BUSH_TILES, BOX_TILES, BORDER_TILES } from './TilesetLoader'
 import type { Tile } from './TilesetLoader'
 import type { TileType } from '../arena/types'
+import type { ArenaMap } from './IndustrialArenaMap'
 
 // ============================================================================
 // Types
@@ -492,5 +494,402 @@ export class TileRenderer {
         }
       }
     }
+  }
+
+  // ============================================================================
+  // Industrial Arena Map Rendering
+  // ============================================================================
+
+  /**
+   * Render an ArenaMap with multi-layer support
+   * Renders in order: floor → props → obstacles → hazards → border
+   */
+  renderArenaMap(map: ArenaMap, offsetX = 0, offsetY = 0): void {
+    const ts = this.tileSize
+    
+    // Layer 1: Floor tiles
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (!mapTile) continue
+        
+        const tile = tilesetLoader.getTile('floor-tiles', mapTile.floor)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+    
+    // Layer 2: Props (decorative, non-blocking)
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (!mapTile?.prop) continue
+        
+        const tile = tilesetLoader.getTile('prop-tiles', mapTile.prop)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+    
+    // Layer 3: Obstacles (blocking)
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (!mapTile?.obstacle) continue
+        
+        const tile = tilesetLoader.getTile('cover-tiles', mapTile.obstacle)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+    
+    // Layer 4: Hazards (damaging zones and pickups)
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (mapTile?.hazard === undefined) continue
+        
+        const tile = tilesetLoader.getTile('hazard-tiles', mapTile.hazard)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+  }
+
+  /**
+   * Render the arena border using 9-slice chain-link fence
+   */
+  renderArenaBorder(width: number, height: number, offsetX = 0, offsetY = 0): void {
+    const ts = this.tileSize
+    const cols = Math.ceil(width / ts)
+    const rows = Math.ceil(height / ts)
+    
+    // Top edge
+    for (let col = 0; col < cols; col++) {
+      let tileIndex: number
+      if (col === 0) tileIndex = BORDER_TILES.TOP_LEFT
+      else if (col === cols - 1) tileIndex = BORDER_TILES.TOP_RIGHT
+      else tileIndex = BORDER_TILES.TOP
+      
+      const tile = tilesetLoader.getTile('arena-border', tileIndex)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX + col * ts, offsetY - ts, ts, ts)
+      }
+    }
+    
+    // Bottom edge
+    for (let col = 0; col < cols; col++) {
+      let tileIndex: number
+      if (col === 0) tileIndex = BORDER_TILES.BOTTOM_LEFT
+      else if (col === cols - 1) tileIndex = BORDER_TILES.BOTTOM_RIGHT
+      else tileIndex = BORDER_TILES.BOTTOM
+      
+      const tile = tilesetLoader.getTile('arena-border', tileIndex)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX + col * ts, offsetY + height, ts, ts)
+      }
+    }
+    
+    // Left edge (excluding corners)
+    for (let row = 0; row < rows; row++) {
+      const tile = tilesetLoader.getTile('arena-border', BORDER_TILES.LEFT)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX - ts, offsetY + row * ts, ts, ts)
+      }
+    }
+    
+    // Right edge (excluding corners)
+    for (let row = 0; row < rows; row++) {
+      const tile = tilesetLoader.getTile('arena-border', BORDER_TILES.RIGHT)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX + width, offsetY + row * ts, ts, ts)
+      }
+    }
+  }
+
+  /**
+   * Initialize renderer for industrial arena map
+   * Loads all required tilesets
+   */
+  async initializeForArenaMap(map: ArenaMap): Promise<void> {
+    await tilesetLoader.preloadAll(map.tilesets)
+    this.ready = true
+  }
+}
+
+// ============================================================================
+// Industrial Arena Renderer (Standalone)
+// ============================================================================
+
+/**
+ * Standalone renderer for industrial arena maps
+ * Use this when you want to render the new industrial map format
+ */
+export class IndustrialArenaRenderer {
+  private ctx: CanvasRenderingContext2D
+  private tileSize: number
+  private ready = false
+  private map: ArenaMap | null = null
+
+  constructor(ctx: CanvasRenderingContext2D, tileSize = 80) {
+    this.ctx = ctx
+    this.tileSize = tileSize
+  }
+
+  /**
+   * Load and prepare a map for rendering
+   */
+  async loadMap(map: ArenaMap): Promise<void> {
+    this.map = map
+    await tilesetLoader.preloadAll(map.tilesets)
+    this.ready = true
+    console.log(`[IndustrialArenaRenderer] Loaded map: ${map.name} (${map.width}x${map.height})`)
+  }
+
+  /**
+   * Check if renderer is ready
+   */
+  isReady(): boolean {
+    return this.ready && this.map !== null
+  }
+
+  /**
+   * Get the current map
+   */
+  getMap(): ArenaMap | null {
+    return this.map
+  }
+
+  /**
+   * Get tile size
+   */
+  getTileSize(): number {
+    return this.tileSize
+  }
+
+  /**
+   * Set tile size
+   */
+  setTileSize(size: number): void {
+    this.tileSize = size
+  }
+
+  /**
+   * Render the complete map
+   */
+  render(offsetX = 0, offsetY = 0): void {
+    if (!this.ready || !this.map) return
+    
+    const ts = this.tileSize
+    const map = this.map
+    
+    // Layer 1: Floor tiles
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (!mapTile) continue
+        
+        const tile = tilesetLoader.getTile('floor-tiles', mapTile.floor)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+    
+    // Layer 2: Props (decorative)
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (!mapTile?.prop) continue
+        
+        const tile = tilesetLoader.getTile('prop-tiles', mapTile.prop)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+    
+    // Layer 3: Obstacles
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (!mapTile?.obstacle) continue
+        
+        const tile = tilesetLoader.getTile('cover-tiles', mapTile.obstacle)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+    
+    // Layer 4: Hazards and pickups
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        const mapTile = map.tiles[y]?.[x]
+        if (mapTile?.hazard === undefined) continue
+        
+        const tile = tilesetLoader.getTile('hazard-tiles', mapTile.hazard)
+        if (tile) {
+          this.ctx.drawImage(tile.canvas, offsetX + x * ts, offsetY + y * ts, ts, ts)
+        }
+      }
+    }
+  }
+
+  /**
+   * Render the border around the arena
+   */
+  renderBorder(offsetX = 0, offsetY = 0): void {
+    if (!this.ready || !this.map) return
+    
+    const ts = this.tileSize
+    const width = this.map.width * ts
+    const height = this.map.height * ts
+    const cols = this.map.width
+    const rows = this.map.height
+    
+    // Top edge
+    for (let col = 0; col < cols; col++) {
+      let tileIndex: number
+      if (col === 0) tileIndex = BORDER_TILES.TOP_LEFT
+      else if (col === cols - 1) tileIndex = BORDER_TILES.TOP_RIGHT
+      else tileIndex = BORDER_TILES.TOP
+      
+      const tile = tilesetLoader.getTile('arena-border', tileIndex)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX + col * ts, offsetY - ts, ts, ts)
+      }
+    }
+    
+    // Bottom edge
+    for (let col = 0; col < cols; col++) {
+      let tileIndex: number
+      if (col === 0) tileIndex = BORDER_TILES.BOTTOM_LEFT
+      else if (col === cols - 1) tileIndex = BORDER_TILES.BOTTOM_RIGHT
+      else tileIndex = BORDER_TILES.BOTTOM
+      
+      const tile = tilesetLoader.getTile('arena-border', tileIndex)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX + col * ts, offsetY + height, ts, ts)
+      }
+    }
+    
+    // Left edge
+    for (let row = 0; row < rows; row++) {
+      const tile = tilesetLoader.getTile('arena-border', BORDER_TILES.LEFT)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX - ts, offsetY + row * ts, ts, ts)
+      }
+    }
+    
+    // Right edge
+    for (let row = 0; row < rows; row++) {
+      const tile = tilesetLoader.getTile('arena-border', BORDER_TILES.RIGHT)
+      if (tile) {
+        this.ctx.drawImage(tile.canvas, offsetX + width, offsetY + row * ts, ts, ts)
+      }
+    }
+  }
+
+  /**
+   * Check if a world position is walkable
+   */
+  isWalkable(worldX: number, worldY: number): boolean {
+    if (!this.map) return false
+    
+    const tileX = Math.floor(worldX / this.tileSize)
+    const tileY = Math.floor(worldY / this.tileSize)
+    
+    if (tileX < 0 || tileX >= this.map.width || tileY < 0 || tileY >= this.map.height) {
+      return false
+    }
+    
+    return !this.map.tiles[tileY][tileX].solid
+  }
+
+  /**
+   * Get damage at a world position (0 if none)
+   */
+  getDamageAt(worldX: number, worldY: number): number {
+    if (!this.map) return 0
+    
+    const tileX = Math.floor(worldX / this.tileSize)
+    const tileY = Math.floor(worldY / this.tileSize)
+    
+    if (tileX < 0 || tileX >= this.map.width || tileY < 0 || tileY >= this.map.height) {
+      return 0
+    }
+    
+    const tile = this.map.tiles[tileY][tileX]
+    return tile.damaging ? (tile.damage || 0) : 0
+  }
+
+  /**
+   * Get spawn position for a player
+   */
+  getSpawnPosition(isPlayer1: boolean): { x: number; y: number } {
+    if (!this.map) {
+      return isPlayer1 ? { x: 160, y: 360 } : { x: 1120, y: 360 }
+    }
+    
+    const spawn = isPlayer1 ? this.map.spawn1 : this.map.spawn2
+    return {
+      x: spawn.x * this.tileSize + this.tileSize / 2,
+      y: spawn.y * this.tileSize + this.tileSize / 2,
+    }
+  }
+
+  /**
+   * Get all solid tiles for collision detection
+   */
+  getSolidTiles(): Array<{ x: number; y: number; width: number; height: number }> {
+    if (!this.map) return []
+    
+    const solids: Array<{ x: number; y: number; width: number; height: number }> = []
+    
+    for (let y = 0; y < this.map.height; y++) {
+      for (let x = 0; x < this.map.width; x++) {
+        if (this.map.tiles[y][x].solid) {
+          solids.push({
+            x: x * this.tileSize,
+            y: y * this.tileSize,
+            width: this.tileSize,
+            height: this.tileSize,
+          })
+        }
+      }
+    }
+    
+    return solids
+  }
+
+  /**
+   * Get all hazard tiles for damage detection
+   */
+  getHazardTiles(): Array<{ x: number; y: number; width: number; height: number; damage: number }> {
+    if (!this.map) return []
+    
+    const hazards: Array<{ x: number; y: number; width: number; height: number; damage: number }> = []
+    
+    for (let y = 0; y < this.map.height; y++) {
+      for (let x = 0; x < this.map.width; x++) {
+        const tile = this.map.tiles[y][x]
+        if (tile.damaging && tile.damage) {
+          hazards.push({
+            x: x * this.tileSize,
+            y: y * this.tileSize,
+            width: this.tileSize,
+            height: this.tileSize,
+            damage: tile.damage,
+          })
+        }
+      }
+    }
+    
+    return hazards
   }
 }

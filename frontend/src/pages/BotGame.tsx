@@ -31,6 +31,13 @@ const AVAILABLE_MAPS = [
     description: 'Radial arena with central hazards and teleporters',
     config: VORTEX_ARENA,
   },
+  // Industrial map hidden behind feature flag until tilesets are ready
+  // {
+  //   id: 'industrial',
+  //   name: 'Industrial Facility',
+  //   description: 'Military facility with cover and hazard zones',
+  //   config: INDUSTRIAL_FACILITY,
+  // },
 ] as const
 
 // Question type from API
@@ -211,6 +218,7 @@ export function BotGame() {
 
   // Start game - fetch questions first, then begin
   const startGame = useCallback(async () => {
+    console.log('[BotGame] Starting game with map:', selectedMap?.metadata?.name, 'theme:', selectedMap?.metadata?.theme)
     
     // Fetch questions for selected category
     await fetchQuestions(selectedCategory)
@@ -608,7 +616,10 @@ export function BotGame() {
             {AVAILABLE_MAPS.map((map) => (
               <button
                 key={map.id}
-                onClick={() => setSelectedMap(map.config)}
+                onClick={() => {
+                  console.log('[BotGame] Selected map:', map.name, 'config theme:', map.config?.metadata?.theme)
+                  setSelectedMap(map.config)
+                }}
                 className={`p-4 rounded-xl border transition-all text-left ${
                   selectedMap === map.config
                     ? 'bg-white/[0.08] border-white/20 ring-1 ring-white/20'

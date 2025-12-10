@@ -159,18 +159,28 @@ export class GameEngine {
 
   private async loadAssets(): Promise<void> {
     try {
-      await Promise.all([
+      // Load core assets
+      const coreLoads = [
         loadGameAssets(),
         arenaAssets.load(),
         this.visualCoordinator.initialize(),
-      ])
+      ] as const
+      
+      await Promise.all(coreLoads)
+      
+      // Industrial tileset renderer disabled until feature is ready
+      // const ctx = this.canvas.getContext('2d')
+      // const theme = this.currentMapConfig?.metadata?.theme ?? 'space'
+      // if (theme === 'industrial' && ctx) {
+      // }
       
       // Register hazards with visual system after map is loaded
       this.registerVisualsFromMap()
       
       this.assetsLoaded = true
       this.callbacks.onAssetsLoaded?.()
-    } catch {
+    } catch (err) {
+      console.error('[GameEngine] Asset loading error:', err)
       this.assetsLoaded = true
     }
   }

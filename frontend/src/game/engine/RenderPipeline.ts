@@ -19,6 +19,8 @@ import { ArenaManager } from '../arena'
 import { CombatSystem, BuffManager } from '../combat'
 import type { RenderContext, PlayerState, PowerUpState, Vector2, HealthState } from './types'
 import type { VisualSystemCoordinator } from '../visual'
+import { IndustrialArenaRenderer } from '../terrain/TileRenderer'
+import { INDUSTRIAL_ARENA } from '../terrain/IndustrialArenaMap'
 
 export class RenderPipeline {
   private ctx: CanvasRenderingContext2D
@@ -44,6 +46,10 @@ export class RenderPipeline {
 
   // AAA Visual System Coordinator
   private visualCoordinator: VisualSystemCoordinator | null = null
+
+  // Industrial tileset renderer
+  private industrialRenderer: IndustrialArenaRenderer | null = null
+  private industrialRendererReady = false
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -73,6 +79,31 @@ export class RenderPipeline {
 
   setVisualCoordinator(coordinator: VisualSystemCoordinator): void {
     this.visualCoordinator = coordinator
+  }
+
+  /**
+   * Initialize industrial tileset renderer for industrial theme maps
+   */
+  async initializeIndustrialRenderer(ctx: CanvasRenderingContext2D): Promise<void> {
+    if (this.industrialRenderer) return
+    
+    this.industrialRenderer = new IndustrialArenaRenderer(ctx, 80)
+    
+    try {
+      await this.industrialRenderer.loadMap(INDUSTRIAL_ARENA)
+      this.industrialRendererReady = true
+      console.log('[RenderPipeline] Industrial tilesets loaded successfully')
+    } catch (err) {
+      console.error('[RenderPipeline] Failed to load industrial tilesets:', err)
+      this.industrialRendererReady = false
+    }
+  }
+
+  /**
+   * Check if industrial renderer should be used
+   */
+  isIndustrialTheme(): boolean {
+    return this.backdropSystem.getTheme() === 'industrial'
   }
 
   setScale(scale: number): void {
@@ -132,8 +163,16 @@ export class RenderPipeline {
     // Layer 0.5: Background props (AAA visual system)
     this.visualCoordinator?.renderBackgroundProps(this.ctx)
 
-    // Layer 1-3: Arena (hazards, barriers, etc.)
-    this.arenaManager.render(this.ctx)
+    // Layer 1: Industrial tileset floor/obstacles (if industrial theme)
+    if (this.isIndustrialTheme() && this.industrialRendererReady && this.industrialRenderer) {
+      this.industrialRenderer.render()
+      this.industrialRenderer.renderBorder()
+    }
+
+    // Layer 1-3: Arena (hazards, barriers, etc.) - skip for industrial as tilesets handle it
+    if (!this.isIndustrialTheme() || !this.industrialRendererReady) {
+      this.arenaManager.render(this.ctx)
+    }
 
     // Layer 3.5: Gameplay props (AAA visual system)
     this.visualCoordinator?.renderGameplayProps(this.ctx)

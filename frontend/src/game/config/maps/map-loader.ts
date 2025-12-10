@@ -7,6 +7,7 @@
 
 import { NEXUS_ARENA } from './nexus-arena'
 import { VORTEX_ARENA } from './vortex-arena'
+import { INDUSTRIAL_FACILITY } from './industrial-facility'
 import type { MapConfig } from './map-schema'
 
 /**
@@ -16,6 +17,7 @@ import type { MapConfig } from './map-schema'
 const MAP_REGISTRY: Record<string, MapConfig> = Object.assign(Object.create(null), {
   'nexus-arena': NEXUS_ARENA,
   'vortex-arena': VORTEX_ARENA,
+  'industrial-facility': INDUSTRIAL_FACILITY,
 })
 
 /**
@@ -26,7 +28,7 @@ export interface MapInfo {
   name: string
   description: string
   thumbnail: string
-  theme: 'space' | 'volcanic'
+  theme: 'space' | 'volcanic' | 'industrial'
 }
 
 /**
@@ -47,12 +49,19 @@ export const AVAILABLE_MAPS: MapInfo[] = [
     thumbnail: '/maps/vortex-arena-thumb.png',
     theme: 'volcanic',
   },
+  {
+    slug: 'industrial-facility',
+    name: 'Industrial Facility',
+    description: 'Military facility with strategic cover and hazard zones',
+    thumbnail: '/maps/industrial-facility-thumb.png',
+    theme: 'industrial',
+  },
 ]
 
 /**
  * Get a map configuration by slug.
  * 
- * @param slug - Map slug (e.g., 'nexus-arena', 'vortex-arena')
+ * @param slug - Map slug (e.g., 'nexus-arena', 'vortex-arena', 'industrial-facility')
  * @returns MapConfig for the specified slug, or NEXUS_ARENA if invalid/missing
  * 
  * Requirements: 4.2, 4.5

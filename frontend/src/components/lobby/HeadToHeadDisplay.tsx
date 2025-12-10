@@ -31,6 +31,7 @@ const categoryInfo: Record<string, { name: string; icon: string }> = {
 const mapInfo: Record<string, { name: string; icon: string }> = {
   'nexus-arena': { name: 'Nexus Arena', icon: '🌌' },
   'vortex-arena': { name: 'Vortex Arena', icon: '🌋' },
+  'industrial-facility': { name: 'Industrial Facility', icon: '🏭' },
 }
 
 /**
