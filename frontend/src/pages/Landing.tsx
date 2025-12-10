@@ -20,10 +20,16 @@ import {
   LandingFooter,
   FloatingProjectiles,
 } from '@/components/landing/enterprise'
+import { analytics } from '@/services/analytics'
 
 export function Landing() {
   useEffect(() => {
     document.title = '1v1 Bro - Trivia Duels With Real-Time Combat'
+    
+    // Initialize analytics and track landing page view
+    analytics.init()
+    analytics.trackPageView('/')
+    
     return () => {
       document.title = '1v1 Bro'
     }

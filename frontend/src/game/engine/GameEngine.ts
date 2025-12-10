@@ -337,14 +337,21 @@ export class GameEngine {
     }
     
     if (isMobile) {
-      // Mobile: Fill entire screen (Brawl Stars style)
-      // Game will be slightly stretched/cropped but controls overlay on top
-      this.canvas.width = clientWidth
-      this.canvas.height = clientHeight
-      // Use the larger scale to ensure arena fills screen (may crop edges)
-      const scaleX = clientWidth / ARENA_SIZE.width
-      const scaleY = clientHeight / ARENA_SIZE.height
-      this.scale = Math.max(scaleX, scaleY)
+      // Mobile: Fit entire arena on screen (no cropping)
+      // Use letterboxing to ensure full map is always visible regardless of device aspect ratio
+      const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height
+      let width = clientWidth
+      let height = clientWidth / aspectRatio
+      
+      // If calculated height exceeds available height, scale by height instead
+      if (height > clientHeight) {
+        height = clientHeight
+        width = clientHeight * aspectRatio
+      }
+      
+      this.canvas.width = width
+      this.canvas.height = height
+      this.scale = width / ARENA_SIZE.width
     } else {
       // Desktop: Maintain aspect ratio (letterbox)
       const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height

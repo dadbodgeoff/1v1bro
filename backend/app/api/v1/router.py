@@ -24,6 +24,7 @@ from app.api.v1.coins import router as coins_router
 from app.api.v1.webhooks import router as webhooks_router
 from app.api.v1.questions import router as questions_router
 from app.api.v1.storage import router as storage_router
+from app.api.v1.analytics import router as analytics_router
 
 
 router = APIRouter()
@@ -58,3 +59,6 @@ router.include_router(storage_router)
 # Admin routes
 router.include_router(admin_cosmetics_router)
 router.include_router(admin_rotations_router)
+
+# Analytics routes (no auth required)
+router.include_router(analytics_router)

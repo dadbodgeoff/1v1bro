@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { User } from '@/types/api'
+import { analytics } from '@/services/analytics'
 
 interface AuthState {
   user: User | null
@@ -9,7 +10,7 @@ interface AuthState {
   isLoading: boolean
 
   // Actions
-  setUser: (user: User, token: string) => void
+  setUser: (user: User, token: string, isNewUser?: boolean) => void
   logout: () => void
   setLoading: (loading: boolean) => void
 }
@@ -22,13 +23,18 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: true,
 
-      setUser: (user, token) =>
+      setUser: (user, token, isNewUser = false) => {
+        // Track conversion for new signups
+        if (isNewUser) {
+          analytics.markConversion(user.id)
+        }
         set({
           user,
           token,
           isAuthenticated: true,
           isLoading: false,
-        }),
+        })
+      },
 
       logout: () =>
         set({

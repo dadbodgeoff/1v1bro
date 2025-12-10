@@ -4,6 +4,7 @@ import { usePresence } from '@/hooks/usePresence'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/stores/authStore'
 import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
+import { AdminAnalytics } from '@/pages/AdminAnalytics'
 import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
 import { MatchHistory } from '@/pages/MatchHistory'
 import { CoinShop } from '@/pages/CoinShop'
@@ -197,6 +198,15 @@ function App() {
         <Route path="/refunds" element={<RefundPolicy />} />
         {/* Legacy landing route - redirect to root */}
         <Route path="/landing" element={<Navigate to="/" replace />} />
+        {/* Admin Analytics Dashboard */}
+        <Route
+          path="/admin/analytics"
+          element={
+            <ProtectedRoute>
+              <AdminAnalytics />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       </ProgressionProvider>
     </BrowserRouter>

@@ -17,6 +17,7 @@ import { BackgroundScene } from './BackgroundScene'
 import { CTAButton } from './CTAButton'
 import { LiveDemo } from './LiveDemo'
 import { ChevronDownIcon } from './icons'
+import { trackSignupClick, trackDemoPlay } from '@/services/analytics'
 
 export interface HeroSectionProps {
   /** Additional CSS classes */
@@ -63,11 +64,17 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   const handlePrimaryCTA = () => {
     // Primary CTA: Try the game immediately (bot game for guests, dashboard for logged in)
+    if (!isAuthenticated) {
+      trackDemoPlay()
+    }
     navigate(isAuthenticated ? '/dashboard' : '/play')
   }
 
   const handleSecondaryCTA = () => {
     // Secondary CTA: Sign up / go to dashboard
+    if (!isAuthenticated) {
+      trackSignupClick()
+    }
     navigate(isAuthenticated ? '/dashboard' : '/register')
   }
 

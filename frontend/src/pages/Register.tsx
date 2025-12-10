@@ -46,7 +46,7 @@ export function Register() {
         password,
         display_name: displayName || undefined,
       })
-      setUser(response.user, response.access_token)
+      setUser(response.user, response.access_token, true) // true = new user for analytics
       navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
