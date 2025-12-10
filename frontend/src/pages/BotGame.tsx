@@ -176,7 +176,7 @@ export function BotGame() {
     setQuestions([])
     
     try {
-      const response = await fetch(`${API_BASE}/api/v1/questions/practice/${category}?count=${QUESTIONS_PER_GAME}`, {
+      const response = await fetch(`${API_BASE}/questions/practice/${category}?count=${QUESTIONS_PER_GAME}`, {
         headers: {
           'Content-Type': 'application/json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
