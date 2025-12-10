@@ -189,51 +189,51 @@ export function MobileControls({
 
   return (
     <>
-      {/* MOVEMENT JOYSTICK - Bottom Left (Brawl Stars style - semi-transparent) */}
+      {/* MOVEMENT JOYSTICK - Bottom Left (very transparent, above safe area) */}
       <div
         ref={joystickRef}
         style={{
           position: 'fixed',
-          left: '20px',
-          bottom: '20px',
-          width: '120px',
-          height: '120px',
+          left: '15px',
+          bottom: 'calc(40px + env(safe-area-inset-bottom, 20px))',
+          width: '100px',
+          height: '100px',
           zIndex: 9999,
           touchAction: 'none',
         }}
-        className="rounded-full bg-black/30 border-2 border-white/20"
+        className="rounded-full bg-white/10 border border-white/15"
         onTouchStart={handleJoystickStart}
         onTouchMove={handleJoystickMove}
         onTouchEnd={handleJoystickEnd}
         onTouchCancel={handleJoystickEnd}
       >
-        {/* Draggable knob - more visible */}
+        {/* Draggable knob - subtle */}
         <div
           ref={knobRef}
-          className="absolute top-1/2 left-1/2 w-14 h-14 rounded-full bg-white/60 border-2 border-white/80 shadow-lg"
+          className="absolute top-1/2 left-1/2 w-12 h-12 rounded-full bg-white/30 border border-white/40"
           style={{ transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
         />
       </div>
 
-      {/* FIRE BUTTON - Bottom Right (Brawl Stars style) */}
+      {/* FIRE BUTTON - Bottom Right (very transparent, above safe area) */}
       <div
         style={{
           position: 'fixed',
-          right: '20px',
-          bottom: '20px',
+          right: '15px',
+          bottom: 'calc(40px + env(safe-area-inset-bottom, 20px))',
           zIndex: 9999,
           touchAction: 'none',
         }}
         onTouchStart={handleFireTap}
       >
         <div
-          className={`w-20 h-20 rounded-full flex items-center justify-center ${
+          className={`w-16 h-16 rounded-full flex items-center justify-center ${
             enabled
-              ? 'bg-red-500/70 border-3 border-red-300/80 active:bg-red-600/80 active:scale-95'
-              : 'bg-gray-500/50 border-3 border-gray-400/50 opacity-50'
+              ? 'bg-red-500/40 border border-red-400/50 active:bg-red-500/60 active:scale-95'
+              : 'bg-gray-500/20 border border-gray-400/30 opacity-50'
           } transition-all`}
         >
-          <span className="text-white font-bold text-base select-none drop-shadow-md">
+          <span className="text-white/70 font-bold text-sm select-none">
             FIRE
           </span>
         </div>

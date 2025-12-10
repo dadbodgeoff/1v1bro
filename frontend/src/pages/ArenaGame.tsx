@@ -293,17 +293,19 @@ export function ArenaGame() {
         </div>
       )}
 
-      {/* Main game UI */}
-    <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden safe-area-top">
-      {/* Scoreboard header - health bars and activity feed */}
-      <ArenaScoreboard
-        localHealth={localHealth}
-        opponentHealth={opponentHealth}
-        showHealth={true}
-        showQuestion={showQuestion}
-        onAnswer={sendAnswer}
-        killFeed={killFeed}
-      />
+      {/* Main game UI - use dvh for mobile to account for browser chrome */}
+    <div className="h-dvh w-dvw flex flex-col bg-[#0a0a0a] overflow-hidden" style={{ height: '100dvh', width: '100dvw' }}>
+      {/* Scoreboard header - hidden on mobile landscape for fullscreen game */}
+      <div className={isMobileLandscape ? 'hidden' : ''}>
+        <ArenaScoreboard
+          localHealth={localHealth}
+          opponentHealth={opponentHealth}
+          showHealth={true}
+          showQuestion={showQuestion}
+          onAnswer={sendAnswer}
+          killFeed={killFeed}
+        />
+      </div>
 
       {/* Main game area - canvas fills available space */}
       <div className="flex-1 relative min-h-0">
@@ -341,6 +343,32 @@ export function ArenaGame() {
 
           {/* Round result toast - overlaid on canvas */}
           <RoundResultOverlay visible={showRoundResult} />
+
+          {/* Mobile landscape floating health bars - minimal overlay */}
+          {isMobileLandscape && localHealth && opponentHealth && (
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-4 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full">
+              {/* Local player health */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-green-400 font-medium">YOU</span>
+                <div className="w-16 h-2 bg-black/50 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-green-500 transition-all duration-200"
+                    style={{ width: `${(localHealth.health / localHealth.maxHealth) * 100}%` }}
+                  />
+                </div>
+              </div>
+              {/* Opponent health */}
+              <div className="flex items-center gap-2">
+                <div className="w-16 h-2 bg-black/50 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-red-500 transition-all duration-200"
+                    style={{ width: `${(opponentHealth.health / opponentHealth.maxHealth) * 100}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-red-400 font-medium">OPP</span>
+              </div>
+            </div>
+          )}
 
           {/* Mobile kill feed - top right of canvas (hidden on desktop where it's in scoreboard) */}
           {killFeed.length > 0 && (

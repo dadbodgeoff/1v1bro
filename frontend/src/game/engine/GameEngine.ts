@@ -384,8 +384,11 @@ export class GameEngine {
   }
 
   private updateCombat(deltaTime: number): void {
-    if (this.localPlayer) this.combatSystem.updateAim(this.mousePosition, this.localPlayer.position, this.getPlayerPositions())
-    this.combatSystem.update(deltaTime, this.getPlayerPositions())
+    const playerPositions = this.getPlayerPositions()
+    // Store target positions for mobile auto-aim on fire
+    this.combatSystem.setTargetPositions(playerPositions)
+    if (this.localPlayer) this.combatSystem.updateAim(this.mousePosition, this.localPlayer.position, playerPositions)
+    this.combatSystem.update(deltaTime, playerPositions)
     const players = new Map<string, PlayerState>()
     if (this.localPlayer) players.set(this.localPlayer.id, this.localPlayer)
     if (this.opponent) players.set(this.opponent.id, this.opponent)

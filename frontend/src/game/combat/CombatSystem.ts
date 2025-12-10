@@ -193,6 +193,47 @@ export class CombatSystem {
     }
   }
 
+  // Store target positions for mobile auto-aim
+  private lastKnownTargets: Map<string, Vector2> = new Map()
+
+  /**
+   * Store target positions for mobile auto-aim on fire
+   */
+  setTargetPositions(targets: Map<string, Vector2>): void {
+    this.lastKnownTargets = targets
+  }
+
+  /**
+   * Mobile auto-aim: Find direction to nearest enemy
+   * Returns null if no valid target found
+   */
+  private getMobileAutoAimDirection(playerPosition: Vector2): Vector2 | null {
+    if (!this.isMobileMode) return null
+    
+    let nearestTarget: Vector2 | null = null
+    let nearestDistance = Infinity
+
+    for (const [playerId, targetPos] of this.lastKnownTargets) {
+      // Skip self
+      if (playerId === this.localPlayerId) continue
+      // Skip dead players
+      if (!this.healthManager.isAlive(playerId)) continue
+      // Skip respawning players
+      if (this.respawnManager.isRespawning(playerId)) continue
+
+      const dx = targetPos.x - playerPosition.x
+      const dy = targetPos.y - playerPosition.y
+      const distance = Math.sqrt(dx * dx + dy * dy)
+
+      if (distance < nearestDistance && distance > 10) {
+        nearestDistance = distance
+        nearestTarget = { x: dx / distance, y: dy / distance }
+      }
+    }
+
+    return nearestTarget
+  }
+
   /**
    * Attempt to fire a projectile
    */
@@ -205,8 +246,26 @@ export class CombatSystem {
     this.weaponManager.recordFire()
     this.fireSequence++
 
+    // Mobile auto-aim: strongly pull toward nearest enemy when firing
+    let fireDirection = this.aimDirection
+    if (this.isMobileMode) {
+      const autoAimDir = this.getMobileAutoAimDirection(playerPosition)
+      if (autoAimDir) {
+        // Near lock-on (95%) - mobile needs strong assist since touch is imprecise
+        fireDirection = {
+          x: this.aimDirection.x * 0.05 + autoAimDir.x * 0.95,
+          y: this.aimDirection.y * 0.05 + autoAimDir.y * 0.95,
+        }
+        // Normalize
+        const len = Math.sqrt(fireDirection.x * fireDirection.x + fireDirection.y * fireDirection.y)
+        if (len > 0) {
+          fireDirection = { x: fireDirection.x / len, y: fireDirection.y / len }
+        }
+      }
+    }
+
     // Apply spread to aim direction
-    const spreadDirection = this.weaponManager.applySpread(this.aimDirection)
+    const spreadDirection = this.weaponManager.applySpread(fireDirection)
 
     // Spawn predicted projectile locally
     this.projectileManager.spawnProjectile(
