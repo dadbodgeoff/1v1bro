@@ -71,8 +71,78 @@ export interface LoadedTileset {
 /**
  * Pre-defined tileset configurations for your Supabase assets
  * These match the files you uploaded to cosmetics/tilesets/
+ * 
+ * NEW INDUSTRIAL TILESETS (2024):
+ * - floor-tiles: 4x4 grid - concrete, metal, tile floors
+ * - wall-tiles: 3x3 grid - 9-slice concrete/metal walls
+ * - cover-tiles: 4x2 grid - crates, barrels, sandbags, barriers
+ * - hazard-tiles: 4x2 grid - toxic, fire, electric, pickups
+ * - prop-tiles: 4x2 grid - debris, decorative props
+ * - arena-border: 3x3 grid - chain-link fence 9-slice
  */
 export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
+  // ============================================
+  // NEW INDUSTRIAL MILITARY TILESETS
+  // ============================================
+  
+  // Floor tiles - 4x4 grid (concrete, metal, tile, special)
+  'floor-tiles': {
+    id: 'floor-tiles',
+    columns: 4,
+    rows: 4,
+    tileWidth: 0, // Auto-detect from image
+    tileHeight: 0,
+  },
+  
+  // Wall tiles - 3x3 grid (9-slice concrete walls with barbed wire)
+  'wall-tiles': {
+    id: 'wall-tiles',
+    columns: 3,
+    rows: 3,
+    tileWidth: 0,
+    tileHeight: 0,
+  },
+  
+  // Cover/obstacle tiles - 4x2 grid (crates, barrels, sandbags, barriers)
+  'cover-tiles': {
+    id: 'cover-tiles',
+    columns: 4,
+    rows: 2,
+    tileWidth: 0,
+    tileHeight: 0,
+  },
+  
+  // Hazard tiles - 4x2 grid (toxic, oil, fire, electric, pickups)
+  'hazard-tiles': {
+    id: 'hazard-tiles',
+    columns: 4,
+    rows: 2,
+    tileWidth: 0,
+    tileHeight: 0,
+  },
+  
+  // Prop/debris tiles - 4x2 grid (rubble, debris, decorative)
+  'prop-tiles': {
+    id: 'prop-tiles',
+    columns: 4,
+    rows: 2,
+    tileWidth: 0,
+    tileHeight: 0,
+  },
+  
+  // Arena border - 3x3 grid (chain-link fence 9-slice)
+  'arena-border': {
+    id: 'arena-border',
+    columns: 3,
+    rows: 3,
+    tileWidth: 0,
+    tileHeight: 0,
+  },
+  
+  // ============================================
+  // LEGACY TILESETS (kept for compatibility)
+  // ============================================
+  
   // Grass tiles - 4x4 grid (plain, flowers, dirt, stones)
   grass: {
     id: 'grass',
@@ -182,9 +252,13 @@ class TilesetLoaderClass {
     }
 
     // Build full config with URL
+    // New industrial tilesets use .jpg, legacy use .jpeg
+    const newTilesets = ['floor-tiles', 'wall-tiles', 'cover-tiles', 'hazard-tiles', 'prop-tiles', 'arena-border']
+    const extension = newTilesets.includes(tilesetId) ? 'jpg' : 'jpeg'
+    
     const config: TilesetConfig = {
       ...baseConfig,
-      url: this.buildStorageUrl(`${tilesetId}.jpeg`),
+      url: this.buildStorageUrl(`${tilesetId}.${extension}`),
       removeBackground: true,
     }
 
@@ -245,10 +319,17 @@ class TilesetLoaderClass {
 
   /**
    * Extract individual tiles from a sprite sheet
+   * Auto-detects tile size if tileWidth/tileHeight are 0
    */
   private extractTiles(img: HTMLImageElement, config: TilesetConfig): Tile[] {
-    const { columns, rows, tileWidth, tileHeight, removeBackground: shouldRemove = true } = config
+    const { columns, rows, removeBackground: shouldRemove = true } = config
     const tiles: Tile[] = []
+
+    // Auto-detect tile size from image dimensions if not specified
+    const tileWidth = config.tileWidth > 0 ? config.tileWidth : Math.floor(img.width / columns)
+    const tileHeight = config.tileHeight > 0 ? config.tileHeight : Math.floor(img.height / rows)
+
+    console.log(`[TilesetLoader] ${config.id}: ${img.width}x${img.height} → ${columns}x${rows} grid → ${tileWidth}x${tileHeight} tiles`)
 
     // First, process the full image to remove background if needed
     let sourceCanvas: HTMLCanvasElement
@@ -444,4 +525,124 @@ export const BOX_TILES = {
   DAMAGED: 1,
   BREAKING: 2,
   DEBRIS: 3,
+}
+
+// ============================================================================
+// NEW INDUSTRIAL TILESET INDICES
+// ============================================================================
+
+/**
+ * Named tile indices for industrial floor tileset (4x4)
+ * Based on the generated floor-tiles.jpg
+ */
+export const FLOOR_TILES = {
+  // Row 0: Concrete
+  CONCRETE_PLAIN: 0,
+  CONCRETE_CRACKED: 1,
+  CONCRETE_STAINED: 2,
+  CONCRETE_TIRE_MARKS: 3,
+  // Row 1: Metal
+  METAL_DIAMOND: 4,
+  METAL_RUSTED: 5,
+  METAL_GRATE: 6,
+  METAL_RIVETED: 7,
+  // Row 2: Tile
+  TILE_WHITE: 8,
+  TILE_DIRTY: 9,
+  TILE_BROKEN: 10,
+  TILE_BLOOD: 11,
+  // Row 3: Special
+  DRAIN: 12,
+  VENT: 13,
+  MANHOLE: 14,
+  ARROW_MARKING: 15,
+}
+
+/**
+ * Named tile indices for industrial wall tileset (3x3 9-slice)
+ * Based on the generated wall-tiles.jpg
+ */
+export const INDUSTRIAL_WALL_TILES = {
+  // Row 0: Top edge with barbed wire
+  TOP_LEFT: 0,
+  TOP: 1,
+  TOP_RIGHT: 2,
+  // Row 1: Middle with railing
+  LEFT: 3,
+  CENTER: 4,
+  RIGHT: 5,
+  // Row 2: Bottom edge
+  BOTTOM_LEFT: 6,
+  BOTTOM: 7,
+  BOTTOM_RIGHT: 8,
+}
+
+/**
+ * Named tile indices for cover/obstacle tileset (4x2)
+ * Based on the generated cover-tiles.jpg
+ */
+export const COVER_TILES = {
+  // Row 0: Large cover
+  WOODEN_CRATE: 0,
+  SHIPPING_CONTAINER: 1,
+  SANDBAGS: 2,
+  JERSEY_BARRIER: 3,
+  // Row 1: Small cover
+  OIL_BARREL: 4,
+  TIRES: 5,
+  VEHICLE_WRECK: 6,
+  SUPPLY_PALLET: 7,
+}
+
+/**
+ * Named tile indices for hazard tileset (4x2)
+ * Based on the generated hazard-tiles.jpg
+ */
+export const HAZARD_TILES = {
+  // Row 0: Hazards
+  TOXIC_WASTE: 0,
+  OIL_SLICK: 1,
+  FIRE: 2,
+  ELECTRIC: 3,
+  // Row 1: Interactables
+  PRESSURE_PLATE: 4,
+  AMMO_CRATE: 5,
+  HEALTH_KIT: 6,
+  LADDER_HATCH: 7,
+}
+
+/**
+ * Named tile indices for prop/debris tileset (4x2)
+ * Based on the generated prop-tiles.jpg
+ */
+export const PROP_TILES = {
+  // Row 0: Debris
+  RUBBLE: 0,
+  BRICKS: 1,
+  PIPES: 2,
+  JUNK_PILE: 3,
+  // Row 1: Props
+  CONCRETE_SLAB: 4,
+  METAL_GRATE_PROP: 5,
+  BARREL_FALLEN: 6,
+  TIRE_SINGLE: 7,
+}
+
+/**
+ * Named tile indices for arena border tileset (3x3 9-slice)
+ * Based on the generated arena-border.jpg - chain-link fence
+ */
+export const BORDER_TILES = {
+  // Row 0: Top
+  TOP_LEFT: 0,
+  TOP: 1,
+  TOP_RIGHT: 2,
+  // Row 1: Middle
+  LEFT: 3,
+  CENTER: 4,
+  RIGHT: 5,
+  // Row 2: Bottom
+  BOTTOM_LEFT: 6,
+  BOTTOM: 7,
+  BOTTOM_RIGHT: 8,
 }
