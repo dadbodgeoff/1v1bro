@@ -1,13 +1,12 @@
 /**
- * MobileControls - Virtual joystick with tap-to-fire for mobile devices
+ * MobileControls - Dual control scheme for mobile devices
  * Only renders on touch devices
  *
- * Control scheme: Single joystick for movement + tap knob to fire
- * - Drag joystick to move character
- * - Tap the center knob to fire in current movement direction
- * - If not moving, fires forward (right for player 1, left for player 2)
+ * Control scheme: Movement joystick (left) + Fire button (right)
+ * - Left joystick: drag to move character
+ * - Right button: tap to fire in movement direction (with aim assist)
  *
- * This gives players control over timing while keeping controls simple
+ * Separated controls prevent touch conflicts and allow simultaneous move+shoot
  */
 
 import { useRef, useCallback, useEffect, useState } from 'react'
@@ -63,11 +62,10 @@ export function MobileControls({
   const joystickRef = useRef<HTMLDivElement>(null)
   const knobRef = useRef<HTMLDivElement>(null)
 
-  // Touch tracking
+  // Touch tracking - separate IDs for movement
   const moveTouchIdRef = useRef<number | null>(null)
-  const centerRef = useRef<Vector2>({ x: 0, y: 0 })
+  const joystickCenterRef = useRef<Vector2>({ x: 0, y: 0 })
   const currentDirectionRef = useRef<Vector2>({ x: 1, y: 0 }) // Default: fire right
-  const lastMoveTimeRef = useRef(0)
   const hasRequestedFullscreen = useRef(false)
 
   // Detect touch device
@@ -103,73 +101,71 @@ export function MobileControls({
     }
   }, [enabled, onFire, onFireDirection])
 
-  // Handle joystick touch start
+  // Handle joystick touch start - ONLY for movement
   const handleJoystickStart = useCallback(
     (e: React.TouchEvent) => {
       if (!enabled) return
+      e.stopPropagation()
 
-      const touch = e.touches[0]
-      const rect = joystickRef.current?.getBoundingClientRect()
-
-      if (rect) {
-        centerRef.current = {
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
+      // Find a touch that isn't already tracked
+      for (const touch of Array.from(e.changedTouches)) {
+        if (moveTouchIdRef.current === null) {
+          const rect = joystickRef.current?.getBoundingClientRect()
+          if (rect) {
+            joystickCenterRef.current = {
+              x: rect.left + rect.width / 2,
+              y: rect.top + rect.height / 2,
+            }
+          }
+          moveTouchIdRef.current = touch.identifier
+          updateJoystick(touch.clientX, touch.clientY)
+          break
         }
-
-        // Check if tap is on the knob (center area) - fire!
-        const dx = touch.clientX - centerRef.current.x
-        const dy = touch.clientY - centerRef.current.y
-        const distFromCenter = Math.sqrt(dx * dx + dy * dy)
-
-        if (distFromCenter < 35) {
-          // Tapped the knob - FIRE!
-          fireInCurrentDirection()
-          return
-        }
-      }
-
-      // Otherwise, start movement
-      if (moveTouchIdRef.current === null) {
-        moveTouchIdRef.current = touch.identifier
-        updateJoystick(touch.clientX, touch.clientY)
       }
     },
-    [enabled, fireInCurrentDirection]
+    [enabled]
   )
 
   // Handle joystick movement
-  const handleJoystickMove = useCallback((e: React.TouchEvent) => {
-    if (moveTouchIdRef.current === null) return
+  const handleJoystickMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (moveTouchIdRef.current === null) return
 
-    const touch = Array.from(e.touches).find(
-      (t) => t.identifier === moveTouchIdRef.current
-    )
-    if (touch) {
-      updateJoystick(touch.clientX, touch.clientY)
-    }
-  }, [])
+      const touch = Array.from(e.touches).find(
+        (t) => t.identifier === moveTouchIdRef.current
+      )
+      if (touch) {
+        updateJoystick(touch.clientX, touch.clientY)
+      }
+    },
+    []
+  )
 
   // Handle joystick release
-  const handleJoystickEnd = useCallback(() => {
-    moveTouchIdRef.current = null
-    onMove({ x: 0, y: 0 })
+  const handleJoystickEnd = useCallback(
+    (e: React.TouchEvent) => {
+      // Check if our tracked touch ended
+      for (const touch of Array.from(e.changedTouches)) {
+        if (touch.identifier === moveTouchIdRef.current) {
+          moveTouchIdRef.current = null
+          onMove({ x: 0, y: 0 })
 
-    // Keep last direction for a short time so tap-to-fire still works
-    // after releasing movement
-    lastMoveTimeRef.current = Date.now()
-
-    // Reset knob position
-    if (knobRef.current) {
-      knobRef.current.style.transform = 'translate(-50%, -50%)'
-    }
-  }, [onMove])
+          // Reset knob position
+          if (knobRef.current) {
+            knobRef.current.style.transform = 'translate(-50%, -50%)'
+          }
+          break
+        }
+      }
+    },
+    [onMove]
+  )
 
   // Update joystick position and direction
   const updateJoystick = useCallback(
     (clientX: number, clientY: number) => {
-      const dx = clientX - centerRef.current.x
-      const dy = clientY - centerRef.current.y
+      const dx = clientX - joystickCenterRef.current.x
+      const dy = clientY - joystickCenterRef.current.y
       const distance = Math.sqrt(dx * dx + dy * dy)
       const maxDistance = 40
 
@@ -201,9 +197,10 @@ export function MobileControls({
     [onMove]
   )
 
-  // Handle knob tap (separate from joystick drag)
-  const handleKnobTap = useCallback(
+  // Handle fire button tap - completely separate from joystick
+  const handleFireTap = useCallback(
     (e: React.TouchEvent) => {
+      e.preventDefault()
       e.stopPropagation()
       if (!enabled) return
       fireInCurrentDirection()
@@ -214,47 +211,73 @@ export function MobileControls({
   if (!isTouchDevice) return null
 
   return (
-    <div
-      ref={joystickRef}
-      className="fixed pointer-events-auto rounded-full bg-slate-800/70 border-2 border-slate-500/60 relative touch-none z-50 backdrop-blur-sm"
-      style={{
-        left: 'max(env(safe-area-inset-left, 20px), 20px)',
-        bottom: 'max(env(safe-area-inset-bottom, 28px), 28px)',
-        width: '140px',
-        height: '140px',
-      }}
-      onTouchStart={handleJoystickStart}
-      onTouchMove={handleJoystickMove}
-      onTouchEnd={handleJoystickEnd}
-      onTouchCancel={handleJoystickEnd}
-    >
-      {/* Outer ring - movement zone */}
-      <div className="absolute inset-0 rounded-full border border-white/10" />
-
-      {/* Direction indicators */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-        <div className="absolute top-3 text-white text-[10px]">▲</div>
-        <div className="absolute bottom-3 text-white text-[10px]">▼</div>
-        <div className="absolute left-3 text-white text-[10px]">◀</div>
-        <div className="absolute right-3 text-white text-[10px]">▶</div>
-      </div>
-
-      {/* Fire knob - tap to shoot */}
+    <>
+      {/* Movement Joystick - Left side */}
       <div
-        ref={knobRef}
-        className="absolute top-1/2 left-1/2 w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-red-700 border-3 border-red-400/90 shadow-lg shadow-red-500/50 flex items-center justify-center active:scale-95 transition-transform"
-        style={{ transform: 'translate(-50%, -50%)' }}
-        onTouchStart={handleKnobTap}
+        ref={joystickRef}
+        className="fixed pointer-events-auto rounded-full bg-slate-800/70 border-2 border-slate-500/60 relative touch-none z-50 backdrop-blur-sm"
+        style={{
+          left: 'max(env(safe-area-inset-left, 20px), 20px)',
+          bottom: 'max(env(safe-area-inset-bottom, 28px), 28px)',
+          width: '130px',
+          height: '130px',
+        }}
+        onTouchStart={handleJoystickStart}
+        onTouchMove={handleJoystickMove}
+        onTouchEnd={handleJoystickEnd}
+        onTouchCancel={handleJoystickEnd}
       >
-        <span className="text-white font-bold text-xs drop-shadow-md select-none">
-          FIRE
-        </span>
+        {/* Outer ring */}
+        <div className="absolute inset-0 rounded-full border border-white/10" />
+
+        {/* Direction indicators */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+          <div className="absolute top-2 text-white text-[10px]">▲</div>
+          <div className="absolute bottom-2 text-white text-[10px]">▼</div>
+          <div className="absolute left-2 text-white text-[10px]">◀</div>
+          <div className="absolute right-2 text-white text-[10px]">▶</div>
+        </div>
+
+        {/* Movement knob */}
+        <div
+          ref={knobRef}
+          className="absolute top-1/2 left-1/2 w-14 h-14 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 border-2 border-slate-300/60 shadow-lg flex items-center justify-center"
+          style={{ transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+        >
+          <span className="text-white/60 font-bold text-[10px] select-none">
+            MOVE
+          </span>
+        </div>
+
+        {/* Hint text */}
+        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] text-white/40 whitespace-nowrap">
+          drag to move
+        </div>
       </div>
 
-      {/* Hint text */}
-      <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[9px] text-white/40 whitespace-nowrap">
-        drag to move · tap center to fire
+      {/* Fire Button - Right side, completely separate */}
+      <div
+        className="fixed pointer-events-auto touch-none z-50"
+        style={{
+          right: 'max(env(safe-area-inset-right, 20px), 20px)',
+          bottom: 'max(env(safe-area-inset-bottom, 28px), 28px)',
+        }}
+        onTouchStart={handleFireTap}
+      >
+        <div
+          className={`w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-700 border-4 border-red-400/90 shadow-lg shadow-red-500/50 flex items-center justify-center active:scale-90 transition-transform ${
+            !enabled ? 'opacity-50' : ''
+          }`}
+        >
+          <span className="text-white font-bold text-sm drop-shadow-md select-none">
+            FIRE
+          </span>
+        </div>
+        {/* Hint text */}
+        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] text-white/40 whitespace-nowrap">
+          tap to shoot
+        </div>
       </div>
-    </div>
+    </>
   )
 }
