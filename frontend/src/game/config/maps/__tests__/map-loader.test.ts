@@ -16,6 +16,7 @@ import {
 } from '../map-loader'
 import { NEXUS_ARENA } from '../nexus-arena'
 import { VORTEX_ARENA } from '../vortex-arena'
+import { INDUSTRIAL_FACILITY } from '../industrial-facility'
 
 describe('map-loader', () => {
   describe('getMapConfig', () => {
@@ -39,6 +40,12 @@ describe('map-loader', () => {
       expect(config.metadata.name).toBe('Vortex Arena')
     })
 
+    it('returns INDUSTRIAL_FACILITY for "industrial-facility" slug', () => {
+      const config = getMapConfig('industrial-facility')
+      expect(config).toBe(INDUSTRIAL_FACILITY)
+      expect(config.metadata.name).toBe('Industrial Facility')
+    })
+
     /**
      * Property 7: For any valid slug, returns correct config
      * 
@@ -48,7 +55,7 @@ describe('map-loader', () => {
     it('property: valid slugs return corresponding configs', () => {
       fc.assert(
         fc.property(
-          fc.constantFrom('nexus-arena', 'vortex-arena'),
+          fc.constantFrom('nexus-arena', 'vortex-arena', 'industrial-facility'),
           (slug) => {
             const config = getMapConfig(slug)
             // Config should have matching slug in metadata or be the expected config
@@ -58,6 +65,9 @@ describe('map-loader', () => {
             if (slug === 'vortex-arena') {
               return config === VORTEX_ARENA
             }
+            if (slug === 'industrial-facility') {
+              return config === INDUSTRIAL_FACILITY
+            }
             return false
           }
         ),
@@ -66,38 +76,39 @@ describe('map-loader', () => {
     })
 
     /**
-     * Property 8: Invalid map defaults to Nexus
+     * Property 8: Invalid map defaults to Vortex Arena
      * 
-     * For any invalid or missing map slug, getMapConfig should return NEXUS_ARENA.
+     * For any invalid or missing map slug, getMapConfig should return VORTEX_ARENA.
+     * (Vortex Arena is the primary enabled map)
      * 
-     * **Feature: map-selection, Property 8: Invalid map defaults to Nexus**
+     * **Feature: map-selection, Property 8: Invalid map defaults to Vortex**
      * **Validates: Requirements 4.5**
      */
-    it('returns NEXUS_ARENA for undefined', () => {
-      expect(getMapConfig(undefined)).toBe(NEXUS_ARENA)
+    it('returns VORTEX_ARENA for undefined', () => {
+      expect(getMapConfig(undefined)).toBe(VORTEX_ARENA)
     })
 
-    it('returns NEXUS_ARENA for null', () => {
-      expect(getMapConfig(null)).toBe(NEXUS_ARENA)
+    it('returns VORTEX_ARENA for null', () => {
+      expect(getMapConfig(null)).toBe(VORTEX_ARENA)
     })
 
-    it('returns NEXUS_ARENA for empty string', () => {
-      expect(getMapConfig('')).toBe(NEXUS_ARENA)
+    it('returns VORTEX_ARENA for empty string', () => {
+      expect(getMapConfig('')).toBe(VORTEX_ARENA)
     })
 
     /**
-     * Property 8: For any invalid slug, returns NEXUS_ARENA
+     * Property 8: For any invalid slug, returns VORTEX_ARENA
      * 
-     * **Feature: map-selection, Property 8: Invalid map defaults to Nexus**
+     * **Feature: map-selection, Property 8: Invalid map defaults to Vortex**
      * **Validates: Requirements 4.5**
      */
-    it('property: invalid slugs default to NEXUS_ARENA', () => {
+    it('property: invalid slugs default to VORTEX_ARENA', () => {
       fc.assert(
         fc.property(
-          fc.string().filter(s => s !== 'nexus-arena' && s !== 'vortex-arena'),
+          fc.string().filter(s => s !== 'nexus-arena' && s !== 'vortex-arena' && s !== 'industrial-facility'),
           (invalidSlug) => {
             const config = getMapConfig(invalidSlug)
-            return config === NEXUS_ARENA
+            return config === VORTEX_ARENA
           }
         ),
         { numRuns: 100 }
@@ -108,9 +119,11 @@ describe('map-loader', () => {
   describe('getAvailableMaps', () => {
     it('returns array of valid map slugs', () => {
       const maps = getAvailableMaps()
+      // Registry contains all maps (nexus-arena, vortex-arena, industrial-facility)
       expect(maps).toContain('nexus-arena')
       expect(maps).toContain('vortex-arena')
-      expect(maps.length).toBe(2)
+      expect(maps).toContain('industrial-facility')
+      expect(maps.length).toBe(3)
     })
   })
 
@@ -118,6 +131,7 @@ describe('map-loader', () => {
     it('returns true for valid slugs', () => {
       expect(isValidMapSlug('nexus-arena')).toBe(true)
       expect(isValidMapSlug('vortex-arena')).toBe(true)
+      expect(isValidMapSlug('industrial-facility')).toBe(true)
     })
 
     it('returns false for invalid slugs', () => {
@@ -127,27 +141,28 @@ describe('map-loader', () => {
   })
 
   describe('getMapInfo', () => {
-    it('returns map info for valid slugs', () => {
-      const nexusInfo = getMapInfo('nexus-arena')
-      expect(nexusInfo).toBeDefined()
-      expect(nexusInfo?.name).toBe('Nexus Arena')
-      expect(nexusInfo?.theme).toBe('space')
-
+    it('returns map info for enabled maps', () => {
+      // Only Vortex Arena is currently enabled in AVAILABLE_MAPS
       const vortexInfo = getMapInfo('vortex-arena')
       expect(vortexInfo).toBeDefined()
       expect(vortexInfo?.name).toBe('Vortex Arena')
       expect(vortexInfo?.theme).toBe('volcanic')
     })
 
-    it('returns undefined for invalid slugs', () => {
+    it('returns undefined for disabled or invalid slugs', () => {
+      // Nexus Arena is disabled via feature flag
+      expect(getMapInfo('nexus-arena')).toBeUndefined()
+      // Industrial Facility is disabled via feature flag
+      expect(getMapInfo('industrial-facility')).toBeUndefined()
+      // Invalid slug
       expect(getMapInfo('invalid')).toBeUndefined()
     })
   })
 
   describe('AVAILABLE_MAPS', () => {
-    it('contains all available maps', () => {
-      expect(AVAILABLE_MAPS.length).toBe(2)
-      expect(AVAILABLE_MAPS.map(m => m.slug)).toContain('nexus-arena')
+    it('contains only enabled maps', () => {
+      // Only Vortex Arena is currently enabled
+      expect(AVAILABLE_MAPS.length).toBe(1)
       expect(AVAILABLE_MAPS.map(m => m.slug)).toContain('vortex-arena')
     })
   })

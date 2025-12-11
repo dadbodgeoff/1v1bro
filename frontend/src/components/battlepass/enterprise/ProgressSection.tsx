@@ -146,14 +146,18 @@ function XPIcon({ className }: { className?: string }) {
  * 
  * Property 1: XP Progress Percentage Calculation
  * For any XP progress state with currentXP and xpToNextTier values,
- * the progress bar fill percentage SHALL equal (currentXP / xpToNextTier) * 100,
+ * the progress bar fill percentage SHALL equal currentXP / (currentXP + xpToNextTier) * 100,
  * clamped to the range [0, 100].
+ * 
+ * Example: currentXP=360, xpToNextTier=40 → xpPerTier=400 → 360/400 = 90%
  * 
  * Validates: Requirements 4.1, 4.2
  */
 export function calculateXPPercentage(currentXP: number, xpToNextTier: number): number {
-  if (xpToNextTier <= 0) return 0
-  const raw = (currentXP / xpToNextTier) * 100
+  // xpPerTier = currentXP + xpToNextTier (total XP needed for this tier)
+  const xpPerTier = currentXP + xpToNextTier
+  if (xpPerTier <= 0) return 0
+  const raw = (currentXP / xpPerTier) * 100
   return Math.min(Math.max(raw, 0), 100)
 }
 

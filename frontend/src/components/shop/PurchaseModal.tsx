@@ -55,7 +55,7 @@ export function PurchaseModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Confirm Purchase" size="md">
+    <Modal isOpen={isOpen} onClose={onClose} title="Confirm Purchase" size="md" mobileBottomSheet>
       <div className="space-y-6">
         {/* Item Preview */}
         <div className="flex flex-col items-center">

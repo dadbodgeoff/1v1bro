@@ -105,7 +105,8 @@ describe('Battle Pass Widget Properties', () => {
    * For any Battle Pass progress data with valid tier (1-100) and XP values (0 to xpToNextTier),
    * the widget SHALL display:
    * - Current tier as the primary value
-   * - XP progress percentage calculated as (currentXp / xpToNextTier) * 100
+   * - XP progress percentage calculated as currentXp / (currentXp + xpToNextTier) * 100
+   *   (where currentXp + xpToNextTier = xpPerTier, the total XP needed for the tier)
    * - Claimable rewards badge only when claimableCount > 0
    */
   describe('Property 1: Battle Pass Widget Display Consistency', () => {
@@ -121,8 +122,10 @@ describe('Battle Pass Widget Properties', () => {
             expect(progress).toBeGreaterThanOrEqual(0)
             expect(progress).toBeLessThanOrEqual(100)
             
-            // Verify calculation
-            const expected = Math.min(100, Math.round((currentXp / xpToNextTier) * 100))
+            // Verify calculation: currentXp / (currentXp + xpToNextTier) * 100
+            // This gives the percentage of the tier completed
+            const xpPerTier = currentXp + xpToNextTier
+            const expected = Math.min(100, Math.round((currentXp / xpPerTier) * 100))
             expect(progress).toBe(expected)
             
             return true

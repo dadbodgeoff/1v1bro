@@ -69,10 +69,13 @@ export function StatsCard({
   return (
     <div
       className={cn(
-        'relative p-4 rounded-xl',
+        // Responsive padding: smaller on mobile
+        'relative p-3 sm:p-4 rounded-xl',
         'bg-[var(--color-bg-card)] border border-white/5',
         'transition-all duration-200',
-        isClickable && 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 hover:border-white/10',
+        // Touch-friendly: min height for tap target
+        'min-h-[80px] sm:min-h-[90px]',
+        isClickable && 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 hover:border-white/10 active:scale-[0.98]',
         !isClickable && 'hover:border-white/10',
         className
       )}
@@ -87,16 +90,16 @@ export function StatsCard({
         </div>
       )}
 
-      {/* Value */}
+      {/* Value - Fluid typography */}
       <div className={cn(
-        'text-2xl md:text-3xl font-bold tabular-nums',
+        'text-xl sm:text-2xl md:text-3xl font-bold tabular-nums leading-tight',
         colorCodeStyles[colorCode]
       )}>
         {value}
       </div>
 
-      {/* Label */}
-      <div className="text-xs md:text-sm font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-1">
+      {/* Label - Readable on mobile */}
+      <div className="text-[11px] sm:text-xs md:text-sm font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-1 leading-tight">
         {label}
       </div>
 

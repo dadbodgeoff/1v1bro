@@ -19,7 +19,7 @@ import { QuickCategoryPicker } from '@/components/game/QuickCategoryPicker'
 import { InstantPlayTutorial } from '@/components/game/InstantPlayTutorial'
 import { GuestMatchSummary } from '@/components/game/GuestMatchSummary'
 import { ConversionPromptModal } from '@/components/game/ConversionPromptModal'
-import { NEXUS_ARENA } from '@/game/config/maps'
+import { VORTEX_ARENA } from '@/game/config/maps'
 import { useInstantPlay } from '@/hooks/useInstantPlay'
 import type { PowerUpState } from '@/game'
 
@@ -33,6 +33,8 @@ export function InstantPlay() {
     botPosition,
     localHealth,
     opponentHealth,
+    equippedSkin,
+    opponentSkin,
     matchResult,
     newMilestones,
     sessionManager,
@@ -135,13 +137,15 @@ export function InstantPlay() {
             powerUps={powerUps}
             onPositionUpdate={handlePositionUpdate}
             onPowerUpCollect={() => {}}
-            mapConfig={NEXUS_ARENA}
+            mapConfig={VORTEX_ARENA}
             combatEnabled={true}
             onCombatFire={handleCombatFire}
             onCombatHit={handleCombatHit}
             onCombatDeath={handleCombatDeath}
             setServerProjectilesCallback={setServerProjectilesCallback}
             setServerHealthCallback={setServerHealthCallback}
+            equippedSkin={equippedSkin}
+            opponentSkin={opponentSkin}
           />
 
           {waitingForBot && (

@@ -38,7 +38,8 @@ XP_MIN = 50
 XP_MAX = 300
 
 # Default tier settings
-MAX_TIER = 100
+DEFAULT_MAX_TIER = 35  # Default max tier (can be overridden per season)
+MAX_TIER = 100  # Legacy constant for backwards compatibility with tests
 DEFAULT_XP_PER_TIER = 400  # ~3-4 games per tier at avg 100-130 XP/game
 
 
@@ -84,10 +85,13 @@ class BattlePassService:
         
         tiers = await self.get_tier_rewards(season_id)
         
+        # Use season's max_tier or count actual tiers
+        max_tier = season.max_tier if hasattr(season, 'max_tier') and season.max_tier else len(tiers) or DEFAULT_MAX_TIER
+        
         return SeasonResponse(
             season=season,
             tiers=tiers,
-            total_tiers=MAX_TIER,
+            total_tiers=max_tier,
         )
     
     # ============================================
@@ -308,6 +312,7 @@ class BattlePassService:
         current_xp = progress_data.get("current_xp", 0)
         is_premium = progress_data.get("is_premium", False)
         xp_per_tier = season.xp_per_tier or DEFAULT_XP_PER_TIER
+        max_tier = season.max_tier if hasattr(season, 'max_tier') and season.max_tier else DEFAULT_MAX_TIER
         
         # Add XP
         new_xp = current_xp + amount
@@ -315,14 +320,14 @@ class BattlePassService:
         tiers_gained = 0
         
         # Check for tier advancement (Requirements: 4.5)
-        while new_xp >= xp_per_tier and new_tier < MAX_TIER:
+        while new_xp >= xp_per_tier and new_tier < max_tier:
             new_xp -= xp_per_tier
             new_tier += 1
             tiers_gained += 1
         
         # Cap at max tier
-        if new_tier >= MAX_TIER:
-            new_tier = MAX_TIER
+        if new_tier >= max_tier:
+            new_tier = max_tier
             new_xp = 0  # No overflow XP at max tier
         
         # Update progress

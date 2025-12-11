@@ -105,8 +105,10 @@ describe('HealthManager', () => {
       expect(manager.isAlive('player1')).toBe(false)
     })
 
-    it('returns false for non-existent player', () => {
-      expect(manager.isAlive('unknown')).toBe(false)
+    it('returns true for non-existent player (allows hits before init)', () => {
+      // Design decision: untracked players are assumed alive to allow hits to register
+      // before explicit initialization (e.g., bot opponent before full init)
+      expect(manager.isAlive('unknown')).toBe(true)
     })
   })
 

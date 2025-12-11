@@ -1,49 +1,154 @@
 /**
- * TouchTarget - Wrapper component for touch target compliance
- *
- * Ensures minimum 44px touch area for interactive elements.
- * Extends touch area with invisible padding when visual size is smaller.
- *
- * Use for:
- * - Icon buttons
- * - Small interactive elements
- * - Links with small text
- * - Any element that needs touch target enforcement
- *
- * Requirements: 2.3, 2.5
+ * TouchTarget Component - Mobile Enterprise Optimization
+ * 
+ * A wrapper component that enforces minimum touch target sizes
+ * per Apple HIG (44px) and Material Design (48px) guidelines.
+ * 
+ * Features:
+ * - Enforces minimum 44px dimensions on touch devices
+ * - Visual debug mode for development
+ * - Flexible sizing options
+ * - Preserves child element styling
+ * 
+ * Requirements: 1.3, 2.3, 3.3
+ * 
+ * @module components/ui/TouchTarget
  */
 
-import { forwardRef, type ReactNode, type HTMLAttributes } from 'react'
+import { type ReactNode, type CSSProperties } from 'react'
 import { cn } from '@/utils/helpers'
 import { useViewport } from '@/hooks/useViewport'
-import { TOUCH_TARGET, SPACING } from '@/utils/breakpoints'
+import { TOUCH_TARGET } from '@/utils/breakpoints'
 
-export interface TouchTargetProps extends HTMLAttributes<HTMLDivElement> {
+export interface TouchTargetProps {
   children: ReactNode
   /**
-   * Minimum touch target size in pixels
-   * @default 44 (Apple HIG minimum)
+   * Minimum size for the touch target
+   * - min: 44px (Apple HIG minimum)
+   * - recommended: 48px (Material Design)
+   * - comfortable: 56px (Accessible)
+   * @default 'min'
+   */
+  size?: 'min' | 'recommended' | 'comfortable'
+  /**
+   * Custom minimum size in pixels (overrides size prop)
    */
   minSize?: number
+  /**
+   * Whether to show visual debug outline
+   * @default false
+   */
+  debug?: boolean
   /**
    * Whether to center the child content
    * @default true
    */
   centered?: boolean
   /**
-   * Force touch optimization even on non-touch devices
-   * @default false (auto-detects)
+   * Whether to apply touch target only on touch devices
+   * @default true
    */
-  forceOptimize?: boolean
+  touchOnly?: boolean
   /**
-   * Disable touch target enforcement
-   * @default false
+   * Additional CSS classes
    */
-  disabled?: boolean
+  className?: string
+  /**
+   * Additional inline styles
+   */
+  style?: CSSProperties
+  /**
+   * Click handler
+   */
+  onClick?: () => void
+  /**
+   * Accessibility label
+   */
+  'aria-label'?: string
+}
+
+const sizeMap: Record<NonNullable<TouchTargetProps['size']>, number> = {
+  min: TOUCH_TARGET.min,           // 44px
+  recommended: TOUCH_TARGET.recommended, // 48px
+  comfortable: TOUCH_TARGET.comfortable, // 56px
 }
 
 /**
- * Calculate the padding needed to reach minimum touch target
+ * TouchTarget ensures interactive elements meet minimum touch target
+ * requirements for mobile accessibility.
+ * 
+ * @example
+ * ```tsx
+ * // Wrap an icon button
+ * <TouchTarget>
+ *   <button onClick={handleClick}>
+ *     <Icon />
+ *   </button>
+ * </TouchTarget>
+ * 
+ * // With debug mode
+ * <TouchTarget debug>
+ *   <SmallButton />
+ * </TouchTarget>
+ * 
+ * // Custom size
+ * <TouchTarget minSize={56}>
+ *   <IconButton />
+ * </TouchTarget>
+ * ```
+ */
+export function TouchTarget({
+  children,
+  size = 'min',
+  minSize,
+  debug = false,
+  centered = true,
+  touchOnly = true,
+  className,
+  style,
+  onClick,
+  'aria-label': ariaLabel,
+}: TouchTargetProps) {
+  const { isTouch } = useViewport()
+  
+  // Determine if we should apply touch target sizing
+  const shouldApply = !touchOnly || isTouch
+  
+  // Calculate the minimum size
+  const targetSize = minSize ?? sizeMap[size]
+  
+  // Build styles
+  const touchStyles: CSSProperties = shouldApply
+    ? {
+        minWidth: `${targetSize}px`,
+        minHeight: `${targetSize}px`,
+      }
+    : {}
+
+  return (
+    <div
+      className={cn(
+        'inline-flex',
+        centered && 'items-center justify-center',
+        debug && 'outline outline-2 outline-dashed outline-red-500/50',
+        className
+      )}
+      style={{
+        ...touchStyles,
+        ...style,
+      }}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </div>
+  )
+}
+
+/**
+ * Calculate padding needed to reach touch target size
  */
 export function calculateTouchPadding(
   contentSize: number,
@@ -54,7 +159,7 @@ export function calculateTouchPadding(
 }
 
 /**
- * Check if touch target meets minimum requirements
+ * Utility to check if an element meets touch target requirements
  */
 export function meetsTouchTarget(
   width: number,
@@ -64,82 +169,37 @@ export function meetsTouchTarget(
   return width >= minSize && height >= minSize
 }
 
-export const TouchTarget = forwardRef<HTMLDivElement, TouchTargetProps>(
-  (
-    {
-      children,
-      minSize = TOUCH_TARGET.min,
-      centered = true,
-      forceOptimize = false,
-      disabled = false,
-      className,
-      style,
-      ...props
-    },
-    ref
-  ) => {
-    const { isTouch } = useViewport()
+/**
+ * Get the touch target gap requirement
+ */
+export function getTouchTargetGap(): number {
+  return 8 // Minimum gap between touch targets
+}
 
-    // Determine if touch optimization should be applied
-    const shouldOptimize = !disabled && (forceOptimize || isTouch)
+export interface UseTouchTargetStylesOptions {
+  size?: TouchTargetProps['size']
+  minSize?: number
+  forceOptimize?: boolean
+}
 
-    if (!shouldOptimize) {
-      // On non-touch devices, render children without wrapper overhead
-      return (
-        <div ref={ref} className={className} style={style} {...props}>
-          {children}
-        </div>
-      )
-    }
-
-    // Touch-optimized wrapper
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          'relative',
-          // Ensure minimum touch target
-          'touch-manipulation',
-          // Center content if requested
-          centered && 'inline-flex items-center justify-center',
-          className
-        )}
-        style={{
-          minWidth: `${minSize}px`,
-          minHeight: `${minSize}px`,
-          // Ensure touch area extends beyond visual bounds
-          margin: `-${SPACING.touchGap / 2}px`,
-          padding: `${SPACING.touchGap / 2}px`,
-          ...style,
-        }}
-        {...props}
-      >
-        {children}
-      </div>
-    )
-  }
-)
-
-TouchTarget.displayName = 'TouchTarget'
+export interface UseTouchTargetStylesResult {
+  shouldOptimize: boolean
+  styles: CSSProperties
+  className: string
+}
 
 /**
  * Hook to get touch target styles for custom implementations
  */
 export function useTouchTargetStyles(
-  options: {
-    minSize?: number
-    forceOptimize?: boolean
-  } = {}
-): {
-  shouldOptimize: boolean
-  styles: React.CSSProperties
-  className: string
-} {
+  options: UseTouchTargetStylesOptions = {}
+): UseTouchTargetStylesResult {
+  const { size = 'min', minSize, forceOptimize = false } = options
   const { isTouch } = useViewport()
-  const { minSize = TOUCH_TARGET.min, forceOptimize = false } = options
-
+  const targetSize = minSize ?? sizeMap[size]
+  
   const shouldOptimize = forceOptimize || isTouch
-
+  
   if (!shouldOptimize) {
     return {
       shouldOptimize: false,
@@ -147,124 +207,15 @@ export function useTouchTargetStyles(
       className: '',
     }
   }
-
+  
   return {
     shouldOptimize: true,
     styles: {
-      minWidth: `${minSize}px`,
-      minHeight: `${minSize}px`,
+      minWidth: `${targetSize}px`,
+      minHeight: `${targetSize}px`,
     },
     className: 'touch-manipulation',
   }
 }
-
-/**
- * IconButton - Pre-configured TouchTarget for icon buttons
- *
- * Convenience component for icon-only buttons with proper touch targets.
- */
-export interface IconButtonProps {
-  /**
-   * Icon element to render
-   */
-  icon: ReactNode
-  /**
-   * Accessible label for the button
-   */
-  'aria-label': string
-  /**
-   * Click handler
-   */
-  onClick?: () => void
-  /**
-   * Visual size of the icon button
-   * @default 'md'
-   */
-  size?: 'sm' | 'md' | 'lg'
-  /**
-   * Button variant
-   * @default 'ghost'
-   */
-  variant?: 'ghost' | 'filled'
-  /**
-   * Additional class names
-   */
-  className?: string
-  /**
-   * Disabled state
-   */
-  disabled?: boolean
-}
-
-export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  (
-    {
-      icon,
-      'aria-label': ariaLabel,
-      onClick,
-      size = 'md',
-      variant = 'ghost',
-      className,
-      disabled,
-    },
-    ref
-  ) => {
-    const { isTouch } = useViewport()
-
-    // Size configurations
-    const sizeConfig = {
-      sm: { visual: 32, icon: 16 },
-      md: { visual: 40, icon: 20 },
-      lg: { visual: 48, icon: 24 },
-    }
-
-    const config = sizeConfig[size]
-
-    // Variant styles
-    const variantStyles = {
-      ghost: 'bg-transparent hover:bg-white/5 active:bg-white/10',
-      filled: 'bg-white/10 hover:bg-white/15 active:bg-white/20',
-    }
-
-    return (
-      <button
-        ref={ref}
-        type="button"
-        onClick={onClick}
-        disabled={disabled}
-        aria-label={ariaLabel}
-        className={cn(
-          'inline-flex items-center justify-center rounded-lg',
-          'text-[#a3a3a3] hover:text-white',
-          'transition-colors duration-150',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6366f1]',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
-          variantStyles[variant],
-          // Touch-specific
-          isTouch && 'touch-manipulation active:scale-95',
-          className
-        )}
-        style={{
-          width: `${config.visual}px`,
-          height: `${config.visual}px`,
-          // Ensure touch target compliance
-          minWidth: isTouch ? `${TOUCH_TARGET.min}px` : undefined,
-          minHeight: isTouch ? `${TOUCH_TARGET.min}px` : undefined,
-        }}
-      >
-        <span
-          style={{
-            width: `${config.icon}px`,
-            height: `${config.icon}px`,
-          }}
-        >
-          {icon}
-        </span>
-      </button>
-    )
-  }
-)
-
-IconButton.displayName = 'IconButton'
 
 export default TouchTarget

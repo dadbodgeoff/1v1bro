@@ -16,8 +16,6 @@ import type { Vector2 } from '../types'
 import { Teleporter } from './Teleporter'
 import { JumpPad } from './JumpPad'
 import { arenaAssets } from '../assets/ArenaAssetLoader'
-import { animatedTileRenderer } from '../terrain/AnimatedTiles'
-import { VOLCANIC_COLORS } from '../backdrop/types'
 
 // ============================================================================
 // TransportManager Class
@@ -278,59 +276,62 @@ export class TransportManager {
   }
 
   /**
-   * Render volcanic magma portal teleporter
+   * Render volcanic teleporter - obsidian ring with dark void center
+   * Fits volcanic theme but clearly different from damage hazards
    */
   private renderVolcanicTeleporter(ctx: CanvasRenderingContext2D, teleporter: Teleporter): void {
     const pos = teleporter.getPosition()
     const radius = teleporter.getRadius()
     const time = Date.now() / 1000
-    const pulse = 0.7 + 0.3 * Math.sin(time * 3)
 
     ctx.save()
 
-    // Base magma pool
-    const baseGradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius)
-    baseGradient.addColorStop(0, VOLCANIC_COLORS.lavaCore)
-    baseGradient.addColorStop(0.5, VOLCANIC_COLORS.lavaGlow)
-    baseGradient.addColorStop(1, VOLCANIC_COLORS.lavaDark)
+    // Obsidian ring base (dark volcanic rock)
+    ctx.fillStyle = '#1a1a1f'
+    ctx.beginPath()
+    ctx.arc(pos.x, pos.y, radius + 3, 0, Math.PI * 2)
+    ctx.fill()
 
-    ctx.fillStyle = baseGradient
+    // Dark void center (where you teleport)
+    const centerGradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius * 0.8)
+    centerGradient.addColorStop(0, 'rgba(10, 10, 15, 0.95)')
+    centerGradient.addColorStop(0.6, 'rgba(20, 15, 25, 0.9)')
+    centerGradient.addColorStop(1, 'rgba(30, 20, 35, 0.85)')
+    
+    ctx.fillStyle = centerGradient
+    ctx.beginPath()
+    ctx.arc(pos.x, pos.y, radius * 0.8, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Subtle inner swirl (very dark, barely visible)
+    const swirlAlpha = 0.1 + 0.05 * Math.sin(time * 1.5)
+    ctx.strokeStyle = `rgba(60, 40, 70, ${swirlAlpha})`
+    ctx.lineWidth = 1.5
+    for (let i = 0; i < 2; i++) {
+      const spiralOffset = time * 0.3 + i * Math.PI
+      ctx.beginPath()
+      ctx.arc(pos.x, pos.y, radius * (0.3 + i * 0.2), spiralOffset, spiralOffset + Math.PI * 1.2)
+      ctx.stroke()
+    }
+
+    // Obsidian ring edge (darker than surroundings)
+    ctx.strokeStyle = '#2a2a32'
+    ctx.lineWidth = 3
     ctx.beginPath()
     ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2)
-    ctx.fill()
-
-    // Swirling portal effect using portal animation with lava colors
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(pos.x, pos.y, radius - 2, 0, Math.PI * 2)
-    ctx.clip()
-    
-    // Render portal swirl
-    animatedTileRenderer.render(ctx, 'portal', pos.x - radius, pos.y - radius, radius * 2)
-    
-    // Overlay with lava tint
-    ctx.globalCompositeOperation = 'multiply'
-    ctx.fillStyle = VOLCANIC_COLORS.lavaGlow
-    ctx.fillRect(pos.x - radius, pos.y - radius, radius * 2, radius * 2)
-    ctx.restore()
-
-    // Heat distortion ring
-    ctx.strokeStyle = `rgba(255, 102, 0, ${0.5 + pulse * 0.3})`
-    ctx.lineWidth = 3
-    ctx.shadowColor = VOLCANIC_COLORS.lavaCore
-    ctx.shadowBlur = 10 * pulse
-    ctx.beginPath()
-    ctx.arc(pos.x, pos.y, radius + 5, 0, Math.PI * 2)
     ctx.stroke()
 
-    // Inner glow
-    const innerGlow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius * 0.5)
-    innerGlow.addColorStop(0, `rgba(255, 200, 100, ${0.4 * pulse})`)
-    innerGlow.addColorStop(1, 'transparent')
-    ctx.fillStyle = innerGlow
-    ctx.beginPath()
-    ctx.arc(pos.x, pos.y, radius * 0.5, 0, Math.PI * 2)
-    ctx.fill()
+    // Subtle ember accents on ring (ties to volcanic theme without being "danger")
+    const emberAlpha = 0.3 + 0.1 * Math.sin(time * 2)
+    ctx.fillStyle = `rgba(120, 60, 40, ${emberAlpha})`
+    for (let i = 0; i < 4; i++) {
+      const angle = (i * Math.PI / 2) + time * 0.2
+      const ex = pos.x + Math.cos(angle) * (radius - 1)
+      const ey = pos.y + Math.sin(angle) * (radius - 1)
+      ctx.beginPath()
+      ctx.arc(ex, ey, 2, 0, Math.PI * 2)
+      ctx.fill()
+    }
 
     ctx.restore()
   }
@@ -401,77 +402,66 @@ export class TransportManager {
   }
 
   /**
-   * Render volcanic eruption jump pad
+   * Render volcanic jump pad - stone platform with warm directional glow
+   * Fits volcanic theme, clearly a "boost" not a hazard
    */
   private renderVolcanicJumpPad(ctx: CanvasRenderingContext2D, jumpPad: JumpPad): void {
     const pos = jumpPad.getPosition()
     const radius = jumpPad.getRadius()
     const dir = jumpPad.getDirectionVector()
     const time = Date.now() / 1000
-    const pulse = 0.6 + 0.4 * Math.sin(time * 5)
 
     ctx.save()
 
-    // Volcanic vent base (dark rock ring)
-    ctx.fillStyle = VOLCANIC_COLORS.obsidian
-    ctx.beginPath()
-    ctx.arc(pos.x, pos.y, radius + 5, 0, Math.PI * 2)
-    ctx.fill()
+    // Calculate rotation angle from direction
+    const angle = Math.atan2(dir.y, dir.x)
 
-    // Glowing magma core
-    const coreGradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius)
-    coreGradient.addColorStop(0, VOLCANIC_COLORS.fire)
-    coreGradient.addColorStop(0.4, VOLCANIC_COLORS.lavaCore)
-    coreGradient.addColorStop(0.8, VOLCANIC_COLORS.lavaDark)
-    coreGradient.addColorStop(1, VOLCANIC_COLORS.obsidian)
-
-    ctx.fillStyle = coreGradient
+    // Stone base (volcanic rock, darker than floor)
+    ctx.fillStyle = '#252528'
     ctx.beginPath()
     ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2)
     ctx.fill()
 
-    // Bubbling lava effect
-    const bubbleCount = 4
-    for (let i = 0; i < bubbleCount; i++) {
-      const angle = (time * 2 + i * (Math.PI * 2 / bubbleCount)) % (Math.PI * 2)
-      const bx = pos.x + Math.cos(angle) * radius * 0.4
-      const by = pos.y + Math.sin(angle) * radius * 0.4
-      const bubbleSize = 4 + Math.sin(time * 4 + i) * 2
-
-      ctx.fillStyle = `rgba(255, 200, 100, ${0.5 * pulse})`
-      ctx.beginPath()
-      ctx.arc(bx, by, bubbleSize, 0, Math.PI * 2)
-      ctx.fill()
-    }
-
-    // Direction arrow (fire/lava colored)
-    const arrowLength = radius * 0.9
-    const arrowWidth = radius * 0.5
-    
-    ctx.fillStyle = `rgba(255, 170, 0, ${0.6 + pulse * 0.4})`
-    ctx.shadowColor = VOLCANIC_COLORS.lavaCore
-    ctx.shadowBlur = 8 * pulse
+    // Carved ring edge
+    ctx.strokeStyle = '#3a3a3f'
+    ctx.lineWidth = 2
     ctx.beginPath()
-    const tipX = pos.x + dir.x * arrowLength
-    const tipY = pos.y + dir.y * arrowLength
-    const perpX = -dir.y
-    const perpY = dir.x
-    ctx.moveTo(tipX, tipY)
-    ctx.lineTo(pos.x + perpX * arrowWidth, pos.y + perpY * arrowWidth)
-    ctx.lineTo(pos.x - perpX * arrowWidth, pos.y - perpY * arrowWidth)
+    ctx.arc(pos.x, pos.y, radius - 2, 0, Math.PI * 2)
+    ctx.stroke()
+
+    // Warm glow from center (not orange/red like hazards - more amber/gold)
+    const glowPulse = 0.4 + 0.15 * Math.sin(time * 2.5)
+    const glowGradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius * 0.7)
+    glowGradient.addColorStop(0, `rgba(180, 140, 80, ${glowPulse})`)
+    glowGradient.addColorStop(0.5, `rgba(140, 100, 50, ${glowPulse * 0.5})`)
+    glowGradient.addColorStop(1, 'transparent')
+    
+    ctx.fillStyle = glowGradient
+    ctx.beginPath()
+    ctx.arc(pos.x, pos.y, radius * 0.7, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Direction arrow (carved into stone, subtle)
+    ctx.save()
+    ctx.translate(pos.x, pos.y)
+    ctx.rotate(angle)
+
+    const arrowLength = radius * 0.6
+    const arrowWidth = radius * 0.35
+    
+    // Arrow glow
+    const arrowAlpha = 0.5 + 0.2 * Math.sin(time * 3)
+    ctx.fillStyle = `rgba(200, 160, 100, ${arrowAlpha})`
+    
+    ctx.beginPath()
+    ctx.moveTo(arrowLength * 0.8, 0)
+    ctx.lineTo(-arrowLength * 0.3, -arrowWidth)
+    ctx.lineTo(-arrowLength * 0.1, 0)
+    ctx.lineTo(-arrowLength * 0.3, arrowWidth)
     ctx.closePath()
     ctx.fill()
 
-    // Steam wisps rising
-    ctx.globalAlpha = 0.3 * pulse
-    for (let i = 0; i < 3; i++) {
-      const steamY = pos.y - ((time * 30 + i * 15) % 40)
-      const steamX = pos.x + Math.sin(time * 2 + i) * 8
-      ctx.fillStyle = VOLCANIC_COLORS.steam
-      ctx.beginPath()
-      ctx.arc(steamX, steamY, 5 + i * 2, 0, Math.PI * 2)
-      ctx.fill()
-    }
+    ctx.restore()
 
     ctx.restore()
   }

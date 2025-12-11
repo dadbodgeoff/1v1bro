@@ -50,6 +50,7 @@ class Season(BaseSchema):
     end_date: datetime = Field(..., description="Season end date")
     is_active: bool = Field(default=False, description="Whether season is currently active")
     xp_per_tier: int = Field(default=400, description="XP required per tier")
+    max_tier: int = Field(default=35, description="Maximum tier for this season")
     created_at: Optional[datetime] = None
 
 

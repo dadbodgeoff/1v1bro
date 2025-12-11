@@ -157,10 +157,10 @@ export function BattlePassTrack({
 
   return (
     <div className="relative">
-      {/* Scroll Buttons */}
+      {/* Scroll Buttons - 44px minimum touch target */}
       <button
         onClick={scrollLeft}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center text-white hover:bg-white/10 transition-colors shadow-lg"
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center text-white hover:bg-white/10 transition-colors shadow-lg touch-manipulation"
         aria-label="Scroll left"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -170,7 +170,7 @@ export function BattlePassTrack({
 
       <button
         onClick={scrollRight}
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center text-white hover:bg-white/10 transition-colors shadow-lg"
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] flex items-center justify-center text-white hover:bg-white/10 transition-colors shadow-lg touch-manipulation"
         aria-label="Scroll right"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -186,8 +186,11 @@ export function BattlePassTrack({
         className={cn(
           'flex gap-3 overflow-x-auto py-4 px-12',
           'scroll-smooth snap-x snap-mandatory',
-          'scrollbar-hide focus:outline-none'
+          'scrollbar-hide focus:outline-none',
+          // Momentum scrolling for iOS
+          '-webkit-overflow-scrolling-touch'
         )}
+        style={{ WebkitOverflowScrolling: 'touch' }}
         role="list"
         aria-label="Battle Pass Tiers"
       >

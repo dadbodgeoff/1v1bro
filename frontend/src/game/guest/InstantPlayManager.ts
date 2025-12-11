@@ -8,7 +8,7 @@
  * Requirements: 1.1, 1.2
  */
 
-import { NEXUS_ARENA, type MapConfig } from '../config/maps'
+import { VORTEX_ARENA, type MapConfig } from '../config/maps'
 
 /**
  * Configuration for instant play mode
@@ -26,7 +26,7 @@ export interface InstantPlayConfig {
  */
 const DEFAULT_CONFIG: InstantPlayConfig = {
   defaultCategory: 'general', // Fallback if picker skipped
-  defaultMap: NEXUS_ARENA,    // Most polished map
+  defaultMap: VORTEX_ARENA,   // Primary arena map
   tutorialEnabled: true,
   preloadAssets: true,
   showCategoryPicker: true,   // Let users choose their trivia category

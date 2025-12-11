@@ -91,7 +91,7 @@ export function BattlePassWidget({ className = '' }: BattlePassWidgetProps) {
         {/* Current tier */}
         <div className="flex items-baseline gap-2 mb-3">
           <span className="text-3xl font-bold text-white">{progress.current_tier}</span>
-          <span className="text-sm text-neutral-500">/ {progress.season?.max_tier ?? 100}</span>
+          <span className="text-sm text-neutral-500">/ {progress.season?.max_tier ?? 35}</span>
         </div>
 
         {/* XP Progress bar - using indigo gradient */}

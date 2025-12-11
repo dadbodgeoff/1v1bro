@@ -131,7 +131,10 @@ export function StatsDashboard({
 
   return (
     <div className={cn(
-      'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4',
+      // Responsive grid: 2 cols mobile, 3 tablet, 6 desktop
+      'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6',
+      // Responsive gap: smaller on mobile
+      'gap-3 sm:gap-4',
       className
     )}>
       {stats.map((stat) => (

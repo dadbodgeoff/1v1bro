@@ -109,10 +109,10 @@ export function BattlePassHeader({
               </p>
             )}
             
-            {/* Season Name - H1 with gradient text */}
+            {/* Season Name - H1 with gradient text and fluid typography */}
             <h1
               className={cn(
-                'text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r',
+                'text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r',
                 theme.gradient
               )}
             >
@@ -151,7 +151,7 @@ export function BattlePassHeader({
                   Current Tier
                 </span>
                 <span className="text-sm font-semibold text-white tabular-nums">
-                  {currentXP.toLocaleString()} / {xpToNextTier.toLocaleString()} XP
+                  {currentXP.toLocaleString()} / {(currentXP + xpToNextTier).toLocaleString()} XP
                 </span>
               </div>
             </div>

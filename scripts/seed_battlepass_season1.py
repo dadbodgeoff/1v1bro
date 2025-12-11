@@ -391,6 +391,7 @@ def create_season():
         "end_date": (now + timedelta(days=90)).isoformat(),
         "is_active": True,
         "xp_per_tier": 400,  # ~3-4 games per tier
+        "max_tier": 35,  # 35 tiers in this season
     }
     
     # Check if season exists

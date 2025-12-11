@@ -12,7 +12,7 @@
  */
 
 import { ARENA_SIZE, PLAYER_CONFIG, PLAYER_SPAWNS } from '../config'
-import { NEXUS_ARENA, type MapConfig } from '../config/maps'
+import { VORTEX_ARENA, type MapConfig } from '../config/maps'
 import type { MapTheme } from '../config/maps/map-schema'
 import { InputSystem } from '../systems'
 import { CombatSystem, BuffManager } from '../combat'
@@ -102,6 +102,7 @@ export class GameEngine {
     this.renderPipeline = new RenderPipeline(ctx, this.backdropSystem, this.arenaManager, this.combatSystem)
     this.renderPipeline.setBuffManager(this.buffManager)
     this.renderPipeline.setVisualCoordinator(this.visualCoordinator)
+    this.renderPipeline.setTheme(theme)
     this.serverSync = new ServerSync(
       this.combatSystem,
       this.renderPipeline.getCombatEffectsRenderer(),
@@ -113,8 +114,8 @@ export class GameEngine {
       (pos) => this.playerController.setPositionOverride(pos)
     )
 
-    // Store map config (default to NEXUS_ARENA if not provided)
-    this.currentMapConfig = mapConfig ?? NEXUS_ARENA
+    // Store map config (default to VORTEX_ARENA if not provided)
+    this.currentMapConfig = mapConfig ?? VORTEX_ARENA
 
     this.wireCallbacks()
     this.loadMap()

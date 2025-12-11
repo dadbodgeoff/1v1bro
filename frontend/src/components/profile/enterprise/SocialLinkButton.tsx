@@ -95,11 +95,15 @@ export function SocialLinkButton({
     <button
       onClick={handleClick}
       className={cn(
-        'flex items-center gap-2 px-4 py-2 rounded-lg',
+        // Touch-friendly: min 44px height
+        'flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg',
+        'min-h-[44px]',
         'bg-[var(--color-bg-card)] border border-white/10',
         'text-[var(--color-text-secondary)] font-medium text-sm',
         'transition-all duration-150',
-        'hover:border-white/20',
+        'hover:border-white/20 active:scale-[0.98]',
+        // Full width on mobile
+        'w-full sm:w-auto',
         className
       )}
       style={{

@@ -120,8 +120,8 @@ export function HeroPlaySection({ className }: HeroPlaySectionProps) {
 
   return (
     <DashboardSection className={className}>
-      {/* Title - H2: 2xl (24px) bold with tight tracking - Requirements 2.1 */}
-      <h2 className="text-2xl font-bold text-white tracking-tight mb-5">
+      {/* Title - H2: Fluid typography (20-24px) bold with tight tracking - Requirements 2.1, 2.2 */}
+      <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-5">
         Quick Play
       </h2>
 

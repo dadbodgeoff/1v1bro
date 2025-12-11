@@ -16,9 +16,9 @@ export interface Season {
   end_date: string;
   is_active: boolean;
   xp_per_tier: number;
+  max_tier: number;  // Total tiers in this season (e.g., 35)
   // Legacy fields for backwards compatibility
   number?: number;
-  max_tier?: number;
 }
 
 /**
@@ -117,12 +117,19 @@ export type XPSource = 'match_win' | 'match_loss' | 'kill' | 'streak' | 'daily_b
 
 /**
  * Calculate XP progress percentage to next tier.
+ * 
+ * Formula: current_xp / xp_per_tier * 100
+ * Where xp_per_tier = current_xp + xp_to_next_tier
+ * 
+ * Example: If current_xp=360 and xp_to_next_tier=40, then xp_per_tier=400
+ * Progress = 360/400 * 100 = 90%
  */
 export function getXPProgress(progress: PlayerBattlePass): number {
-  if (progress.xp_to_next_tier === 0) return 100;
-  // current_xp is already the XP within the current tier, not total
-  // Cap at 100% to handle edge cases where current_xp > xp_to_next_tier
-  return Math.min(100, Math.round((progress.current_xp / progress.xp_to_next_tier) * 100));
+  // xp_per_tier = current_xp + xp_to_next_tier (total XP needed for this tier)
+  const xpPerTier = progress.current_xp + progress.xp_to_next_tier;
+  if (xpPerTier === 0) return 100;
+  // Calculate percentage of tier completed
+  return Math.min(100, Math.round((progress.current_xp / xpPerTier) * 100));
 }
 
 /**

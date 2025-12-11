@@ -14,6 +14,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useGameStore } from '@/stores/gameStore'
+import { useAuthStore } from '@/stores/authStore'
+import { useCosmeticsStore } from '@/stores/cosmeticsStore'
 import { API_BASE } from '@/utils/constants'
 import {
   getInstantPlayManager,
@@ -69,12 +71,30 @@ const BOT_CONFIG = {
 type BotBehavior = 'patrol' | 'chase' | 'evade' | 'strafe'
 
 
+// Frostborne Valkyrie skin URLs for guest players
+const GUEST_SKIN = {
+  spriteSheetUrl: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/skins/Frostborne Valkyrie.jpg',
+  metadataUrl: undefined,
+}
+
+// Bot skin - use a different skin for variety
+const BOT_SKIN = {
+  skinId: 'pink' as const,
+}
+
 export type InstantPlayPhase = 'category' | 'tutorial' | 'playing' | 'summary'
 
 export function useInstantPlay() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const categoryFromUrl = searchParams.get('category')
+
+  // Auth state - check if user is logged in
+  const { user, token } = useAuthStore()
+  const isLoggedIn = !!user && !!token
+  
+  // Cosmetics store for logged-in users
+  const { loadoutWithDetails, fetchLoadout } = useCosmeticsStore()
 
   // Game flow state
   const [phase, setPhase] = useState<InstantPlayPhase>('category')
@@ -176,12 +196,29 @@ export function useInstantPlay() {
     feedbackSystem.resetStreaks()
     trackInstantPlayStart()
     
+    // Fetch loadout for logged-in users
+    if (isLoggedIn && token) {
+      fetchLoadout(token)
+    }
+    
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl)
       trackInstantPlayCategorySelect(categoryFromUrl)
       setPhase('tutorial')
     }
   }, [])
+  
+  // Compute player skin based on login status
+  const equippedSkin = isLoggedIn && loadoutWithDetails?.skin_equipped
+    ? {
+        skinId: loadoutWithDetails.skin_equipped.skin_id || undefined,
+        spriteSheetUrl: loadoutWithDetails.skin_equipped.sprite_sheet_url || undefined,
+        metadataUrl: loadoutWithDetails.skin_equipped.sprite_meta_url || undefined,
+      }
+    : GUEST_SKIN
+  
+  // Bot always uses the pink skin for contrast
+  const opponentSkin = BOT_SKIN
 
   // Fetch questions
   const fetchQuestions = useCallback(async (category: string) => {
@@ -613,6 +650,10 @@ export function useInstantPlay() {
     botHealth,
     localHealth: { playerId: 'guest', health: playerHealth, maxHealth: 100 },
     opponentHealth: { playerId: 'bot', health: botHealth, maxHealth: 100 },
+    
+    // Skins
+    equippedSkin,
+    opponentSkin,
     
     // Match result
     matchResult,

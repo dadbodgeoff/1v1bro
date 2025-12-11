@@ -1,13 +1,26 @@
 /**
  * Renders the central hub (contested zone)
+ * Adapts colors based on map theme
  */
 
 import { BaseRenderer } from './BaseRenderer'
 import { HUB_CONFIG } from '../config'
+import type { MapTheme } from '../config/maps/map-schema'
 
 export class HubRenderer extends BaseRenderer {
+  private theme: MapTheme = 'space'
+
+  setTheme(theme: MapTheme): void {
+    this.theme = theme
+  }
+
   render(): void {
     if (!this.ctx) return
+
+    // Skip hub rendering for volcanic theme - the LavaVortexRenderer handles the center
+    if (this.theme === 'volcanic') {
+      return
+    }
 
     this.drawOuterRing()
     this.drawInnerHub()

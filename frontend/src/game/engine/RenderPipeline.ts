@@ -82,6 +82,13 @@ export class RenderPipeline {
   }
 
   /**
+   * Set the map theme for theme-aware renderers
+   */
+  setTheme(theme: import('../config/maps/map-schema').MapTheme): void {
+    this.hubRenderer.setTheme(theme)
+  }
+
+  /**
    * Initialize industrial tileset renderer for industrial theme maps
    */
   async initializeIndustrialRenderer(ctx: CanvasRenderingContext2D): Promise<void> {

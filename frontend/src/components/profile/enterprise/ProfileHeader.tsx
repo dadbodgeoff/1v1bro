@@ -26,6 +26,7 @@ import type { Profile } from '@/types/profile'
 import type { PlayerBattlePass } from '@/types/battlepass'
 import { getAvatarUrl, getBannerUrl } from '@/types/profile'
 import { cn } from '@/utils/helpers'
+import { useViewport } from '@/hooks/useViewport'
 
 interface ProfileHeaderProps {
   profile: Profile
@@ -36,10 +37,16 @@ interface ProfileHeaderProps {
   className?: string
 }
 
-// Tier ring configuration
+// Tier ring configuration - responsive sizes
 const TIER_RING_CONFIG = {
-  size: 120,
-  strokeWidth: 4,
+  mobile: {
+    size: 96,  // Smaller on mobile
+    strokeWidth: 3,
+  },
+  desktop: {
+    size: 120,
+    strokeWidth: 4,
+  },
   progressColor: '#6366f1', // indigo-500
   trackColor: '#374151',    // gray-700
 }
@@ -81,12 +88,16 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   const [animatedProgress, setAnimatedProgress] = useState(0)
   const [showTierOnAvatar, setShowTierOnAvatar] = useState(false)
+  const { isMobile } = useViewport()
 
   const tierProgress = calculateTierProgress(battlePassProgress)
   // Treat tier 0 as tier 1 for display (legacy users before unified progression)
   const rawTier = battlePassProgress?.current_tier ?? 0
   const currentTier = rawTier === 0 ? 1 : rawTier
   const hasActiveSeason = battlePassProgress?.season?.is_active ?? false
+
+  // Responsive ring config
+  const ringConfig = isMobile ? TIER_RING_CONFIG.mobile : TIER_RING_CONFIG.desktop
 
   // Animate progress on mount
   useEffect(() => {
@@ -97,7 +108,7 @@ export function ProfileHeader({
   }, [tierProgress])
 
   // Calculate SVG circle properties
-  const radius = (TIER_RING_CONFIG.size - TIER_RING_CONFIG.strokeWidth) / 2
+  const radius = (ringConfig.size - ringConfig.strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (animatedProgress / 100) * circumference
 
@@ -120,51 +131,51 @@ export function ProfileHeader({
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-        {/* Edit Button */}
+        {/* Edit Button - Touch optimized (min 44px) */}
         {isOwnProfile && onEdit && (
           <button
             onClick={onEdit}
-            className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 bg-black/50 hover:bg-black/70 text-white text-sm font-medium rounded-lg backdrop-blur-sm transition-colors border border-white/10"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center justify-center gap-2 min-h-[44px] px-3 sm:px-4 py-2 bg-black/50 hover:bg-black/70 active:bg-black/80 text-white text-sm font-medium rounded-lg backdrop-blur-sm transition-colors border border-white/10 touch-manipulation"
           >
             <EditIcon className="w-4 h-4" />
-            Edit Profile
+            <span className="hidden sm:inline">Edit Profile</span>
           </button>
         )}
       </div>
 
       {/* Avatar and Identity Section */}
-      <div className="relative px-6 pb-6 bg-[var(--color-bg-card)]">
-        <div className="flex flex-col md:flex-row md:items-end gap-4">
-          {/* Avatar with Tier Ring */}
+      <div className="relative px-4 sm:px-6 pb-4 sm:pb-6 bg-[var(--color-bg-card)]">
+        <div className="flex flex-col sm:flex-row sm:items-end gap-3 sm:gap-4">
+          {/* Avatar with Tier Ring - Responsive sizing */}
           <div 
-            className="-mt-16 relative cursor-pointer group"
+            className="-mt-12 sm:-mt-16 relative cursor-pointer group mx-auto sm:mx-0"
             onClick={onAvatarClick}
             onMouseEnter={() => setShowTierOnAvatar(true)}
             onMouseLeave={() => setShowTierOnAvatar(false)}
           >
             {/* Tier Ring SVG */}
             <svg
-              width={TIER_RING_CONFIG.size}
-              height={TIER_RING_CONFIG.size}
+              width={ringConfig.size}
+              height={ringConfig.size}
               className="absolute top-0 left-0 -rotate-90"
             >
               {/* Background Track */}
               <circle
-                cx={TIER_RING_CONFIG.size / 2}
-                cy={TIER_RING_CONFIG.size / 2}
+                cx={ringConfig.size / 2}
+                cy={ringConfig.size / 2}
                 r={radius}
                 fill="none"
                 stroke={TIER_RING_CONFIG.trackColor}
-                strokeWidth={TIER_RING_CONFIG.strokeWidth}
+                strokeWidth={ringConfig.strokeWidth}
               />
               {/* Progress Arc */}
               <circle
-                cx={TIER_RING_CONFIG.size / 2}
-                cy={TIER_RING_CONFIG.size / 2}
+                cx={ringConfig.size / 2}
+                cy={ringConfig.size / 2}
                 r={radius}
                 fill="none"
                 stroke={TIER_RING_CONFIG.progressColor}
-                strokeWidth={TIER_RING_CONFIG.strokeWidth}
+                strokeWidth={ringConfig.strokeWidth}
                 strokeLinecap="round"
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
@@ -172,13 +183,14 @@ export function ProfileHeader({
               />
             </svg>
 
-            {/* Avatar Image */}
+            {/* Avatar Image - Responsive sizing */}
             <img
               src={getAvatarUrl(profile.avatar_url, 'large')}
               alt={profile.display_name}
               className={cn(
-                'w-[120px] h-[120px] rounded-full border-4 border-[var(--color-bg-card)] bg-[var(--color-bg-elevated)] object-cover',
-                'transition-transform duration-200 group-hover:scale-105'
+                'rounded-full border-4 border-[var(--color-bg-card)] bg-[var(--color-bg-elevated)] object-cover',
+                'transition-transform duration-200 group-hover:scale-105',
+                isMobile ? 'w-[96px] h-[96px]' : 'w-[120px] h-[120px]'
               )}
             />
 
@@ -197,14 +209,14 @@ export function ProfileHeader({
             )}
           </div>
 
-          {/* Player Identity */}
-          <div className="flex-1 pb-2">
-            {/* Display Name - H1 */}
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              {profile.display_name}
+          {/* Player Identity - Centered on mobile */}
+          <div className="flex-1 pb-2 text-center sm:text-left">
+            {/* Display Name - Fluid typography */}
+            <h1 className="text-fluid-2xl sm:text-fluid-3xl font-extrabold text-white tracking-tight flex items-center justify-center sm:justify-start gap-2 sm:gap-3 flex-wrap">
+              <span className="break-words">{profile.display_name}</span>
               {profile.country && (
                 <span 
-                  className="text-2xl cursor-help"
+                  className="text-xl sm:text-2xl cursor-help"
                   title={COUNTRY_NAMES[profile.country] || profile.country}
                 >
                   {COUNTRY_FLAGS[profile.country] || profile.country}
@@ -212,8 +224,8 @@ export function ProfileHeader({
               )}
             </h1>
 
-            {/* Title and Tier Badge Row */}
-            <div className="flex items-center gap-3 mt-2">
+            {/* Title and Tier Badge Row - Wrap on mobile */}
+            <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mt-2 flex-wrap">
               {/* Player Title */}
               {profile.title && (
                 <span className="text-sm font-medium text-[#818cf8]">
@@ -221,21 +233,21 @@ export function ProfileHeader({
                 </span>
               )}
 
-              {/* Tier Badge */}
+              {/* Tier Badge - Touch friendly */}
               {hasActiveSeason ? (
-                <span className="px-3 py-1 text-sm font-bold text-white bg-[#6366f1] rounded-full">
+                <span className="px-3 py-1.5 text-sm font-bold text-white bg-[#6366f1] rounded-full min-h-[32px] flex items-center">
                   Tier {currentTier}
                 </span>
               ) : (
-                <span className="px-3 py-1 text-sm font-medium text-[var(--color-text-muted)] bg-[var(--color-bg-elevated)] rounded-full border border-white/10">
+                <span className="px-3 py-1.5 text-sm font-medium text-[var(--color-text-muted)] bg-[var(--color-bg-elevated)] rounded-full border border-white/10 min-h-[32px] flex items-center">
                   No Active Season
                 </span>
               )}
             </div>
 
-            {/* Bio */}
+            {/* Bio - Better mobile readability */}
             {profile.bio && (
-              <p className="mt-3 text-base text-gray-300 line-clamp-3">
+              <p className="mt-3 text-sm sm:text-base text-gray-300 line-clamp-3 leading-relaxed">
                 {profile.bio}
               </p>
             )}

@@ -33,12 +33,16 @@ export interface BattlePassWidgetProps {
 /**
  * Calculates XP progress percentage
  * @param currentXp - Current XP amount
- * @param xpToNextTier - XP required for next tier
+ * @param xpToNextTier - XP remaining to reach next tier
  * @returns Progress percentage (0-100)
+ * 
+ * Formula: currentXp / (currentXp + xpToNextTier) * 100
+ * Example: currentXp=360, xpToNextTier=40 → 360/400 = 90%
  */
 export function calculateXpProgress(currentXp: number, xpToNextTier: number): number {
-  if (xpToNextTier <= 0) return 100
-  return Math.min(100, Math.round((currentXp / xpToNextTier) * 100))
+  const xpPerTier = currentXp + xpToNextTier
+  if (xpPerTier <= 0) return 100
+  return Math.min(100, Math.round((currentXp / xpPerTier) * 100))
 }
 
 export function BattlePassWidget({ className }: BattlePassWidgetProps) {
@@ -125,7 +129,7 @@ export function BattlePassWidget({ className }: BattlePassWidgetProps) {
             {displayTier}
           </span>
           <span className="text-sm text-neutral-500">
-            / {progress.season?.max_tier ?? 100}
+            / {progress.season?.max_tier ?? 35}
           </span>
           {/* Premium badge - Requirements 3.5 */}
           {progress.is_premium && (

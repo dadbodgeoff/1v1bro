@@ -62,36 +62,36 @@ export function ProfileSection({
   }
 
   return (
-    <section className={cn('mb-8', className)}>
+    <section className={cn('mb-6 sm:mb-8', className)}>
       {/* Section Header - H2 level in hierarchy */}
       <div 
         className={cn(
-          'flex items-center justify-between mb-6',
+          'flex items-center justify-between mb-4 sm:mb-6',
           collapsible && 'cursor-pointer select-none'
         )}
         onClick={handleToggle}
         role={collapsible ? 'button' : undefined}
         aria-expanded={collapsible ? !isCollapsed : undefined}
       >
-        <div className="flex items-center gap-4">
-          {/* Icon Container - 40px (10x10) */}
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          {/* Icon Container - Responsive sizing */}
           {icon && (
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-bg-elevated)] to-[var(--color-bg-card)] flex items-center justify-center text-[#6366f1] border border-white/5">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[var(--color-bg-elevated)] to-[var(--color-bg-card)] flex items-center justify-center flex-shrink-0 text-[#6366f1] border border-white/5">
               {icon}
             </div>
           )}
           
-          <div>
-            <div className="flex items-center gap-3">
-              {/* Section Title - H2, xl-2xl bold */}
-              <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+              {/* Section Title - Fluid typography */}
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight">
                 {title}
               </h2>
               
               {/* Badge */}
               {badge !== undefined && (
                 <span className={cn(
-                  'px-2 py-0.5 text-xs font-semibold rounded-full',
+                  'px-2 py-0.5 text-xs font-semibold rounded-full whitespace-nowrap',
                   badgeStyles[badgeVariant]
                 )}>
                   {badge}
@@ -99,20 +99,20 @@ export function ProfileSection({
               )}
             </div>
             
-            {/* Subtitle - sm muted */}
+            {/* Subtitle - Responsive text */}
             {subtitle && (
-              <p className="text-sm text-[var(--color-text-muted)] mt-0.5 font-medium">
+              <p className="text-xs sm:text-sm text-[var(--color-text-muted)] mt-0.5 font-medium truncate">
                 {subtitle}
               </p>
             )}
           </div>
         </div>
 
-        {/* Collapse Toggle */}
+        {/* Collapse Toggle - Touch friendly */}
         {collapsible && (
           <button
             type="button"
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+            className="p-2 sm:p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-white/5 active:bg-white/10 transition-colors flex-shrink-0"
             aria-label={isCollapsed ? 'Expand section' : 'Collapse section'}
           >
             <ChevronIcon 

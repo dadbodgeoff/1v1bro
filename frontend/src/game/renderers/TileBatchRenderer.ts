@@ -313,72 +313,97 @@ export class TileBatchRenderer extends BaseRenderer {
   }
 
   /**
-   * Render teleporter tiles with swirl effect
+   * Render teleporter tiles - obsidian portal matching volcanic theme
    */
   private renderTeleporterBatch(batch: TileBatch, tileSize: number): void {
     if (!this.ctx) return
     const ctx = this.ctx
-    const palette = getCurrentPalette()
-    const rotation = this.animationTime * 2
+    const rotation = this.animationTime * 0.3
 
     for (const tile of batch.tiles) {
       const cx = tile.pixelX + tileSize / 2
       const cy = tile.pixelY + tileSize / 2
       const radius = tileSize * 0.4
 
-      // Outer glow
-      ctx.globalAlpha = 0.3
-      const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.5)
-      gradient.addColorStop(0, palette.teleporter)
-      gradient.addColorStop(1, 'transparent')
-      ctx.fillStyle = gradient
+      // Obsidian ring base
+      ctx.fillStyle = '#1a1a1f'
       ctx.beginPath()
-      ctx.arc(cx, cy, radius * 1.5, 0, Math.PI * 2)
+      ctx.arc(cx, cy, radius + 2, 0, Math.PI * 2)
       ctx.fill()
 
-      // Spinning rings
-      ctx.globalAlpha = 0.8
-      ctx.strokeStyle = palette.teleporter
-      ctx.lineWidth = 2
-      for (let i = 0; i < 3; i++) {
+      // Dark void center
+      const centerGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.8)
+      centerGradient.addColorStop(0, 'rgba(10, 10, 15, 0.95)')
+      centerGradient.addColorStop(1, 'rgba(25, 20, 30, 0.85)')
+      ctx.fillStyle = centerGradient
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius * 0.8, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Subtle inner swirl
+      ctx.globalAlpha = 0.12
+      ctx.strokeStyle = '#4a3050'
+      ctx.lineWidth = 1.5
+      for (let i = 0; i < 2; i++) {
         ctx.beginPath()
-        ctx.arc(cx, cy, radius - i * 8, rotation + i, rotation + i + Math.PI * 1.5)
+        ctx.arc(cx, cy, radius * (0.3 + i * 0.2), rotation + i * Math.PI, rotation + i * Math.PI + Math.PI)
         ctx.stroke()
       }
       ctx.globalAlpha = 1
+
+      // Obsidian ring edge
+      ctx.strokeStyle = '#2a2a32'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+      ctx.stroke()
     }
   }
 
   /**
-   * Render jump pad tiles with directional arrow
+   * Render jump pad tiles - stone pad with warm glow matching volcanic theme
    */
   private renderJumpPadBatch(batch: TileBatch, tileSize: number): void {
     if (!this.ctx) return
     const ctx = this.ctx
-    const palette = getCurrentPalette()
-    const bounce = Math.abs(Math.sin(this.animationTime * 4)) * 5
+    const pulse = 0.4 + 0.15 * Math.sin(this.animationTime * 2.5)
 
     for (const tile of batch.tiles) {
       const cx = tile.pixelX + tileSize / 2
-      const cy = tile.pixelY + tileSize / 2 - bounce
+      const cy = tile.pixelY + tileSize / 2
+      const radius = tileSize * 0.4
 
-      // Base pad
-      ctx.fillStyle = palette.jumpPad
-      ctx.globalAlpha = 0.4
+      // Stone base
+      ctx.fillStyle = '#252528'
       ctx.beginPath()
-      ctx.arc(cx, cy + bounce, tileSize * 0.4, 0, Math.PI * 2)
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
       ctx.fill()
 
-      // Arrow pointing up
-      ctx.globalAlpha = 0.9
-      ctx.fillStyle = palette.jumpPad
+      // Carved ring
+      ctx.strokeStyle = '#3a3a3f'
+      ctx.lineWidth = 2
       ctx.beginPath()
-      ctx.moveTo(cx, cy - 15)
-      ctx.lineTo(cx - 12, cy + 5)
-      ctx.lineTo(cx + 12, cy + 5)
+      ctx.arc(cx, cy, radius - 2, 0, Math.PI * 2)
+      ctx.stroke()
+
+      // Warm amber glow from center
+      const glowGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.6)
+      glowGradient.addColorStop(0, `rgba(180, 140, 80, ${pulse})`)
+      glowGradient.addColorStop(1, 'transparent')
+      ctx.fillStyle = glowGradient
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius * 0.6, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Up arrow (default direction for tiles)
+      const arrowAlpha = 0.5 + 0.2 * Math.sin(this.animationTime * 3)
+      ctx.fillStyle = `rgba(200, 160, 100, ${arrowAlpha})`
+      ctx.beginPath()
+      ctx.moveTo(cx, cy - radius * 0.4)
+      ctx.lineTo(cx - radius * 0.25, cy + radius * 0.15)
+      ctx.lineTo(cx + radius * 0.25, cy + radius * 0.15)
       ctx.closePath()
       ctx.fill()
-      ctx.globalAlpha = 1
     }
   }
 

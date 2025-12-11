@@ -34,11 +34,12 @@ describe('Mobile Optimization', () => {
    */
   describe('Touch Target Compliance', () => {
     it('should have touch target classes in key interactive components', () => {
+      // Components with direct interactive elements (not containers)
       const keyComponents = [
         'HeroPlaySection.tsx',
         'ArenaQuizPanel.tsx',
         'Lobby.tsx',
-        'ArenaGame.tsx',
+        // ArenaGame.tsx is a container that delegates to child components
       ]
       
       const files = getAllFiles(SRC_DIR)

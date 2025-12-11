@@ -2,9 +2,27 @@
  * Tests for ServerBusyModal component.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { ServerBusyModal } from './ServerBusyModal'
+
+// Mock matchMedia for test environment
+const createMatchMediaMock = () => {
+  return vi.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }))
+}
+
+beforeAll(() => {
+  window.matchMedia = createMatchMediaMock()
+})
 
 describe('ServerBusyModal', () => {
   beforeEach(() => {

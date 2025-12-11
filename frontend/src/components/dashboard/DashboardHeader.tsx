@@ -84,7 +84,7 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
   const { user, logout } = useAuthStore()
   const { profile, fetchProfile } = useProfile()
   const { progress, fetchProgress } = useBattlePass()
-  const { isMobile, isTouch } = useViewport()
+  const { isTouch } = useViewport()
   const [eloRating, setEloRating] = useState<number | null>(null)
   const [rankTier, setRankTier] = useState<RankTier>('bronze')
   const [unreadNotifications, setUnreadNotifications] = useState(0)
@@ -122,8 +122,10 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
   const rawTier = progress?.current_tier ?? 1
   const tier = rawTier === 0 ? 1 : rawTier  // Treat tier 0 as tier 1 for display
   const currentXp = progress?.current_xp ?? 0
-  const xpToNextTier = progress?.xp_to_next_tier ?? 1000
-  const xpPercent = xpToNextTier > 0 ? Math.min(100, Math.round((currentXp / xpToNextTier) * 100)) : 0
+  const xpToNextTier = progress?.xp_to_next_tier ?? 400
+  // Calculate percentage: currentXp / (currentXp + xpToNextTier) = currentXp / xpPerTier
+  const xpPerTier = currentXp + xpToNextTier
+  const xpPercent = xpPerTier > 0 ? Math.min(100, Math.round((currentXp / xpPerTier) * 100)) : 0
 
   const tierInfo = RANK_TIERS[rankTier]
   const tierLabel = rankTier.charAt(0).toUpperCase() + rankTier.slice(1)
@@ -139,12 +141,6 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
   // Format coin balance with commas
   const formattedCoins = coinBalance.toLocaleString()
 
-  // Safe area styles for notched devices
-  const safeAreaStyles: React.CSSProperties = {
-    // Add safe area top padding on mobile
-    paddingTop: isMobile ? `max(0px, calc(env(safe-area-inset-top, 0px)))` : undefined,
-  }
-
   // Touch target styles for mobile buttons
   const touchButtonStyles: React.CSSProperties = isTouch
     ? { minWidth: `${TOUCH_TARGET.min}px`, minHeight: `${TOUCH_TARGET.min}px` }
@@ -152,8 +148,7 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
 
   return (
     <header
-      className="h-16 bg-[var(--color-bg-card)] border-b border-[var(--color-border-subtle)] flex items-center px-4 gap-4"
-      style={safeAreaStyles}
+      className="min-h-[64px] bg-[var(--color-bg-card)] border-b border-[var(--color-border-subtle)] flex items-center px-4 gap-4 safe-area-top"
     >
       {/* Mobile menu button - touch optimized */}
       <button

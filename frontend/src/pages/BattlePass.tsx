@@ -150,8 +150,8 @@ export function BattlePass() {
             <ProgressSection
               currentTier={Math.max(1, progress.current_tier)}
               currentXP={progress.current_xp}
-              xpToNextTier={progress.xp_to_next_tier || 2000}
-              totalTiers={100}
+              xpToNextTier={progress.xp_to_next_tier || 400}
+              totalTiers={progress.season?.max_tier || tiers.length || 35}
             />
           ) : null}
         </div>

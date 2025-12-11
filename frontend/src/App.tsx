@@ -10,7 +10,6 @@ import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
 import { MatchHistory } from '@/pages/MatchHistory'
 import { CoinShop } from '@/pages/CoinShop'
 import { CoinSuccess } from '@/pages/CoinSuccess'
-import { ArenaTest } from '@/pages/ArenaTest'
 import { ProgressionProvider } from '@/components/progression'
 
 // Root route - shows Landing for guests, redirects to dashboard for authenticated users
@@ -189,8 +188,6 @@ function App() {
         />
         {/* Fortnite Quiz - no auth required for testing */}
         <Route path="/fortnite-quiz" element={<FortniteQuiz />} />
-        {/* Test route - no auth required */}
-        <Route path="/arena-test" element={<ArenaTest />} />
         {/* Guest play route - try the game without signup */}
         <Route path="/play" element={<BotGame />} />
         {/* Instant play route - zero-friction guest experience */}

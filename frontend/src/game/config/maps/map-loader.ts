@@ -32,23 +32,18 @@ export interface MapInfo {
 }
 
 /**
- * Feature flag for industrial map.
- * Set to true when tilesets are ready for production.
+ * Feature flags for maps.
+ * Set to true when maps are ready for production.
  */
-const INDUSTRIAL_MAP_ENABLED = false
+const NEXUS_ARENA_ENABLED = false      // Basic first map - disabled for now
+const INDUSTRIAL_MAP_ENABLED = false   // Tilesets not ready
 
 /**
  * Available maps with display metadata.
- * Industrial map is feature-flagged until tilesets are ready.
+ * Only Vortex Arena is currently enabled.
  */
 export const AVAILABLE_MAPS: MapInfo[] = [
-  {
-    slug: 'nexus-arena',
-    name: 'Nexus Arena',
-    description: 'Classic three-lane space arena',
-    thumbnail: '/maps/nexus-arena-thumb.png',
-    theme: 'space',
-  },
+  // Vortex Arena - primary map
   {
     slug: 'vortex-arena',
     name: 'Vortex Arena',
@@ -56,6 +51,14 @@ export const AVAILABLE_MAPS: MapInfo[] = [
     thumbnail: '/maps/vortex-arena-thumb.png',
     theme: 'volcanic',
   },
+  // Nexus Arena hidden until we want to bring it back
+  ...(NEXUS_ARENA_ENABLED ? [{
+    slug: 'nexus-arena',
+    name: 'Nexus Arena',
+    description: 'Classic three-lane space arena',
+    thumbnail: '/maps/nexus-arena-thumb.png',
+    theme: 'space' as const,
+  }] : []),
   // Industrial map hidden behind feature flag until tilesets are ready
   ...(INDUSTRIAL_MAP_ENABLED ? [{
     slug: 'industrial-facility',
@@ -70,15 +73,15 @@ export const AVAILABLE_MAPS: MapInfo[] = [
  * Get a map configuration by slug.
  * 
  * @param slug - Map slug (e.g., 'nexus-arena', 'vortex-arena', 'industrial-facility')
- * @returns MapConfig for the specified slug, or NEXUS_ARENA if invalid/missing
+ * @returns MapConfig for the specified slug, or VORTEX_ARENA if invalid/missing
  * 
  * Requirements: 4.2, 4.5
  */
 export function getMapConfig(slug: string | undefined | null): MapConfig {
   if (!slug) {
-    return NEXUS_ARENA
+    return VORTEX_ARENA
   }
-  return MAP_REGISTRY[slug] ?? NEXUS_ARENA
+  return MAP_REGISTRY[slug] ?? VORTEX_ARENA
 }
 
 /**

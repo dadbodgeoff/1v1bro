@@ -63,7 +63,7 @@ export function useMatchmaking(): UseMatchmakingReturn {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const pendingCategoryRef = useRef<string>('fortnite');
-  const pendingMapSlugRef = useRef<string>('industrial-facility');
+  const pendingMapSlugRef = useRef<string>('vortex-arena');
   const reconnectAttemptsRef = useRef(0);
   const lastHeartbeatRef = useRef<number>(Date.now());
   const heartbeatTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -125,7 +125,7 @@ export function useMatchmaking(): UseMatchmakingReturn {
   }, [status, isReconnecting, reset]);
   
   // Connect to matchmaking WebSocket and handle all queue operations
-  const connectAndJoinQueue = useCallback((category: string = 'fortnite', mapSlug: string = 'industrial-facility') => {
+  const connectAndJoinQueue = useCallback((category: string = 'fortnite', mapSlug: string = 'vortex-arena') => {
     pendingCategoryRef.current = category;
     pendingMapSlugRef.current = mapSlug;
     setSelectedCategory(category);
@@ -324,7 +324,7 @@ export function useMatchmaking(): UseMatchmakingReturn {
     }
   }, [cooldownSeconds]);
   
-  const joinQueue = useCallback(async (category: string = 'fortnite', mapSlug: string = 'industrial-facility') => {
+  const joinQueue = useCallback(async (category: string = 'fortnite', mapSlug: string = 'vortex-arena') => {
     // Connect to WebSocket first, then join queue via WebSocket message
     // This ensures the connection is ready before we're matched
     connectAndJoinQueue(category, mapSlug);
