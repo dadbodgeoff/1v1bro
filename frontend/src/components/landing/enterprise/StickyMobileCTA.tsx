@@ -74,7 +74,7 @@ export function StickyMobileCTA({ showAfterScroll = 600 }: StickyMobileCTAProps)
         >
           <button
             onClick={handleClick}
-            className="w-full py-4 px-6 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-base rounded-xl shadow-lg shadow-orange-500/25 transition-colors active:scale-[0.98]"
+            className="w-full min-h-[44px] py-4 px-6 bg-[#F97316] hover:bg-[#EA580C] text-white font-semibold text-base rounded-xl shadow-lg shadow-orange-500/25 transition-colors active:scale-[0.98]"
           >
             {isAuthenticated ? 'Play Now' : 'Try It Free — No Signup'}
           </button>

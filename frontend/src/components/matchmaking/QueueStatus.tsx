@@ -19,9 +19,9 @@ export function QueueStatus({ queueTime, queuePosition, queueSize, onCancel }: Q
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm pb-safe"
     >
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 max-w-md w-full mx-4 text-center">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 max-w-md w-full mx-4 text-center safe-area-inset">
         {/* Pulsing search indicator */}
         <div className="relative w-20 h-20 mx-auto mb-6">
           <motion.div
@@ -79,7 +79,7 @@ export function QueueStatus({ queueTime, queuePosition, queueSize, onCancel }: Q
         {/* Cancel button */}
         <button
           onClick={onCancel}
-          className="w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors font-medium"
+          className="w-full min-h-[44px] py-3 px-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors font-medium"
         >
           Cancel
         </button>

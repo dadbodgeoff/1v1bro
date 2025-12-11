@@ -230,7 +230,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
                 disabled={answerSubmitted}
                 className={`
                   flex items-center gap-1.5 lg:gap-2 px-2 lg:px-3 py-2 lg:py-2.5 rounded-lg text-left transition-all
-                  min-h-[40px] lg:min-h-[44px] lg:min-w-[160px] lg:max-w-[200px]
+                  min-h-[44px] lg:min-w-[160px] lg:max-w-[200px]
                   ${isSelected
                     ? 'bg-purple-600/40 border-2 border-purple-400/60 shadow-lg shadow-purple-500/20'
                     : 'bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.12]'

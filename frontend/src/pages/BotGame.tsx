@@ -125,7 +125,7 @@ function SetupScreen({ categories, categoriesLoading, selectedCategory, setSelec
               const has = cat.question_count > 0
               return (
                 <button key={cat.slug} onClick={() => has && setSelectedCategory(cat.slug)} disabled={!has}
-                  className={`p-4 rounded-xl border transition-all text-left ${!has ? 'opacity-50 cursor-not-allowed' : selectedCategory === cat.slug ? 'bg-purple-500/20 border-purple-500/40' : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'}`}>
+                  className={`p-4 min-h-[44px] rounded-xl border transition-all text-left ${!has ? 'opacity-50 cursor-not-allowed' : selectedCategory === cat.slug ? 'bg-purple-500/20 border-purple-500/40' : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2 mb-1">
                     <div className={`w-2 h-2 rounded-full ${selectedCategory === cat.slug ? 'bg-purple-400' : 'bg-neutral-600'}`} />
                     <span className="text-sm font-medium text-white">{cat.name}</span>
@@ -141,7 +141,7 @@ function SetupScreen({ categories, categoriesLoading, selectedCategory, setSelec
         <div className="grid grid-cols-2 gap-3">
           {AVAILABLE_MAPS.map((m) => (
             <button key={m.id} onClick={() => setSelectedMap(m.config)}
-              className={`p-4 rounded-xl border transition-all text-left ${selectedMap === m.config ? 'bg-white/[0.08] border-white/20' : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'}`}>
+              className={`p-4 min-h-[44px] rounded-xl border transition-all text-left ${selectedMap === m.config ? 'bg-white/[0.08] border-white/20' : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'}`}>
               <div className="flex items-center gap-2 mb-1">
                 <div className={`w-2 h-2 rounded-full ${selectedMap === m.config ? 'bg-emerald-400' : 'bg-neutral-600'}`} />
                 <span className="text-sm font-medium text-white">{m.name}</span>
@@ -158,10 +158,10 @@ function SetupScreen({ categories, categoriesLoading, selectedCategory, setSelec
         </div>
       )}
       <div className="flex gap-3">
-        <button onClick={onStart} disabled={questionsLoading || !!questionsError} className="px-6 py-2.5 bg-white text-black text-sm font-medium rounded-lg disabled:opacity-50">
+        <button onClick={onStart} disabled={questionsLoading || !!questionsError} className="px-6 py-2.5 min-h-[44px] bg-white text-black text-sm font-medium rounded-lg disabled:opacity-50">
           {questionsLoading ? 'Loading...' : 'Start Game'}
         </button>
-        <button onClick={onBack} className="px-6 py-2.5 bg-white/[0.06] text-neutral-300 text-sm rounded-lg border border-white/[0.1]">Back</button>
+        <button onClick={onBack} className="px-6 py-2.5 min-h-[44px] bg-white/[0.06] text-neutral-300 text-sm rounded-lg border border-white/[0.1]">Back</button>
       </div>
       {isGuest && <p className="text-xs text-neutral-500 mt-4">Playing as guest · <button onClick={() => navigate('/register')} className="text-purple-400">Sign up</button></p>}
     </div>
@@ -195,8 +195,8 @@ function ResultsScreen({ localScore, opponentScore, playerKills, botKills, isGue
         </div>
       )}
       <div className="flex gap-3">
-        <button onClick={onPlayAgain} className="px-6 py-2.5 bg-white text-black text-sm rounded-lg">Play Again</button>
-        <button onClick={onBack} className="px-6 py-2.5 bg-white/[0.06] text-neutral-300 text-sm rounded-lg border border-white/[0.1]">{isGuest ? 'Home' : 'Menu'}</button>
+        <button onClick={onPlayAgain} className="px-6 py-2.5 min-h-[44px] bg-white text-black text-sm rounded-lg">Play Again</button>
+        <button onClick={onBack} className="px-6 py-2.5 min-h-[44px] bg-white/[0.06] text-neutral-300 text-sm rounded-lg border border-white/[0.1]">{isGuest ? 'Home' : 'Menu'}</button>
       </div>
     </div>
   )

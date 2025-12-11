@@ -31,7 +31,7 @@ export function LobbyCode({ code }: LobbyCodeProps) {
   return (
     <button
       onClick={handleCopy}
-      className="group relative px-8 py-4 bg-white/[0.02] border border-white/[0.08] rounded-lg hover:bg-white/[0.04] hover:border-white/[0.12] transition-all"
+      className="group relative px-8 py-4 min-h-[44px] bg-white/[0.02] border border-white/[0.08] rounded-lg hover:bg-white/[0.04] hover:border-white/[0.12] transition-all"
     >
       <span className="text-3xl font-mono font-semibold tracking-[0.4em] text-white">
         {code}

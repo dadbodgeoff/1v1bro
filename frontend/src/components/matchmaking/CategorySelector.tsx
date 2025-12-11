@@ -59,7 +59,7 @@ export function CategorySelector({
               whileHover={!disabled ? { scale: 1.02 } : undefined}
               whileTap={!disabled ? { scale: 0.98 } : undefined}
               className={`
-                relative p-3 rounded-lg border transition-all duration-200 text-left
+                relative p-3 min-h-[44px] rounded-lg border transition-all duration-200 text-left
                 ${isSelected
                   ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10'
                   : 'border-white/[0.08] bg-white/[0.04] hover:border-white/[0.15]'

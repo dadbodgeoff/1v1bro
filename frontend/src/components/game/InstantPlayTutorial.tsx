@@ -220,9 +220,17 @@ export function InstantPlayTutorial({
               />
             </div>
 
+            {/* Dismiss button */}
+            <button
+              onClick={handleDismiss}
+              className="w-full mt-4 min-h-[44px] px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              {isTouch ? 'Tap to Start' : 'Click to Start'}
+            </button>
+            
             {/* Dismiss hint */}
-            <p className="text-center text-neutral-500 text-xs mt-3">
-              {isTouch ? 'Tap anywhere to start' : 'Click anywhere or press any key to start'}
+            <p className="text-center text-neutral-500 text-xs mt-2">
+              {isTouch ? 'or tap anywhere' : 'or press any key'}
             </p>
           </motion.div>
         </motion.div>

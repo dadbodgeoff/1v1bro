@@ -44,7 +44,7 @@ export function RespawnOverlay({
         {hasReplay && onWatchReplay && (
           <button
             onClick={onWatchReplay}
-            className="pointer-events-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+            className="pointer-events-auto px-4 py-2 min-h-[44px] min-w-[44px] bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path

@@ -87,7 +87,7 @@ export function HeadToHeadDisplay({
       {/* Players */}
       <div className="flex items-center justify-center gap-4 md:gap-8">
       {/* Left Side - Current User (always on left per Requirements 2.3) */}
-      <div className="flex-shrink-0" data-testid="left-player">
+      <div className="flex-shrink-0 w-full max-w-[240px] md:w-[240px]" data-testid="left-player">
         {currentPlayer ? (
           <PlayerCardBanner
             playercard={playerCardToCosmetic(currentPlayer)}
@@ -100,7 +100,7 @@ export function HeadToHeadDisplay({
             }}
           />
         ) : (
-          <div className="w-[240px] h-[360px] bg-neutral-900/50 rounded-xl flex items-center justify-center">
+          <div className="w-full aspect-[2/3] max-w-[240px] bg-neutral-900/50 rounded-xl flex items-center justify-center">
             <div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
           </div>
         )}
@@ -126,7 +126,7 @@ export function HeadToHeadDisplay({
       </div>
 
       {/* Right Side - Opponent (Requirements 2.2, 2.3) */}
-      <div className="flex-shrink-0" data-testid="right-player">
+      <div className="flex-shrink-0 w-full max-w-[240px] md:w-[240px]" data-testid="right-player">
         {opponent ? (
           <PlayerCardBanner
             playercard={playerCardToCosmetic(opponent)}
@@ -141,7 +141,7 @@ export function HeadToHeadDisplay({
         ) : isWaitingForOpponent ? (
           /* Waiting for opponent placeholder (Requirements 2.2) */
           <div 
-            className="w-[240px] h-[360px] border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center bg-neutral-900/30"
+            className="w-full aspect-[2/3] max-w-[240px] border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center bg-neutral-900/30"
             data-testid="waiting-placeholder"
           >
             <div className="w-16 h-16 rounded-full bg-neutral-800 flex items-center justify-center mb-4">
@@ -158,7 +158,7 @@ export function HeadToHeadDisplay({
             </div>
           </div>
         ) : (
-          <div className="w-[240px] h-[360px] bg-neutral-900/50 rounded-xl" />
+          <div className="w-full aspect-[2/3] max-w-[240px] bg-neutral-900/50 rounded-xl" />
         )}
       </div>
       </div>

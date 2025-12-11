@@ -110,7 +110,7 @@ export function LandingHeader({ className }: LandingHeaderProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-white"
+            className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
@@ -125,13 +125,13 @@ export function LandingHeader({ className }: LandingHeaderProps) {
           <nav className="flex flex-col items-center justify-center h-full gap-8 px-6">
             <button
               onClick={() => scrollToSection('how-it-works')}
-              className="text-xl text-white"
+              className="text-xl text-white min-h-[44px] px-4"
             >
               How It Works
             </button>
             <Link
               to="/leaderboards"
-              className="text-xl text-white"
+              className="text-xl text-white min-h-[44px] px-4 flex items-center"
               onClick={() => setMobileMenuOpen(false)}
             >
               Leaderboards

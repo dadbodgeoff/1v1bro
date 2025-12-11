@@ -116,7 +116,7 @@ export function QuickCategoryPicker({
                       className={cn(
                         'relative p-4 rounded-xl border-2 transition-all',
                         'flex flex-col items-center gap-2',
-                        'min-h-[100px]', // Good touch target
+                        'min-h-[100px] min-w-[44px]', // Touch target compliance
                         isSelected
                           ? 'border-white bg-white/10 scale-105'
                           : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
