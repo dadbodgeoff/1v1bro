@@ -10,19 +10,23 @@ import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
 import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
 import { useBotGame } from '@/hooks/useBotGame'
-import { NEXUS_ARENA, VORTEX_ARENA, INDUSTRIAL_FACILITY, type MapConfig } from '@/game/config/maps'
+import { VORTEX_ARENA, type MapConfig } from '@/game/config/maps'
+import { AVAILABLE_MAPS as MAP_INFO } from '@/game/config/maps/map-loader'
+import { getMapConfig } from '@/game/config/maps/map-loader'
 import type { FireEvent, HitEvent, DeathEvent, PowerUpState } from '@/game'
 
-const AVAILABLE_MAPS = [
-  { id: 'nexus', name: 'Nexus Arena', description: 'Classic 3-lane arena', config: NEXUS_ARENA },
-  { id: 'vortex', name: 'Vortex Arena', description: 'Radial arena with hazards', config: VORTEX_ARENA },
-  { id: 'industrial', name: 'Industrial Facility', description: 'Military facility', config: INDUSTRIAL_FACILITY },
-] as const
+// Use the centralized AVAILABLE_MAPS from map-loader (respects feature flags)
+const AVAILABLE_MAPS = MAP_INFO.map(info => ({
+  id: info.slug,
+  name: info.name,
+  description: info.description,
+  config: getMapConfig(info.slug),
+}))
 
 export function BotGame() {
   const navigate = useNavigate()
   const [isMobileLandscape, setIsMobileLandscape] = useState(false)
-  const [mapConfig, setMapConfig] = useState<MapConfig>(NEXUS_ARENA)
+  const [mapConfig, setMapConfig] = useState<MapConfig>(VORTEX_ARENA)
   const [powerUps] = useState<PowerUpState[]>([])
 
   const {

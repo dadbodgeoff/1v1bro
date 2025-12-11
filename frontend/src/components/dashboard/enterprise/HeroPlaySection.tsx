@@ -63,7 +63,7 @@ export function HeroPlaySection({ className }: HeroPlaySectionProps) {
   const { categories, isLoading: categoriesLoading } = useCategories()
   
   const [selectedCategory, setSelectedCategory] = useState('fortnite')
-  const [selectedMap, setSelectedMap] = useState('nexus-arena')
+  const [selectedMap, setSelectedMap] = useState('vortex-arena')
   const [joinCode, setJoinCode] = useState('')
   const [error, setError] = useState('')
   const [isCreating, setIsCreating] = useState(false)

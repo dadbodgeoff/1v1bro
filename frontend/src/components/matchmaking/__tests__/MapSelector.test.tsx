@@ -24,12 +24,12 @@ describe('MapSelector', () => {
     const onSelect = vi.fn()
     render(
       <MapSelector
-        selectedMap="nexus-arena"
+        selectedMap="vortex-arena"
         onSelect={onSelect}
       />
     )
 
-    // Verify all maps are rendered
+    // Verify all maps are rendered (only enabled maps from AVAILABLE_MAPS)
     AVAILABLE_MAPS.forEach((map) => {
       expect(screen.getByText(map.name)).toBeInTheDocument()
     })
@@ -39,7 +39,7 @@ describe('MapSelector', () => {
     const onSelect = vi.fn()
     render(
       <MapSelector
-        selectedMap="nexus-arena"
+        selectedMap="vortex-arena"
         onSelect={onSelect}
       />
     )
@@ -54,12 +54,12 @@ describe('MapSelector', () => {
     const onSelect = vi.fn()
     render(
       <MapSelector
-        selectedMap="nexus-arena"
+        selectedMap="vortex-arena"
         onSelect={onSelect}
       />
     )
 
-    // Click on Vortex Arena
+    // Click on Vortex Arena (currently the only enabled map)
     fireEvent.click(screen.getByText('Vortex Arena'))
     expect(onSelect).toHaveBeenCalledWith('vortex-arena')
   })
@@ -82,7 +82,7 @@ describe('MapSelector', () => {
     const onSelect = vi.fn()
     render(
       <MapSelector
-        selectedMap="nexus-arena"
+        selectedMap="vortex-arena"
         onSelect={onSelect}
         disabled={true}
       />
@@ -97,7 +97,7 @@ describe('MapSelector', () => {
     const onSelect = vi.fn()
     const { container } = render(
       <MapSelector
-        selectedMap="nexus-arena"
+        selectedMap="vortex-arena"
         onSelect={onSelect}
         disabled={true}
       />
@@ -115,7 +115,7 @@ describe('MapSelector', () => {
     const onSelect = vi.fn()
     render(
       <MapSelector
-        selectedMap="nexus-arena"
+        selectedMap="vortex-arena"
         onSelect={onSelect}
       />
     )
