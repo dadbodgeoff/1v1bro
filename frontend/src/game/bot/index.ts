@@ -62,3 +62,23 @@ export {
   formatXP,
   getRewardMessage,
 } from './PracticeRewards'
+
+// Bot Controller (for unified game loop)
+export {
+  BotController,
+  type BotConfig,
+  type BotState,
+  type BotCallbacks,
+  DEFAULT_BOT_CONFIG,
+} from './BotController'
+
+// Quiz Behavior
+export {
+  type BotQuizConfig,
+  type BotAnswer,
+  type QuizQuestion,
+  DEFAULT_BOT_QUIZ_CONFIG,
+  calculateBotAnswer,
+  calculateAnswerScore,
+  getCorrectAnswerText,
+} from './BotQuizBehavior'

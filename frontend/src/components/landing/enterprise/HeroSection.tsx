@@ -8,7 +8,7 @@
  * Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { cn } from '@/utils/helpers'
@@ -18,6 +18,7 @@ import { CTAButton } from './CTAButton'
 import { LiveDemo } from './LiveDemo'
 import { ChevronDownIcon } from './icons'
 import { trackSignupClick, trackDemoPlay } from '@/services/analytics'
+import { getInstantPlayManager } from '@/game/guest'
 
 export interface HeroSectionProps {
   /** Additional CSS classes */
@@ -62,12 +63,20 @@ export function HeroSection({ className }: HeroSectionProps) {
     return () => clearTimeout(timer)
   }, [])
 
+  // Preload assets on CTA hover for instant play
+  const handlePrimaryHover = useCallback(() => {
+    if (!isAuthenticated) {
+      const instantPlayManager = getInstantPlayManager()
+      instantPlayManager.preloadAssets()
+    }
+  }, [isAuthenticated])
+
   const handlePrimaryCTA = () => {
-    // Primary CTA: Try the game immediately (bot game for guests, dashboard for logged in)
+    // Primary CTA: Try the game immediately (instant play for guests, dashboard for logged in)
     if (!isAuthenticated) {
       trackDemoPlay()
     }
-    navigate(isAuthenticated ? '/dashboard' : '/play')
+    navigate(isAuthenticated ? '/dashboard' : '/instant-play')
   }
 
   const handleSecondaryCTA = () => {
@@ -138,6 +147,7 @@ export function HeroSection({ className }: HeroSectionProps) {
                 variant="primary"
                 size="large"
                 onClick={handlePrimaryCTA}
+                onMouseEnter={handlePrimaryHover}
               >
                 {isAuthenticated ? HERO_CONTENT.primaryCTALoggedIn : HERO_CONTENT.primaryCTA}
               </CTAButton>

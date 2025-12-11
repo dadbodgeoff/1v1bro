@@ -313,11 +313,10 @@ async def websocket_endpoint(
         await websocket.close(code=4003, reason=reason)
         return
     
-    # Create services
-    client = get_supabase_client()
-    service_client = get_supabase_service_client()  # Use service client to bypass RLS
-    lobby_service = LobbyService(client)
-    game_service = GameService(service_client)  # Use service client for XP/battlepass updates
+    # Create services - use service client to bypass RLS for better performance
+    service_client = get_supabase_service_client()
+    lobby_service = LobbyService(service_client)
+    game_service = GameService(service_client)
     cosmetics_service = CosmeticsService(service_client)
     handler = GameHandler(lobby_service, game_service, cosmetics_service)
     

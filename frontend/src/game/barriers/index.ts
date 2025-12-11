@@ -17,3 +17,5 @@ export {
   clampHealth,
   isValidHealth
 } from './BarrierTypes'
+export * from './BarrierRenderer'
+export * from './VolcanicBarrierRenderer'

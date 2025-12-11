@@ -2,23 +2,16 @@
  * DemoGameEngine - Simplified game engine for landing page demo
  * 
  * A lightweight version of the game engine that runs AI vs AI matches
- * for the landing page showcase. Uses canvas rendering with simplified
- * physics and combat.
+ * for the landing page showcase. Coordinates AI, physics, and rendering.
  * 
  * @module landing/enterprise/demo/DemoGameEngine
  * Requirements: 2.1, 2.2, 2.3
  */
 
 import type { DemoAI, DemoMatchState, DemoPlayerState, DemoProjectile, DemoQuestion } from './types'
-
-// Demo arena configuration
-const DEMO_ARENA = {
-  width: 800,
-  height: 450,
-  playerRadius: 16,
-  projectileRadius: 6,
-  projectileSpeed: 400,
-}
+import { createAI, updateAI, scheduleAIAnswer } from './DemoAIController'
+import { DEMO_ARENA, createPlayer, updatePlayer, fireProjectile, updateProjectiles, applyDamage, respawnPlayer } from './DemoPhysics'
+import { renderFrame } from './DemoRenderer'
 
 // Demo questions for the showcase
 const DEMO_QUESTIONS: DemoQuestion[] = [
@@ -41,40 +34,6 @@ const DEMO_QUESTIONS: DemoQuestion[] = [
     correctIndex: 2,
   },
 ]
-
-/**
- * Create initial player state
- */
-function createPlayer(id: string, x: number, y: number, color: string): DemoPlayerState {
-  return {
-    id,
-    position: { x, y },
-    velocity: { x: 0, y: 0 },
-    health: 100,
-    maxHealth: 100,
-    score: 0,
-    color,
-    isAlive: true,
-    facingRight: id === 'player1',
-  }
-}
-
-/**
- * Create AI controller
- */
-function createAI(personality: 'aggressive' | 'defensive'): DemoAI {
-  return {
-    state: 'idle',
-    personality,
-    reactionTime: personality === 'aggressive' ? 200 : 300,
-    accuracy: personality === 'aggressive' ? 0.8 : 0.7,
-    quizSpeed: personality === 'aggressive' ? 1.5 : 2.0,
-    targetPosition: null,
-    stateTimer: 0,
-    lastFireTime: 0,
-    selectedAnswer: null,
-  }
-}
 
 export class DemoGameEngine {
   private canvas: HTMLCanvasElement
@@ -146,7 +105,7 @@ export class DemoGameEngine {
     if (!this.matchState.isPlaying) return
 
     const now = performance.now()
-    const deltaTime = Math.min((now - this.lastTime) / 1000, 0.1) // Cap at 100ms
+    const deltaTime = Math.min((now - this.lastTime) / 1000, 0.1)
     this.lastTime = now
 
     this.update(deltaTime)
@@ -159,35 +118,60 @@ export class DemoGameEngine {
     this.matchTime += dt * 1000
     this.matchState.timeInPhase += dt * 1000
 
-    // Update match phases
     this.updateMatchPhase()
+    this.updateAIs(dt)
+    this.updatePhysics(dt)
+    this.updateQuestionTimer(dt)
+    this.cleanupKillFeed()
 
-    // Update AI
-    this.updateAI(this.ai1, this.player1, this.player2, dt)
-    this.updateAI(this.ai2, this.player2, this.player1, dt)
-
-    // Update physics
-    this.updatePlayer(this.player1, dt)
-    this.updatePlayer(this.player2, dt)
-
-    // Update projectiles
-    this.updateProjectiles(dt)
-
-    // Update question timer
-    if (this.currentQuestion) {
-      this.questionTimer -= dt * 1000
-      if (this.questionTimer <= 0) {
-        this.resolveQuestion()
-      }
-    }
-
-    // Clean up kill feed
-    const currentTime = performance.now()
-    this.killFeed = this.killFeed.filter(k => currentTime - k.time < 3000)
-
-    // Check for loop reset
     if (this.matchTime >= this.loopDuration) {
       this.resetMatch()
+    }
+  }
+
+  private updateAIs(dt: number): void {
+    const context = {
+      arenaWidth: DEMO_ARENA.width,
+      arenaHeight: DEMO_ARENA.height,
+      currentQuestion: this.currentQuestion,
+      onFire: (from: DemoPlayerState, to: DemoPlayerState) => this.handleFire(from, to),
+    }
+    
+    updateAI(this.ai1, this.player1, this.player2, dt, context)
+    updateAI(this.ai2, this.player2, this.player1, dt, context)
+  }
+
+  private updatePhysics(dt: number): void {
+    updatePlayer(this.player1, dt, DEMO_ARENA)
+    updatePlayer(this.player2, dt, DEMO_ARENA)
+    
+    this.projectiles = updateProjectiles(
+      this.projectiles,
+      this.player1,
+      this.player2,
+      dt,
+      DEMO_ARENA,
+      (result, proj) => this.handleProjectileHit(result, proj)
+    )
+  }
+
+  private handleFire(from: DemoPlayerState, to: DemoPlayerState): void {
+    const accuracy = from.id === 'player1' ? this.ai1.accuracy : this.ai2.accuracy
+    this.projectiles.push(fireProjectile(from, to, accuracy, DEMO_ARENA))
+  }
+
+  private handleProjectileHit(result: { targetId: string; damage: number }, proj: DemoProjectile): void {
+    const target = result.targetId === 'player1' ? this.player1 : this.player2
+    const attacker = proj.ownerId === 'player1' ? 'Player 1' : 'Player 2'
+    
+    const died = applyDamage(target, result.damage)
+    this.addKillFeed(`${attacker} landed a hit!`)
+
+    if (died) {
+      const targetName = target.id === 'player1' ? 'Player 1' : 'Player 2'
+      this.addKillFeed(`${attacker} eliminated ${targetName}!`)
+      
+      setTimeout(() => respawnPlayer(target, DEMO_ARENA), 2000)
     }
   }
 
@@ -229,26 +213,21 @@ export class DemoGameEngine {
   private showQuestion(index: number): void {
     if (index >= DEMO_QUESTIONS.length) return
     this.currentQuestion = DEMO_QUESTIONS[index]
-    this.questionTimer = 6000 // 6 seconds per question
+    this.questionTimer = 6000
     this.ai1.selectedAnswer = null
     this.ai2.selectedAnswer = null
     
-    // Schedule AI answers
-    setTimeout(() => {
-      if (this.currentQuestion) {
-        this.ai1.selectedAnswer = Math.random() < this.ai1.accuracy 
-          ? this.currentQuestion.correctIndex 
-          : Math.floor(Math.random() * 4)
-      }
-    }, this.ai1.quizSpeed * 1000)
+    scheduleAIAnswer(this.ai1, this.currentQuestion, () => {})
+    scheduleAIAnswer(this.ai2, this.currentQuestion, () => {})
+  }
 
-    setTimeout(() => {
-      if (this.currentQuestion) {
-        this.ai2.selectedAnswer = Math.random() < this.ai2.accuracy 
-          ? this.currentQuestion.correctIndex 
-          : Math.floor(Math.random() * 4)
+  private updateQuestionTimer(dt: number): void {
+    if (this.currentQuestion) {
+      this.questionTimer -= dt * 1000
+      if (this.questionTimer <= 0) {
+        this.resolveQuestion()
       }
-    }, this.ai2.quizSpeed * 1000)
+    }
   }
 
   private resolveQuestion(): void {
@@ -272,171 +251,9 @@ export class DemoGameEngine {
     this.killFeed.push({ text, time: performance.now() })
   }
 
-  private updateAI(ai: DemoAI, self: DemoPlayerState, opponent: DemoPlayerState, dt: number): void {
-    ai.stateTimer += dt * 1000
-
-    // State machine
-    switch (ai.state) {
-      case 'idle':
-        if (ai.stateTimer > 500 + Math.random() * 500) {
-          ai.state = 'moving'
-          ai.stateTimer = 0
-          ai.targetPosition = {
-            x: 100 + Math.random() * (DEMO_ARENA.width - 200),
-            y: 100 + Math.random() * (DEMO_ARENA.height - 200),
-          }
-        }
-        break
-
-      case 'moving':
-        if (ai.targetPosition) {
-          const dx = ai.targetPosition.x - self.position.x
-          const dy = ai.targetPosition.y - self.position.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          
-          if (dist < 20 || ai.stateTimer > 2000) {
-            ai.state = 'aiming'
-            ai.stateTimer = 0
-          } else {
-            const speed = 150
-            self.velocity.x = (dx / dist) * speed
-            self.velocity.y = (dy / dist) * speed
-          }
-        }
-        break
-
-      case 'aiming':
-        self.velocity.x *= 0.9
-        self.velocity.y *= 0.9
-        
-        // Face opponent
-        self.facingRight = opponent.position.x > self.position.x
-
-        if (ai.stateTimer > ai.reactionTime) {
-          ai.state = 'firing'
-          ai.stateTimer = 0
-        }
-        break
-
-      case 'firing':
-        if (performance.now() - ai.lastFireTime > 500) {
-          this.fireProjectile(self, opponent)
-          ai.lastFireTime = performance.now()
-        }
-        
-        if (ai.stateTimer > 300) {
-          ai.state = ai.personality === 'aggressive' ? 'moving' : 'dodging'
-          ai.stateTimer = 0
-        }
-        break
-
-      case 'dodging':
-        // Quick strafe
-        const dodgeDir = Math.random() > 0.5 ? 1 : -1
-        self.velocity.y = dodgeDir * 200
-        
-        if (ai.stateTimer > 400) {
-          ai.state = 'idle'
-          ai.stateTimer = 0
-        }
-        break
-
-      case 'answering':
-        // Handled by question system
-        if (!this.currentQuestion) {
-          ai.state = 'idle'
-          ai.stateTimer = 0
-        }
-        break
-    }
-
-    // Override to answering when question is active
-    if (this.currentQuestion && ai.state !== 'answering') {
-      ai.state = 'answering'
-      ai.stateTimer = 0
-    }
-  }
-
-  private fireProjectile(from: DemoPlayerState, to: DemoPlayerState): void {
-    const dx = to.position.x - from.position.x
-    const dy = to.position.y - from.position.y
-    
-    // Add some inaccuracy
-    const wobble = (1 - (from.id === 'player1' ? this.ai1.accuracy : this.ai2.accuracy)) * 0.3
-    const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * wobble
-
-    this.projectiles.push({
-      id: `proj_${Date.now()}_${Math.random()}`,
-      position: { x: from.position.x, y: from.position.y },
-      velocity: {
-        x: Math.cos(angle) * DEMO_ARENA.projectileSpeed,
-        y: Math.sin(angle) * DEMO_ARENA.projectileSpeed,
-      },
-      ownerId: from.id,
-      color: from.color,
-    })
-  }
-
-  private updatePlayer(player: DemoPlayerState, dt: number): void {
-    // Apply velocity
-    player.position.x += player.velocity.x * dt
-    player.position.y += player.velocity.y * dt
-
-    // Friction
-    player.velocity.x *= 0.95
-    player.velocity.y *= 0.95
-
-    // Bounds
-    const r = DEMO_ARENA.playerRadius
-    player.position.x = Math.max(r, Math.min(DEMO_ARENA.width - r, player.position.x))
-    player.position.y = Math.max(r, Math.min(DEMO_ARENA.height - r, player.position.y))
-  }
-
-  private updateProjectiles(dt: number): void {
-    for (let i = this.projectiles.length - 1; i >= 0; i--) {
-      const proj = this.projectiles[i]
-      
-      // Move
-      proj.position.x += proj.velocity.x * dt
-      proj.position.y += proj.velocity.y * dt
-
-      // Check bounds
-      if (proj.position.x < 0 || proj.position.x > DEMO_ARENA.width ||
-          proj.position.y < 0 || proj.position.y > DEMO_ARENA.height) {
-        this.projectiles.splice(i, 1)
-        continue
-      }
-
-      // Check collision with players
-      const target = proj.ownerId === 'player1' ? this.player2 : this.player1
-      const dx = proj.position.x - target.position.x
-      const dy = proj.position.y - target.position.y
-      const dist = Math.sqrt(dx * dx + dy * dy)
-
-      if (dist < DEMO_ARENA.playerRadius + DEMO_ARENA.projectileRadius) {
-        // Hit!
-        target.health = Math.max(0, target.health - 15)
-        this.projectiles.splice(i, 1)
-        
-        const attacker = proj.ownerId === 'player1' ? 'Player 1' : 'Player 2'
-        this.addKillFeed(`${attacker} landed a hit!`)
-
-        if (target.health <= 0) {
-          target.isAlive = false
-          this.addKillFeed(`${attacker} eliminated ${target.id === 'player1' ? 'Player 1' : 'Player 2'}!`)
-          
-          // Respawn after delay
-          setTimeout(() => {
-            target.health = target.maxHealth
-            target.isAlive = true
-            target.position = {
-              x: target.id === 'player1' ? 150 : DEMO_ARENA.width - 150,
-              y: DEMO_ARENA.height / 2,
-            }
-          }, 2000)
-        }
-      }
-    }
+  private cleanupKillFeed(): void {
+    const currentTime = performance.now()
+    this.killFeed = this.killFeed.filter(k => currentTime - k.time < 3000)
   }
 
   private resetMatch(): void {
@@ -445,11 +262,8 @@ export class DemoGameEngine {
     this.matchState.timeInPhase = 0
     this.currentQuestion = null
     
-    // Reset players
     this.player1 = createPlayer('player1', 150, DEMO_ARENA.height / 2, '#F97316')
     this.player2 = createPlayer('player2', DEMO_ARENA.width - 150, DEMO_ARENA.height / 2, '#A855F7')
-    
-    // Reset AI
     this.ai1 = createAI('aggressive')
     this.ai2 = createAI('defensive')
     
@@ -458,90 +272,7 @@ export class DemoGameEngine {
   }
 
   private render(): void {
-    const ctx = this.ctx
-    const w = this.canvas.width
-    const h = this.canvas.height
-    const scaleX = w / DEMO_ARENA.width
-    const scaleY = h / DEMO_ARENA.height
-
-    // Clear
-    ctx.fillStyle = '#09090B'
-    ctx.fillRect(0, 0, w, h)
-
-    // Draw arena background
-    this.renderArena(ctx, scaleX, scaleY)
-
-    // Draw projectiles
-    for (const proj of this.projectiles) {
-      ctx.beginPath()
-      ctx.arc(proj.position.x * scaleX, proj.position.y * scaleY, DEMO_ARENA.projectileRadius * scaleX, 0, Math.PI * 2)
-      ctx.fillStyle = proj.color
-      ctx.shadowColor = proj.color
-      ctx.shadowBlur = 10
-      ctx.fill()
-      ctx.shadowBlur = 0
-    }
-
-    // Draw players
-    this.renderPlayer(ctx, this.player1, scaleX, scaleY)
-    this.renderPlayer(ctx, this.player2, scaleX, scaleY)
-
-    // Draw HUD is handled by DemoHUD component
-  }
-
-  private renderArena(ctx: CanvasRenderingContext2D, scaleX: number, scaleY: number): void {
-    // Grid lines
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'
-    ctx.lineWidth = 1
-
-    const gridSize = 50
-    for (let x = 0; x <= DEMO_ARENA.width; x += gridSize) {
-      ctx.beginPath()
-      ctx.moveTo(x * scaleX, 0)
-      ctx.lineTo(x * scaleX, DEMO_ARENA.height * scaleY)
-      ctx.stroke()
-    }
-    for (let y = 0; y <= DEMO_ARENA.height; y += gridSize) {
-      ctx.beginPath()
-      ctx.moveTo(0, y * scaleY)
-      ctx.lineTo(DEMO_ARENA.width * scaleX, y * scaleY)
-      ctx.stroke()
-    }
-
-    // Border
-    ctx.strokeStyle = 'rgba(249, 115, 22, 0.3)'
-    ctx.lineWidth = 2
-    ctx.strokeRect(2, 2, DEMO_ARENA.width * scaleX - 4, DEMO_ARENA.height * scaleY - 4)
-  }
-
-  private renderPlayer(ctx: CanvasRenderingContext2D, player: DemoPlayerState, scaleX: number, scaleY: number): void {
-    if (!player.isAlive) return
-
-    const x = player.position.x * scaleX
-    const y = player.position.y * scaleY
-    const r = DEMO_ARENA.playerRadius * scaleX
-
-    // Glow
-    ctx.beginPath()
-    ctx.arc(x, y, r * 1.5, 0, Math.PI * 2)
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, r * 1.5)
-    gradient.addColorStop(0, player.color + '40')
-    gradient.addColorStop(1, 'transparent')
-    ctx.fillStyle = gradient
-    ctx.fill()
-
-    // Body
-    ctx.beginPath()
-    ctx.arc(x, y, r, 0, Math.PI * 2)
-    ctx.fillStyle = player.color
-    ctx.fill()
-
-    // Direction indicator
-    const dirX = player.facingRight ? r * 0.8 : -r * 0.8
-    ctx.beginPath()
-    ctx.arc(x + dirX, y - r * 0.3, r * 0.25, 0, Math.PI * 2)
-    ctx.fillStyle = '#fff'
-    ctx.fill()
+    renderFrame(this.ctx, this.canvas, DEMO_ARENA, this.player1, this.player2, this.projectiles)
   }
 
   // Public getters for HUD

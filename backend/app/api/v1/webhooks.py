@@ -9,7 +9,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, status, Request, Header, Depends
 from stripe import SignatureVerificationError
 
-from app.api.deps import get_supabase_client
+from app.database.supabase_client import get_supabase_service_client
 from app.core.config import get_settings
 from app.services.stripe_service import StripeService
 from app.services.balance_service import BalanceService
@@ -35,8 +35,11 @@ async def get_stripe_service() -> StripeService:
 
 
 async def get_balance_service() -> BalanceService:
-    """Get balance service instance."""
-    client = get_supabase_client()
+    """Get balance service instance.
+    
+    Uses service client to bypass RLS for webhook processing.
+    """
+    client = get_supabase_service_client()
     return BalanceService(client)
 
 

@@ -55,10 +55,13 @@ export class HealthManager {
 
   /**
    * Check if player is alive
+   * Returns true for untracked players (allows hits to register before explicit init)
    */
   isAlive(playerId: string): boolean {
     const state = this.states.get(playerId)
-    return state ? state.current > 0 : false
+    // If player isn't tracked yet, assume alive (e.g., bot opponent before full init)
+    if (!state) return true
+    return state.current > 0
   }
 
   /**

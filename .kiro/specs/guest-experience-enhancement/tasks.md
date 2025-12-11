@@ -1,0 +1,161 @@
+# Implementation Plan
+
+- [x] 1. Create Guest Session Manager
+  - [x] 1.1 Implement GuestSessionManager class with localStorage persistence
+    - Create `frontend/src/game/guest/GuestSessionManager.ts`
+    - Implement session creation, retrieval, and update methods
+    - Add session stats tracking (wins, kills, deaths, questions, XP)
+    - Handle localStorage unavailability gracefully
+    - _Requirements: 4.1, 4.4_
+  - [x] 1.2 Write property test for session stats accumulation
+    - **Property 4: Session stats accumulation correctness**
+    - **Validates: Requirements 4.1**
+  - [x] 1.3 Implement preview XP calculation
+    - Create XP formula based on match performance
+    - Ensure calculation is pure function for consistency
+    - _Requirements: 2.3, 8.2_
+  - [x] 1.4 Write property test for XP calculation consistency
+    - **Property 3: Preview XP calculation consistency**
+    - **Validates: Requirements 2.3, 8.2**
+  - [x] 1.5 Implement milestone detection system
+    - Define milestone conditions (first win, 3 kills streak, 5 matches, etc.)
+    - Create deterministic milestone checker
+    - _Requirements: 4.2_
+  - [x] 1.6 Write property test for milestone detection determinism
+    - **Property 5: Milestone detection determinism**
+    - **Validates: Requirements 4.2**
+
+- [x] 2. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 3. Create Instant Play Mode
+  - [x] 3.1 Implement InstantPlayManager with asset preloading
+    - Create `frontend/src/game/guest/InstantPlayManager.ts`
+    - Add preload trigger on CTA hover
+    - Configure default category and map
+    - Track initialization timing
+    - _Requirements: 1.1, 1.2_
+  - [x] 3.2 Write property test for initialization timing bound
+    - **Property 1: Game initialization timing bound**
+    - **Validates: Requirements 1.1**
+  - [x] 3.3 Create InstantPlayTutorial overlay component
+    - Create `frontend/src/components/game/InstantPlayTutorial.tsx`
+    - Show WASD/touch controls based on device
+    - Implement auto-dismiss after 5 seconds
+    - Allow manual dismiss via click/tap
+    - _Requirements: 1.3, 1.4, 6.2_
+  - [x] 3.4 Write property test for tutorial auto-dismiss timing
+    - **Property 2: Tutorial auto-dismiss timing**
+    - **Validates: Requirements 1.4**
+
+- [x] 4. Create Bot Personality System
+  - [x] 4.1 Implement BotPersonalitySystem with name pool
+    - Create `frontend/src/game/guest/BotPersonalitySystem.ts`
+    - Define name pool with 12+ varied names
+    - Track last used name to prevent repeats
+    - Generate random avatar/difficulty combinations
+    - _Requirements: 7.2, 7.3_
+  - [x] 4.2 Write property test for bot name uniqueness
+    - **Property 9: Bot name uniqueness per session**
+    - **Validates: Requirements 7.2**
+  - [x] 4.3 Write property test for bot behavior variation
+    - **Property 10: Bot behavior variation**
+    - **Validates: Requirements 7.3**
+
+- [x] 5. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 6. Create Engagement Feedback System
+  - [x] 6.1 Implement EngagementFeedbackSystem
+    - Create `frontend/src/game/guest/EngagementFeedbackSystem.ts`
+    - Add correct answer particle effects trigger
+    - Add kill confirmation effect trigger
+    - Add XP preview popup system
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [x] 6.2 Create XpPreviewPopup component
+    - Create `frontend/src/components/game/XpPreviewPopup.tsx`
+    - Animated popup showing "+XP" with reason
+    - Stack multiple popups if needed
+    - _Requirements: 2.3_
+  - [x] 6.3 Create GuestMatchSummary component
+    - Create `frontend/src/components/game/GuestMatchSummary.tsx`
+    - Show match stats with preview XP earned
+    - Display achievement-style unlocks preview on win
+    - Include "Play Again" and "Sign Up" CTAs
+    - _Requirements: 2.4, 5.1_
+  - [x] 6.4 Write property test for play again timing
+    - **Property 6: Play again initialization timing**
+    - **Validates: Requirements 5.2**
+
+- [x] 7. Create Soft Conversion Prompts
+  - [x] 7.1 Implement SoftConversionPrompts system
+    - Create `frontend/src/game/guest/SoftConversionPrompts.ts`
+    - Define prompt triggers (match 1, 3, 5)
+    - Track shown/dismissed prompts
+    - _Requirements: 3.1, 3.2, 5.4_
+  - [x] 7.2 Create ConversionPromptModal component
+    - Create `frontend/src/components/game/ConversionPromptModal.tsx`
+    - Non-intrusive modal with feature previews
+    - Show accumulated stats on third match prompt
+    - Dismissable with "Maybe Later" option
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [x] 7.3 Create GuestModeIndicator component
+    - Create `frontend/src/components/game/GuestModeIndicator.tsx`
+    - Subtle indicator during gameplay
+    - One-click signup option
+    - _Requirements: 3.4_
+  - [x] 7.4 Write property test for category suggestion probability
+    - **Property 7: Category suggestion probability**
+    - **Validates: Requirements 5.3**
+
+- [x] 8. Checkpoint - Ensure all tests pass
+  - 83 property tests passing across 6 test files
+
+- [x] 9. Create Session Transfer Flow
+  - [x] 9.1 Implement SessionTransferFlow
+    - Create `frontend/src/game/guest/SessionTransferFlow.ts`
+    - Calculate transfer rewards from session data
+    - Integrate with registration flow
+    - _Requirements: 8.1, 8.2_
+  - [x] 9.2 Create SessionTransferPreview component
+    - Create `frontend/src/components/auth/SessionTransferPreview.tsx`
+    - Show XP and rewards to be credited
+    - Display during registration flow
+    - _Requirements: 8.2_
+  - [x] 9.3 Update registration flow to handle session transfer
+    - Modify registration to check for guest session
+    - Execute transfer after successful account creation
+    - Show welcome message with transfer confirmation
+    - _Requirements: 8.1, 8.3, 8.4_
+
+- [x] 10. Mobile Optimization
+  - [x] 10.1 Ensure touch target compliance across guest UI
+    - All buttons have min-h-[48px] for touch compliance
+    - GuestModeIndicator has min-h and min-w for touch targets
+    - _Requirements: 6.1, 6.3_
+  - [x] 10.2 Write property test for mobile touch target compliance
+    - **Property 8: Mobile touch target compliance**
+    - **Validates: Requirements 6.1, 6.3**
+  - [ ] 10.3 Optimize asset loading for mobile
+    - Implement mobile-specific asset variants
+    - Reduce initial payload for faster load
+    - _Requirements: 6.4_
+
+- [x] 11. Integrate with Landing Page and BotGame
+  - [x] 11.1 Update HeroSection CTA to use InstantPlayManager
+    - Add preload on hover
+    - Navigate to instant play route
+    - _Requirements: 1.1_
+  - [x] 11.2 Create InstantPlay page/route
+    - Create `frontend/src/pages/InstantPlay.tsx`
+    - Integrate all guest systems
+    - Handle tutorial, feedback, prompts
+    - _Requirements: 1.1, 1.2, 1.3_
+  - [x] 11.3 Update BotGame to support instant play mode
+    - Add instant play flag to skip setup screen
+    - Integrate GuestSessionManager
+    - Add engagement feedback hooks
+    - _Requirements: 7.1, 7.4_
+
+- [x] 12. Final Checkpoint - Ensure all tests pass
+  - 99 property tests passing across 8 test files

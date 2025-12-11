@@ -4,6 +4,7 @@ import { usePresence } from '@/hooks/usePresence'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/stores/authStore'
 import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
+import { InstantPlay } from '@/pages/InstantPlay'
 import { AdminAnalytics } from '@/pages/AdminAnalytics'
 import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
 import { MatchHistory } from '@/pages/MatchHistory'
@@ -192,6 +193,8 @@ function App() {
         <Route path="/arena-test" element={<ArenaTest />} />
         {/* Guest play route - try the game without signup */}
         <Route path="/play" element={<BotGame />} />
+        {/* Instant play route - zero-friction guest experience */}
+        <Route path="/instant-play" element={<InstantPlay />} />
         {/* Legal pages - no auth required */}
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />

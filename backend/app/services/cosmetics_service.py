@@ -151,6 +151,24 @@ class CosmeticsService:
         items = await self.cosmetics_repo.get_cosmetics_by_type(cosmetic_type.value)
         return [Cosmetic(**item) for item in items]
 
+    async def get_cosmetics_by_ids(
+        self, cosmetic_ids: List[str]
+    ) -> dict[str, Cosmetic]:
+        """
+        Batch fetch multiple cosmetics by ID.
+        
+        Returns a dict mapping cosmetic_id -> Cosmetic for efficient lookup.
+        This avoids N+1 queries when loading many cosmetics at once.
+        """
+        if not cosmetic_ids:
+            return {}
+        
+        # Deduplicate IDs
+        unique_ids = list(set(cosmetic_ids))
+        
+        items = await self.cosmetics_repo.get_cosmetics_by_ids(unique_ids)
+        return {item["id"]: Cosmetic(**item) for item in items}
+
     # ============================================
     # Inventory Operations
     # ============================================

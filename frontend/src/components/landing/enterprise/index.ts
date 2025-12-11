@@ -35,6 +35,7 @@ export * from './UseCasesSection'
 export * from './FinalCTASection'
 export * from './LandingHeader'
 export * from './LandingFooter'
+export * from './StickyMobileCTA'
 
 // Icons
 export * from './icons'

@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { cn } from '@/utils/helpers'
 import { useAuthStore } from '@/stores/authStore'
 import { CTAButton } from './CTAButton'
+import { analytics } from '@/services/analytics'
 
 export interface FinalCTASectionProps {
   /** Additional CSS classes */
@@ -19,9 +20,9 @@ export interface FinalCTASectionProps {
 
 const FINAL_CTA_CONTENT = {
   headline: 'Ready To Settle It?',
-  subheadline: 'Jump into a free 1v1 arena match in under 30 seconds. No signup required for your first game.',
-  primaryCTA: 'Start A Free Match',
-  secondaryCTA: 'Join With A Code',
+  subheadline: 'Jump into a free 1v1 arena match in under 30 seconds. No signup required.',
+  primaryCTA: 'Play Now — Free',
+  secondaryCTA: 'Create Account',
 }
 
 export function FinalCTASection({ className }: FinalCTASectionProps) {
@@ -29,11 +30,13 @@ export function FinalCTASection({ className }: FinalCTASectionProps) {
   const { isAuthenticated } = useAuthStore()
 
   const handlePrimaryCTA = () => {
-    navigate(isAuthenticated ? '/dashboard' : '/register')
+    analytics.trackEvent('final_cta_play_click', { authenticated: isAuthenticated })
+    navigate(isAuthenticated ? '/dashboard' : '/instant-play')
   }
 
   const handleSecondaryCTA = () => {
-    navigate(isAuthenticated ? '/dashboard' : '/login')
+    analytics.trackEvent('final_cta_signup_click', { authenticated: isAuthenticated })
+    navigate(isAuthenticated ? '/dashboard' : '/register')
   }
 
   return (

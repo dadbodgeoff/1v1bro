@@ -122,6 +122,27 @@ class CosmeticsRepository:
         )
         return result.data or []
 
+    async def get_cosmetics_by_ids(self, cosmetic_ids: List[str]) -> List[dict]:
+        """
+        Batch fetch multiple cosmetics by ID.
+        
+        Args:
+            cosmetic_ids: List of cosmetic UUIDs
+            
+        Returns:
+            List of cosmetic dicts
+        """
+        if not cosmetic_ids:
+            return []
+        
+        result = (
+            self._catalog()
+            .select("*")
+            .in_("id", cosmetic_ids)
+            .execute()
+        )
+        return result.data or []
+
     # ============================================
     # Inventory Operations
     # ============================================

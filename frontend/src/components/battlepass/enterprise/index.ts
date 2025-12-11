@@ -23,11 +23,11 @@ export {
   sizeConfig,
   rarityBorders,
   rarityGlows,
-  rarityBgGradients,
   getRarityBorder,
   getRarityGlow,
   getSizeConfig,
 } from './RewardDisplayBox'
+export { rarityBgGradients } from './rewardConfig'
 export type {
   DisplaySize,
   RewardType,

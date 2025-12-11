@@ -252,9 +252,42 @@ class Analytics {
 // Singleton instance
 export const analytics = new Analytics()
 
+// ============================================
 // Convenience exports for common events
+// ============================================
+
+// Landing page events
 export const trackSignupClick = () => analytics.trackEvent('click_signup')
 export const trackLoginClick = () => analytics.trackEvent('click_login')
 export const trackDemoPlay = () => analytics.trackEvent('demo_play')
 export const trackDemoComplete = (duration: number) => analytics.trackEvent('demo_complete', { duration })
 export const trackFeatureScroll = (section: string) => analytics.trackEvent('scroll_to_section', { section })
+
+// Instant play funnel events
+export const trackInstantPlayStart = () => analytics.trackEvent('instant_play_start')
+export const trackInstantPlayCategorySelect = (category: string) => analytics.trackEvent('instant_play_category_select', { category })
+export const trackInstantPlayTutorialComplete = () => analytics.trackEvent('instant_play_tutorial_complete')
+export const trackInstantPlayMatchStart = () => analytics.trackEvent('instant_play_match_start')
+export const trackInstantPlayMatchComplete = (result: 'win' | 'loss', duration: number) => 
+  analytics.trackEvent('instant_play_match_complete', { result, duration })
+export const trackInstantPlayPlayAgain = (matchCount: number) => 
+  analytics.trackEvent('instant_play_play_again', { match_count: matchCount })
+export const trackInstantPlayExit = (matchCount: number, totalXp: number) => 
+  analytics.trackEvent('instant_play_exit', { match_count: matchCount, total_xp: totalXp })
+
+// Conversion prompt events
+export const trackConversionPromptShown = (promptId: string, matchCount: number) => 
+  analytics.trackEvent('conversion_prompt_shown', { prompt_id: promptId, match_count: matchCount })
+export const trackConversionPromptClicked = (promptId: string) => 
+  analytics.trackEvent('conversion_prompt_clicked', { prompt_id: promptId })
+export const trackConversionPromptDismissed = (promptId: string) => 
+  analytics.trackEvent('conversion_prompt_dismissed', { prompt_id: promptId })
+
+// Signup funnel events
+export const trackSignupFormStart = () => analytics.trackEvent('signup_form_start')
+export const trackSignupFormComplete = () => analytics.trackEvent('signup_form_complete')
+export const trackSignupFormError = (error: string) => analytics.trackEvent('signup_form_error', { error })
+
+// Mobile CTA events
+export const trackMobileCtaShown = () => analytics.trackEvent('mobile_cta_shown')
+export const trackMobileCtaClick = () => analytics.trackEvent('mobile_cta_click')

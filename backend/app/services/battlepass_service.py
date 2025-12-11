@@ -99,27 +99,45 @@ class BattlePassService:
         Get all tier rewards for a season.
         
         Requirements: 4.8 - Support free_reward and premium_reward per tier.
+        
+        Performance: Uses batch fetching to avoid N+1 queries when loading
+        cosmetic details for tier rewards.
         """
         tiers_data = await self.battlepass_repo.get_tier_rewards(season_id)
         logger.info(f"Fetched {len(tiers_data)} tiers for season {season_id}")
         
+        # Batch fetch all cosmetic IDs upfront to avoid N+1 queries
+        cosmetic_ids = []
+        for tier_data in tiers_data:
+            free_reward = tier_data.get("free_reward")
+            if free_reward and free_reward.get("type") == "cosmetic" and free_reward.get("value"):
+                cosmetic_ids.append(str(free_reward["value"]))
+            premium_reward = tier_data.get("premium_reward")
+            if premium_reward and premium_reward.get("type") == "cosmetic" and premium_reward.get("value"):
+                cosmetic_ids.append(str(premium_reward["value"]))
+        
+        # Single batch query for all cosmetics
+        cosmetics_map: dict = {}
+        if cosmetic_ids and self.cosmetics_service:
+            cosmetics_map = await self.cosmetics_service.get_cosmetics_by_ids(cosmetic_ids)
+            logger.info(f"Batch fetched {len(cosmetics_map)} cosmetics for tier rewards")
+        
+        # Build tier list using pre-fetched cosmetics
         tiers = []
         for tier_data in tiers_data:
             tier_num = tier_data.get("tier_number", 0)
             free_reward = None
             premium_reward = None
             
-            # Parse free reward
+            # Parse free reward with pre-fetched cosmetics
             free_reward_data = tier_data.get("free_reward")
             if free_reward_data:
-                logger.debug(f"Tier {tier_num} free_reward raw: {free_reward_data} (type: {type(free_reward_data).__name__})")
-                free_reward = await self._parse_reward(free_reward_data)
+                free_reward = self._parse_reward_with_cache(free_reward_data, cosmetics_map)
             
-            # Parse premium reward
+            # Parse premium reward with pre-fetched cosmetics
             premium_reward_data = tier_data.get("premium_reward")
             if premium_reward_data:
-                logger.debug(f"Tier {tier_num} premium_reward raw: {premium_reward_data} (type: {type(premium_reward_data).__name__})")
-                premium_reward = await self._parse_reward(premium_reward_data)
+                premium_reward = self._parse_reward_with_cache(premium_reward_data, cosmetics_map)
             
             tiers.append(BattlePassTier(
                 tier_number=tier_num,
@@ -128,6 +146,33 @@ class BattlePassService:
             ))
         
         return tiers
+    
+    def _parse_reward_with_cache(
+        self, reward_data: dict, cosmetics_map: dict
+    ) -> Reward:
+        """
+        Parse reward data using pre-fetched cosmetics map.
+        
+        This is the fast path that uses batch-fetched cosmetics instead of
+        making individual DB queries.
+        """
+        reward_type = RewardType(reward_data.get("type", "coins"))
+        value = reward_data.get("value")
+        cosmetic = None
+        cosmetic_preview_url = None
+        
+        # Look up cosmetic from pre-fetched map
+        if reward_type == RewardType.COSMETIC and value:
+            cosmetic = cosmetics_map.get(str(value))
+            if cosmetic:
+                cosmetic_preview_url = cosmetic.image_url
+        
+        return Reward(
+            type=reward_type,
+            value=value,
+            cosmetic=cosmetic,
+            cosmetic_preview_url=cosmetic_preview_url,
+        )
     
     async def _parse_reward(self, reward_data: dict) -> Reward:
         """Parse reward data and populate cosmetic if needed."""

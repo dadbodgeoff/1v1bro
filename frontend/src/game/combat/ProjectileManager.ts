@@ -147,4 +147,22 @@ export class ProjectileManager {
       this.projectiles.set(proj.id, proj)
     }
   }
+
+  /**
+   * Merge external projectiles (e.g., bot projectiles) with local ones
+   * Only adds/updates projectiles from the external source, doesn't remove local ones
+   */
+  mergeExternal(projectiles: Projectile[]): void {
+    for (const proj of projectiles) {
+      this.projectiles.set(proj.id, proj)
+    }
+    // Remove external projectiles that are no longer in the list
+    const externalIds = new Set(projectiles.map(p => p.id))
+    for (const [id] of this.projectiles) {
+      // If it's an external projectile (e.g., bot-proj-*) and not in the new list, remove it
+      if (id.startsWith('bot-proj-') && !externalIds.has(id)) {
+        this.projectiles.delete(id)
+      }
+    }
+  }
 }

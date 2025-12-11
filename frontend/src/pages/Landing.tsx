@@ -19,6 +19,7 @@ import {
   FinalCTASection,
   LandingFooter,
   FloatingProjectiles,
+  StickyMobileCTA,
 } from '@/components/landing/enterprise'
 import { analytics } from '@/services/analytics'
 
@@ -70,6 +71,9 @@ export function Landing() {
 
       {/* Footer */}
       <LandingFooter />
+
+      {/* Sticky Mobile CTA - shows after scrolling past hero */}
+      <StickyMobileCTA showAfterScroll={600} />
     </div>
   )
 }

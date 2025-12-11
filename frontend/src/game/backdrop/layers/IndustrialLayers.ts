@@ -192,15 +192,16 @@ export class IndustrialDustLayer implements BackdropLayer {
   }
 
   private generateParticles(): void {
-    const count = Math.floor((this.config.width * this.config.height) / 8000)
+    // Reduced particle count for cleaner look
+    const count = Math.floor((this.config.width * this.config.height) / 20000)
     for (let i = 0; i < count; i++) {
       this.particles.push({
         x: Math.random() * this.config.width,
         y: Math.random() * this.config.height,
-        size: 1 + Math.random() * 2,
-        alpha: 0.1 + Math.random() * 0.2,
-        vx: (Math.random() - 0.5) * 5,
-        vy: (Math.random() - 0.5) * 3 - 2, // Slight upward drift
+        size: 0.5 + Math.random() * 1,
+        alpha: 0.05 + Math.random() * 0.1,
+        vx: (Math.random() - 0.5) * 3,
+        vy: (Math.random() - 0.5) * 2 - 1, // Slight upward drift
       })
     }
   }
@@ -248,18 +249,18 @@ export class IndustrialSparkLayer implements BackdropLayer {
   private config: BackdropConfig
   private sparks: Spark[] = []
   private spawnTimer = 0
-  private spawnInterval = 2 // Seconds between spark bursts
+  private spawnInterval = 5 // Seconds between spark bursts (increased for cleaner look)
 
   constructor(config: BackdropConfig) {
     this.config = config
   }
 
   update(deltaTime: number, _time: number): void {
-    // Spawn new sparks occasionally
+    // Spawn new sparks occasionally (less frequent for cleaner enterprise look)
     this.spawnTimer += deltaTime
     if (this.spawnTimer >= this.spawnInterval) {
       this.spawnTimer = 0
-      this.spawnInterval = 1 + Math.random() * 3
+      this.spawnInterval = 4 + Math.random() * 4 // 4-8 seconds between bursts
       this.spawnSparkBurst()
     }
 
@@ -300,32 +301,32 @@ export class IndustrialSparkLayer implements BackdropLayer {
         y = Math.random() * this.config.height
     }
 
-    // Create burst of sparks
-    const count = 3 + Math.floor(Math.random() * 5)
+    // Create smaller burst of sparks (reduced for cleaner look)
+    const count = 2 + Math.floor(Math.random() * 2) // 2-3 sparks instead of 3-7
     for (let i = 0; i < count; i++) {
       this.sparks.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 200,
-        vy: (Math.random() - 0.5) * 200 - 50,
-        life: 0.5 + Math.random() * 0.5,
-        maxLife: 1,
+        vx: (Math.random() - 0.5) * 150, // Slower movement
+        vy: (Math.random() - 0.5) * 150 - 30,
+        life: 0.3 + Math.random() * 0.3, // Shorter lifespan
+        maxLife: 0.6,
       })
     }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
     for (const s of this.sparks) {
-      const alpha = s.life / s.maxLife
+      const alpha = (s.life / s.maxLife) * 0.7 // Reduced overall opacity
       ctx.beginPath()
-      ctx.arc(s.x, s.y, 2, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(255, 170, 0, ${alpha})`
+      ctx.arc(s.x, s.y, 1.5, 0, Math.PI * 2) // Smaller sparks
+      ctx.fillStyle = `rgba(255, 180, 50, ${alpha})`
       ctx.fill()
 
-      // Glow
+      // Subtle glow (reduced)
       ctx.beginPath()
-      ctx.arc(s.x, s.y, 4, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(255, 100, 0, ${alpha * 0.3})`
+      ctx.arc(s.x, s.y, 3, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(255, 120, 20, ${alpha * 0.15})`
       ctx.fill()
     }
   }

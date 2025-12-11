@@ -7,7 +7,7 @@ from typing import Annotated
 from fastapi import Depends
 
 from app.core.config import Settings, get_settings
-from app.database.supabase_client import get_supabase_client, get_supabase_service_client
+from app.database.supabase_client import get_supabase_service_client
 from supabase import Client as SupabaseClient
 
 # Type alias for service client dependency
@@ -37,44 +37,65 @@ OptionalUser = Annotated[AuthenticatedUser | None, Depends(get_current_user_opti
 
 
 def get_auth_service() -> AuthService:
-    """Get AuthService instance."""
-    client = get_supabase_client()
+    """Get AuthService instance.
+    
+    Uses service client to bypass RLS - auth is handled by JWT middleware.
+    """
+    client = get_supabase_service_client()
     return AuthService(client)
 
 
 def get_lobby_service() -> LobbyService:
-    """Get LobbyService instance."""
-    client = get_supabase_client()
+    """Get LobbyService instance.
+    
+    Uses service client to bypass RLS for better query performance.
+    """
+    client = get_supabase_service_client()
     return LobbyService(client)
 
 
 def get_game_service() -> GameService:
-    """Get GameService instance."""
-    client = get_supabase_client()
+    """Get GameService instance.
+    
+    Uses service client to bypass RLS for better query performance.
+    """
+    client = get_supabase_service_client()
     return GameService(client)
 
 
 def get_question_service() -> QuestionService:
-    """Get QuestionService instance with database support."""
-    client = get_supabase_client()
+    """Get QuestionService instance with database support.
+    
+    Uses service client to bypass RLS for better query performance.
+    """
+    client = get_supabase_service_client()
     return QuestionService(client)
 
 
 def get_friend_service() -> FriendService:
-    """Get FriendService instance."""
-    client = get_supabase_client()
+    """Get FriendService instance.
+    
+    Uses service client to bypass RLS for better query performance.
+    """
+    client = get_supabase_service_client()
     return FriendService(client)
 
 
 def get_message_service() -> MessageService:
-    """Get MessageService instance."""
-    client = get_supabase_client()
+    """Get MessageService instance.
+    
+    Uses service client to bypass RLS for better query performance.
+    """
+    client = get_supabase_service_client()
     return MessageService(client)
 
 
 def get_profile_service() -> ProfileService:
-    """Get ProfileService instance."""
-    client = get_supabase_client()
+    """Get ProfileService instance.
+    
+    Uses service client to bypass RLS for better query performance.
+    """
+    client = get_supabase_service_client()
     return ProfileService(client)
 
 
