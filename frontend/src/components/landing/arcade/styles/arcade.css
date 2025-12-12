@@ -2012,10 +2012,11 @@
   
   /* Mobile: Single column, stacked layout - give demo more space */
   grid-template-columns: 1fr;
-  grid-template-rows: minmax(200px, 1.5fr) auto auto;
+  grid-template-rows: minmax(180px, 1.5fr) auto auto auto;
   grid-template-areas:
     "demo"
     "content"
+    "press"
     "cta";
   gap: 8px;
   padding: 12px;
@@ -2033,6 +2034,15 @@
   gap: 32px;
   padding: 24px;
   align-items: center;
+}
+
+/* On desktop, press-start-container is absolutely positioned at bottom center */
+.dashboard-ui--desktop .press-start-container {
+  position: absolute;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  grid-area: unset;
 }
 
 /* Content area - holds headline, tagline */
@@ -2315,11 +2325,15 @@
  * Press Start Easter Egg
  * ============================================ */
 
+/* Press start container for grid placement */
+.press-start-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 20px;
+}
+
 .press-start {
-  position: absolute;
-  bottom: var(--space-6);
-  left: 50%;
-  transform: translateX(-50%);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -2327,6 +2341,20 @@
   text-transform: uppercase;
   animation: press-start-blink 0.8s step-end infinite;
   cursor: pointer;
+  z-index: 10;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+}
+
+/* Desktop: Position press-start at bottom center absolutely */
+@media (min-width: 768px) {
+  .press-start-container {
+    position: absolute;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes press-start-blink {
@@ -2536,8 +2564,13 @@
   
   /* Mobile grid: give demo more space for trivia questions */
   .dashboard-ui {
-    grid-template-rows: minmax(180px, 1.2fr) auto auto;
-    gap: 8px;
+    grid-template-rows: minmax(160px, 1fr) auto auto auto;
+    grid-template-areas:
+      "demo"
+      "content"
+      "press"
+      "cta";
+    gap: 6px;
     padding: 10px;
   }
   
@@ -2586,14 +2619,19 @@
 /* Small mobile: < 400px */
 @media (max-width: 399px) {
   .dashboard-ui {
-    grid-template-rows: minmax(140px, 1fr) auto auto;
-    gap: 6px;
+    grid-template-rows: minmax(120px, 1fr) auto auto auto;
+    grid-template-areas:
+      "demo"
+      "content"
+      "press"
+      "cta";
+    gap: 4px;
     padding: 8px;
   }
   
   .demo-container {
     max-height: none;
-    min-height: 130px;
+    min-height: 110px;
   }
   
   .arcade-headline--mobile {

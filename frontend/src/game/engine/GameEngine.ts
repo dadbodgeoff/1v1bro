@@ -480,6 +480,25 @@ export class GameEngine {
       width = availableHeight * aspectRatio
     }
     
+    // Mobile landscape optimization: prioritize filling width over maintaining exact aspect ratio
+    // Safari's browser chrome eats vertical space, causing the map to be narrow with dead space on sides
+    // Solution: Fill the available width, scale height to match, but cap at available height
+    // This shows the arena at full width with potential vertical cropping (which is acceptable per user)
+    if (isMobile && isLandscape) {
+      // Always fill the available width on mobile landscape
+      width = availableWidth
+      // Calculate height based on aspect ratio
+      height = availableWidth / aspectRatio
+      
+      // If height exceeds available, cap it (this crops top/bottom slightly)
+      // User said "map can be wider, but not much higher" - so capping height is fine
+      if (height > availableHeight) {
+        height = availableHeight
+      }
+      // Note: This may slightly distort aspect ratio, but fills the screen
+      // The alternative (letterboxing) wastes too much screen real estate on mobile
+    }
+    
     // Set canvas size and scale
     this.canvas.width = width
     this.canvas.height = height

@@ -141,17 +141,19 @@ export function DashboardUI({
         </ArcadeCTA>
       </div>
 
-      {/* Press Start Easter Egg */}
-      {showPressStart && (
-        <button
-          className="press-start"
-          onClick={onPrimaryCTA}
-          aria-label="Press to start playing"
-          style={{ fontSize: DELIGHT_DETAILS.pressStart.fontSize }}
-        >
-          {ARCADE_CONTENT.pressStart}
-        </button>
-      )}
+      {/* Press Start Easter Egg - wrapped for grid placement on mobile */}
+      <div className="press-start-container" style={{ gridArea: 'press' }}>
+        {showPressStart && (
+          <button
+            className="press-start"
+            onClick={onPrimaryCTA}
+            aria-label="Press to start playing"
+            style={{ fontSize: DELIGHT_DETAILS.pressStart.fontSize }}
+          >
+            {ARCADE_CONTENT.pressStart}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
