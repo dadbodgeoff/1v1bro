@@ -396,33 +396,52 @@ export class GameEngine {
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
     const isLandscape = window.innerWidth > window.innerHeight
     
+    // UI element heights that reduce available game space
+    // These are the actual UI components rendered around the game canvas
+    const UI_HEIGHTS = {
+      // Desktop: scoreboard at top (~50px), trivia panel at bottom (~100px)
+      desktop: {
+        top: 50,      // Scoreboard/header
+        bottom: 100,  // Trivia panel with question + answers
+      },
+      // Mobile landscape: trivia panel at top (~60px), minimal bottom
+      mobileLandscape: {
+        top: 60,      // Compact trivia panel
+        bottom: 0,
+      },
+      // Mobile portrait: trivia at top, controls at bottom
+      mobilePortrait: {
+        top: 80,      // Trivia panel
+        bottom: 120,  // Touch controls
+      },
+    }
+    
     // On mobile, use visualViewport for accurate dimensions that account for browser chrome
-    // This is critical for landscape mode where address bar/nav bar steal space
     let clientWidth: number
     let clientHeight: number
+    let uiTop: number
+    let uiBottom: number
     
     if (isMobile && window.visualViewport) {
       // visualViewport gives us the actual visible area, excluding browser chrome
       clientWidth = window.visualViewport.width
       clientHeight = window.visualViewport.height
       
-      // In mobile landscape, account for the quiz panel overlay at top (~50px)
-      // This ensures the full map is visible without cutoff
       if (isLandscape) {
-        const quizPanelHeight = 50 // ArenaQuizPanel overlay height
-        clientHeight = clientHeight - quizPanelHeight
+        uiTop = UI_HEIGHTS.mobileLandscape.top
+        uiBottom = UI_HEIGHTS.mobileLandscape.bottom
+      } else {
+        uiTop = UI_HEIGHTS.mobilePortrait.top
+        uiBottom = UI_HEIGHTS.mobilePortrait.bottom
       }
     } else {
-      // Desktop: Find a container with MEANINGFUL dimensions (larger than default canvas 300x150)
-      // The shadow wrapper div inherits canvas default size, so we need to traverse up
-      // to find the actual game container with full dimensions
-      const MIN_VALID_WIDTH = 400 // Must be larger than default canvas width (300)
-      const MIN_VALID_HEIGHT = 200 // Must be larger than default canvas height (150)
+      // Desktop: Find a container with MEANINGFUL dimensions
+      const MIN_VALID_WIDTH = 400
+      const MIN_VALID_HEIGHT = 200
       
       let container = this.canvas.parentElement
       let depth = 0
       
-      // Traverse up until we find a container with meaningful dimensions
       while (container && depth < 10) {
         if (container.clientWidth >= MIN_VALID_WIDTH && container.clientHeight >= MIN_VALID_HEIGHT) {
           break
@@ -434,38 +453,37 @@ export class GameEngine {
       if (container && container.clientWidth >= MIN_VALID_WIDTH && container.clientHeight >= MIN_VALID_HEIGHT) {
         clientWidth = container.clientWidth
         clientHeight = container.clientHeight
+        // Container already accounts for UI, minimal additional adjustment
+        uiTop = 0
+        uiBottom = 0
       } else {
-        // Fallback to window dimensions minus some padding for UI elements
+        // Fallback to window dimensions minus UI elements
         clientWidth = window.innerWidth
-        clientHeight = window.innerHeight - 120 // Account for scoreboard and quiz panel
+        clientHeight = window.innerHeight
+        uiTop = UI_HEIGHTS.desktop.top
+        uiBottom = UI_HEIGHTS.desktop.bottom
       }
     }
     
-    if (isMobile) {
-      // Mobile: Fit entire arena on screen (no cropping)
-      // Use letterboxing to ensure full map is always visible regardless of device aspect ratio
-      const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height
-      let width = clientWidth
-      let height = clientWidth / aspectRatio
-      
-      // If calculated height exceeds available height, scale by height instead
-      if (height > clientHeight) {
-        height = clientHeight
-        width = clientHeight * aspectRatio
-      }
-      
-      this.canvas.width = width
-      this.canvas.height = height
-      this.scale = width / ARENA_SIZE.width
-    } else {
-      // Desktop: Maintain aspect ratio (letterbox)
-      const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height
-      let width = clientWidth, height = clientWidth / aspectRatio
-      if (height > clientHeight) { height = clientHeight; width = clientHeight * aspectRatio }
-      this.canvas.width = width
-      this.canvas.height = height
-      this.scale = width / ARENA_SIZE.width
+    // Calculate available space after UI elements
+    const availableHeight = clientHeight - uiTop - uiBottom
+    const availableWidth = clientWidth
+    
+    // Fit arena to available space while maintaining aspect ratio (letterbox)
+    const aspectRatio = ARENA_SIZE.width / ARENA_SIZE.height
+    let width = availableWidth
+    let height = availableWidth / aspectRatio
+    
+    // If calculated height exceeds available height, scale by height instead
+    if (height > availableHeight) {
+      height = availableHeight
+      width = availableHeight * aspectRatio
     }
+    
+    // Set canvas size and scale
+    this.canvas.width = width
+    this.canvas.height = height
+    this.scale = width / ARENA_SIZE.width
     
     this.renderPipeline.setScale(this.scale)
   }

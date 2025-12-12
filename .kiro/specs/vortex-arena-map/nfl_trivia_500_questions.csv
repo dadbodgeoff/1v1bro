@@ -49,7 +49,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 48,2024 NFL Draft,Which QB was selected first overall in the 2024 draft by the Chicago Bears?,Caleb Williams,Jayden Daniels,Drake Maye,Michael Penix Jr.,Caleb Williams
 49,2024 NFL Draft,Who was the Defensive Rookie of the Year?,Jared Verse,Quinyon Mitchell,Braden Fiske,Chop Robinson,Jared Verse
 50,2024 NFL Draft,How many pressures did Jared Verse record in his rookie season?,77,70,85,65,77
-51,2024 Regular Season,Which team had the best record in the 2024 NFL regular season?,Kansas City Chiefs,Detroit Lions,Philadelphia Eagles,Minnesota Vikings,Kansas City Chiefs
 52,2024 Regular Season,What was the Kansas City Chiefs' record in the 2024 regular season?,15-1,14-2,13-3,14-3,15-1
 53,2024 Regular Season,Which team won the NFC North in 2024?,Minnesota Vikings,Detroit Lions,Chicago Bears,Green Bay Packers,Minnesota Vikings
 54,2024 Regular Season,What was the Minnesota Vikings' record in 2024?,14-2,13-3,15-1,12-4,14-2
@@ -151,9 +150,7 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 150,Recent Trades & Signings,What was the value of Hollywood Brown's contract with the Chiefs?,$11 million,$10 million,$12 million,$9 million,$11 million
 151,Team Records & Standings,How many teams won 10 or more games in 2024?,14,13,15,12,14
 152,Team Records & Standings,What is the minimum wins for playoff qualification in 2024?,10,9,11,8,10
-153,Team Records & Standings,Which AFC team had the worst record in 2024?,Cincinnati Bengals,Indianapolis Colts,Miami Dolphins,New York Jets,Cincinnati Bengals
 154,Team Records & Standings,What was the Cincinnati Bengals' record in 2024?,6-8,8-8,7-9,5-11,8-8
-155,Team Records & Standings,Which NFC team had the worst record in 2024?,Chicago Bears,New York Giants,Arizona Cardinals,New Orleans Saints,Chicago Bears
 156,Team Records & Standings,What was the Chicago Bears' record in 2024?,5-12,4-13,6-11,3-14,5-12
 157,Team Records & Standings,How many teams made the 2024 NFL playoffs?,14,12,16,18,14
 158,Team Records & Standings,Which conference had one more playoff team in 2024?,NFC,AFC,Equal,Neither,NFC
@@ -216,7 +213,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 215,Quarterbacks Head to Head,How many passing yards did Josh Allen have in the 2024 regular season?,"3,731","3,500","3,900","3,600","3,731"
 216,Quarterbacks Head to Head,How many rushing yards did Josh Allen have in 2024?,531,500,600,450,531
 217,Quarterbacks Head to Head,How many passing touchdowns did Josh Allen have in 2024?,28,25,30,22,28
-218,Quarterbacks Head to Head,Is Josh Allen now the clear #1 seed for future HOF debate?,Possibly,Needs more,Still behind,Recently surged,Possibly
 219,Quarterbacks Head to Head,How many playoff games has Lamar Jackson played?,16+,15,20,10,16+
 220,Quarterbacks Head to Head,How many interceptions did Josh Allen throw in 2024?,6,5,7,8,6
 221,Recent Player Transactions,Did Davante Adams get traded in 2024?,Yes,No,Pending,Rumored,Yes
@@ -263,7 +259,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 262,Team Victories & Streaks,How long was the Eagles' winning streak in 2024?,8 games,7 games,9 games,6 games,8 games
 263,Team Victories & Streaks,Who broke the Eagles' winning streak?,Washington Commanders,Dallas Cowboys,Pittsburgh Steelers,New York Giants,Washington Commanders
 264,Team Victories & Streaks,Did the Kansas City Chiefs have a long winning streak in 2024?,Yes,No,Moderate,Brief,Yes
-265,Team Victories & Streaks,What was the Chiefs' best record in 2024 compared to past years?,15-1,14-2,13-3,16-0,15-1
 266,Team Victories & Streaks,Did all division winners have at least 10 wins in 2024?,Yes,No,Most did,None,Yes
 267,Team Victories & Streaks,Did the 2024 NFL season have more upsets than normal?,No,Yes,About average,Fewer,No
 268,Team Victories & Streaks,Which team won more playoff games: Chiefs or Bills?,Chiefs,Bills,Tied,Eagles,Chiefs
@@ -308,7 +303,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 307,Offensive Weapons,Does Lamar Jackson have great receiving options?,Yes,No,Some,Limited,Yes
 308,Offensive Weapons,Who is Lamar Jackson's top receiver?,Mark Andrews,Rashod Bateman,Odell Beckham,Others,Mark Andrews
 309,Offensive Weapons,Does Jalen Hurts have elite receiving weapons?,Yes,No,Some,Recently added,Yes
-310,Offensive Weapons,Who are Jalen Hurts' top two receivers?,A.J. Brown & DeVonta Smith,CeeDee Lamb & Brandin Cooks,Others,Uncertain,A.J. Brown & DeVonta Smith
 311,Defensive Excellence,What was the Eagles' defensive coordinator in 2024?,Vic Fangio,Leslie Frazier,Kris Richard,Others,Vic Fangio
 312,Defensive Excellence,What was Vic Fangio's record against Patrick Mahomes before Super Bowl LIX?,0-8,1-7,2-6,0-9,0-8
 313,Defensive Excellence,Did the Eagles defense blitz in Super Bowl LIX?,No,Yes,Limited,Few times,No
@@ -316,7 +310,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 315,Defensive Excellence,Did the Eagles force turnovers in Super Bowl LIX?,Yes,No,One,None,Yes
 316,Defensive Excellence,How many interceptions did the Eagles have in Super Bowl LIX?,2,1,3,0,2
 317,Defensive Excellence,How many fumbles did Mahomes have in Super Bowl LIX?,1,0,2,3,1
-318,Defensive Excellence,Did the Eagles have the best defense in 2024?,Top tier,Good,Average,Poor,Top tier
 319,Defensive Excellence,Who was the Eagles' pass rush leader in 2024?,Josh Sweat,Milton Williams,Brandon Graham,Derek Barnett,Josh Sweat
 320,Defensive Excellence,Did the Eagles' secondary perform well in 2024?,Yes,No,Average,Mixed,Yes
 321,Individual Records & Milestones,Did Saquon Barkley break any team records in 2024?,Yes,No,Multiple,Franchise,Yes
@@ -327,7 +320,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 326,Individual Records & Milestones,How many receptions did Brock Bowers need to tie the record?,Already tied,3,1,5,Already tied
 327,Individual Records & Milestones,Who had more rookies receptions than Brock Bowers?,"Amon-Ra St. Brown, Ja'Marr Chase",Others,Nobody,Few,"Amon-Ra St. Brown, Ja'Marr Chase"
 328,Individual Records & Milestones,Did Jayden Daniels have a historic rookie season?,Yes,No,Good,Average,Yes
-329,Individual Records & Milestones,Did Jayden Daniels have one of the best rookie QB seasons ever?,Yes,No,Good,Top 5,Yes
 330,Individual Records & Milestones,Is Jayden Daniels a future Hall of Famer?,Possible,No,Too early,Likely,Possible
 331,Fan Favorites & Highlights,Did Cooper DeJean have a memorable moment in Super Bowl LIX?,Yes,No,Fumble recovery,Sack,Yes
 332,Fan Favorites & Highlights,What did Cooper DeJean do on his birthday in Super Bowl LIX?,Returned INT for TD,Got sack,Fumble recovery,Interception,Returned INT for TD
@@ -339,16 +331,9 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 338,Fan Favorites & Highlights,Did DeVonta Smith have a good 2024 season?,Yes,No,Average,Injured,Yes
 339,Fan Favorites & Highlights,Did A.J. Brown have a great 2024 season?,Yes,No,Average,Injured,Yes
 340,Fan Favorites & Highlights,Did the Eagles have a dominant passing game in 2024?,Yes,No,Average,Mixed,Yes
-341,Future Outlook,Will Josh Allen continue to be elite in 2025?,Likely,Uncertain,Probably not,Too early,Likely
-342,Future Outlook,Will Lamar Jackson remain an MVP candidate?,Yes,No,Maybe,Depends,Yes
-343,Future Outlook,Will Patrick Mahomes seek revenge in 2025?,Yes,Probably,No,Maybe,Yes
 344,Future Outlook,Will the Eagles defend their Super Bowl title?,Possible,Unlikely,Very likely,Too early,Possible
-345,Future Outlook,Will Saquon Barkley continue to dominate in 2025?,Likely,Uncertain,Probably not,Age factor,Likely
 346,Future Outlook,Will Jayden Daniels be a perennial MVP candidate?,Possible,Unlikely,Too early,Depends,Possible
-347,Future Outlook,Will Brock Bowers continue his success?,Likely,Uncertain,Depends,Too early,Likely
 348,Future Outlook,Will Jared Verse be a Pro Bowler in his second year?,Possible,Unlikely,Likely,Too early,Possible
-349,Future Outlook,Will the Kansas City Chiefs remain a Super Bowl threat?,Yes,No,Maybe,Depends,Yes
-350,Future Outlook,Will the Buffalo Bills finally beat the Chiefs?,Possible,Unlikely,Too early,Maybe,Possible
 351,2025 Offseason Moves,Did the Eagles hire a new head coach in 2025?,No,Yes,Promoted interim,From outside,No
 352,2025 Offseason Moves,Did the Chiefs make major roster changes in 2025?,No,Yes,Some,Minor,No
 353,2025 Offseason Moves,Did the Bills make significant trades in 2025?,No,Yes,Some,Pending,No
@@ -358,12 +343,10 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 357,2025 Offseason Moves,Did the Chargers hire Jim Harbaugh in 2024?,Yes,No,2023,Pending,Yes
 358,2025 Offseason Moves,What NFL dynasty exists currently?,Kansas City Chiefs,New England Patriots,Green Bay Packers,49ers,Kansas City Chiefs
 359,2025 Offseason Moves,How many Super Bowls have the Chiefs won recently?,3,2,4,1,3
-360,2025 Offseason Moves,Is the Chiefs dynasty over?,Probably not,Yes,Uncertain,Too early,Probably not
 361,Player Achievements,How many rushing yards did Barry Sanders accumulate in his career?,"15,269","16,726","14,580","15,000","15,269"
 362,Player Achievements,"How many 1,000-yard rushing seasons did Barry Sanders have?",10,9,8,7,10
 363,Player Achievements,"How many consecutive 1,000-yard seasons did Barry Sanders have?",5,6,4,7,5
 364,Player Achievements,How many Pro Bowls did Barry Sanders make?,10,9,8,11,10
-365,Player Achievements,What was Barry Sanders' best rushing season?,1997,1994,1996,1995,1997
 366,Player Achievements,How many rushing yards did Barry Sanders have in 1997?,"2,053","1,883","1,700","2,100","2,053"
 367,Player Achievements,How many rushing yards did Barry Sanders have in 1994?,"1,883","1,700","1,500","2,000","1,883"
 368,Player Achievements,In what year did Barry Sanders share the MVP?,1997,1994,1996,1995,1997
@@ -374,7 +357,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 373,Conference Standings,Which division was strongest in 2024?,NFC North,AFC West,NFC East,AFC North,NFC North
 374,Conference Standings,How many wins did the NFC North have in 2024?,45,43,48,40,45
 375,Conference Standings,Did any division have all teams above .500?,No,Yes,Some,One,No
-376,Conference Standings,What was the worst division in 2024?,AFC South,NFC South,NFC West,AFC East,AFC South
 377,Conference Standings,Did the AFC South have a weak 2024 season?,Yes,No,Average,Mixed,Yes
 378,Conference Standings,Which NFC division was weakest?,NFC South,NFC West,NFC East,NFC North,NFC South
 379,Conference Standings,Did the NFC South have any dominant teams?,No,Yes,One,Emerging,No
@@ -438,7 +420,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 437,Injury & Health Updates,Did the Eagles have a healthy roster in 2024?,Yes,No,Mostly,Some issues,Yes
 438,Injury & Health Updates,Did the Chiefs have health issues in 2024?,Yes,No,Minor,Some,Yes
 439,Injury & Health Updates,Did the Lions have major injuries in 2024?,Yes,No,Some,Minor,Yes
-440,Injury & Health Updates,Were injuries a factor in the Lions' playoff loss?,Yes,No,Somewhat,Debatable,Yes
 441,Fan Voting & Selections,Did Josh Allen win the Pro Bowl vote in 2024?,Yes,No,Tied,Did not vote,Yes
 442,Fan Voting & Selections,Did Patrick Mahomes make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
 443,Fan Voting & Selections,Did Lamar Jackson make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
@@ -468,34 +449,23 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 467,Competitive Balance,Did any playoff team exceed expectations?,Yes,No,Few,One,Yes
 468,Competitive Balance,Did any playoff team underperform?,Yes,No,Few,One,Yes
 469,Competitive Balance,Was there competitive parity in 2024?,Yes,No,Some,Limited,Yes
-470,Competitive Balance,Will 2025 be more or less competitive?,Similar,More,Less,Unknown,Similar
 471,Media & Broadcasting,Which network broadcast Super Bowl LIX?,CBS,NBC,Fox,ESPN,CBS
-472,Media & Broadcasting,Did Super Bowl LIX have high ratings?,Yes,No,Average,Unknown,Yes
 473,Media & Broadcasting,Which network broadcasts most NFL games?,CBS/Fox,NBC,ESPN,All equally,CBS/Fox
 474,Media & Broadcasting,Does ESPN have exclusive Monday Night Football?,Yes,No,Shares,Partial,Yes
 475,Media & Broadcasting,Which network has Thursday Night Football?,Amazon Prime,ESPN,Fox,NBC,Amazon Prime
 476,Media & Broadcasting,Do streaming services carry NFL games?,Yes,No,Some,Limited,Yes
-477,Media & Broadcasting,Is the 2025 NFL season expected to have high ratings?,Yes,No,Unknown,Maybe,Yes
 478,Media & Broadcasting,Did the 2024 NFL season have strong viewership?,Yes,No,Average,Declining,Yes
 479,Media & Broadcasting,Are Super Bowls always the most-watched sporting event in the US?,Usually,No,Sometimes,Always,Usually
 480,Media & Broadcasting,Will the Eagles-Chiefs Super Bowl have lasting impact?,Yes,No,Some,Minimal,Yes
 481,Rule Changes & Officiating,Were there any major rule changes in 2024?,No,Yes,Some minor,Pending,No
-482,Rule Changes & Officiating,Were there controversial calls in Super Bowl LIX?,No,Yes,Few,Debatable,No
 483,Rule Changes & Officiating,Is pass interference still a reviewable call?,Limited,Yes,No,Rarely,Limited
 484,Rule Changes & Officiating,Can defensive pass interference be challenged?,No,Yes,Limited,On offense,Limited
 485,Rule Changes & Officiating,Are there kickoff rule changes?,Yes,No,Recently changed,Under review,Yes
 486,Rule Changes & Officiating,What is the hip drop tackle rule?,Safer tackle method,Illegal now,Flagged sometimes,New rule,Safer tackle method
-487,Rule Changes & Officiating,Is the hip drop tackle rule controversial?,Yes,No,Somewhat,Debatable,Yes
 488,Rule Changes & Officiating,How many officials are on the field?,7,6,8,5,7
 489,Rule Changes & Officiating,Is the NFL considering playoff expansion?,No,Yes,Under review,Pending,No
-490,Rule Changes & Officiating,Will the 2025 NFL season have rule changes?,Yes,No,Minor,Unknown,Yes
 491,Youth & Rookie Development,Did any 2024 rookie win major awards besides Daniels?,Yes,No,Verse did,Bowers near,Yes
 492,Youth & Rookie Development,Who were the top rookie performers in 2024?,"Daniels, Bowers, Verse","Williams, Robinson, Jackson",All above,Others,"Daniels, Bowers, Verse"
 493,Youth & Rookie Development,How many quarterbacks had rookie years in 2024?,Multiple,5,3,7,Multiple
 494,Youth & Rookie Development,Did any 2024 QB recruit become an immediate starter?,Yes,No,Some,All,Yes
-495,Youth & Rookie Development,Was Jayden Daniels expected to be great?,Yes,No,Unknown,Mixed,Yes
-496,Youth & Rookie Development,Has Jayden Daniels become a face of the franchise?,Yes,No,Developing,Possibly,Yes
-497,Youth & Rookie Development,Is Brock Bowers a franchise cornerstone?,Likely,Uncertain,Yes,Too early,Likely
-498,Youth & Rookie Development,Will Jared Verse be a star edge rusher?,Likely,Uncertain,Probably,Too early,Likely
 499,Youth & Rookie Development,Do rookies have more impact now than historically?,Yes,No,Same,Less,Yes
-500,Youth & Rookie Development,Will 2025 have more successful rookies?,Likely,Uncertain,Probably,Unknown,Likely

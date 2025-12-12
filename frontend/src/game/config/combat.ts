@@ -10,10 +10,10 @@ import type { WeaponConfig, Vector2 } from '../types'
 // ============================================================================
 
 export const WEAPON_CONFIG: WeaponConfig = {
-  fireRate: 3, // 3 shots per second (333ms cooldown)
+  fireRate: 5, // 5 shots per second (200ms cooldown) - responsive feel
   projectileSpeed: 600, // 600 units/sec - dodgeable at range
   maxRange: 400, // ~1/3 arena width, encourages positioning
-  damage: 25, // 4 shots to kill (100 health)
+  damage: 20, // 5 shots to kill (100 health) - balanced for higher fire rate
   spread: 2, // ±2 degrees random deviation
   knockback: 50, // Slight pushback on hit
 }

@@ -1,0 +1,7703 @@
+{
+  "fortnite": [
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 8,
+      "text": "How many tiers are in a standard Battle Pass?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "50",
+        "75",
+        "100",
+        "150"
+      ],
+      "correct_index": 2,
+      "subcategory": "history",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 10,
+      "text": "How many total chapters have been released as of 2025?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 18,
+      "text": "Which emote became the most iconic Fortnite dance?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ],
+        [
+          "SPECIFIC_FLAG",
+          "most iconic"
+        ],
+        [
+          "SPECIFIC_FLAG",
+          "became the most"
+        ]
+      ],
+      "options": [
+        "Floss",
+        "Orange Justice",
+        "Take the L",
+        "Default Dance"
+      ],
+      "correct_index": 3,
+      "subcategory": "cosmetics",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 49,
+      "text": "What controversial vehicle was in Chapter 1, Season 9?",
+      "issues": [
+        [
+          "CONTROVERSIAL",
+          "\\b(controversial|debatable|disputed|argued)\\b"
+        ]
+      ],
+      "options": [
+        "X-4 Stormwing",
+        "B.R.U.T.E.",
+        "Boat",
+        "Helicopter"
+      ],
+      "correct_index": 1,
+      "subcategory": "history",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 76,
+      "text": "What was unique about Chapter 3's map reveal?",
+      "issues": [
+        [
+          "IMPRECISE",
+          "\\b(approximately|around|about|roughly)\\b"
+        ]
+      ],
+      "options": [
+        "It flooded",
+        "It flipped over",
+        "It exploded",
+        "It froze"
+      ],
+      "correct_index": 1,
+      "subcategory": "map",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 85,
+      "text": "How many biomes did Chapter 3's map have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correct_index": 1,
+      "subcategory": "map",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 98,
+      "text": "How many mod slots does a Legendary weapon have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correct_index": 2,
+      "subcategory": "weapons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 99,
+      "text": "How many mod slots does an Uncommon weapon have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correct_index": 0,
+      "subcategory": "weapons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 111,
+      "text": "How many concurrent viewers watched The End event on Twitch?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5 million",
+        "10 million",
+        "15+ million",
+        "20 million"
+      ],
+      "correct_index": 2,
+      "subcategory": "events",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 118,
+      "text": "Which POI is considered the most iconic in Fortnite?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ],
+        [
+          "SPECIFIC_FLAG",
+          "most iconic"
+        ],
+        [
+          "SPECIFIC_FLAG",
+          "considered the"
+        ],
+        [
+          "SPECIFIC_FLAG",
+          "is considered"
+        ]
+      ],
+      "options": [
+        "Pleasant Park",
+        "Tilted Towers",
+        "Retail Row",
+        "Salty Springs"
+      ],
+      "correct_index": 1,
+      "subcategory": "map",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 140,
+      "text": "How many seasons were in Chapter 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "10",
+        "11",
+        "12"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 141,
+      "text": "How many seasons were in Chapter 2?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 142,
+      "text": "How many seasons were in Chapter 3?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 143,
+      "text": "How many seasons were in Chapter 4?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 159,
+      "text": "How many pages are in a Chapter 6 Battle Pass?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10",
+        "12",
+        "14",
+        "16"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 165,
+      "text": "How many Infinity Stones were mythic weapons?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "correct_index": 2,
+      "subcategory": "weapons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 166,
+      "text": "How many Society Medallions were in Chapter 5, Season 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 2,
+      "subcategory": "weapons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 169,
+      "text": "How many named POIs were in Chapter 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10+",
+        "15+",
+        "20+",
+        "25+"
+      ],
+      "correct_index": 1,
+      "subcategory": "map",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 170,
+      "text": "How many named POIs were in Chapter 2?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15+",
+        "20+",
+        "25+",
+        "30+"
+      ],
+      "correct_index": 1,
+      "subcategory": "map",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 366,
+      "text": "How many people attended Travis Scott's concert?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10M+",
+        "20M+",
+        "27M+",
+        "40M+"
+      ],
+      "correct_index": 2,
+      "subcategory": "events",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 370,
+      "text": "How many materials can you carry max?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "500 each",
+        "999 each",
+        "1500 each",
+        "Unlimited"
+      ],
+      "correct_index": 1,
+      "subcategory": "history",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 392,
+      "text": "What was special about Tilted Town?",
+      "issues": [
+        [
+          "IMPRECISE",
+          "\\b(approximately|around|about|roughly)\\b"
+        ]
+      ],
+      "options": [
+        "No building allowed",
+        "No weapons",
+        "No storm",
+        "No vehicles"
+      ],
+      "correct_index": 0,
+      "subcategory": "map",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 451,
+      "text": "How many players participated in Fortnite OG?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1M+",
+        "3M+",
+        "5M+",
+        "10M+"
+      ],
+      "correct_index": 2,
+      "subcategory": "events",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 492,
+      "text": "How many FNCS Majors are there per year?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correct_index": 1,
+      "subcategory": "history",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_questions_merged.json",
+      "index": 503,
+      "text": "How many Victory Umbrellas are there?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1 per season",
+        "1 per chapter",
+        "1 total",
+        "Unlimited"
+      ],
+      "correct_index": 0,
+      "subcategory": "cosmetics",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 4,
+      "text": "How many seasons were in Chapter 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 27,
+      "text": "How many seasons did Chapter 2 have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 33,
+      "text": "How many days did Chapter 2 Season 2 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "100",
+        "110",
+        "119",
+        "130"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 46,
+      "text": "How many POIs were new in Chapter 2 Season 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "8",
+        "10",
+        "More than 10"
+      ],
+      "correct_index": 3,
+      "subcategory": "map",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 57,
+      "text": "How many seasons did Chapter 3 have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 62,
+      "text": "How many days did Chapter 3 Season 2 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "60",
+        "76",
+        "90",
+        "100"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 68,
+      "text": "How many days did Chapter 3 Season 4 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "60",
+        "70",
+        "76",
+        "85"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 82,
+      "text": "How many regular seasons did Chapter 4 have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 87,
+      "text": "How many days did Chapter 4 Season 2 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "80",
+        "85",
+        "90",
+        "100"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 90,
+      "text": "How many days did Chapter 4 Season 3 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "60",
+        "70",
+        "76",
+        "85"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 93,
+      "text": "How many days did Chapter 4 Season 4 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "60",
+        "70",
+        "80",
+        "90"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 96,
+      "text": "How many days did Fortnite OG last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "14 days",
+        "21 days",
+        "29 days",
+        "30 days"
+      ],
+      "correct_index": 2,
+      "subcategory": "events",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 112,
+      "text": "How many regular seasons did Chapter 5 have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 117,
+      "text": "How many days did Chapter 5 Season 2 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "60",
+        "70",
+        "75",
+        "85"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 120,
+      "text": "How many days did Chapter 5 Season 3 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "70",
+        "80",
+        "84",
+        "90"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 123,
+      "text": "How many days did Chapter 5 Season 4 last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "60",
+        "70",
+        "78",
+        "90"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 126,
+      "text": "How many days did Fortnite Remix last?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "14 days",
+        "21 days",
+        "28 days",
+        "29 days"
+      ],
+      "correct_index": 3,
+      "subcategory": "events",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 135,
+      "text": "What were some main Battle Pass skins in Chapter 5 Season 4?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "War Machine",
+        "Emma Frost",
+        "Mysterio",
+        "All of the above"
+      ],
+      "correct_index": 3,
+      "subcategory": "cosmetics",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 138,
+      "text": "How many parts could Snap have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "4",
+        "6",
+        "8"
+      ],
+      "correct_index": 1,
+      "subcategory": "history",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 146,
+      "text": "How many years span from Chapter 1 launch to Chapter 5 end?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5 years",
+        "6 years",
+        "7 years",
+        "8 years"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 149,
+      "text": "How many total seasons existed before Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "30",
+        "35",
+        "40",
+        "45"
+      ],
+      "correct_index": 3,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 150,
+      "text": "How many different maps existed through Chapter 5?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correct_index": 1,
+      "subcategory": "map",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 162,
+      "text": "How many cosmetic tiers were in the earliest Battle Pass?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "50",
+        "75",
+        "100",
+        "150"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 167,
+      "text": "How many major crossovers happened in Chapter 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "0-2",
+        "3-5",
+        "6-8",
+        "9+"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 179,
+      "text": "How many cosmetic slots exist in-game?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "6",
+        "8",
+        "10+"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 187,
+      "text": "How many cosmetics approximately were in the Chapter 1 shop?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ],
+        [
+          "IMPRECISE",
+          "\\b(approximately|around|about|roughly)\\b"
+        ]
+      ],
+      "options": [
+        "50-100",
+        "100-200",
+        "200-300",
+        "300+"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 191,
+      "text": "How many V-Bucks could players earn back?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "500",
+        "1000",
+        "1500",
+        "2000"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 194,
+      "text": "How many tiers were typically in a Battle Pass?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "50",
+        "75",
+        "100",
+        "150"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_ch1_5_questions.json",
+      "index": 197,
+      "text": "How many Star Wars seasons existed through Chapter 5?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "correct_index": 0,
+      "subcategory": "collabs",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 14,
+      "text": "How many main skins were included in the Chapter 6 Season 1 Battle Pass?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "8",
+        "10",
+        "12"
+      ],
+      "correct_index": 1,
+      "subcategory": "cosmetics",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 19,
+      "text": "How many alternate styles were typically available for Season 1 skins?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1-2 per skin",
+        "2-3 per skin",
+        "3-4 per skin",
+        "4-5 per skin"
+      ],
+      "correct_index": 1,
+      "subcategory": "cosmetics",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 29,
+      "text": "How many new POIs were added in Chapter 6 Season 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "10",
+        "18",
+        "24"
+      ],
+      "correct_index": 2,
+      "subcategory": "map",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 35,
+      "text": "How many mythic boss characters were in Chapter 6 Season 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correct_index": 1,
+      "subcategory": "weapons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 39,
+      "text": "Could players interact with multiple faction-aligned NPCs?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Limited interactions",
+        "Only story-based NPCs"
+      ],
+      "correct_index": 0,
+      "subcategory": "history",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 43,
+      "text": "How many collaboration cosmetics were added mid-season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "0-2",
+        "3-5",
+        "6-8",
+        "10+"
+      ],
+      "correct_index": 1,
+      "subcategory": "cosmetics",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 63,
+      "text": "How many boss locations were confirmed for Season 2?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1-2",
+        "3-4",
+        "5-6",
+        "7+"
+      ],
+      "correct_index": 2,
+      "subcategory": "map",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 64,
+      "text": "Were bosses themed around crime/heist operations?",
+      "issues": [
+        [
+          "IMPRECISE",
+          "\\b(approximately|around|about|roughly)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Mixed themes",
+        "Unclear"
+      ],
+      "correct_index": 0,
+      "subcategory": "seasons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 67,
+      "text": "Were the main characters' vehicles expected to appear?",
+      "issues": [
+        [
+          "PREDICTION",
+          "\\b(will be|going to be|expected to)\\b"
+        ]
+      ],
+      "options": [
+        "Yes - Dom's Dodge Charger and Han's Mazda RX-7",
+        "Only cosmetic vehicles",
+        "No vehicles",
+        "General vehicle cosmetics only"
+      ],
+      "correct_index": 0,
+      "subcategory": "history",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 72,
+      "text": "How many main skins were expected in the Season 2 Battle Pass?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "8",
+        "10",
+        "12"
+      ],
+      "correct_index": 1,
+      "subcategory": "cosmetics",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 79,
+      "text": "When was Season 3 expected to begin?",
+      "issues": [
+        [
+          "PREDICTION",
+          "\\b(will be|going to be|expected to)\\b"
+        ]
+      ],
+      "options": [
+        "May 2025",
+        "June 2025",
+        "July 2025",
+        "August 2025"
+      ],
+      "correct_index": 0,
+      "subcategory": "seasons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 86,
+      "text": "How many total seasons is Chapter 6 expected to have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ],
+        [
+          "PREDICTION",
+          "\\b(will be|going to be|expected to)\\b"
+        ]
+      ],
+      "options": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "easy"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 105,
+      "text": "How many total mythic bosses appeared across Chapter 6 seasons?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3-5",
+        "6-8",
+        "9-10",
+        "11+"
+      ],
+      "correct_index": 1,
+      "subcategory": "weapons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 110,
+      "text": "How many total Battle Pass skins were in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "30-40",
+        "50-65",
+        "65-75",
+        "75+"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 112,
+      "text": "How many LEGO variant skins were in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5-10",
+        "10-15",
+        "15-20",
+        "20+"
+      ],
+      "correct_index": 1,
+      "subcategory": "cosmetics",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 115,
+      "text": "How many major live events occurred in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4-5",
+        "6-7",
+        "8-10",
+        "10+"
+      ],
+      "correct_index": 2,
+      "subcategory": "events",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 121,
+      "text": "How many AR variants were available during Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2-3",
+        "4-5",
+        "6-7",
+        "8+"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 126,
+      "text": "How many shotgun types existed in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1-2",
+        "3-4",
+        "5-6",
+        "6+"
+      ],
+      "correct_index": 1,
+      "subcategory": "weapons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 131,
+      "text": "How many sniper types were featured?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1-2",
+        "3-4",
+        "5-6",
+        "6+"
+      ],
+      "correct_index": 0,
+      "subcategory": "weapons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 136,
+      "text": "How many SMG variants existed in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1-2",
+        "3-4",
+        "5-6",
+        "6+"
+      ],
+      "correct_index": 1,
+      "subcategory": "weapons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 141,
+      "text": "How many pistol types existed?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1-2",
+        "3-4",
+        "5-6",
+        "6+"
+      ],
+      "correct_index": 1,
+      "subcategory": "weapons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 148,
+      "text": "What POI was best for early-game engagements?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Magic Mosses",
+        "Seaport City",
+        "Demon's Dojo",
+        "Lost Lake"
+      ],
+      "correct_index": 1,
+      "subcategory": "map",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 149,
+      "text": "Which POI provided best resources for wood farming?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Tiptop Terrace (Ch7)",
+        "Flooded Frogs",
+        "Magic Mosses",
+        "Lost Lake"
+      ],
+      "correct_index": 2,
+      "subcategory": "map",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 152,
+      "text": "Did Crime City feature multiple building complexes?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Limited",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "subcategory": "map",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 168,
+      "text": "How many V-Bucks were earned back from Battle Pass?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "500",
+        "1,000",
+        "1,500",
+        "2,000"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 170,
+      "text": "How many major collaborations occurred in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5-10",
+        "10-15",
+        "15-20",
+        "20+"
+      ],
+      "correct_index": 3,
+      "subcategory": "collabs",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 175,
+      "text": "How many musicians were featured in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5-10",
+        "10-15",
+        "15-20",
+        "20+"
+      ],
+      "correct_index": 3,
+      "subcategory": "seasons",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 178,
+      "text": "How many Fortnite Festival musicians were featured?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5-10",
+        "10-15",
+        "15-20",
+        "20+"
+      ],
+      "correct_index": 3,
+      "subcategory": "history",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 192,
+      "text": "Were there multiple factions players could align with?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Story-only",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "subcategory": "history",
+      "difficulty": "medium"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 201,
+      "text": "How many legendary-tier skins were in Chapter 6?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5-10",
+        "10-20",
+        "20-30",
+        "30+"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 205,
+      "text": "How many unique pickaxes were added?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "30-50",
+        "50-75",
+        "75-100",
+        "100+"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 219,
+      "text": "How many seasonal-exclusive cosmetics were added?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5-10",
+        "10-20",
+        "20-30",
+        "30+"
+      ],
+      "correct_index": 3,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 223,
+      "text": "Did players enjoy the Demon Hunters narrative?",
+      "issues": [
+        [
+          "PREFERENCE",
+          "\\b(prefer|like more|enjoy)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Mixed opinions",
+        "Uncertain"
+      ],
+      "correct_index": 2,
+      "subcategory": "history",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 225,
+      "text": "Did Chapter 6 attract many content creators?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Moderate interest",
+        "Uncertain"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 239,
+      "text": "Is Chapter 6 a fan-favorite chapter?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Divisive opinions",
+        "Uncertain"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 261,
+      "text": "How many cosmetics exceeded 2,000 V-Bucks?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "None",
+        "1-5",
+        "6-10",
+        "10+"
+      ],
+      "correct_index": 2,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 270,
+      "text": "How many cosmetics were exclusive to Season 1?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "20-30",
+        "30-40",
+        "40-50",
+        "50+"
+      ],
+      "correct_index": 1,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 275,
+      "text": "How long was Season 2 expected to last?",
+      "issues": [
+        [
+          "PREDICTION",
+          "\\b(will be|going to be|expected to)\\b"
+        ]
+      ],
+      "options": [
+        "8-10 weeks",
+        "10-12 weeks",
+        "12-14 weeks",
+        "14+ weeks"
+      ],
+      "correct_index": 1,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 280,
+      "text": "What was the most iconic moment in Chapter 6?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ],
+        [
+          "SPECIFIC_FLAG",
+          "most iconic"
+        ]
+      ],
+      "options": [
+        "Final boss battle (Season 1)",
+        "Crime City heist",
+        "Mini Season finale",
+        "Uncertain"
+      ],
+      "correct_index": 0,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 281,
+      "text": "Which season had the best cosmetics?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Season 1",
+        "Season 2",
+        "Mini Season 2",
+        "Opinion-dependent"
+      ],
+      "correct_index": 3,
+      "subcategory": "cosmetics",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 288,
+      "text": "Were there controversial balance decisions?",
+      "issues": [
+        [
+          "CONTROVERSIAL",
+          "\\b(controversial|debatable|disputed|argued)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Some debate",
+        "Uncertain"
+      ],
+      "correct_index": 2,
+      "subcategory": "history",
+      "difficulty": "hard"
+    },
+    {
+      "file": "scripts/data/fortnite_chapter6_questions.json",
+      "index": 297,
+      "text": "Was Chapter 6 better than Chapter 5?",
+      "issues": [
+        [
+          "COMPARATIVE_OPINION",
+          "\\b(better|worse|superior|inferior)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Depends on preference",
+        "Uncertain"
+      ],
+      "correct_index": 2,
+      "subcategory": "seasons",
+      "difficulty": "hard"
+    }
+  ],
+  "nfl": [
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 3,
+      "id": "4",
+      "category": "Recent Playoffs & Super Bowls",
+      "text": "How many times did the Eagles sack Patrick Mahomes in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "5",
+        "7",
+        "8"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 8,
+      "id": "9",
+      "category": "Recent Playoffs & Super Bowls",
+      "text": "How many consecutive Super Bowls did the Kansas City Chiefs win before losing to the Eagles?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 16,
+      "id": "17",
+      "category": "2024 NFL Season Awards",
+      "text": "How many rushing yards did Saquon Barkley have in the 2024 regular season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2,005",
+        "1,905",
+        "2,105",
+        "1,850"
+      ],
+      "correct": "2,005"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 19,
+      "id": "20",
+      "category": "2024 NFL Season Awards",
+      "text": "Lamar Jackson has won the MVP award how many times?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 20,
+      "id": "21",
+      "category": "Saquon Barkley Records",
+      "text": "How many rushing yards did Saquon Barkley have in Week 12 against the Los Angeles Rams?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "255",
+        "205",
+        "245",
+        "225"
+      ],
+      "correct": "255"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 23,
+      "id": "24",
+      "category": "Saquon Barkley Records",
+      "text": "How many yards were Saquon Barkley's 255 rushing yards in Week 12, the __-most in NFL history?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "9th",
+        "8th",
+        "10th",
+        "7th"
+      ],
+      "correct": "9th"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 26,
+      "id": "27",
+      "category": "Saquon Barkley Records",
+      "text": "How many total yards did Barkley have when he rushed for 255 yards against the Rams in Week 12?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "302",
+        "280",
+        "310",
+        "295"
+      ],
+      "correct": "302"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 27,
+      "id": "28",
+      "category": "Saquon Barkley Records",
+      "text": "In the Wild Card playoff game, how many rushing yards did Barkley have against the Packers?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "119",
+        "125",
+        "110",
+        "135"
+      ],
+      "correct": "119"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 28,
+      "id": "29",
+      "category": "Saquon Barkley Records",
+      "text": "How many touchdowns did Barkley have in his debut Eagles game against the Packers?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 29,
+      "id": "30",
+      "category": "Saquon Barkley Records",
+      "text": "How many rushing yards did Barkley accumulate in his first Eagles game?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "109",
+        "99",
+        "120",
+        "115"
+      ],
+      "correct": "109"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 30,
+      "id": "31",
+      "category": "Quarterbacks 2024",
+      "text": "How many passing yards did Lamar Jackson throw for in the 2024 season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4,172",
+        "4,000",
+        "4,200",
+        "3,950"
+      ],
+      "correct": "4,172"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 31,
+      "id": "32",
+      "category": "Quarterbacks 2024",
+      "text": "How many rushing yards did Lamar Jackson have in the 2024 season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "915",
+        "850",
+        "900",
+        "950"
+      ],
+      "correct": "915"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 33,
+      "id": "34",
+      "category": "Quarterbacks 2024",
+      "text": "How many passing touchdowns did Jalen Hurts throw in the 2024 regular season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "18",
+        "20",
+        "16",
+        "22"
+      ],
+      "correct": "18"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 35,
+      "id": "36",
+      "category": "Quarterbacks 2024",
+      "text": "How many interceptions did Jalen Hurts throw in the 2024 regular season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "7",
+        "6",
+        "8"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 36,
+      "id": "37",
+      "category": "Quarterbacks 2024",
+      "text": "How many passing yards did Jalen Hurts have in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "221",
+        "240",
+        "200",
+        "210"
+      ],
+      "correct": "221"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 37,
+      "id": "38",
+      "category": "Quarterbacks 2024",
+      "text": "How many rushing yards did Jalen Hurts have in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "72",
+        "60",
+        "85",
+        "50"
+      ],
+      "correct": "72"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 38,
+      "id": "39",
+      "category": "Quarterbacks 2024",
+      "text": "How many games did Jalen Hurts play in the 2024 regular season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15",
+        "16",
+        "14",
+        "17"
+      ],
+      "correct": "15"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 46,
+      "id": "47",
+      "category": "2024 NFL Draft",
+      "text": "How many QB's were selected in the first round of the 2024 draft?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 49,
+      "id": "50",
+      "category": "2024 NFL Draft",
+      "text": "How many pressures did Jared Verse record in his rookie season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "77",
+        "70",
+        "85",
+        "65"
+      ],
+      "correct": "77"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 50,
+      "id": "51",
+      "category": "2024 Regular Season",
+      "text": "Which team had the best record in the 2024 NFL regular season?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Kansas City Chiefs",
+        "Detroit Lions",
+        "Philadelphia Eagles",
+        "Minnesota Vikings"
+      ],
+      "correct": "Kansas City Chiefs"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 57,
+      "id": "58",
+      "category": "2024 Regular Season",
+      "text": "How many total wins did the NFC North have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "45",
+        "43",
+        "40",
+        "48"
+      ],
+      "correct": "45"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 60,
+      "id": "61",
+      "category": "Receiving Leaders 2024",
+      "text": "How many receiving yards did Tyreek Hill have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,799",
+        "1,650",
+        "1,900",
+        "1,750"
+      ],
+      "correct": "1,799"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 62,
+      "id": "63",
+      "category": "Receiving Leaders 2024",
+      "text": "How many catches did Travis Kelce have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "97",
+        "85",
+        "105",
+        "110"
+      ],
+      "correct": "97"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 63,
+      "id": "64",
+      "category": "Receiving Leaders 2024",
+      "text": "How many receiving yards did Travis Kelce have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "823",
+        "900",
+        "950",
+        "750"
+      ],
+      "correct": "823"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 65,
+      "id": "66",
+      "category": "Receiving Leaders 2024",
+      "text": "How many receiving touchdowns did CeeDee Lamb have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "8",
+        "10",
+        "5"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 66,
+      "id": "67",
+      "category": "Receiving Leaders 2024",
+      "text": "How many games did CeeDee Lamb play in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15",
+        "16",
+        "14",
+        "17"
+      ],
+      "correct": "15"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 67,
+      "id": "68",
+      "category": "Receiving Leaders 2024",
+      "text": "How many catches did Wan'Dale Robinson have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "93",
+        "85",
+        "105",
+        "110"
+      ],
+      "correct": "93"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 68,
+      "id": "69",
+      "category": "Receiving Leaders 2024",
+      "text": "How many receiving yards did Wan'Dale Robinson have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "699",
+        "650",
+        "750",
+        "800"
+      ],
+      "correct": "699"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 80,
+      "id": "81",
+      "category": "NFL Records & History",
+      "text": "How many Super Bowls has Tom Brady won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "7",
+        "6",
+        "5",
+        "8"
+      ],
+      "correct": "7"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 81,
+      "id": "82",
+      "category": "NFL Records & History",
+      "text": "How many Super Bowls did Tom Brady appear in?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10",
+        "9",
+        "11",
+        "8"
+      ],
+      "correct": "10"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 82,
+      "id": "83",
+      "category": "NFL Records & History",
+      "text": "How many Super Bowl MVP awards does Tom Brady have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 84,
+      "id": "85",
+      "category": "NFL Records & History",
+      "text": "How many career passing yards does Peyton Manning have (most for a Hall of Famer)?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "71,940",
+        "71,000",
+        "72,500",
+        "70,500"
+      ],
+      "correct": "71,940"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 85,
+      "id": "86",
+      "category": "NFL Records & History",
+      "text": "How many career passing yards does Brett Favre have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "71,838",
+        "71,000",
+        "72,000",
+        "70,500"
+      ],
+      "correct": "71,838"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 87,
+      "id": "88",
+      "category": "NFL Records & History",
+      "text": "How many career rushing yards does Barry Sanders have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15,269",
+        "16,726",
+        "14,580",
+        "15,000"
+      ],
+      "correct": "15,269"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 89,
+      "id": "90",
+      "category": "NFL Records & History",
+      "text": "How many rushing yards did Eric Dickerson have in his record season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2,105",
+        "2,000",
+        "2,150",
+        "1,950"
+      ],
+      "correct": "2,105"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 91,
+      "id": "92",
+      "category": "Sack Records",
+      "text": "How many career sacks does Bruce Smith have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "200",
+        "198",
+        "160",
+        "141.5"
+      ],
+      "correct": "200"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 92,
+      "id": "93",
+      "category": "Sack Records",
+      "text": "How many career sacks does Reggie White have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "198",
+        "200",
+        "160",
+        "150.5"
+      ],
+      "correct": "198"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 94,
+      "id": "95",
+      "category": "Sack Records",
+      "text": "How many sacks did Michael Strahan record in his record season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "22.5",
+        "22",
+        "21",
+        "23"
+      ],
+      "correct": "22.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 99,
+      "id": "100",
+      "category": "Sack Records",
+      "text": "How many career sacks does Michael Strahan have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "141.5",
+        "150.5",
+        "160",
+        "159.5"
+      ],
+      "correct": "141.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 101,
+      "id": "102",
+      "category": "Super Bowl Winners",
+      "text": "How many Super Bowls have the New England Patriots won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "5",
+        "7",
+        "4"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 102,
+      "id": "103",
+      "category": "Super Bowl Winners",
+      "text": "How many Super Bowls have the Pittsburgh Steelers won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "5",
+        "7",
+        "4"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 103,
+      "id": "104",
+      "category": "Super Bowl Winners",
+      "text": "How many Super Bowls have the Kansas City Chiefs won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "2",
+        "5"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 104,
+      "id": "105",
+      "category": "Super Bowl Winners",
+      "text": "How many Super Bowls have the Philadelphia Eagles won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 105,
+      "id": "106",
+      "category": "Super Bowl Winners",
+      "text": "How many Super Bowls have the Dallas Cowboys won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 106,
+      "id": "107",
+      "category": "Super Bowl Winners",
+      "text": "How many Super Bowls have the San Francisco 49ers won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 107,
+      "id": "108",
+      "category": "Super Bowl Winners",
+      "text": "How many Super Bowls have the Green Bay Packers won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "2",
+        "5"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 110,
+      "id": "111",
+      "category": "Hall of Fame Quarterbacks",
+      "text": "How many Hall of Fame quarterbacks are there?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "26+",
+        "20",
+        "15",
+        "30"
+      ],
+      "correct": "26+"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 112,
+      "id": "113",
+      "category": "Hall of Fame Quarterbacks",
+      "text": "How many MVP awards does Peyton Manning have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 113,
+      "id": "114",
+      "category": "Hall of Fame Quarterbacks",
+      "text": "How many MVP awards does Aaron Rodgers have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 114,
+      "id": "115",
+      "category": "Hall of Fame Quarterbacks",
+      "text": "How many MVP awards does Tom Brady have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "5"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 117,
+      "id": "118",
+      "category": "Hall of Fame Quarterbacks",
+      "text": "How many career passing yards did Joe Montana have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "40,551",
+        "45,000",
+        "38,000",
+        "42,000"
+      ],
+      "correct": "40,551"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 118,
+      "id": "119",
+      "category": "Hall of Fame Quarterbacks",
+      "text": "How many career passing yards did John Elway have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "51,475",
+        "50,000",
+        "52,000",
+        "49,000"
+      ],
+      "correct": "51,475"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 119,
+      "id": "120",
+      "category": "Hall of Fame Quarterbacks",
+      "text": "How many career passing yards did Dan Marino have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "61,361",
+        "60,000",
+        "62,000",
+        "59,000"
+      ],
+      "correct": "61,361"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 125,
+      "id": "126",
+      "category": "2024 Season Leaders",
+      "text": "How many receptions did Brock Bowers have in 2024 as a rookie?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "112",
+        "110",
+        "115",
+        "105"
+      ],
+      "correct": "112"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 127,
+      "id": "128",
+      "category": "2024 Season Leaders",
+      "text": "How many rushing touchdowns did Saquon Barkley have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13",
+        "11",
+        "15",
+        "10"
+      ],
+      "correct": "13"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 129,
+      "id": "130",
+      "category": "2024 Season Leaders",
+      "text": "How many receiving touchdowns did Tyreek Hill have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13",
+        "11",
+        "15",
+        "10"
+      ],
+      "correct": "13"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 130,
+      "id": "131",
+      "category": "Defensive Players 2024",
+      "text": "How many interceptions did Patrick Surtain II have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "6"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 131,
+      "id": "132",
+      "category": "Defensive Players 2024",
+      "text": "How many passes defended did Patrick Surtain II have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "11",
+        "10",
+        "12",
+        "9"
+      ],
+      "correct": "11"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 132,
+      "id": "133",
+      "category": "Defensive Players 2024",
+      "text": "How many sacks did Trey Hendrickson have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "17.5",
+        "16",
+        "18.5",
+        "15"
+      ],
+      "correct": "17.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 133,
+      "id": "134",
+      "category": "Defensive Players 2024",
+      "text": "How many sacks did Myles Garrett have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "14",
+        "13",
+        "15",
+        "12"
+      ],
+      "correct": "14"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 134,
+      "id": "135",
+      "category": "Defensive Players 2024",
+      "text": "How many sacks did T.J. Watt have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "11.5",
+        "10",
+        "12.5",
+        "9"
+      ],
+      "correct": "11.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 136,
+      "id": "137",
+      "category": "Defensive Players 2024",
+      "text": "How many tackles did Roquan Smith have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "132",
+        "125",
+        "140",
+        "120"
+      ],
+      "correct": "132"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 138,
+      "id": "139",
+      "category": "Defensive Players 2024",
+      "text": "How many pressures did Jared Verse record in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "77",
+        "70",
+        "85",
+        "65"
+      ],
+      "correct": "77"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 141,
+      "id": "142",
+      "category": "Recent Trades & Signings",
+      "text": "How many years was Saquon Barkley's contract with the Eagles?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "4",
+        "2",
+        "5"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 145,
+      "id": "146",
+      "category": "Recent Trades & Signings",
+      "text": "How many years was Nate Hobbs' Green Bay Packers contract?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "2",
+        "5"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 148,
+      "id": "149",
+      "category": "Recent Trades & Signings",
+      "text": "How many years was Hollywood Brown's contract with the Chiefs?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 150,
+      "id": "151",
+      "category": "Team Records & Standings",
+      "text": "How many teams won 10 or more games in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "14",
+        "13",
+        "15",
+        "12"
+      ],
+      "correct": "14"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 152,
+      "id": "153",
+      "category": "Team Records & Standings",
+      "text": "Which AFC team had the worst record in 2024?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Cincinnati Bengals",
+        "Indianapolis Colts",
+        "Miami Dolphins",
+        "New York Jets"
+      ],
+      "correct": "Cincinnati Bengals"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 154,
+      "id": "155",
+      "category": "Team Records & Standings",
+      "text": "Which NFC team had the worst record in 2024?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Chicago Bears",
+        "New York Giants",
+        "Arizona Cardinals",
+        "New Orleans Saints"
+      ],
+      "correct": "Chicago Bears"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 156,
+      "id": "157",
+      "category": "Team Records & Standings",
+      "text": "How many teams made the 2024 NFL playoffs?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "14",
+        "12",
+        "16",
+        "18"
+      ],
+      "correct": "14"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 171,
+      "id": "172",
+      "category": "Rookie Standouts 2024",
+      "text": "How many rushing yards did Jayden Daniels have in his rookie season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "915",
+        "800",
+        "1,000",
+        "750"
+      ],
+      "correct": "915"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 174,
+      "id": "175",
+      "category": "Rookie Standouts 2024",
+      "text": "How many all-time rookie receptions did Brock Bowers set?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "112",
+        "115",
+        "110",
+        "120"
+      ],
+      "correct": "112"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 175,
+      "id": "176",
+      "category": "Rookie Standouts 2024",
+      "text": "How many receiving yards did Brock Bowers have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,194",
+        "1,100",
+        "1,300",
+        "1,050"
+      ],
+      "correct": "1,194"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 176,
+      "id": "177",
+      "category": "Rookie Standouts 2024",
+      "text": "How many receiving touchdowns did Brock Bowers have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "10",
+        "6",
+        "12"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 178,
+      "id": "179",
+      "category": "Rookie Standouts 2024",
+      "text": "How many pressures did Jared Verse have in the second half of 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "48",
+        "40",
+        "55",
+        "45"
+      ],
+      "correct": "48"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 180,
+      "id": "181",
+      "category": "Team Achievements 2024",
+      "text": "How many consecutive wins did the Philadelphia Eagles have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "7",
+        "9",
+        "6"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 188,
+      "id": "189",
+      "category": "Team Achievements 2024",
+      "text": "How many consecutive Super Bowl appearances did the Kansas City Chiefs make?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 190,
+      "id": "191",
+      "category": "Historical Comparisons",
+      "text": "How many total passes did Tom Brady throw in his career?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13,089",
+        "12,000",
+        "14,000",
+        "11,500"
+      ],
+      "correct": "13,089"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 191,
+      "id": "192",
+      "category": "Historical Comparisons",
+      "text": "How many playoff games did Tom Brady win?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "35",
+        "30",
+        "40",
+        "32"
+      ],
+      "correct": "35"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 192,
+      "id": "193",
+      "category": "Historical Comparisons",
+      "text": "How many Super Bowl touchdowns did Tom Brady throw?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "21",
+        "20",
+        "23",
+        "19"
+      ],
+      "correct": "21"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 193,
+      "id": "194",
+      "category": "Historical Comparisons",
+      "text": "How many Super Bowl interceptions did Tom Brady throw?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "5",
+        "7",
+        "4"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 194,
+      "id": "195",
+      "category": "Historical Comparisons",
+      "text": "How many Super Bowl touchdown passes does Patrick Mahomes have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10",
+        "9",
+        "11",
+        "8"
+      ],
+      "correct": "10"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 195,
+      "id": "196",
+      "category": "Historical Comparisons",
+      "text": "How many Super Bowl interceptions does Patrick Mahomes have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "7",
+        "6",
+        "8",
+        "5"
+      ],
+      "correct": "7"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 196,
+      "id": "197",
+      "category": "Historical Comparisons",
+      "text": "How many Super Bowl appearances does Patrick Mahomes have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 200,
+      "id": "201",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Denver Broncos won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 201,
+      "id": "202",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Miami Dolphins won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 202,
+      "id": "203",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Baltimore Ravens won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 203,
+      "id": "204",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Indianapolis Colts won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 204,
+      "id": "205",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the New York Giants won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 205,
+      "id": "206",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Oakland/Las Vegas Raiders won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 206,
+      "id": "207",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Washington Commanders won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 207,
+      "id": "208",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the New York Jets won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "0",
+        "3"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 208,
+      "id": "209",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Chicago Bears won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "0",
+        "3"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 209,
+      "id": "210",
+      "category": "Team Histories",
+      "text": "How many Super Bowls have the Seattle Seahawks won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "0",
+        "3"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 210,
+      "id": "211",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many career playoff wins does Patrick Mahomes have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "26",
+        "25",
+        "27",
+        "24"
+      ],
+      "correct": "26"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 211,
+      "id": "212",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many career playoff games has Josh Allen played?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "25+",
+        "20",
+        "30",
+        "15"
+      ],
+      "correct": "25+"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 212,
+      "id": "213",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many times have Josh Allen and Patrick Mahomes met in the playoffs?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 214,
+      "id": "215",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many passing yards did Josh Allen have in the 2024 regular season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3,731",
+        "3,500",
+        "3,900",
+        "3,600"
+      ],
+      "correct": "3,731"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 215,
+      "id": "216",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many rushing yards did Josh Allen have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "531",
+        "500",
+        "600",
+        "450"
+      ],
+      "correct": "531"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 216,
+      "id": "217",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many passing touchdowns did Josh Allen have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "28",
+        "25",
+        "30",
+        "22"
+      ],
+      "correct": "28"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 218,
+      "id": "219",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many playoff games has Lamar Jackson played?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "16+",
+        "15",
+        "20",
+        "10"
+      ],
+      "correct": "16+"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 219,
+      "id": "220",
+      "category": "Quarterbacks Head to Head",
+      "text": "How many interceptions did Josh Allen throw in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "5",
+        "7",
+        "8"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 225,
+      "id": "226",
+      "category": "Recent Player Transactions",
+      "text": "How many receiving touchdowns did Xavier Worthy have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "5",
+        "7",
+        "4"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 227,
+      "id": "228",
+      "category": "Recent Player Transactions",
+      "text": "How many defensive tackles have played in the 2024 draft class?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Multiple",
+        "Few",
+        "One",
+        "Several"
+      ],
+      "correct": "Multiple"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 230,
+      "id": "231",
+      "category": "Season Performance Metrics",
+      "text": "How many total passing yards did Patrick Mahomes have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4,694",
+        "4,500",
+        "4,800",
+        "4,600"
+      ],
+      "correct": "4,694"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 231,
+      "id": "232",
+      "category": "Season Performance Metrics",
+      "text": "How many passing touchdowns did Patrick Mahomes have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "27",
+        "25",
+        "30",
+        "28"
+      ],
+      "correct": "27"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 232,
+      "id": "233",
+      "category": "Season Performance Metrics",
+      "text": "How many interceptions did Patrick Mahomes throw in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "7",
+        "9",
+        "6"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 234,
+      "id": "235",
+      "category": "Season Performance Metrics",
+      "text": "How many rushing touchdowns did Saquon Barkley have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13",
+        "11",
+        "15",
+        "10"
+      ],
+      "correct": "13"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 235,
+      "id": "236",
+      "category": "Season Performance Metrics",
+      "text": "How many total touchdowns did Saquon Barkley have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13",
+        "14",
+        "15",
+        "12"
+      ],
+      "correct": "13"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 237,
+      "id": "238",
+      "category": "Season Performance Metrics",
+      "text": "How many interceptions did Lamar Jackson throw in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "6"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 238,
+      "id": "239",
+      "category": "Season Performance Metrics",
+      "text": "How many passing touchdowns did Lamar Jackson have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "41",
+        "40",
+        "42",
+        "39"
+      ],
+      "correct": "41"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 239,
+      "id": "240",
+      "category": "Season Performance Metrics",
+      "text": "How many rushing touchdowns did Lamar Jackson have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "6"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 241,
+      "id": "242",
+      "category": "Advanced Statistics",
+      "text": "How many consecutive years has a QB won the MVP award?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "12",
+        "10",
+        "15",
+        "8"
+      ],
+      "correct": "12"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 245,
+      "id": "246",
+      "category": "Advanced Statistics",
+      "text": "How many MVP awards did Aaron Rodgers win?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 247,
+      "id": "248",
+      "category": "Advanced Statistics",
+      "text": "How many Turnovers Worthy Play rate did Jayden Daniels have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1.7%",
+        "1.5%",
+        "2.0%",
+        "2.5%"
+      ],
+      "correct": "1.7%"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 250,
+      "id": "251",
+      "category": "Game Statistics",
+      "text": "How many first downs did the Eagles force the Chiefs to get in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "12",
+        "15",
+        "10",
+        "14"
+      ],
+      "correct": "12"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 251,
+      "id": "252",
+      "category": "Game Statistics",
+      "text": "How many total yards did the Chiefs have in the first half of Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "23",
+        "30",
+        "50",
+        "15"
+      ],
+      "correct": "23"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 252,
+      "id": "253",
+      "category": "Game Statistics",
+      "text": "How many net passing yards did the Chiefs have in the first half?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "20",
+        "33",
+        "50",
+        "15"
+      ],
+      "correct": "20"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 253,
+      "id": "254",
+      "category": "Game Statistics",
+      "text": "How many rushing attempts did the Chiefs have in the first half?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "5",
+        "7",
+        "10"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 254,
+      "id": "255",
+      "category": "Game Statistics",
+      "text": "How many rushing yards did the Chiefs have in the first half?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "10",
+        "20",
+        "5"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 255,
+      "id": "256",
+      "category": "Game Statistics",
+      "text": "How many playoff games did the Eagles win in 2024-25?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 256,
+      "id": "257",
+      "category": "Game Statistics",
+      "text": "How many sacks did Josh Sweat have in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2.5",
+        "2",
+        "3",
+        "1.5"
+      ],
+      "correct": "2.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 259,
+      "id": "260",
+      "category": "Game Statistics",
+      "text": "How many passes did Jalen Hurts complete in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "17",
+        "15",
+        "20",
+        "18"
+      ],
+      "correct": "17"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 264,
+      "id": "265",
+      "category": "Team Victories & Streaks",
+      "text": "What was the Chiefs' best record in 2024 compared to past years?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "15-1",
+        "14-2",
+        "13-3",
+        "16-0"
+      ],
+      "correct": "15-1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 271,
+      "id": "272",
+      "category": "Player Contracts & Deals",
+      "text": "How many years was Trey Smith's deal with the Chiefs before franchise tag?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 273,
+      "id": "274",
+      "category": "Player Contracts & Deals",
+      "text": "How many years was Aaron Banks' Green Bay contract?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "6"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 276,
+      "id": "277",
+      "category": "Player Contracts & Deals",
+      "text": "How many years was D.J. Reed's contract?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "5"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 279,
+      "id": "280",
+      "category": "Player Contracts & Deals",
+      "text": "How many years was Mekhi Becton's contract?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "4"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 282,
+      "id": "283",
+      "category": "Notable Performances",
+      "text": "How many receiving yards did Marvin Harrison Jr. have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "993",
+        "900",
+        "1,050",
+        "850"
+      ],
+      "correct": "993"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 283,
+      "id": "284",
+      "category": "Notable Performances",
+      "text": "How many receiving touchdowns did Marvin Harrison Jr. have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "10",
+        "6",
+        "12"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 285,
+      "id": "286",
+      "category": "Notable Performances",
+      "text": "How many receiving yards did Brian Thomas Jr. have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,282",
+        "1,100",
+        "1,400",
+        "1,000"
+      ],
+      "correct": "1,282"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 286,
+      "id": "287",
+      "category": "Notable Performances",
+      "text": "How many receiving touchdowns did Brian Thomas Jr. have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10",
+        "8",
+        "12",
+        "6"
+      ],
+      "correct": "10"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 291,
+      "id": "292",
+      "category": "Coaching Performance",
+      "text": "How many Super Bowls has Andy Reid won with the Chiefs?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 302,
+      "id": "303",
+      "category": "Offensive Weapons",
+      "text": "How many All-Pro selections does Stefon Diggs have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 313,
+      "id": "314",
+      "category": "Defensive Excellence",
+      "text": "How many four-man pass rushes did the Eagles have in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Mostly",
+        "Some",
+        "Few",
+        "None"
+      ],
+      "correct": "Mostly"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 315,
+      "id": "316",
+      "category": "Defensive Excellence",
+      "text": "How many interceptions did the Eagles have in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 316,
+      "id": "317",
+      "category": "Defensive Excellence",
+      "text": "How many fumbles did Mahomes have in Super Bowl LIX?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "0",
+        "2",
+        "3"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 317,
+      "id": "318",
+      "category": "Defensive Excellence",
+      "text": "Did the Eagles have the best defense in 2024?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Top tier",
+        "Good",
+        "Average",
+        "Poor"
+      ],
+      "correct": "Top tier"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 325,
+      "id": "326",
+      "category": "Individual Records & Milestones",
+      "text": "How many receptions did Brock Bowers need to tie the record?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Already tied",
+        "3",
+        "1",
+        "5"
+      ],
+      "correct": "Already tied"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 328,
+      "id": "329",
+      "category": "Individual Records & Milestones",
+      "text": "Did Jayden Daniels have one of the best rookie QB seasons ever?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Good",
+        "Top 5"
+      ],
+      "correct": "Yes"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 333,
+      "id": "334",
+      "category": "Fan Favorites & Highlights",
+      "text": "How many yards was DeJean's interception return?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "38",
+        "30",
+        "40",
+        "35"
+      ],
+      "correct": "38"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 358,
+      "id": "359",
+      "category": "2025 Offseason Moves",
+      "text": "How many Super Bowls have the Chiefs won recently?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 360,
+      "id": "361",
+      "category": "Player Achievements",
+      "text": "How many rushing yards did Barry Sanders accumulate in his career?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15,269",
+        "16,726",
+        "14,580",
+        "15,000"
+      ],
+      "correct": "15,269"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 361,
+      "id": "362",
+      "category": "Player Achievements",
+      "text": "How many 1,000-yard rushing seasons did Barry Sanders have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10",
+        "9",
+        "8",
+        "7"
+      ],
+      "correct": "10"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 362,
+      "id": "363",
+      "category": "Player Achievements",
+      "text": "How many consecutive 1,000-yard seasons did Barry Sanders have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "6",
+        "4",
+        "7"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 363,
+      "id": "364",
+      "category": "Player Achievements",
+      "text": "How many Pro Bowls did Barry Sanders make?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10",
+        "9",
+        "8",
+        "11"
+      ],
+      "correct": "10"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 364,
+      "id": "365",
+      "category": "Player Achievements",
+      "text": "What was Barry Sanders' best rushing season?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "1997",
+        "1994",
+        "1996",
+        "1995"
+      ],
+      "correct": "1997"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 365,
+      "id": "366",
+      "category": "Player Achievements",
+      "text": "How many rushing yards did Barry Sanders have in 1997?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2,053",
+        "1,883",
+        "1,700",
+        "2,100"
+      ],
+      "correct": "2,053"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 366,
+      "id": "367",
+      "category": "Player Achievements",
+      "text": "How many rushing yards did Barry Sanders have in 1994?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,883",
+        "1,700",
+        "1,500",
+        "2,000"
+      ],
+      "correct": "1,883"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 369,
+      "id": "370",
+      "category": "Player Achievements",
+      "text": "How many rushing touchdowns did Barry Sanders have in his career?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "99",
+        "110",
+        "90",
+        "100"
+      ],
+      "correct": "99"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 371,
+      "id": "372",
+      "category": "Conference Standings",
+      "text": "How many of the top 4 seeds were in the NFC?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "3",
+        "4",
+        "1"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 373,
+      "id": "374",
+      "category": "Conference Standings",
+      "text": "How many wins did the NFC North have in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "45",
+        "43",
+        "48",
+        "40"
+      ],
+      "correct": "45"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 375,
+      "id": "376",
+      "category": "Conference Standings",
+      "text": "What was the worst division in 2024?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "AFC South",
+        "NFC South",
+        "NFC West",
+        "AFC East"
+      ],
+      "correct": "AFC South"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 379,
+      "id": "380",
+      "category": "Conference Standings",
+      "text": "How many playoff teams were in the NFC South?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "3",
+        "0"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 382,
+      "id": "383",
+      "category": "Special Teams & Other Stats",
+      "text": "How many rushing yards did Terrell Davis have in 1998 (regular + playoffs)?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2,476",
+        "2,400",
+        "2,500",
+        "2,350"
+      ],
+      "correct": "2,476"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 388,
+      "id": "389",
+      "category": "Special Teams & Other Stats",
+      "text": "How many rushing yards did Eric Dickerson have in his record season?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2,105",
+        "2,050",
+        "2,150",
+        "2,000"
+      ],
+      "correct": "2,105"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 390,
+      "id": "391",
+      "category": "Trivia & Fun Facts",
+      "text": "How many times has Joe Namath won a Super Bowl?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "0",
+        "3"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 391,
+      "id": "392",
+      "category": "Trivia & Fun Facts",
+      "text": "How many times has Joe Montana won a Super Bowl?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 393,
+      "id": "394",
+      "category": "Trivia & Fun Facts",
+      "text": "How many times did Tom Brady and Joe Montana's Super Bowl wins overlap?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Never",
+        "Once",
+        "Multiple",
+        "Not applicable"
+      ],
+      "correct": "Never"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 409,
+      "id": "410",
+      "category": "Notable Draft Picks",
+      "text": "How many quarterbacks were selected in the first round of 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 418,
+      "id": "419",
+      "category": "Statistical Leaders Continued",
+      "text": "How many times have linebackers won DPOY?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "17",
+        "15",
+        "20",
+        "12"
+      ],
+      "correct": "17"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 419,
+      "id": "420",
+      "category": "Statistical Leaders Continued",
+      "text": "How many times have defensive ends won DPOY?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15",
+        "17",
+        "12",
+        "20"
+      ],
+      "correct": "15"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 449,
+      "id": "450",
+      "category": "Fan Voting & Selections",
+      "text": "Did the Eagles have multiple Pro Bowlers?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Some",
+        "Few"
+      ],
+      "correct": "Yes"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 451,
+      "id": "452",
+      "category": "Franchise Records & Milestones",
+      "text": "How many Super Bowls have the Eagles won total?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 453,
+      "id": "454",
+      "category": "Franchise Records & Milestones",
+      "text": "How many championships do the Eagles have (including pre-Super Bowl era)?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "3",
+        "2"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 458,
+      "id": "459",
+      "category": "Franchise Records & Milestones",
+      "text": "How many playoff appearances have the Eagles had?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15+",
+        "12",
+        "10",
+        "8"
+      ],
+      "correct": "15+"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 460,
+      "id": "461",
+      "category": "Competitive Balance",
+      "text": "How many different conference winners were there across different divisions?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "7",
+        "6",
+        "9"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 476,
+      "id": "477",
+      "category": "Media & Broadcasting",
+      "text": "Is the 2025 NFL season expected to have high ratings?",
+      "issues": [
+        [
+          "PREDICTION",
+          "\\b(will be|going to be|expected to)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Unknown",
+        "Maybe"
+      ],
+      "correct": "Yes"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 481,
+      "id": "482",
+      "category": "Rule Changes & Officiating",
+      "text": "Were there controversial calls in Super Bowl LIX?",
+      "issues": [
+        [
+          "CONTROVERSIAL",
+          "\\b(controversial|debatable|disputed|argued)\\b"
+        ]
+      ],
+      "options": [
+        "No",
+        "Yes",
+        "Few",
+        "Debatable"
+      ],
+      "correct": "No"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 486,
+      "id": "487",
+      "category": "Rule Changes & Officiating",
+      "text": "Is the hip drop tackle rule controversial?",
+      "issues": [
+        [
+          "CONTROVERSIAL",
+          "\\b(controversial|debatable|disputed|argued)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Somewhat",
+        "Debatable"
+      ],
+      "correct": "Yes"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 487,
+      "id": "488",
+      "category": "Rule Changes & Officiating",
+      "text": "How many officials are on the field?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "7",
+        "6",
+        "8",
+        "5"
+      ],
+      "correct": "7"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 492,
+      "id": "493",
+      "category": "Youth & Rookie Development",
+      "text": "How many quarterbacks had rookie years in 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "Multiple",
+        "5",
+        "3",
+        "7"
+      ],
+      "correct": "Multiple"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv",
+      "index": 494,
+      "id": "495",
+      "category": "Youth & Rookie Development",
+      "text": "Was Jayden Daniels expected to be great?",
+      "issues": [
+        [
+          "PREDICTION",
+          "\\b(will be|going to be|expected to)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Unknown",
+        "Mixed"
+      ],
+      "correct": "Yes"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 2,
+      "id": "503",
+      "category": "Super Bowl LIV 2020",
+      "text": "How many passing touchdowns did Patrick Mahomes have in Super Bowl LIV?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "4"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 3,
+      "id": "504",
+      "category": "Super Bowl LIV 2020",
+      "text": "How many rushing touchdowns did Patrick Mahomes have in Super Bowl LIV?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "0",
+        "3"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 5,
+      "id": "506",
+      "category": "Super Bowl LIV 2020",
+      "text": "How many points behind were the Chiefs at halftime of Super Bowl LIV?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10 points",
+        "7 points",
+        "3 points",
+        "14 points"
+      ],
+      "correct": "10 points"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 6,
+      "id": "507",
+      "category": "Super Bowl LIV 2020",
+      "text": "Was this the Chiefs' first Super Bowl win in how many years?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "50 years",
+        "40 years",
+        "30 years",
+        "20 years"
+      ],
+      "correct": "50 years"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 13,
+      "id": "514",
+      "category": "Super Bowl LV 2021",
+      "text": "How many Super Bowl wins does Tom Brady have total?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "7",
+        "6",
+        "5",
+        "8"
+      ],
+      "correct": "7"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 15,
+      "id": "516",
+      "category": "Super Bowl LV 2021",
+      "text": "How many interceptions did Patrick Mahomes throw in Super Bowl LV?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 16,
+      "id": "517",
+      "category": "Super Bowl LV 2021",
+      "text": "How many interceptions did the Buccaneers get in Super Bowl LV?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "3",
+        "1",
+        "4"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 18,
+      "id": "519",
+      "category": "Super Bowl LV 2021",
+      "text": "How many touchdowns did Tom Brady throw in Super Bowl LV?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 23,
+      "id": "524",
+      "category": "Super Bowl LVI 2022",
+      "text": "How many yards was Cooper Kupp's game-winning touchdown?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1 yard",
+        "3 yards",
+        "5 yards",
+        "7 yards"
+      ],
+      "correct": "1 yard"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 26,
+      "id": "527",
+      "category": "Super Bowl LVI 2022",
+      "text": "How many Super Bowls have the Rams won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 29,
+      "id": "530",
+      "category": "Super Bowl LVI 2022",
+      "text": "What was the controversial play in Super Bowl LVI?",
+      "issues": [
+        [
+          "CONTROVERSIAL",
+          "\\b(controversial|debatable|disputed|argued)\\b"
+        ]
+      ],
+      "options": [
+        "Uncalled face mask by Bengals",
+        "Missed holding call on Rams",
+        "Incomplete pass ruling",
+        "Out of bounds call"
+      ],
+      "correct": "Uncalled face mask by Bengals"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 34,
+      "id": "535",
+      "category": "Super Bowl LVII 2023",
+      "text": "What was the controversial penalty in Super Bowl LVII?",
+      "issues": [
+        [
+          "CONTROVERSIAL",
+          "\\b(controversial|debatable|disputed|argued)\\b"
+        ]
+      ],
+      "options": [
+        "Defensive holding on Eagles",
+        "Holding on Chiefs",
+        "Pass interference",
+        "Illegal block"
+      ],
+      "correct": "Defensive holding on Eagles"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 36,
+      "id": "537",
+      "category": "Super Bowl LVII 2023",
+      "text": "How many passing touchdowns did Patrick Mahomes have in Super Bowl LVII?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "3",
+        "1",
+        "4"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 37,
+      "id": "538",
+      "category": "Super Bowl LVII 2023",
+      "text": "How many passing touchdowns did Jalen Hurts have in Super Bowl LVII?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 39,
+      "id": "540",
+      "category": "Super Bowl LVII 2023",
+      "text": "How many consecutive Super Bowls has Patrick Mahomes been in?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 44,
+      "id": "545",
+      "category": "Super Bowl LVIII 2024",
+      "text": "How many Super Bowl wins does Patrick Mahomes have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 47,
+      "id": "548",
+      "category": "Super Bowl LVIII 2024",
+      "text": "How many Super Bowl championships does the Kansas City Chiefs franchise have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 51,
+      "id": "552",
+      "category": "2020 NFL Season",
+      "text": "How many passing touchdowns did Aaron Rodgers have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "48",
+        "45",
+        "42",
+        "50"
+      ],
+      "correct": "48"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 52,
+      "id": "553",
+      "category": "2020 NFL Season",
+      "text": "How many interceptions did Aaron Rodgers throw in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "7",
+        "3",
+        "10"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 55,
+      "id": "556",
+      "category": "2020 NFL Season",
+      "text": "How many passing yards did Aaron Rodgers have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4,299",
+        "4,000",
+        "4,500",
+        "4,150"
+      ],
+      "correct": "4,299"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 62,
+      "id": "563",
+      "category": "2021 NFL Season",
+      "text": "How many passing yards did Tom Brady have in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5,316",
+        "4,500",
+        "4,900",
+        "5,100"
+      ],
+      "correct": "5,316"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 64,
+      "id": "565",
+      "category": "2021 NFL Season",
+      "text": "How many touchdowns did Tom Brady throw in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "43",
+        "40",
+        "45",
+        "38"
+      ],
+      "correct": "43"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 65,
+      "id": "566",
+      "category": "2021 NFL Season",
+      "text": "How many interceptions did Tom Brady throw in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "12",
+        "10",
+        "14",
+        "8"
+      ],
+      "correct": "12"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 68,
+      "id": "569",
+      "category": "2021 NFL Season",
+      "text": "Was 2021 Tom Brady's best season statistically?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Yes",
+        "No",
+        "Among best",
+        "Top 3"
+      ],
+      "correct": "Yes"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 69,
+      "id": "570",
+      "category": "2021 NFL Season",
+      "text": "How many pass attempts did Tom Brady have in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "719",
+        "700",
+        "650",
+        "750"
+      ],
+      "correct": "719"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 71,
+      "id": "572",
+      "category": "2022 NFL Season",
+      "text": "How many passing yards did Patrick Mahomes have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5,250",
+        "5,000",
+        "5,500",
+        "4,900"
+      ],
+      "correct": "5,250"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 72,
+      "id": "573",
+      "category": "2022 NFL Season",
+      "text": "How many passing touchdowns did Patrick Mahomes have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "41",
+        "40",
+        "43",
+        "38"
+      ],
+      "correct": "41"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 73,
+      "id": "574",
+      "category": "2022 NFL Season",
+      "text": "How many interceptions did Patrick Mahomes throw in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "12",
+        "10",
+        "14",
+        "8"
+      ],
+      "correct": "12"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 77,
+      "id": "578",
+      "category": "2022 NFL Season",
+      "text": "How many Super Bowl titles did the Chiefs win through 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 81,
+      "id": "582",
+      "category": "2023 NFL Season MVP",
+      "text": "How many MVP votes did Lamar Jackson get in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "49 of 50",
+        "48 of 50",
+        "50 of 50",
+        "47 of 50"
+      ],
+      "correct": "49 of 50"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 83,
+      "id": "584",
+      "category": "2023 NFL Season MVP",
+      "text": "How many passing yards did Lamar Jackson have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4,280",
+        "4,000",
+        "4,500",
+        "3,900"
+      ],
+      "correct": "4,280"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 84,
+      "id": "585",
+      "category": "2023 NFL Season MVP",
+      "text": "How many passing touchdowns did Lamar Jackson have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "31",
+        "28",
+        "35",
+        "25"
+      ],
+      "correct": "31"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 85,
+      "id": "586",
+      "category": "2023 NFL Season MVP",
+      "text": "How many interceptions did Lamar Jackson throw in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "11",
+        "8",
+        "14",
+        "6"
+      ],
+      "correct": "11"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 87,
+      "id": "588",
+      "category": "2023 NFL Season MVP",
+      "text": "How many MVP awards does Lamar Jackson have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 91,
+      "id": "592",
+      "category": "2023 Season Awards",
+      "text": "How many rushing yards did Christian McCaffrey have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,459",
+        "1,300",
+        "1,600",
+        "1,200"
+      ],
+      "correct": "1,459"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 92,
+      "id": "593",
+      "category": "2023 Season Awards",
+      "text": "How many receiving yards did Christian McCaffrey have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "564",
+        "450",
+        "650",
+        "400"
+      ],
+      "correct": "564"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 93,
+      "id": "594",
+      "category": "2023 Season Awards",
+      "text": "How many total rushing and receiving touchdowns did Christian McCaffrey have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "21",
+        "18",
+        "24",
+        "15"
+      ],
+      "correct": "21"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 96,
+      "id": "597",
+      "category": "2023 Season Awards",
+      "text": "How many Heisman Trophy winners have won multiple MVPs?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "4"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 100,
+      "id": "601",
+      "category": "Tom Brady Career Stats",
+      "text": "How many career passing yards does Tom Brady have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "89,214",
+        "85,000",
+        "92,000",
+        "80,000"
+      ],
+      "correct": "89,214"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 101,
+      "id": "602",
+      "category": "Tom Brady Career Stats",
+      "text": "How many career touchdown passes does Tom Brady have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "649",
+        "600",
+        "700",
+        "550"
+      ],
+      "correct": "649"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 102,
+      "id": "603",
+      "category": "Tom Brady Career Stats",
+      "text": "How many career games did Tom Brady start?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "316",
+        "300",
+        "330",
+        "285"
+      ],
+      "correct": "316"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 103,
+      "id": "604",
+      "category": "Tom Brady Career Stats",
+      "text": "How many career interceptions did Tom Brady throw?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "171",
+        "150",
+        "190",
+        "140"
+      ],
+      "correct": "171"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 107,
+      "id": "608",
+      "category": "Tom Brady Career Stats",
+      "text": "How many consecutive Super Bowls did Brady play in?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "9",
+        "8",
+        "10",
+        "7"
+      ],
+      "correct": "9"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 108,
+      "id": "609",
+      "category": "Tom Brady Career Stats",
+      "text": "How many All-Pro selections does Tom Brady have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15",
+        "12",
+        "18",
+        "10"
+      ],
+      "correct": "15"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 109,
+      "id": "610",
+      "category": "Tom Brady Career Stats",
+      "text": "How many Pro Bowls did Tom Brady make?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "15",
+        "14",
+        "16",
+        "13"
+      ],
+      "correct": "15"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 110,
+      "id": "611",
+      "category": "Patrick Mahomes Career",
+      "text": "How many Pro Bowls has Patrick Mahomes made through 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "6",
+        "5",
+        "7",
+        "4"
+      ],
+      "correct": "6"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 111,
+      "id": "612",
+      "category": "Patrick Mahomes Career",
+      "text": "How many MVP awards does Patrick Mahomes have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 112,
+      "id": "613",
+      "category": "Patrick Mahomes Career",
+      "text": "How many Super Bowl MVP awards does Patrick Mahomes have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 118,
+      "id": "619",
+      "category": "Patrick Mahomes Career",
+      "text": "How many passing yards has Patrick Mahomes accumulated through 2024?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "35,000+",
+        "30,000",
+        "40,000",
+        "25,000"
+      ],
+      "correct": "35,000+"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 125,
+      "id": "626",
+      "category": "Lamar Jackson Career",
+      "text": "How many rushing yards did Lamar Jackson have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "821",
+        "700",
+        "900",
+        "600"
+      ],
+      "correct": "821"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 126,
+      "id": "627",
+      "category": "Lamar Jackson Career",
+      "text": "How many rushing touchdowns did Lamar Jackson have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "3",
+        "7",
+        "4"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 128,
+      "id": "629",
+      "category": "Lamar Jackson Career",
+      "text": "How many Pro Bowls has Lamar Jackson made?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 129,
+      "id": "630",
+      "category": "Lamar Jackson Career",
+      "text": "How many All-Pro selections does Lamar Jackson have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 137,
+      "id": "638",
+      "category": "Christian McCaffrey Career",
+      "text": "How many total yards did Christian McCaffrey have in Super Bowl LVIII?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "160",
+        "140",
+        "180",
+        "120"
+      ],
+      "correct": "160"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 139,
+      "id": "640",
+      "category": "Christian McCaffrey Career",
+      "text": "How many rushing yards did Christian McCaffrey have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,139",
+        "1,000",
+        "1,300",
+        "900"
+      ],
+      "correct": "1,139"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 146,
+      "id": "647",
+      "category": "Tyreek Hill Career",
+      "text": "How many receiving yards did Tyreek Hill have in his first year with the Dolphins?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,799",
+        "1,700",
+        "1,900",
+        "1,600"
+      ],
+      "correct": "1,799"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 148,
+      "id": "649",
+      "category": "Tyreek Hill Career",
+      "text": "How many Pro Bowls has Tyreek Hill made?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "7",
+        "6",
+        "8",
+        "5"
+      ],
+      "correct": "7"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 149,
+      "id": "650",
+      "category": "Tyreek Hill Career",
+      "text": "How many All-Pro selections does Tyreek Hill have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5",
+        "4",
+        "6",
+        "3"
+      ],
+      "correct": "5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 150,
+      "id": "651",
+      "category": "Aaron Rodgers Career Continued",
+      "text": "How many MVP awards does Aaron Rodgers have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "4",
+        "3",
+        "5",
+        "2"
+      ],
+      "correct": "4"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 153,
+      "id": "654",
+      "category": "Aaron Rodgers Career Continued",
+      "text": "How many Super Bowls has Aaron Rodgers won?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1",
+        "2",
+        "3",
+        "0"
+      ],
+      "correct": "1"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 158,
+      "id": "659",
+      "category": "Aaron Rodgers Career Continued",
+      "text": "How many Pro Bowls has Aaron Rodgers made?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "9",
+        "8",
+        "10",
+        "7"
+      ],
+      "correct": "9"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 159,
+      "id": "660",
+      "category": "Aaron Rodgers Career Continued",
+      "text": "How many All-Pro selections does Aaron Rodgers have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "9",
+        "8",
+        "10",
+        "7"
+      ],
+      "correct": "9"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 170,
+      "id": "671",
+      "category": "2020-2023 Season Records",
+      "text": "Which team had the best record in 2020?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Kansas City Chiefs",
+        "New Orleans Saints",
+        "Green Bay Packers",
+        "Pittsburgh Steelers"
+      ],
+      "correct": "Kansas City Chiefs"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 173,
+      "id": "674",
+      "category": "2020-2023 Season Records",
+      "text": "Which team had the best record in 2021?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Tampa Bay Buccaneers",
+        "Green Bay Packers",
+        "Kansas City Chiefs",
+        "New England Patriots"
+      ],
+      "correct": "Tampa Bay Buccaneers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 175,
+      "id": "676",
+      "category": "2020-2023 Season Records",
+      "text": "Which team had the best record in 2022?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Kansas City Chiefs",
+        "Buffalo Bills",
+        "San Francisco 49ers",
+        "Philadelphia Eagles"
+      ],
+      "correct": "Kansas City Chiefs"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 177,
+      "id": "678",
+      "category": "2020-2023 Season Records",
+      "text": "Which team had the best record in 2023?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "San Francisco 49ers",
+        "Detroit Lions",
+        "Kansas City Chiefs",
+        "Buffalo Bills"
+      ],
+      "correct": "San Francisco 49ers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 181,
+      "id": "682",
+      "category": "Defensive Standouts 2020-2023",
+      "text": "How many sacks did Aaron Donald have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13.5",
+        "12",
+        "15",
+        "11"
+      ],
+      "correct": "13.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 183,
+      "id": "684",
+      "category": "Defensive Standouts 2020-2023",
+      "text": "How many sacks did T.J. Watt have in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "22.5",
+        "20",
+        "24",
+        "19"
+      ],
+      "correct": "22.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 187,
+      "id": "688",
+      "category": "Defensive Standouts 2020-2023",
+      "text": "How many sacks did Micah Parsons have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13",
+        "12",
+        "14",
+        "11"
+      ],
+      "correct": "13"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 189,
+      "id": "690",
+      "category": "Defensive Standouts 2020-2023",
+      "text": "How many sacks did Micah Parsons have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "12.5",
+        "12",
+        "13",
+        "11.5"
+      ],
+      "correct": "12.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 191,
+      "id": "692",
+      "category": "Receiving Leaders 2020-2023",
+      "text": "How many receiving yards did DeAndre Hopkins have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,104",
+        "1,000",
+        "1,200",
+        "950"
+      ],
+      "correct": "1,104"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 193,
+      "id": "694",
+      "category": "Receiving Leaders 2020-2023",
+      "text": "How many receiving yards did Davante Adams have in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,553",
+        "1,400",
+        "1,650",
+        "1,300"
+      ],
+      "correct": "1,553"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 195,
+      "id": "696",
+      "category": "Receiving Leaders 2020-2023",
+      "text": "How many receiving yards did Tyreek Hill have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,239",
+        "1,100",
+        "1,350",
+        "1,000"
+      ],
+      "correct": "1,239"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 197,
+      "id": "698",
+      "category": "Receiving Leaders 2020-2023",
+      "text": "How many receiving yards did Davante Adams have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,596",
+        "1,400",
+        "1,700",
+        "1,300"
+      ],
+      "correct": "1,596"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 199,
+      "id": "700",
+      "category": "Receiving Leaders 2020-2023",
+      "text": "How many receiving yards did Cooper Kupp have in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,947",
+        "1,800",
+        "2,000",
+        "1,700"
+      ],
+      "correct": "1,947"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 214,
+      "id": "715",
+      "category": "Individual Milestone Records",
+      "text": "How many passing yards did Peyton Manning throw in his record year?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "5,477",
+        "5,300",
+        "5,600",
+        "5,100"
+      ],
+      "correct": "5,477"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 242,
+      "id": "743",
+      "category": "Hall of Fame & Awards 2020-2023",
+      "text": "How many Pro Bowls did Peyton Manning make?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "14",
+        "13",
+        "15",
+        "12"
+      ],
+      "correct": "14"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 243,
+      "id": "744",
+      "category": "Hall of Fame & Awards 2020-2023",
+      "text": "How many Super Bowls did Peyton Manning win?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 246,
+      "id": "747",
+      "category": "Hall of Fame & Awards 2020-2023",
+      "text": "How many Super Bowls did John Elway win?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 250,
+      "id": "751",
+      "category": "Offensive Legends 2020-2023",
+      "text": "How many times did Davante Adams lead the league in receiving yards?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "4"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 252,
+      "id": "753",
+      "category": "Offensive Legends 2020-2023",
+      "text": "How many receiving yards did Travis Kelce have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,229",
+        "1,100",
+        "1,350",
+        "1,000"
+      ],
+      "correct": "1,229"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 253,
+      "id": "754",
+      "category": "Offensive Legends 2020-2023",
+      "text": "How many receiving touchdowns did Travis Kelce have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "11",
+        "10",
+        "13",
+        "9"
+      ],
+      "correct": "11"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 255,
+      "id": "756",
+      "category": "Offensive Legends 2020-2023",
+      "text": "How many receiving yards did Mike Evans have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,006",
+        "950",
+        "1,100",
+        "850"
+      ],
+      "correct": "1,006"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 259,
+      "id": "760",
+      "category": "Offensive Legends 2020-2023",
+      "text": "How many receiving touchdowns did Gronkowski have in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13",
+        "11",
+        "15",
+        "10"
+      ],
+      "correct": "13"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 261,
+      "id": "762",
+      "category": "Running Backs 2020-2023",
+      "text": "How many rushing yards did Derrick Henry have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,540",
+        "1,400",
+        "1,650",
+        "1,300"
+      ],
+      "correct": "1,540"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 263,
+      "id": "764",
+      "category": "Running Backs 2020-2023",
+      "text": "How many rushing yards did Jonathan Taylor have in 2021?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,811",
+        "1,700",
+        "1,900",
+        "1,600"
+      ],
+      "correct": "1,811"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 265,
+      "id": "766",
+      "category": "Running Backs 2020-2023",
+      "text": "How many rushing yards did Jeff Wilson Jr. have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "1,025",
+        "950",
+        "1,100",
+        "850"
+      ],
+      "correct": "1,025"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 271,
+      "id": "772",
+      "category": "Defensive Backs 2020-2023",
+      "text": "How many interceptions did Jalen Ramsey have in 2020?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "3",
+        "2",
+        "4",
+        "1"
+      ],
+      "correct": "3"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 277,
+      "id": "778",
+      "category": "Defensive Backs 2020-2023",
+      "text": "How many interceptions did Xavien Howard have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "6",
+        "10",
+        "5"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 282,
+      "id": "783",
+      "category": "Defensive Line 2020-2023",
+      "text": "How many career sacks does Aaron Donald have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "111",
+        "100",
+        "120",
+        "95"
+      ],
+      "correct": "111"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 283,
+      "id": "784",
+      "category": "Defensive Line 2020-2023",
+      "text": "How many Pro Bowls did Aaron Donald make?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "7",
+        "9",
+        "6"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 284,
+      "id": "785",
+      "category": "Defensive Line 2020-2023",
+      "text": "How many All-Pro selections did Aaron Donald have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "8",
+        "7",
+        "9",
+        "6"
+      ],
+      "correct": "8"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 286,
+      "id": "787",
+      "category": "Defensive Line 2020-2023",
+      "text": "How many sacks did Chris Jones have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10.5",
+        "9",
+        "12",
+        "8"
+      ],
+      "correct": "10.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 289,
+      "id": "790",
+      "category": "Defensive Line 2020-2023",
+      "text": "How many career sacks does J.J. Watt have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "114.5",
+        "100",
+        "120",
+        "110"
+      ],
+      "correct": "114.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 291,
+      "id": "792",
+      "category": "Linebackers 2020-2023",
+      "text": "How many sacks did Micah Parsons have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "13",
+        "12",
+        "14",
+        "11"
+      ],
+      "correct": "13"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 293,
+      "id": "794",
+      "category": "Linebackers 2020-2023",
+      "text": "How many tackles did Bobby Wagner have in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "169",
+        "150",
+        "180",
+        "140"
+      ],
+      "correct": "169"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 295,
+      "id": "796",
+      "category": "Linebackers 2020-2023",
+      "text": "How many tackles did Fred Warner have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "162",
+        "150",
+        "175",
+        "140"
+      ],
+      "correct": "162"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 299,
+      "id": "800",
+      "category": "Linebackers 2020-2023",
+      "text": "How many career sacks does Ryan Kerrigan have?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "117.5",
+        "110",
+        "120",
+        "105"
+      ],
+      "correct": "117.5"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 301,
+      "id": "802",
+      "category": "Special Teams & Kickers 2020-2023",
+      "text": "How many field goals did Harrison Butker make in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "33",
+        "30",
+        "35",
+        "28"
+      ],
+      "correct": "33"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 304,
+      "id": "805",
+      "category": "Special Teams & Kickers 2020-2023",
+      "text": "How many career field goals did Justin Tucker make?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "413",
+        "400",
+        "425",
+        "390"
+      ],
+      "correct": "413"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 307,
+      "id": "808",
+      "category": "Special Teams & Kickers 2020-2023",
+      "text": "How many field goals did Matt Gay make in 2022?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "29",
+        "27",
+        "31",
+        "25"
+      ],
+      "correct": "29"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 309,
+      "id": "810",
+      "category": "Special Teams & Kickers 2020-2023",
+      "text": "How many field goals did Greg Joseph make in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "34",
+        "32",
+        "36",
+        "30"
+      ],
+      "correct": "34"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 331,
+      "id": "832",
+      "category": "Comebacks & Close Games",
+      "text": "How many points behind were the Chiefs at one point?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "10",
+        "14",
+        "7",
+        "20"
+      ],
+      "correct": "10"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 339,
+      "id": "840",
+      "category": "Comebacks & Close Games",
+      "text": "How many field goals did the game go to in Super Bowl LVIII?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "2",
+        "1",
+        "3",
+        "None"
+      ],
+      "correct": "2"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 344,
+      "id": "845",
+      "category": "Record Breaking Performances",
+      "text": "How many receptions did Christian McCaffrey have in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "80+",
+        "70+",
+        "90+",
+        "60+"
+      ],
+      "correct": "80+"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 360,
+      "id": "861",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best defense in 2020?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Pittsburgh Steelers",
+        "Miami Dolphins",
+        "Green Bay Packers",
+        "Kansas City Chiefs"
+      ],
+      "correct": "Pittsburgh Steelers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 362,
+      "id": "863",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best offense in 2020?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Kansas City Chiefs",
+        "Green Bay Packers",
+        "New Orleans Saints",
+        "Los Angeles Rams"
+      ],
+      "correct": "Kansas City Chiefs"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 363,
+      "id": "864",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best defense in 2021?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Tampa Bay Buccaneers",
+        "Pittsburgh Steelers",
+        "Los Angeles Rams",
+        "San Francisco 49ers"
+      ],
+      "correct": "Tampa Bay Buccaneers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 364,
+      "id": "865",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best offense in 2021?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "Tampa Bay Buccaneers",
+        "Green Bay Packers",
+        "Kansas City Chiefs",
+        "New Orleans Saints"
+      ],
+      "correct": "Tampa Bay Buccaneers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 365,
+      "id": "866",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best defense in 2022?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "San Francisco 49ers",
+        "Buffalo Bills",
+        "Kansas City Chiefs",
+        "Philadelphia Eagles"
+      ],
+      "correct": "San Francisco 49ers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 366,
+      "id": "867",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best offense in 2022?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "San Francisco 49ers",
+        "Buffalo Bills",
+        "Kansas City Chiefs",
+        "Philadelphia Eagles"
+      ],
+      "correct": "Buffalo Bills"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 367,
+      "id": "868",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best defense in 2023?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "San Francisco 49ers",
+        "Detroit Lions",
+        "Dallas Cowboys",
+        "Buffalo Bills"
+      ],
+      "correct": "San Francisco 49ers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 368,
+      "id": "869",
+      "category": "Performance Metrics 2020-2023",
+      "text": "Which team had the best offense in 2023?",
+      "issues": [
+        [
+          "SUBJECTIVE",
+          "\\b(best|worst|greatest|favorite|favourite|most iconic|most popular|coolest|lamest)\\b"
+        ]
+      ],
+      "options": [
+        "San Francisco 49ers",
+        "Kansas City Chiefs",
+        "Buffalo Bills",
+        "Philadelphia Eagles"
+      ],
+      "correct": "San Francisco 49ers"
+    },
+    {
+      "file": ".kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv",
+      "index": 375,
+      "id": "876",
+      "category": "Unanimous Picks & MVPs",
+      "text": "How many MVP votes did Lamar Jackson get in 2023?",
+      "issues": [
+        [
+          "VAGUE",
+          "\\b(some|many|few|several|various|multiple)\\b.*\\?$"
+        ]
+      ],
+      "options": [
+        "49 of 50",
+        "48 of 50",
+        "50 of 50",
+        "47 of 50"
+      ],
+      "correct": "49 of 50"
+    }
+  ],
+  "summary": {
+    "fortnite_count": 96,
+    "nfl_count": 287,
+    "total": 383
+  }
+}

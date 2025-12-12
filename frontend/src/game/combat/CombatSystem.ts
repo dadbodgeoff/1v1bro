@@ -302,6 +302,13 @@ export class CombatSystem {
     return this.healthManager.wasRecentlyDamaged(playerId)
   }
 
+  /**
+   * Get weapon cooldown progress (0 = just fired, 1 = ready to fire)
+   */
+  getCooldownProgress(): number {
+    return this.weaponManager.getCooldownProgress()
+  }
+
   addShield(playerId: string, amount: number): void {
     this.healthManager.addShield(playerId, amount)
   }

@@ -28,12 +28,10 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 527,Super Bowl LVI 2022,How many Super Bowls have the Rams won?,2,1,3,0,2
 528,Super Bowl LVI 2022,When did the Rams win their first Super Bowl?,1999,2000,1998,2001,1999
 529,Super Bowl LVI 2022,Did Matthew Stafford get his first Super Bowl win?,Yes,No,Second,Third,Yes
-530,Super Bowl LVI 2022,What was the controversial play in Super Bowl LVI?,Uncalled face mask by Bengals,Missed holding call on Rams,Incomplete pass ruling,Out of bounds call,Uncalled face mask by Bengals
 531,Super Bowl LVII 2023,What was the final score of Super Bowl LVII?,"Chiefs 38, Eagles 35","Chiefs 35, Eagles 32","Chiefs 40, Eagles 37","Chiefs 36, Eagles 33","Chiefs 38, Eagles 35"
 532,Super Bowl LVII 2023,Who kicked the game-winning field goal in Super Bowl LVII?,Harrison Butker,Jake Elliott,Matt Gay,Greg Joseph,Harrison Butker
 533,Super Bowl LVII 2023,What was the distance of the game-winning field goal?,27 yards,25 yards,30 yards,22 yards,27 yards
 534,Super Bowl LVII 2023,Who was the MVP of Super Bowl LVII?,Patrick Mahomes,Jalen Hurts,Travis Kelce,A.J. Brown,Patrick Mahomes
-535,Super Bowl LVII 2023,What was the controversial penalty in Super Bowl LVII?,Defensive holding on Eagles,Holding on Chiefs,Pass interference,Illegal block,Defensive holding on Eagles
 536,Super Bowl LVII 2023,Did the Chiefs win back-to-back Super Bowls?,Yes,No,2 straight wins,3 straight wins,Yes
 537,Super Bowl LVII 2023,How many passing touchdowns did Patrick Mahomes have in Super Bowl LVII?,2,3,1,4,2
 538,Super Bowl LVII 2023,How many passing touchdowns did Jalen Hurts have in Super Bowl LVII?,3,2,4,1,3
@@ -67,7 +65,6 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 566,2021 NFL Season,How many interceptions did Tom Brady throw in 2021?,12,10,14,8,12
 567,2021 NFL Season,Did Tom Brady play in his first Super Bowl with Tampa Bay?,Yes,No,Not yet,Already won,No
 568,2021 NFL Season,Did Tom Brady break any records in 2021?,Yes,No,Several,One or two,Yes
-569,2021 NFL Season,Was 2021 Tom Brady's best season statistically?,Yes,No,Among best,Top 3,Yes
 570,2021 NFL Season,How many pass attempts did Tom Brady have in 2021?,719,700,650,750,719
 571,2022 NFL Season,Who won the 2022 NFL MVP?,Patrick Mahomes,Josh Allen,Jalen Hurts,Lamar Jackson,Patrick Mahomes
 572,2022 NFL Season,How many passing yards did Patrick Mahomes have in 2022?,"5,250","5,000","5,500","4,900","5,250"
@@ -169,14 +166,10 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 668,2020-2023 Draft Highlights,Did Anthony Richardson go in the top 5 in 2023?,Yes,No,4th overall,6th,Yes
 669,2020-2023 Draft Highlights,Where was Anthony Richardson selected in 2023?,4th overall,3rd overall,5th overall,1st overall,4th overall
 670,2020-2023 Draft Highlights,Did Will Anderson Jr. play defensive end?,Yes,No,Linebacker,Safety,Yes
-671,2020-2023 Season Records,Which team had the best record in 2020?,Kansas City Chiefs,New Orleans Saints,Green Bay Packers,Pittsburgh Steelers,Kansas City Chiefs
 672,2020-2023 Season Records,What was the Kansas City Chiefs' record in 2020?,14-2,13-3,15-1,12-4,14-2
 673,2020-2023 Season Records,What was the Green Bay Packers' record in 2020?,13-3,14-2,12-4,15-1,13-3
-674,2020-2023 Season Records,Which team had the best record in 2021?,Tampa Bay Buccaneers,Green Bay Packers,Kansas City Chiefs,New England Patriots,Tampa Bay Buccaneers
 675,2020-2023 Season Records,What was the Tampa Bay Buccaneers' record in 2021?,13-4,14-3,12-5,15-2,13-4
-676,2020-2023 Season Records,Which team had the best record in 2022?,Kansas City Chiefs,Buffalo Bills,San Francisco 49ers,Philadelphia Eagles,Kansas City Chiefs
 677,2020-2023 Season Records,What was the Kansas City Chiefs' record in 2022?,14-3,13-4,15-2,12-5,14-3
-678,2020-2023 Season Records,Which team had the best record in 2023?,San Francisco 49ers,Detroit Lions,Kansas City Chiefs,Buffalo Bills,San Francisco 49ers
 679,2020-2023 Season Records,What was the San Francisco 49ers' record in 2023?,12-5,13-4,14-3,11-6,12-5
 680,2020-2023 Season Records,Did any team go undefeated in 2020-2023?,No,Yes,Close to it,Almost,No
 681,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2020?,Aaron Donald,Chris Paul,Khalil Mack,J.J. Watt,Aaron Donald
@@ -359,15 +352,7 @@ ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
 858,Playoff History 2020-2023,Did the 49ers win the NFC West in 2023?,Yes,No,Wild card,Missed,Yes
 859,Playoff History 2020-2023,Did the Lions win the NFC North in 2023?,Yes,No,Wild card,Missed,Yes
 860,Playoff History 2020-2023,Did the Ravens make the playoffs in 2023?,Yes,No,Wild card,Missed,Yes
-861,Performance Metrics 2020-2023,Which team had the best defense in 2020?,Pittsburgh Steelers,Miami Dolphins,Green Bay Packers,Kansas City Chiefs,Pittsburgh Steelers
 862,Performance Metrics 2020-2023,Did the Pittsburgh Steelers have the top defense in 2020?,Yes,No,Second,Top 3,Yes
-863,Performance Metrics 2020-2023,Which team had the best offense in 2020?,Kansas City Chiefs,Green Bay Packers,New Orleans Saints,Los Angeles Rams,Kansas City Chiefs
-864,Performance Metrics 2020-2023,Which team had the best defense in 2021?,Tampa Bay Buccaneers,Pittsburgh Steelers,Los Angeles Rams,San Francisco 49ers,Tampa Bay Buccaneers
-865,Performance Metrics 2020-2023,Which team had the best offense in 2021?,Tampa Bay Buccaneers,Green Bay Packers,Kansas City Chiefs,New Orleans Saints,Tampa Bay Buccaneers
-866,Performance Metrics 2020-2023,Which team had the best defense in 2022?,San Francisco 49ers,Buffalo Bills,Kansas City Chiefs,Philadelphia Eagles,San Francisco 49ers
-867,Performance Metrics 2020-2023,Which team had the best offense in 2022?,San Francisco 49ers,Buffalo Bills,Kansas City Chiefs,Philadelphia Eagles,Buffalo Bills
-868,Performance Metrics 2020-2023,Which team had the best defense in 2023?,San Francisco 49ers,Detroit Lions,Dallas Cowboys,Buffalo Bills,San Francisco 49ers
-869,Performance Metrics 2020-2023,Which team had the best offense in 2023?,San Francisco 49ers,Kansas City Chiefs,Buffalo Bills,Philadelphia Eagles,San Francisco 49ers
 870,Performance Metrics 2020-2023,Did any team have both top offense and defense?,Yes,No,Once,Multiple times,Yes
 871,Unanimous Picks & MVPs,Was Lamar Jackson a unanimous MVP in 2019?,Yes,No,Nearly,Close,Yes
 872,Unanimous Picks & MVPs,Was Aaron Rodgers unanimous MVP in 2020?,No,Yes,Nearly,Close,No

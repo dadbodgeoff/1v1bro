@@ -2,20 +2,20 @@
   "category": "fortnite",
   "generated_at": "2025-12-08T15:48:20.288942+00:00",
   "source": "Chapter 6 Manual Questions",
-  "total_questions": 300,
+  "total_questions": 129,
   "by_difficulty": {
-    "easy": 100,
-    "medium": 100,
-    "hard": 100
+    "easy": 79,
+    "medium": 38,
+    "hard": 12
   },
   "by_subcategory": {
-    "seasons": 101,
-    "history": 39,
-    "cosmetics": 65,
-    "map": 26,
-    "weapons": 43,
-    "collabs": 12,
-    "events": 14
+    "seasons": 37,
+    "history": 10,
+    "cosmetics": 26,
+    "map": 19,
+    "weapons": 26,
+    "collabs": 5,
+    "events": 6
   },
   "questions": [
     {
@@ -217,30 +217,6 @@
         "Mask Maker",
         "Warrior's Spirit",
         "Blade Master"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Was there a ninja-themed skin in the Chapter 6 Season 1 Battle Pass?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Only as an alternate style"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did the Battle Pass include shrine maiden or traditional priestess-themed skins?",
-      "options": [
-        "Yes",
-        "No",
-        "Only as cosmetics",
-        "Uncertain"
       ],
       "correct_index": 0,
       "difficulty": "easy",
@@ -475,18 +451,6 @@
       "subcategory": "weapons"
     },
     {
-      "text": "Were there elder ninja or master-class NPCs in Season 1?",
-      "options": [
-        "Yes",
-        "No",
-        "Only as cosmetics",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
       "text": "Could players interact with multiple faction-aligned NPCs?",
       "options": [
         "Yes",
@@ -521,18 +485,6 @@
       "correct_index": 0,
       "difficulty": "easy",
       "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were there cultural or historical figure collaborations?",
-      "options": [
-        "Yes",
-        "No",
-        "Only in cosmetics",
-        "Uncertain"
-      ],
-      "correct_index": 1,
-      "difficulty": "easy",
-      "subcategory": "collabs"
     },
     {
       "text": "How many collaboration cosmetics were added mid-season?",
@@ -727,18 +679,6 @@
       "subcategory": "weapons"
     },
     {
-      "text": "Were there mythic weapons tied to Season 2 bosses?",
-      "options": [
-        "Yes",
-        "No",
-        "Only one mythic",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "weapons"
-    },
-    {
       "text": "What was the name of the ice-based mythic weapon in Season 2?",
       "options": [
         "Sub-Zero's Ice Mythic",
@@ -823,30 +763,6 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "Were the main characters' vehicles expected to appear?",
-      "options": [
-        "Yes - Dom's Dodge Charger and Han's Mazda RX-7",
-        "Only cosmetic vehicles",
-        "No vehicles",
-        "General vehicle cosmetics only"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "history"
-    },
-    {
-      "text": "Had these vehicles previously appeared in another game?",
-      "options": [
-        "Yes - Rocket League",
-        "No",
-        "Only in cosmetics",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "history"
-    },
-    {
       "text": "What video game franchise collaboration was expected for Season 2?",
       "options": [
         "Yakuza/Like a Dragon series",
@@ -871,18 +787,6 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "When was the new Like a Dragon spinoff releasing relative to Season 2?",
-      "options": [
-        "Same day as Season 2",
-        "One month before",
-        "Three months after",
-        "Uncertain timing"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
       "text": "How many main skins were expected in the Season 2 Battle Pass?",
       "options": [
         "6",
@@ -895,36 +799,12 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "Were there crime-themed skin designs?",
-      "options": [
-        "Yes",
-        "No",
-        "Only NPC skins",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "Did the Festival instrument cosmetics receive new functionality?",
       "options": [
         "Yes - usable as pickaxes and back blings",
         "No new functionality",
         "Only cosmetic changes",
         "Different mode only"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were new \"Kicks\" cosmetics (shoe items) planned?",
-      "options": [
-        "Yes - usable on any skin",
-        "Only tie-in cosmetics",
-        "No shoe cosmetics",
-        "Uncertain"
       ],
       "correct_index": 0,
       "difficulty": "easy",
@@ -943,36 +823,12 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "Were there 1980s-inspired fashion cosmetics?",
-      "options": [
-        "Yes",
-        "No",
-        "1990s only",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "easy",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "What theme was heavily speculated for Chapter 6 Season 3?",
       "options": [
         "Star Wars",
         "Marvel Superheroes",
         "Dragon Ball",
         "Harry Potter"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "When was Season 3 expected to begin?",
-      "options": [
-        "May 2025",
-        "June 2025",
-        "July 2025",
-        "August 2025"
       ],
       "correct_index": 0,
       "difficulty": "easy",
@@ -989,102 +845,6 @@
       "correct_index": 0,
       "difficulty": "easy",
       "subcategory": "collabs"
-    },
-    {
-      "text": "Were specific Star Wars character skins expected?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Only vehicles"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Would Season 3 mark a return to Force-based mechanics?",
-      "options": [
-        "Likely",
-        "Unlikely",
-        "Uncertain",
-        "Explicitly confirmed against"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was Chapter 6 confirmed to have 5 regular seasons?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Only 4 seasons"
-      ],
-      "correct_index": 2,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were mini-seasons or remix seasons expected in Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Only at chapter start",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "events"
-    },
-    {
-      "text": "Would Chapter 6 feature holiday-themed seasons?",
-      "options": [
-        "Yes, rumored",
-        "No",
-        "Uncertain",
-        "Only as events"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "How many total seasons is Chapter 6 expected to have?",
-      "options": [
-        "4",
-        "5",
-        "6",
-        "7"
-      ],
-      "correct_index": 2,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were collaboration-themed full seasons planned?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Only mini-seasons"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "collabs"
-    },
-    {
-      "text": "Would Halloween-themed content return as a full season?",
-      "options": [
-        "Yes, rumored",
-        "No",
-        "Uncertain",
-        "Only cosmetics"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "seasons"
     },
     {
       "text": "When did Chapter 6 Mini Season 2 begin?",
@@ -1183,18 +943,6 @@
       "subcategory": "events"
     },
     {
-      "text": "Was there a launch event for Chapter 2 Remix?",
-      "options": [
-        "Yes - concert finale",
-        "No",
-        "Only cosmetic release",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "easy",
-      "subcategory": "events"
-    },
-    {
       "text": "What free cosmetic was offered during Remix season?",
       "options": [
         "Free Juice WRLD skin",
@@ -1217,18 +965,6 @@
       "correct_index": 0,
       "difficulty": "easy",
       "subcategory": "map"
-    },
-    {
-      "text": "Did Chapter 6 introduce new climbing or movement mechanics?",
-      "options": [
-        "Yes",
-        "No",
-        "Only cosmetic",
-        "Uncertain"
-      ],
-      "correct_index": 1,
-      "difficulty": "medium",
-      "subcategory": "seasons"
     },
     {
       "text": "Were grappling hooks available in Chapter 6?",
@@ -1315,18 +1051,6 @@
       "subcategory": "seasons"
     },
     {
-      "text": "Could players recruit NPCs as temporary helpers?",
-      "options": [
-        "Yes",
-        "No",
-        "Seasonal feature",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
       "text": "Did bosses have unique dialogue or interactions?",
       "options": [
         "Yes",
@@ -1387,18 +1111,6 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "Were Festival instrument cosmetics consistently updated?",
-      "options": [
-        "Yes",
-        "No",
-        "Only new instruments",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "How many major live events occurred in Chapter 6?",
       "options": [
         "4-5",
@@ -1411,18 +1123,6 @@
       "subcategory": "events"
     },
     {
-      "text": "Did Chapter 6 feature music/concert events?",
-      "options": [
-        "Yes",
-        "No",
-        "Only cosmetic",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "events"
-    },
-    {
       "text": "Were there story/narrative conclusion events?",
       "options": [
         "Yes",
@@ -1431,30 +1131,6 @@
         "Seasonal updates only"
       ],
       "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "events"
-    },
-    {
-      "text": "Did seasonal transitions have finale events?",
-      "options": [
-        "Yes",
-        "No",
-        "Some seasons",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "events"
-    },
-    {
-      "text": "Were holiday events featured?",
-      "options": [
-        "Yes",
-        "No",
-        "Upcoming",
-        "Uncertain"
-      ],
-      "correct_index": 2,
       "difficulty": "medium",
       "subcategory": "events"
     },
@@ -1483,42 +1159,6 @@
       "subcategory": "seasons"
     },
     {
-      "text": "Did ARs receive significant balance changes mid-chapter?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor adjustments",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were scoped ARs available in most seasons?",
-      "options": [
-        "Yes",
-        "No",
-        "Season-specific",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 introduce new AR fire modes?",
-      "options": [
-        "Yes",
-        "No",
-        "Cosmetic only",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
       "text": "Were shotguns viable in competitive play?",
       "options": [
         "Yes",
@@ -1539,54 +1179,6 @@
         "6+"
       ],
       "correct_index": 1,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Could shotguns be dual-wielded?",
-      "options": [
-        "Yes - in Season 2",
-        "No",
-        "Only cosmetic",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Were pump shotguns featured in Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Early season only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Did shotgun range increase across the chapter?",
-      "options": [
-        "Yes",
-        "No",
-        "Season-specific",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Were snipers consistently available?",
-      "options": [
-        "Yes",
-        "No",
-        "Seasonal",
-        "Uncertain"
-      ],
-      "correct_index": 0,
       "difficulty": "medium",
       "subcategory": "weapons"
     },
@@ -1627,18 +1219,6 @@
       "subcategory": "weapons"
     },
     {
-      "text": "Could snipers one-shot at headshot?",
-      "options": [
-        "Yes",
-        "No",
-        "With specific rarities",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
       "text": "Were SMGs viable in close-quarters combat?",
       "options": [
         "Yes",
@@ -1663,36 +1243,12 @@
       "subcategory": "weapons"
     },
     {
-      "text": "Did SMGs have magazine size or fire rate tradeoffs?",
-      "options": [
-        "Yes",
-        "No",
-        "Balanced",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
       "text": "Were scoped SMGs available?",
       "options": [
         "Yes",
         "No",
         "Season-specific",
         "Cosmetic only"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Could SMGs spray through structures?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited penetration",
-        "Uncertain"
       ],
       "correct_index": 2,
       "difficulty": "medium",
@@ -1735,30 +1291,6 @@
       "subcategory": "weapons"
     },
     {
-      "text": "Could pistols be dual-wielded?",
-      "options": [
-        "Yes",
-        "No",
-        "Specific models",
-        "Uncertain"
-      ],
-      "correct_index": 1,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Were explosive pistols available?",
-      "options": [
-        "Yes",
-        "No",
-        "Season-specific",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "weapons"
-    },
-    {
       "text": "Which POI was ranked #1 in community tier lists?",
       "options": [
         "Whiffy Wharf",
@@ -1795,30 +1327,6 @@
       "subcategory": "map"
     },
     {
-      "text": "What POI was best for early-game engagements?",
-      "options": [
-        "Magic Mosses",
-        "Seaport City",
-        "Demon's Dojo",
-        "Lost Lake"
-      ],
-      "correct_index": 1,
-      "difficulty": "medium",
-      "subcategory": "map"
-    },
-    {
-      "text": "Which POI provided best resources for wood farming?",
-      "options": [
-        "Tiptop Terrace (Ch7)",
-        "Flooded Frogs",
-        "Magic Mosses",
-        "Lost Lake"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "map"
-    },
-    {
       "text": "What was Crime City called before?",
       "options": [
         "Seaport City",
@@ -1843,192 +1351,12 @@
       "subcategory": "map"
     },
     {
-      "text": "Did Crime City feature multiple building complexes?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "map"
-    },
-    {
-      "text": "Were vault locations updated for Season 2?",
-      "options": [
-        "Yes",
-        "No",
-        "Some vaults only",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "map"
-    },
-    {
-      "text": "Did the train station receive heist-themed changes?",
-      "options": [
-        "Yes",
-        "No",
-        "Only cosmetic",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 introduce new graphical features?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor improvements",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was LEGO Fortnite available during Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Launching soon",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 optimize performance on mobile?",
-      "options": [
-        "Yes",
-        "No",
-        "Partial",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were controller mapping improvements added?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "map"
-    },
-    {
-      "text": "Did accessibility features expand?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor additions",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Was Zero Build mode available during Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Testing phase",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
       "text": "Were Impostors/Social modes available?",
       "options": [
         "Yes",
         "No",
         "Limited time",
         "Returning soon"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did Chapter 6 introduce new LTMs?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Seasonal only"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was Fortnite Festival part of Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "During remix only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Save the World receive Chapter 6 content?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited updates",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 maintain 100-tier Battle Passes?",
-      "options": [
-        "Yes - mostly",
-        "No - all reduced",
-        "Mixed (some 50-tier)",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were Battle Passes purchasable at any time?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited purchase window",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Could players purchase tiers individually?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited availability",
-        "Uncertain"
       ],
       "correct_index": 0,
       "difficulty": "medium",
@@ -2047,18 +1375,6 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "Did Battle Pass include cosmetic-only rewards?",
-      "options": [
-        "Yes",
-        "No",
-        "Some V-Bucks",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "How many major collaborations occurred in Chapter 6?",
       "options": [
         "5-10",
@@ -2069,54 +1385,6 @@
       "correct_index": 3,
       "difficulty": "medium",
       "subcategory": "collabs"
-    },
-    {
-      "text": "Did Marvel get featured in Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Only cosmetics",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "collabs"
-    },
-    {
-      "text": "Was Avatar: The Last Airbender represented?",
-      "options": [
-        "Yes",
-        "No",
-        "Cosmetics only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Dragon Ball collaborate during Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Multiple times",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "collabs"
-    },
-    {
-      "text": "Were DC Universe properties featured?",
-      "options": [
-        "Yes",
-        "No",
-        "Cosmetics only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "history"
     },
     {
       "text": "How many musicians were featured in Chapter 6?",
@@ -2131,30 +1399,6 @@
       "subcategory": "seasons"
     },
     {
-      "text": "Did Billie Eilish have cosmetics?",
-      "options": [
-        "Yes",
-        "No",
-        "Festival event only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were rapper collaborations featured?",
-      "options": [
-        "Yes",
-        "No",
-        "Only in Remix",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "collabs"
-    },
-    {
       "text": "How many Fortnite Festival musicians were featured?",
       "options": [
         "5-10",
@@ -2165,102 +1409,6 @@
       "correct_index": 3,
       "difficulty": "medium",
       "subcategory": "history"
-    },
-    {
-      "text": "Did sports personalities get cosmetics?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Cosmetics only"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were competitive tournaments held during Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited events",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was there a ranked mode with cosmetic rewards?",
-      "options": [
-        "Yes",
-        "No",
-        "Testing phase",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did pro players participate in Chapter 6 events?",
-      "options": [
-        "Yes",
-        "No",
-        "Some events",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "events"
-    },
-    {
-      "text": "Were prize pools offered for tournaments?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did FNCS (Fortnite Champion Series) occur in Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Delayed"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did the meta shift between Chapter 6 seasons?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor changes",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were shotguns consistently strong?",
-      "options": [
-        "Yes",
-        "No",
-        "Season-dependent",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "weapons"
     },
     {
       "text": "What was the most versatile weapon class?",
@@ -2275,162 +1423,6 @@
       "subcategory": "weapons"
     },
     {
-      "text": "Did building remain central to competitive play?",
-      "options": [
-        "Yes",
-        "No",
-        "Reduced role",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Were Zero Build tournaments popular?",
-      "options": [
-        "Yes",
-        "No",
-        "Minority participation",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Was Chapter 6 connected to Chapter 5 lore?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor connections",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did the story conclude definitively at chapter end?",
-      "options": [
-        "Yes",
-        "No",
-        "Left open",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were there multiple factions players could align with?",
-      "options": [
-        "Yes",
-        "No",
-        "Story-only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did NPCs have character development arcs?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Were there save-the-world crossovers?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did each season advance the main narrative?",
-      "options": [
-        "Yes",
-        "No",
-        "Some seasons",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were story conclusions celebrated with events?",
-      "options": [
-        "Yes",
-        "No",
-        "Some seasons",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "events"
-    },
-    {
-      "text": "Did leaks reveal future storylines?",
-      "options": [
-        "Yes",
-        "No",
-        "Partial leaks",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "medium",
-      "subcategory": "history"
-    },
-    {
-      "text": "Was Chapter 6 considered a transition chapter?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Story-focused only"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 set up Chapter 7?",
-      "options": [
-        "Yes",
-        "No",
-        "Partially",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "medium",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were Chapter 6 skins generally well-received?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed reactions",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "How many legendary-tier skins were in Chapter 6?",
       "options": [
         "5-10",
@@ -2443,42 +1435,6 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "Did Chapter 6 feature cross-dimensional skins?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were villain-themed skins popular?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed reception",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did alternate styles significantly boost value?",
-      "options": [
-        "Yes",
-        "No",
-        "Situational",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
       "text": "How many unique pickaxes were added?",
       "options": [
         "30-50",
@@ -2487,54 +1443,6 @@
         "100+"
       ],
       "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were there weapon-shaped pickaxes?",
-      "options": [
-        "Yes",
-        "No",
-        "Cosmetics only",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did backblings match specific skins?",
-      "options": [
-        "Yes - usually",
-        "No - all universal",
-        "Mixed compatibility",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were gliders themed by season?",
-      "options": [
-        "Yes",
-        "No",
-        "Some seasonal",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did wraps coordinate with cosmetics?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited coordination",
-        "Uncertain"
-      ],
-      "correct_index": 0,
       "difficulty": "hard",
       "subcategory": "cosmetics"
     },
@@ -2551,102 +1459,6 @@
       "subcategory": "seasons"
     },
     {
-      "text": "Did limited-time cosmetics return?",
-      "options": [
-        "Yes",
-        "No",
-        "Sometimes",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were cosmetics ever permanently removed?",
-      "options": [
-        "Yes",
-        "No",
-        "Rarely",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did cosmetics get re-released seasonally?",
-      "options": [
-        "Yes",
-        "No",
-        "Occasionally",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were there exclusive Shop bundles per season?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were Battle Pass cosmetics exclusive forever?",
-      "options": [
-        "Yes",
-        "No",
-        "Eventually returned",
-        "Uncertain"
-      ],
-      "correct_index": 1,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Could non-pass cosmetics be purchased anytime?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited windows",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did founder/early player cosmetics exist?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were event-exclusive cosmetics ever re-released?",
-      "options": [
-        "Yes",
-        "No",
-        "Rarely",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "How many seasonal-exclusive cosmetics were added?",
       "options": [
         "5-10",
@@ -2657,126 +1469,6 @@
       "correct_index": 3,
       "difficulty": "hard",
       "subcategory": "cosmetics"
-    },
-    {
-      "text": "Was Chapter 6 Season 1 well-received?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did the Japanese theme resonate with players?",
-      "options": [
-        "Yes",
-        "No",
-        "Depends on region",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was the heist theme popular?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed reactions",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did players enjoy the Demon Hunters narrative?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed opinions",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Was competitive reception positive?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did Chapter 6 attract many content creators?",
-      "options": [
-        "Yes",
-        "No",
-        "Moderate interest",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were there creator cosmetics?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did major streamers cover Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Some coverage",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were highlight moments frequently shared?",
-      "options": [
-        "Yes",
-        "No",
-        "Moderately",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did TikTok trends emerge from Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Some trends",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
     },
     {
       "text": "How was Chapter 6 received overall?",
@@ -2791,468 +1483,12 @@
       "subcategory": "seasons"
     },
     {
-      "text": "Did Chapter 6 last the expected duration?",
-      "options": [
-        "Yes",
-        "No",
-        "Slightly longer",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were updates consistent throughout the chapter?",
-      "options": [
-        "Yes",
-        "No",
-        "Mostly",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 have fewer content updates than previous chapters?",
-      "options": [
-        "Yes",
-        "No",
-        "Similar amount",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was Chapter 6 a successful transition chapter?",
-      "options": [
-        "Yes",
-        "No",
-        "Moderately",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Will Chapter 6 be remembered for weapon balance?",
-      "options": [
-        "Yes",
-        "No",
-        "Neutral",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Were there iconic competitive moments?",
-      "options": [
-        "Yes",
-        "No",
-        "Some memorable plays",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did Chapter 6 establish enduring meta strategies?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited impact",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Will Chapter 6 cosmetics remain valuable?",
-      "options": [
-        "Yes",
-        "No",
-        "Depends on rarity",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Is Chapter 6 a fan-favorite chapter?",
-      "options": [
-        "Yes",
-        "No",
-        "Divisive opinions",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was Chapter 6 darker than Chapter 5?",
-      "options": [
-        "Yes",
-        "No",
-        "Similar tone",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 have more collaborations than Chapter 5?",
-      "options": [
-        "Yes",
-        "No",
-        "Similar amount",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "collabs"
-    },
-    {
-      "text": "Were weapons more balanced in Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Similar to Chapter 5",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Did POIs feel more unique compared to Chapter 4?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed feelings",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "map"
-    },
-    {
-      "text": "Was the narrative stronger than Chapter 5?",
-      "options": [
-        "Yes",
-        "No",
-        "Comparable",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 introduce more new mechanics than Chapter 5?",
-      "options": [
-        "Yes",
-        "No",
-        "Similar amount",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were cosmetic customization options expanded?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor expansion",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did the heist mechanic feel fresh?",
-      "options": [
-        "Yes",
-        "No",
-        "Somewhat",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Was the demon/spirit combat system innovative?",
-      "options": [
-        "Yes",
-        "No",
-        "Borrowed concepts",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did Chapter 6 improve progression systems?",
-      "options": [
-        "Yes",
-        "No",
-        "Minimal changes",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was the Dark Presence connected to previous entities?",
-      "options": [
-        "Yes",
-        "No",
-        "Uncertain",
-        "Minor connection"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did the spirit realm play a major role?",
-      "options": [
-        "Yes",
-        "No",
-        "Secondary role",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Was Daigo's backstory explained?",
-      "options": [
-        "Yes",
-        "No",
-        "Partially revealed",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did the Splinter Blades have significant lore?",
-      "options": [
-        "Yes",
-        "No",
-        "Minimal backstory",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Was there a connection to the Fortnite Foundation?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor reference",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "What was the Dark Presence's origin?",
-      "options": [
-        "Ancient entity",
-        "Created by players",
-        "Interdimensional",
-        "Uncertain/Unexplained"
-      ],
-      "correct_index": 3,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Why did the tentacles attack the island?",
-      "options": [
-        "Defense mechanism",
-        "Hunger for power",
-        "Unknown motivation",
-        "Cleansing ritual"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "What is the significance of Zero Point in Chapter 6?",
-      "options": [
-        "Major plot element",
-        "Background detail",
-        "Player-focused mechanic",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "map"
-    },
-    {
-      "text": "Did Chapter 6 explain the Loop's existence?",
-      "options": [
-        "Yes",
-        "No",
-        "Hinted at",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "What factions existed in Chapter 6?",
-      "options": [
-        "Multiple competing factions",
-        "Singular faction",
-        "No factions",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "What was the rarest Chapter 6 cosmetic?",
-      "options": [
-        "Battle Pass exclusive",
-        "Limited-time collab",
-        "Founder's item",
-        "Uncertain"
-      ],
-      "correct_index": 1,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "How many cosmetics exceeded 2,000 V-Bucks?",
       "options": [
         "None",
         "1-5",
         "6-10",
         "10+"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were bundle prices generally favorable?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed value",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Did seasonal cosmetics increase in price?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor changes",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were there free cosmetics offered?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Which cosmetic was most desired?",
-      "options": [
-        "Daigo",
-        "Collaboration skins",
-        "Seasonal Battle Pass skins",
-        "Uncertain"
-      ],
-      "correct_index": 1,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did anime-inspired cosmetics sell well?",
-      "options": [
-        "Yes",
-        "No",
-        "Moderately",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were crime-themed skins popular?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed interest",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did limited-availability cosmetics drive purchases?",
-      "options": [
-        "Yes",
-        "No",
-        "Somewhat",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were there \"must-have\" cosmetics per season?",
-      "options": [
-        "Yes",
-        "No",
-        "Opinions varied",
-        "Uncertain"
       ],
       "correct_index": 2,
       "difficulty": "hard",
@@ -3283,258 +1519,6 @@
       "subcategory": "seasons"
     },
     {
-      "text": "Did Season 1 have more events than Season 2?",
-      "options": [
-        "Yes",
-        "No",
-        "Similar amount",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "events"
-    },
-    {
-      "text": "Was Season 1 longer than typical seasons?",
-      "options": [
-        "Yes",
-        "No",
-        "Average duration",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Season 1 receive post-launch balance patches?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "How long was Season 2 expected to last?",
-      "options": [
-        "8-10 weeks",
-        "10-12 weeks",
-        "12-14 weeks",
-        "14+ weeks"
-      ],
-      "correct_index": 1,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Season 2 have major mid-season updates?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor updates",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were there surprise collaborations mid-season?",
-      "options": [
-        "Yes",
-        "No",
-        "Possibly",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "collabs"
-    },
-    {
-      "text": "Did weapon balance shift in Season 2?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor adjustments",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Was Season 2 extended beyond normal duration?",
-      "options": [
-        "Yes",
-        "No",
-        "On schedule",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "What was the most iconic moment in Chapter 6?",
-      "options": [
-        "Final boss battle (Season 1)",
-        "Crime City heist",
-        "Mini Season finale",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Which season had the best cosmetics?",
-      "options": [
-        "Season 1",
-        "Season 2",
-        "Mini Season 2",
-        "Opinion-dependent"
-      ],
-      "correct_index": 3,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Did Chapter 6 introduce crossplay improvements?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor updates",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were there accessibility updates in Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did performance improve across platforms?",
-      "options": [
-        "Yes",
-        "No",
-        "Mixed results",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "What was the most impactful weapon nerf?",
-      "options": [
-        "AR nerf",
-        "Shotgun nerf",
-        "Sniper nerf",
-        "Uncertain"
-      ],
-      "correct_index": 3,
-      "difficulty": "hard",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Were there surprise weapon additions?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor additions",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "weapons"
-    },
-    {
-      "text": "Did Chapter 6 have more patch notes than Chapter 5?",
-      "options": [
-        "Yes",
-        "No",
-        "Similar volume",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Were there controversial balance decisions?",
-      "options": [
-        "Yes",
-        "No",
-        "Some debate",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "history"
-    },
-    {
-      "text": "Would players recommend Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "To specific audiences",
-        "Mixed opinions"
-      ],
-      "correct_index": 3,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was Chapter 6 a stepping stone to Chapter 7?",
-      "options": [
-        "Yes",
-        "No",
-        "Somewhat",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Did Chapter 6 establish new player expectations?",
-      "options": [
-        "Yes",
-        "No",
-        "Minor impact",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Will Chapter 6 be considered iconic?",
-      "options": [
-        "Yes",
-        "No",
-        "Moderately",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
       "text": "What was Chapter 6's biggest achievement?",
       "options": [
         "Narrative closure",
@@ -3547,48 +1531,12 @@
       "subcategory": "seasons"
     },
     {
-      "text": "What was Chapter 6's biggest shortcoming?",
-      "options": [
-        "Limited cosmetics",
-        "Balance issues",
-        "Connectivity problems",
-        "Uncertain/Opinion-based"
-      ],
-      "correct_index": 3,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
       "text": "Did Chapter 6 exceed expectations?",
       "options": [
         "Yes",
         "No",
         "Met expectations",
         "Below expectations"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Would players replay Chapter 6?",
-      "options": [
-        "Yes",
-        "No",
-        "Selectively",
-        "Uncertain"
-      ],
-      "correct_index": 2,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was Chapter 6 better than Chapter 5?",
-      "options": [
-        "Yes",
-        "No",
-        "Depends on preference",
-        "Uncertain"
       ],
       "correct_index": 2,
       "difficulty": "hard",
@@ -3618,5 +1566,6 @@
       "difficulty": "hard",
       "subcategory": "seasons"
     }
-  ]
+  ],
+  "last_modified": "2025-12-12T12:43:13.203407"
 }

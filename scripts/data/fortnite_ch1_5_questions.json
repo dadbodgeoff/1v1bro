@@ -2,17 +2,17 @@
   "category": "fortnite",
   "generated_at": "2025-12-08T15:52:32.231614+00:00",
   "source": "Chapters 1-5 Manual Questions",
-  "total_questions": 200,
+  "total_questions": 193,
   "by_difficulty": {
-    "easy": 50,
+    "easy": 49,
     "medium": 100,
-    "hard": 50
+    "hard": 44
   },
   "by_subcategory": {
-    "seasons": 103,
-    "events": 15,
-    "cosmetics": 23,
-    "collabs": 6,
+    "seasons": 100,
+    "events": 14,
+    "cosmetics": 21,
+    "collabs": 5,
     "map": 31,
     "weapons": 14,
     "history": 8
@@ -375,18 +375,6 @@
         "150 days"
       ],
       "correct_index": 2,
-      "difficulty": "easy",
-      "subcategory": "seasons"
-    },
-    {
-      "text": "Was Season 1 the longest season ever in Fortnite?",
-      "options": [
-        "Yes",
-        "No",
-        "One of the longest",
-        "Uncertain"
-      ],
-      "correct_index": 0,
       "difficulty": "easy",
       "subcategory": "seasons"
     },
@@ -2035,18 +2023,6 @@
       "subcategory": "seasons"
     },
     {
-      "text": "Did Chapter 2 have more crossovers than Chapter 1?",
-      "options": [
-        "Yes",
-        "No",
-        "Approximately same",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
       "text": "Were music events held in Chapter 3?",
       "options": [
         "Yes",
@@ -2203,18 +2179,6 @@
       "subcategory": "history"
     },
     {
-      "text": "Did Chapter 4 introduce Reality Augments in ranked?",
-      "options": [
-        "Yes",
-        "No",
-        "Only in Season 1",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "seasons"
-    },
-    {
       "text": "Were FNCS tournaments held in every chapter?",
       "options": [
         "Yes",
@@ -2323,30 +2287,6 @@
       "subcategory": "cosmetics"
     },
     {
-      "text": "Did the Battle Pass ever offer more V-Bucks?",
-      "options": [
-        "Yes, in some seasons",
-        "No, always same",
-        "Only in early chapters",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
-      "text": "Were there discounted Battle Pass bundles?",
-      "options": [
-        "Yes",
-        "No",
-        "Only in certain seasons",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "cosmetics"
-    },
-    {
       "text": "How many tiers were typically in a Battle Pass?",
       "options": [
         "50",
@@ -2371,18 +2311,6 @@
       "subcategory": "collabs"
     },
     {
-      "text": "Did Chapter 3 feature DC Universe content?",
-      "options": [
-        "Yes",
-        "No",
-        "Limited cosmetics",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "collabs"
-    },
-    {
       "text": "How many Star Wars seasons existed through Chapter 5?",
       "options": [
         "0",
@@ -2393,18 +2321,6 @@
       "correct_index": 0,
       "difficulty": "hard",
       "subcategory": "collabs"
-    },
-    {
-      "text": "Did Chapter 5 Season 2 feature mythology-based crossovers?",
-      "options": [
-        "Yes",
-        "No",
-        "Only cosmetics",
-        "Uncertain"
-      ],
-      "correct_index": 0,
-      "difficulty": "hard",
-      "subcategory": "events"
     },
     {
       "text": "What was a signature Chapter 1 crossover?",
@@ -2418,5 +2334,6 @@
       "difficulty": "hard",
       "subcategory": "seasons"
     }
-  ]
+  ],
+  "last_modified": "2025-12-12T12:43:13.201824"
 }

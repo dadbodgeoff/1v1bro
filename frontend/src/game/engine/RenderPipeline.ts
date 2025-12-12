@@ -13,6 +13,7 @@ import {
   QuestionBroadcastRenderer,
   BuffRenderer,
   RespawnOverlayRenderer,
+  PlayerStatusRenderer,
 } from '../renderers'
 import type { BroadcastState } from '../renderers'
 import { BackdropSystem } from '../backdrop'
@@ -41,6 +42,7 @@ export class RenderPipeline {
   private combatEffectsRenderer: CombatEffectsRenderer
   private buffRenderer: BuffRenderer
   private respawnOverlayRenderer: RespawnOverlayRenderer
+  private playerStatusRenderer: PlayerStatusRenderer
 
   // Buff manager reference
   private buffManager: BuffManager | null = null
@@ -75,6 +77,7 @@ export class RenderPipeline {
     this.combatEffectsRenderer = new CombatEffectsRenderer()
     this.buffRenderer = new BuffRenderer()
     this.respawnOverlayRenderer = new RespawnOverlayRenderer()
+    this.playerStatusRenderer = new PlayerStatusRenderer()
   }
 
   setBuffManager(buffManager: BuffManager): void {
@@ -254,6 +257,11 @@ export class RenderPipeline {
     this.playerRenderer.setContext(context)
     this.playerRenderer.render()
 
+    // Layer 5.2: Player status effects (cooldown, debuffs) - renders around local player
+    if (combatEnabled && localPlayer) {
+      this.renderPlayerStatus(context, localPlayer, animationTime)
+    }
+
     // Layer 5.3: Foreground props (grass) - renders ABOVE players for stealth effect
     if (this.isSimpleTheme() && this.simpleRendererReady && this.simpleRenderer) {
       this.simpleRenderer.renderForeground()
@@ -376,5 +384,59 @@ export class RenderPipeline {
     this.healthBarRenderer.setContext(context)
     this.healthBarRenderer.setPlayers(players)
     this.healthBarRenderer.render()
+  }
+
+  /**
+   * Render player status effects (cooldown, debuffs)
+   */
+  private renderPlayerStatus(
+    context: RenderContext,
+    localPlayer: PlayerState,
+    animationTime: number
+  ): void {
+    // Get cooldown progress from combat system
+    const cooldownProgress = this.combatSystem.getCooldownProgress()
+    
+    // Get health state for invulnerability check
+    const healthState = this.combatSystem.getHealthState(localPlayer.id)
+    const isInvulnerable = healthState?.isInvulnerable ?? false
+    
+    // Check if player is in any hazard zones
+    const playerPos = localPlayer.position
+    const hazardZones = this.arenaManager.getHazardZones()
+    
+    let isSlowed = false
+    let isEMPed = false
+    let isInDamageZone = false
+    
+    for (const zone of hazardZones) {
+      const inZone = 
+        playerPos.x >= zone.bounds.x &&
+        playerPos.x <= zone.bounds.x + zone.bounds.width &&
+        playerPos.y >= zone.bounds.y &&
+        playerPos.y <= zone.bounds.y + zone.bounds.height
+      
+      if (inZone) {
+        if (zone.type === 'slow') isSlowed = true
+        if (zone.type === 'emp') isEMPed = true
+        if (zone.type === 'damage') isInDamageZone = true
+      }
+    }
+    
+    // Check if recently damaged
+    const recentlyDamaged = this.combatSystem.wasRecentlyDamaged(localPlayer.id)
+    
+    this.playerStatusRenderer.setContext(context)
+    this.playerStatusRenderer.setPlayerPosition(localPlayer.position)
+    this.playerStatusRenderer.setAnimationTime(animationTime)
+    this.playerStatusRenderer.setStatus({
+      cooldownProgress,
+      isSlowed,
+      isEMPed,
+      isInDamageZone,
+      isInvulnerable,
+      recentlyDamaged,
+    })
+    this.playerStatusRenderer.render()
   }
 }
