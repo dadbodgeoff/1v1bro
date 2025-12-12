@@ -249,8 +249,14 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
       {showLoadingOverlay && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
-            <span className="text-xs text-white/60 font-mono">Loading arena...</span>
+            <div className="relative w-10 h-10">
+              <div className="absolute inset-0 border-2 border-white/10 rounded-full" />
+              <div className="absolute inset-0 border-2 border-transparent border-t-white/80 rounded-full animate-spin" />
+            </div>
+            <span className="text-xs text-white/60 font-mono tracking-wide">Loading arena...</span>
+            <div className="w-32 h-1 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-full animate-pulse" style={{ width: '60%' }} />
+            </div>
           </div>
         </div>
       )}

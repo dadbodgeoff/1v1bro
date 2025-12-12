@@ -30,9 +30,25 @@ interface AnalyticsProviderProps {
   enabled?: boolean
 }
 
+// Check if running on localhost dev server - skip analytics for local testing
+const isLocalhost = () => {
+  const hostname = window.location.hostname
+  const port = window.location.port
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    (hostname === 'localhost' && port === '5173') ||
+    window.location.origin.includes('localhost:5173')
+  )
+}
+
 export function AnalyticsProvider({ children, enabled = true }: AnalyticsProviderProps) {
   const location = useLocation()
   const initialized = useRef(false)
+  
+  // Disable analytics on localhost to avoid polluting demo/production data
+  const isEnabled = enabled && !isLocalhost()
   
   const {
     sessionId,
@@ -40,7 +56,7 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
     trackPageView,
     trackJourneyStep,
   } = useEnterpriseAnalytics({
-    enabled,
+    enabled: isEnabled,
     trackPerformance: true,
     trackClicks: true,
     trackScroll: true,
@@ -50,7 +66,7 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
 
   // Initialize session on mount
   useEffect(() => {
-    if (!enabled || initialized.current) return
+    if (!isEnabled || initialized.current) return
     initialized.current = true
 
     const initSession = async () => {
@@ -98,11 +114,11 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
     }
 
     initSession()
-  }, [enabled, sessionId, visitorId])
+  }, [isEnabled, sessionId, visitorId])
 
   // Track page views on route change
   useEffect(() => {
-    if (!enabled) return
+    if (!isEnabled) return
 
     const page = location.pathname
     
@@ -120,11 +136,11 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
 
     // Track in enterprise analytics
     trackPageView(page)
-  }, [location.pathname, enabled, sessionId, trackPageView])
+  }, [location.pathname, isEnabled, sessionId, trackPageView])
 
   // Track custom event
   const trackEvent = (name: string, properties?: Record<string, unknown>) => {
-    if (!enabled) return
+    if (!isEnabled) return
 
     // Basic analytics
     fetch(`${API_BASE}/analytics/event`, {
@@ -148,7 +164,7 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
 
   // Track conversion
   const trackConversion = (_type: string, userId?: string) => {
-    if (!enabled) return
+    if (!isEnabled) return
 
     fetch(`${API_BASE}/analytics/conversion`, {
       method: 'POST',

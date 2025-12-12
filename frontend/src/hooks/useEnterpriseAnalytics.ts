@@ -100,6 +100,17 @@ const getDeviceType = (): string => {
   return 'desktop'
 }
 
+// Check if running on localhost dev server - skip analytics for local testing
+const isLocalhost = (): boolean => {
+  const hostname = window.location.hostname
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    window.location.origin.includes('localhost:5173')
+  )
+}
+
 const getBrowser = (): string => {
   const ua = navigator.userAgent
   if (ua.includes('Firefox')) return 'Firefox'
@@ -145,6 +156,9 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     heartbeatInterval = 30000, // 30 seconds
   } = options
 
+  // Disable analytics on localhost to avoid polluting demo/production data
+  const isEnabled = enabled && !isLocalhost()
+
   const user = useAuthStore(state => state.user)
   const sessionId = useRef(getSessionId())
   const visitorId = useRef(getVisitorId())
@@ -163,7 +177,7 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     stepType: 'pageview' | 'event' | 'click',
     data: { page?: string; event_name?: string; element_id?: string; metadata?: Record<string, unknown> }
   ) => {
-    if (!enabled) return
+    if (!isEnabled) return
 
     trackAsync('/track/journey-step', {
       session_id: sessionId.current,
@@ -175,14 +189,14 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       duration_ms: Date.now() - pageStartTime.current,
       metadata: data.metadata,
     })
-  }, [enabled])
+  }, [isEnabled])
 
   // ============================================
   // Performance Tracking (Core Web Vitals)
   // ============================================
 
   const trackPerformanceMetrics = useCallback((metrics: PerformanceMetrics) => {
-    if (!enabled || !trackPerformance) return
+    if (!isEnabled || !trackPerformance) return
 
     trackAsync('/track/performance', {
       session_id: sessionId.current,
@@ -192,11 +206,11 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       browser: getBrowser(),
       ...metrics,
     })
-  }, [enabled, trackPerformance])
+  }, [isEnabled, trackPerformance])
 
   // Auto-collect Web Vitals
   useEffect(() => {
-    if (!enabled || !trackPerformance) return
+    if (!isEnabled || !trackPerformance) return
 
     const collectWebVitals = () => {
       // Use PerformanceObserver for modern metrics
@@ -285,14 +299,14 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     }
 
     collectWebVitals()
-  }, [enabled, trackPerformance, trackPerformanceMetrics])
+  }, [isEnabled, trackPerformance, trackPerformanceMetrics])
 
   // ============================================
   // Click Tracking (Heatmaps)
   // ============================================
 
   const trackClick = useCallback((data: ClickData) => {
-    if (!enabled || !trackClicks) return
+    if (!isEnabled || !trackClicks) return
 
     trackAsync('/track/click', {
       session_id: sessionId.current,
@@ -300,11 +314,11 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       page: currentPage.current,
       ...data,
     })
-  }, [enabled, trackClicks])
+  }, [isEnabled, trackClicks])
 
   // Auto-track clicks
   useEffect(() => {
-    if (!enabled || !trackClicks) return
+    if (!isEnabled || !trackClicks) return
 
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement
@@ -354,14 +368,14 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
 
     document.addEventListener('click', handleClick, { passive: true })
     return () => document.removeEventListener('click', handleClick)
-  }, [enabled, trackClicks, trackClick, trackJourneyStep])
+  }, [isEnabled, trackClicks, trackClick, trackJourneyStep])
 
   // ============================================
   // Scroll Depth Tracking
   // ============================================
 
   const trackScrollDepth = useCallback(() => {
-    if (!enabled || !trackScroll) return
+    if (!isEnabled || !trackScroll) return
 
     trackAsync('/track/scroll', {
       session_id: sessionId.current,
@@ -372,11 +386,11 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       time_to_50_percent_ms: scrollMilestones.current[50] ? scrollMilestones.current[50] - pageStartTime.current : undefined,
       time_to_100_percent_ms: scrollMilestones.current[100] ? scrollMilestones.current[100] - pageStartTime.current : undefined,
     })
-  }, [enabled, trackScroll])
+  }, [isEnabled, trackScroll])
 
   // Auto-track scroll
   useEffect(() => {
-    if (!enabled || !trackScroll) return
+    if (!isEnabled || !trackScroll) return
 
     let ticking = false
 
@@ -418,14 +432,14 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
-  }, [enabled, trackScroll, trackScrollDepth])
+  }, [isEnabled, trackScroll, trackScrollDepth])
 
   // ============================================
   // Error Tracking
   // ============================================
 
   const trackError = useCallback((data: ErrorData) => {
-    if (!enabled || !trackErrors) return
+    if (!isEnabled || !trackErrors) return
 
     trackAsync('/track/error', {
       session_id: sessionId.current,
@@ -436,11 +450,11 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       os: navigator.platform,
       ...data,
     })
-  }, [enabled, trackErrors, user?.id])
+  }, [isEnabled, trackErrors, user?.id])
 
   // Auto-track JS errors
   useEffect(() => {
-    if (!enabled || !trackErrors) return
+    if (!isEnabled || !trackErrors) return
 
     const handleError = (event: ErrorEvent) => {
       trackError({
@@ -471,14 +485,14 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       window.removeEventListener('error', handleError)
       window.removeEventListener('unhandledrejection', handleUnhandledRejection)
     }
-  }, [enabled, trackErrors, trackError])
+  }, [isEnabled, trackErrors, trackError])
 
   // ============================================
   // Real-time Heartbeat
   // ============================================
 
   useEffect(() => {
-    if (!enabled || heartbeatInterval <= 0) return
+    if (!isEnabled || heartbeatInterval <= 0) return
 
     const sendHeartbeat = () => {
       trackAsync('/track/heartbeat', {
@@ -499,7 +513,7 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     return () => {
       if (heartbeatRef.current) clearInterval(heartbeatRef.current)
     }
-  }, [enabled, heartbeatInterval, user?.id])
+  }, [isEnabled, heartbeatInterval, user?.id])
 
   // ============================================
   // Page Change Handler

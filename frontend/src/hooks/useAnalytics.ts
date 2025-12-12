@@ -142,8 +142,21 @@ export interface UseAnalyticsOptions {
   source?: string
 }
 
+// Check if running on localhost dev server - skip analytics for local testing
+const isLocalhost = (): boolean => {
+  const hostname = window.location.hostname
+  return (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '0.0.0.0' ||
+    window.location.origin.includes('localhost:5173')
+  )
+}
+
 export function useAnalytics(options: UseAnalyticsOptions = {}) {
   const { enabled = true, trackOnMount = false, source = 'dashboard' } = options
+  // Disable analytics on localhost to avoid polluting demo/production data
+  const isEnabled = enabled && !isLocalhost()
   const user = useAuthStore(state => state.user)
   const sessionId = useRef(getSessionId())
   const visitorId = useRef(getVisitorId())
@@ -154,7 +167,7 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
     name: DashboardEventName,
     properties: Record<string, unknown>
   ) => {
-    if (!enabled) return
+    if (!isEnabled) return
 
     const event: AnalyticsEvent = {
       name,
@@ -174,7 +187,7 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
     if (import.meta.env.DEV) {
       console.debug(`[Analytics] ${name}:`, properties)
     }
-  }, [enabled, user?.id, source])
+  }, [isEnabled, user?.id, source])
 
   // Track dashboard view on mount
   useEffect(() => {

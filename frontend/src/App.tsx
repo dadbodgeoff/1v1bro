@@ -1,8 +1,12 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { usePresence } from '@/hooks/usePresence'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/stores/authStore'
+import { warmCache } from '@/game/assets'
+import { AnalyticsProvider } from '@/providers/AnalyticsProvider'
+import { AnalyticsDebugger } from '@/components/analytics'
 import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
 import { Achievements } from '@/pages/Achievements'
 import { InstantPlay } from '@/pages/InstantPlay'
@@ -13,6 +17,7 @@ import { VolcanicLanding } from '@/pages/VolcanicLanding'
 import { ArcadeLanding } from '@/pages/ArcadeLanding'
 import { MatchHistory } from '@/pages/MatchHistory'
 import { SimpleArenaTest } from '@/pages/SimpleArenaTest'
+import { CornfieldMapBuilder } from '@/pages/CornfieldMapBuilder'
 import { CoinShop } from '@/pages/CoinShop'
 import { CoinSuccess } from '@/pages/CoinSuccess'
 import { ProgressionProvider } from '@/components/progression'
@@ -41,9 +46,16 @@ function App() {
   
   // Maintain online presence via heartbeat
   usePresence()
+  
+  // Warm asset cache in background on app startup
+  // Uses requestIdleCallback to avoid blocking initial render
+  useEffect(() => {
+    warmCache('simple')
+  }, [])
 
   return (
     <BrowserRouter>
+      <AnalyticsProvider enabled={true}>
       <ProgressionProvider>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -225,6 +237,8 @@ function App() {
         <Route path="/arcade" element={<ArcadeLanding />} />
         {/* Simple Arena Test - floor tile rendering test */}
         <Route path="/simple-arena-test" element={<SimpleArenaTest />} />
+        {/* Cornfield Map Builder - map building/preview tool */}
+        <Route path="/cornfield-builder" element={<CornfieldMapBuilder />} />
         {/* Admin Analytics Dashboard */}
         <Route
           path="/admin/analytics"
@@ -245,6 +259,9 @@ function App() {
         />
       </Routes>
       </ProgressionProvider>
+      {/* Analytics debugger - only visible in development */}
+      <AnalyticsDebugger />
+      </AnalyticsProvider>
     </BrowserRouter>
   )
 }

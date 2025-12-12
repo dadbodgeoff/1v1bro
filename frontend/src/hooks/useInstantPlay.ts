@@ -29,6 +29,7 @@ import {
 } from '@/game/guest'
 import type { Vector2, FireEvent, HitEvent, DeathEvent, Projectile, PowerUpState, PowerUpType } from '@/game'
 import { SIMPLE_ARENA } from '@/game/config/maps'
+import { preloadMapAssets, hasPreloadStarted } from '@/game/assets'
 import {
   trackInstantPlayStart,
   trackInstantPlayCategorySelect,
@@ -41,6 +42,7 @@ import {
   trackConversionPromptClicked,
   trackConversionPromptDismissed,
 } from '@/services/analytics'
+import { useGameAnalytics } from '@/hooks/useGameAnalytics'
 
 interface PracticeQuestion {
   id: number
@@ -203,6 +205,14 @@ export function useInstantPlay() {
     reset,
   } = useGameStore()
 
+  // Game analytics for detailed tracking
+  const gameAnalytics = useGameAnalytics({
+    gameMode: 'instant_play',
+    isGuest: !isLoggedIn,
+    category: selectedCategory,
+    mapId: 'simple',
+  })
+
   // Bot state
   const [botPosition, setBotPosition] = useState<Vector2>({ x: 1050, y: 360 })
   const [playerPosition, setPlayerPosition] = useState<Vector2>({ x: 200, y: 360 })
@@ -287,6 +297,14 @@ export function useInstantPlay() {
     feedbackSystem.resetStreaks()
     trackInstantPlayStart()
     
+    // Start preloading map assets immediately for faster game start
+    // This runs in parallel with other initialization
+    if (!hasPreloadStarted()) {
+      preloadMapAssets('simple').catch(() => {
+        // Preload failed - game will load assets on demand
+      })
+    }
+    
     // Fetch loadout for logged-in users
     if (isLoggedIn && token) {
       fetchLoadout(token)
@@ -343,7 +361,9 @@ export function useInstantPlay() {
     instantPlayManager.markInitEnd()
     trackInstantPlayTutorialComplete()
     trackInstantPlayMatchStart()
-  }, [setStatus])
+    gameAnalytics.trackGameStart()
+    gameAnalytics.trackTutorialComplete(0, false)
+  }, [setStatus, gameAnalytics])
 
   // Start first question when ready
   useEffect(() => {
@@ -536,6 +556,7 @@ export function useInstantPlay() {
               if (newHealth <= 0) {
                 setBotKills(k => k + 1)
                 setKillStreak(0)
+                gameAnalytics.trackDeath()
                 setTimeout(() => setPlayerHealth(100), 1500)
               }
               return newHealth
@@ -623,6 +644,11 @@ export function useInstantPlay() {
     
     // Track match completion
     trackInstantPlayMatchComplete(result.won ? 'win' : 'loss', result.matchDurationMs)
+    gameAnalytics.trackGameComplete(
+      result.won ? 'win' : result.playerScore === result.botScore ? 'draw' : 'loss',
+      result.playerScore,
+      result.botScore
+    )
 
     const prompt = conversionPrompts.shouldShowPrompt(session)
     if (prompt) {
@@ -631,7 +657,7 @@ export function useInstantPlay() {
       trackConversionPromptShown(prompt.id, session.matchesPlayed)
       setTimeout(() => setShowConversionPrompt(true), 2000)
     }
-  }, [localScore, opponentScore, playerKills, botKills, playerAnsweredCount, playerCorrectAnswers, selectedCategory])
+  }, [localScore, opponentScore, playerKills, botKills, playerAnsweredCount, playerCorrectAnswers, selectedCategory, gameAnalytics])
 
   // Process round when both answered
   useEffect(() => {
@@ -649,6 +675,9 @@ export function useInstantPlay() {
       setPlayerCorrectAnswers(prev => prev + 1)
     }
     setPlayerAnsweredCount(prev => prev + 1)
+    
+    // Track question for analytics
+    gameAnalytics.trackQuestionAnswered(playerCorrect, playerAnswer.timeMs)
 
     if (playerCorrect) {
       const newStreak = answerStreak + 1
@@ -678,7 +707,7 @@ export function useInstantPlay() {
         handleGameEnd()
       }
     }, 3000)
-  }, [playerAnswer, botAnswer, questionIndex, localScore, opponentScore, status, questions, handleGameEnd])
+  }, [playerAnswer, botAnswer, questionIndex, localScore, opponentScore, status, questions, handleGameEnd, gameAnalytics])
 
 
   // Handle player answer
@@ -704,6 +733,7 @@ export function useInstantPlay() {
           setPlayerKills(k => k + 1)
           setKillStreak(newKillStreak)
           feedbackSystem.onKillConfirmed(newKillStreak)
+          gameAnalytics.trackKill()
           setTimeout(() => {
             setBotHealth(100)
             botStateRef.current.health = 100
@@ -715,7 +745,7 @@ export function useInstantPlay() {
         return newHealth
       })
     }
-  }, [killStreak])
+  }, [killStreak, gameAnalytics])
 
   const handleCombatDeath = useCallback((_event: DeathEvent) => {}, [])
 
@@ -738,12 +768,13 @@ export function useInstantPlay() {
         if (newHealth <= 0) {
           setBotKills(k => k + 1)
           setKillStreak(0)
+          gameAnalytics.trackDeath()
           setTimeout(() => setPlayerHealth(100), 1500)
         }
         return newHealth
       })
     }
-  }, [])
+  }, [gameAnalytics])
 
   // Handle local trap triggered (offline mode - player triggers trap)
   const handleLocalTrapTriggered = useCallback((targetId: string, damage: number) => {
@@ -753,12 +784,13 @@ export function useInstantPlay() {
         if (newHealth <= 0) {
           setBotKills(k => k + 1)
           setKillStreak(0)
+          gameAnalytics.trackDeath()
           setTimeout(() => setPlayerHealth(100), 1500)
         }
         return newHealth
       })
     }
-  }, [])
+  }, [gameAnalytics])
 
   const setServerProjectilesCallback = useCallback((callback: (projectiles: Projectile[]) => void) => {
     serverProjectilesCallbackRef.current = callback
@@ -793,20 +825,26 @@ export function useInstantPlay() {
     const categoriesInSession = session.categoriesPlayed.filter(c => c === selectedCategory).length
     const suggestion = conversionPrompts.getCategorySuggestion(selectedCategory, categoriesInSession)
     
+    gameAnalytics.resetTracking()
+    
     if (suggestion) {
       setPhase('category')
     } else {
       fetchQuestions(selectedCategory)
       setPhase('tutorial')
     }
-  }, [selectedCategory, fetchQuestions])
+  }, [selectedCategory, fetchQuestions, gameAnalytics])
 
   const handleLeave = useCallback(() => {
     const session = sessionManager.getSession()
     trackInstantPlayExit(session.matchesPlayed, session.previewXpEarned)
+    // Track abandon if game was in progress
+    if (phase === 'playing' && status !== 'finished') {
+      gameAnalytics.trackGameAbandon()
+    }
     reset()
     navigate('/')
-  }, [reset, navigate])
+  }, [reset, navigate, phase, status, gameAnalytics])
 
   const handlePromptDismiss = useCallback(() => {
     if (currentPrompt) {

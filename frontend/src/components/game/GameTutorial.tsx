@@ -7,7 +7,7 @@
  * @module components/game/GameTutorial
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const STORAGE_KEY = 'game_tutorial_dismissed'
@@ -16,6 +16,8 @@ interface GameTutorialProps {
   visible: boolean
   onDismiss: () => void
   autoDismissMs?: number
+  onStepChange?: (step: string, timeSpentMs: number) => void
+  onComplete?: (totalTimeMs: number, skipped: boolean) => void
 }
 
 function isTouchDevice(): boolean {
@@ -198,10 +200,12 @@ function PowerUpsSection() {
   )
 }
 
-export function GameTutorial({ visible, onDismiss, autoDismissMs }: GameTutorialProps) {
+export function GameTutorial({ visible, onDismiss, autoDismissMs, onStepChange, onComplete }: GameTutorialProps) {
   const [isTouch] = useState(() => isTouchDevice())
   const [activeSection, setActiveSection] = useState(0)
   const [dontShowAgain, setDontShowAgain] = useState(false)
+  const startTimeRef = useRef(Date.now())
+  const sectionStartTimeRef = useRef(Date.now())
 
   // Auto-advance sections
   useEffect(() => {
@@ -225,8 +229,11 @@ export function GameTutorial({ visible, onDismiss, autoDismissMs }: GameTutorial
     if (dontShowAgain) {
       localStorage.setItem(STORAGE_KEY, 'true')
     }
+    const totalTime = Date.now() - startTimeRef.current
+    const skipped = activeSection < SECTIONS.length - 1
+    onComplete?.(totalTime, skipped)
     onDismiss()
-  }, [dontShowAgain, onDismiss])
+  }, [dontShowAgain, onDismiss, activeSection, onComplete])
 
   // Check if should show
   useEffect(() => {
@@ -268,7 +275,13 @@ export function GameTutorial({ visible, onDismiss, autoDismissMs }: GameTutorial
               {SECTIONS.map((section, i) => (
                 <button
                   key={section.id}
-                  onClick={() => setActiveSection(i)}
+                  onClick={() => {
+                    // Track time spent on previous section
+                    const timeSpent = Date.now() - sectionStartTimeRef.current
+                    onStepChange?.(SECTIONS[activeSection].id, timeSpent)
+                    sectionStartTimeRef.current = Date.now()
+                    setActiveSection(i)
+                  }}
                   className={`flex-1 py-2 px-2 rounded-lg text-xs font-medium transition-colors ${
                     i === activeSection
                       ? 'bg-white/10 text-white'

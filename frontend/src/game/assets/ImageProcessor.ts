@@ -3,7 +3,7 @@
  * Removes various background types from images at runtime
  */
 
-export type BackgroundType = 'checkered' | 'checkered-light' | 'checkered-dark' | 'yellow' | 'dark' | 'white' | 'auto' | 'checkered-white' | 'dark-white' | 'none'
+export type BackgroundType = 'checkered' | 'checkered-light' | 'checkered-dark' | 'yellow' | 'dark' | 'white' | 'white-aggressive' | 'auto' | 'checkered-white' | 'dark-white' | 'none'
 
 /**
  * Check if a pixel is part of a checkered background pattern
@@ -89,6 +89,28 @@ function isWhiteBackgroundPixel(r: number, g: number, b: number): boolean {
 }
 
 /**
+ * Aggressive white background removal - catches more off-white and light tones
+ * Use for images with clear subject matter that won't be affected
+ */
+function isWhiteBackgroundPixelAggressive(r: number, g: number, b: number): boolean {
+  // Pure white and near-white
+  if (r > 230 && g > 230 && b > 230) return true
+  
+  // Light gray backgrounds (more aggressive threshold)
+  const isGray = Math.abs(r - g) < 20 && Math.abs(g - b) < 20 && Math.abs(r - b) < 20
+  if (isGray && r > 180) return true
+  
+  // Off-white, cream, and light beige tones
+  if (r > 200 && g > 195 && b > 180) return true
+  
+  // Very light colors with slight tints (common in AI-generated images)
+  const brightness = (r + g + b) / 3
+  if (brightness > 210) return true
+  
+  return false
+}
+
+/**
  * Determine if a pixel should be made transparent based on background type
  */
 function shouldMakeTransparent(r: number, g: number, b: number, bgType: BackgroundType): boolean {
@@ -107,6 +129,8 @@ function shouldMakeTransparent(r: number, g: number, b: number, bgType: Backgrou
       return isDarkBackgroundPixel(r, g, b)
     case 'white':
       return isWhiteBackgroundPixel(r, g, b)
+    case 'white-aggressive':
+      return isWhiteBackgroundPixelAggressive(r, g, b)
     case 'auto':
       // Try all background types
       return isCheckeredBackgroundPixel(r, g, b) || 

@@ -34,7 +34,7 @@ export interface TileDefinition {
 /**
  * Available backdrop themes for maps
  */
-export type MapTheme = 'space' | 'volcanic' | 'void' | 'industrial' | 'simple'
+export type MapTheme = 'space' | 'volcanic' | 'void' | 'industrial' | 'simple' | 'cornfield'
 
 /**
  * Map metadata

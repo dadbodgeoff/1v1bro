@@ -9,6 +9,7 @@ import { useGameStore } from '@/stores/gameStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useCosmeticsStore } from '@/stores/cosmeticsStore'
 import { useCategories } from '@/hooks/useCategories'
+import { useGameAnalytics } from '@/hooks/useGameAnalytics'
 import { API_BASE } from '@/utils/constants'
 import { GuestSessionManager, type MatchResult } from '@/game/guest'
 import { BotController, DEFAULT_BOT_CONFIG } from '@/game/bot'
@@ -71,8 +72,33 @@ export function useBotGame() {
   // Game state
   const [questionIndex, setQuestionIndex] = useState(0)
   const [gameStarted, setGameStarted] = useState(false)
-  const [selectedMap, setSelectedMap] = useState<MapConfig | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState('fortnite')
+  const [selectedMapState, setSelectedMapState] = useState<MapConfig | null>(null)
+  const [selectedCategoryState, setSelectedCategoryState] = useState('fortnite')
+
+  // Game analytics - must be after state declarations
+  const gameAnalytics = useGameAnalytics({
+    gameMode: 'bot',
+    isGuest,
+    category: selectedCategoryState,
+    mapId: selectedMapState?.metadata?.theme,
+  })
+  
+  // Wrapped setters to track analytics
+  const setSelectedCategory = useCallback((cat: string) => {
+    setSelectedCategoryState(cat)
+    gameAnalytics.trackCategorySelected(cat)
+  }, [gameAnalytics])
+  
+  const setSelectedMap = useCallback((map: MapConfig | null) => {
+    setSelectedMapState(map)
+    if (map?.metadata?.theme) {
+      gameAnalytics.trackMapSelected(map.metadata.theme)
+    }
+  }, [gameAnalytics])
+  
+  // Alias for external use
+  const selectedCategory = selectedCategoryState
+  const selectedMap = selectedMapState
   const [questions, setQuestions] = useState<PracticeQuestion[]>([])
   const [questionsLoading, setQuestionsLoading] = useState(false)
   const [questionsError, setQuestionsError] = useState<string | null>(null)
@@ -105,19 +131,23 @@ export function useBotGame() {
     botControllerRef.current.setCallbacks({
       onPositionUpdate: (pos) => setBotPosition({ ...pos }),
       onHealthUpdate: (h) => setBotHealth(h),
-      onBotDeath: () => setPlayerKills(k => k + 1),
+      onBotDeath: () => {
+        setPlayerKills(k => k + 1)
+        gameAnalytics.trackKill()
+      },
       onPlayerHit: (dmg) => {
         setPlayerHealth(prev => {
           const newH = Math.max(0, prev - dmg)
           if (newH <= 0) {
             setBotKills(k => k + 1)
+            gameAnalytics.trackDeath()
             setTimeout(() => setPlayerHealth(100), 1500)
           }
           return newH
         })
       },
     })
-  }, [])
+  }, [gameAnalytics])
 
   // Initialize game store
   useEffect(() => {
@@ -285,8 +315,9 @@ export function useBotGame() {
       setCountdown(3) // Start 3-second countdown
       setCountdownComplete(false)
       setStatus('playing')
+      gameAnalytics.trackGameStart()
     }
-  }, [questions, questionsLoading, questionsError, gameStarted, setStatus])
+  }, [questions, questionsLoading, questionsError, gameStarted, setStatus, gameAnalytics])
 
   // Countdown timer - ticks down from 3 to 0, then enables gameplay
   useEffect(() => {
@@ -347,6 +378,9 @@ export function useBotGame() {
       setPlayerCorrectAnswers(prev => prev + 1)
     }
     setPlayerAnsweredCount(prev => prev + 1)
+    
+    // Track question answered for analytics
+    gameAnalytics.trackQuestionAnswered(playerWasCorrect, playerAnswer.timeMs)
 
     setRoundResult({
       correctAnswer: correctText,
@@ -364,6 +398,13 @@ export function useBotGame() {
         const nq = questions[next]
         setQuestion({ qNum: next + 1, text: nq.text, options: nq.options, startTime: Date.now() })
       } else {
+        // Game finished - track analytics
+        const finalLocalScore = localScore + pScore
+        const finalOpponentScore = opponentScore + bScore
+        const outcome = finalLocalScore > finalOpponentScore ? 'win' 
+          : finalLocalScore < finalOpponentScore ? 'loss' : 'draw'
+        gameAnalytics.trackGameComplete(outcome, finalLocalScore, finalOpponentScore)
+        
         if (isGuest) {
           GuestSessionManager.getInstance().recordMatchResult({
             won: localScore > opponentScore,
@@ -380,7 +421,7 @@ export function useBotGame() {
         setStatus('finished')
       }
     }, 3000)
-  }, [playerAnswer, botAnswer, questionIndex, localScore, opponentScore, status, questions, setRoundResult, updateScores, setQuestion, setStatus, isGuest, playerKills, botKills, selectedCategory, playerCorrectAnswers, playerAnsweredCount])
+  }, [playerAnswer, botAnswer, questionIndex, localScore, opponentScore, status, questions, setRoundResult, updateScores, setQuestion, setStatus, isGuest, playerKills, botKills, selectedCategory, playerCorrectAnswers, playerAnsweredCount, gameAnalytics])
 
   // Handlers
   const handleAnswer = useCallback((ans: string, time: number) => {
@@ -448,9 +489,13 @@ export function useBotGame() {
   }, [])
 
   const handleLeave = useCallback(() => {
+    // Track game abandon if game was in progress
+    if (gameStarted && status !== 'finished') {
+      gameAnalytics.trackGameAbandon()
+    }
     reset()
     navigate(isGuest ? '/' : '/dashboard')
-  }, [reset, navigate, isGuest])
+  }, [reset, navigate, isGuest, gameStarted, status, gameAnalytics])
 
   const handlePlayAgain = useCallback(() => {
     reset()
@@ -465,7 +510,8 @@ export function useBotGame() {
     setCountdown(null)
     setCountdownComplete(false)
     botControllerRef.current.reset()
-  }, [reset])
+    gameAnalytics.resetTracking()
+  }, [reset, gameAnalytics])
 
   return {
     // Auth

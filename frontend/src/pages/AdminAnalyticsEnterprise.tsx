@@ -15,6 +15,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { API_BASE } from '@/utils/constants'
+import { TrackingStatus, DataVerification, CohortsPanel, FunnelsPanel } from '@/components/analytics'
 
 // ============================================
 // Types
@@ -124,7 +125,7 @@ export function AdminAnalyticsEnterprise() {
   })
   
   // Active tab
-  const [activeTab, setActiveTab] = useState<'journeys' | 'performance' | 'heatmaps' | 'errors' | 'cohorts' | 'experiments' | 'realtime'>('journeys')
+  const [activeTab, setActiveTab] = useState<'overview' | 'journeys' | 'performance' | 'heatmaps' | 'errors' | 'cohorts' | 'funnels' | 'experiments' | 'realtime'>('overview')
   
   // Data states
   const [journeys, setJourneys] = useState<Journey[]>([])
@@ -392,7 +393,7 @@ export function AdminAnalyticsEnterprise() {
       <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Tabs */}
         <div className="flex gap-1 mb-6 overflow-x-auto pb-2 border-b border-white/10">
-          {(['journeys', 'performance', 'heatmaps', 'errors', 'experiments', 'realtime'] as const).map((tab) => (
+          {(['overview', 'journeys', 'performance', 'heatmaps', 'errors', 'cohorts', 'funnels', 'experiments', 'realtime'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -409,6 +410,14 @@ export function AdminAnalyticsEnterprise() {
             </button>
           ))}
         </div>
+
+        {/* Overview Tab - Tracking Health & Data Verification */}
+        {activeTab === 'overview' && token && (
+          <div className="space-y-6">
+            <TrackingStatus token={token} />
+            <DataVerification token={token} dateRange={dateRange} />
+          </div>
+        )}
 
         {/* Journeys Tab */}
         {activeTab === 'journeys' && (
@@ -764,6 +773,16 @@ export function AdminAnalyticsEnterprise() {
               </button>
             </div>
           </div>
+        )}
+
+        {/* Cohorts Tab */}
+        {activeTab === 'cohorts' && token && (
+          <CohortsPanel token={token} dateRange={dateRange} />
+        )}
+
+        {/* Funnels Tab */}
+        {activeTab === 'funnels' && token && (
+          <FunnelsPanel token={token} dateRange={dateRange} />
         )}
 
         {/* Experiments Tab */}
