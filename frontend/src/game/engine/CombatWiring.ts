@@ -18,6 +18,8 @@ export interface CombatWiringDeps {
   getLocalPlayer: () => PlayerState | null
   getOpponent: () => PlayerState | null
   getPlayerPositions: () => Map<string, Vector2>
+  /** Optional camera shake callback for impact effects */
+  onCameraShake?: (intensity: number, duration?: number) => void
 }
 
 export function wireCombatCallbacks(
@@ -33,6 +35,7 @@ export function wireCombatCallbacks(
     getLocalPlayer,
     getOpponent,
     getPlayerPositions,
+    onCameraShake,
   } = deps
 
   combatSystem.setCallbacks({
@@ -50,6 +53,17 @@ export function wireCombatCallbacks(
       effectsRenderer.addDamageNumber(event.position, event.damage)
       effectsRenderer.addPlayerFlash(event.targetId)
       arenaManager.onProjectileHit(event.position, getPlayerPositions())
+      
+      // Camera shake on hit - stronger when local player is hit
+      const localPlayer = getLocalPlayer()
+      if (localPlayer && event.targetId === localPlayer.id) {
+        // Local player hit - stronger shake
+        onCameraShake?.(Math.min(event.damage * 0.3, 8), 0.15)
+      } else {
+        // Hit enemy - subtle feedback shake
+        onCameraShake?.(2, 0.1)
+      }
+      
       const targetPos = getPlayerPositions().get(event.targetId) ?? { x: 0, y: 0 }
       telemetryManager.recordEvent('hit', {
         projectileId: event.projectileId,
@@ -70,6 +84,11 @@ export function wireCombatCallbacks(
       if (player) {
         effectsRenderer.addDeathEffect(player.position)
         arenaManager.onPlayerDeath(event.playerId)
+        
+        // Strong camera shake on death
+        const isLocalDeath = localPlayer && event.playerId === localPlayer.id
+        onCameraShake?.(isLocalDeath ? 12 : 6, 0.3)
+        
         const healthState = combatSystem.getHealthState(event.playerId)
         telemetryManager.recordEvent('death', {
           playerId: event.playerId,

@@ -22,10 +22,12 @@ import { CombatSystem, BuffManager } from '../combat'
 import type { RenderContext, PlayerState, PowerUpState, Vector2, HealthState } from './types'
 import type { VisualSystemCoordinator } from '../visual'
 import { SimpleArenaRenderer } from '../terrain/SimpleArenaRenderer'
+import type { Camera } from './Camera'
 
 export class RenderPipeline {
   private ctx: CanvasRenderingContext2D
   private scale = 1
+  private camera: Camera
 
   // Systems
   private backdropSystem: BackdropSystem
@@ -60,12 +62,14 @@ export class RenderPipeline {
     ctx: CanvasRenderingContext2D,
     backdropSystem: BackdropSystem,
     arenaManager: ArenaManager,
-    combatSystem: CombatSystem
+    combatSystem: CombatSystem,
+    camera: Camera
   ) {
     this.ctx = ctx
     this.backdropSystem = backdropSystem
     this.arenaManager = arenaManager
     this.combatSystem = combatSystem
+    this.camera = camera
 
     // Initialize renderers
     this.hubRenderer = new HubRenderer()
@@ -178,6 +182,10 @@ export class RenderPipeline {
     this.ctx.imageSmoothingEnabled = true
     this.ctx.imageSmoothingQuality = 'high'
     this.ctx.scale(this.scale, this.scale)
+    
+    // Apply camera offset (translates the entire scene)
+    const cameraOffset = this.camera.getOffset()
+    this.ctx.translate(cameraOffset.x, cameraOffset.y)
 
     // Layer 0: Background (skip for simple theme - grass tiles cover everything)
     if (!this.isSimpleTheme()) {

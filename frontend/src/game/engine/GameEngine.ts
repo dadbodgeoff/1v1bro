@@ -29,6 +29,7 @@ import { PlayerController } from './PlayerController'
 import { RenderPipeline } from './RenderPipeline'
 import { ServerSync } from './ServerSync'
 import { TelemetryManager } from './TelemetryManager'
+import { Camera } from './Camera'
 import { wireCombatCallbacks } from './CombatWiring'
 import type { GameEngineCallbacks, PlayerState, PowerUpState, Vector2, Projectile } from './types'
 
@@ -45,6 +46,7 @@ export class GameEngine {
   private renderPipeline: RenderPipeline
   private serverSync: ServerSync
   private telemetryManager: TelemetryManager
+  private camera: Camera
 
   // Systems
   private backdropSystem: BackdropSystem
@@ -96,7 +98,8 @@ export class GameEngine {
     // Initialize modules
     this.gameLoop = new GameLoop()
     this.playerController = new PlayerController(this.inputSystem, this.arenaManager)
-    this.renderPipeline = new RenderPipeline(ctx, this.backdropSystem, this.arenaManager, this.combatSystem)
+    this.camera = new Camera({ smoothing: 0.1 })
+    this.renderPipeline = new RenderPipeline(ctx, this.backdropSystem, this.arenaManager, this.combatSystem, this.camera)
     this.renderPipeline.setBuffManager(this.buffManager)
     this.renderPipeline.setVisualCoordinator(this.visualCoordinator)
     this.renderPipeline.setTheme(theme)
@@ -283,6 +286,7 @@ export class GameEngine {
         getLocalPlayer: () => this.localPlayer,
         getOpponent: () => this.opponent,
         getPlayerPositions: () => this.getPlayerPositions(),
+        onCameraShake: (intensity, duration) => this.camera.shake(intensity, duration),
       },
       callbacks,
       (replay) => {
@@ -317,7 +321,12 @@ export class GameEngine {
 
   handleMouseMove(clientX: number, clientY: number): void {
     const rect = this.canvas.getBoundingClientRect()
-    this.mousePosition = { x: (clientX - rect.left) / this.scale, y: (clientY - rect.top) / this.scale }
+    // Convert screen coordinates to arena coordinates (accounting for camera offset)
+    this.mousePosition = this.camera.screenToArena(
+      clientX - rect.left,
+      clientY - rect.top,
+      this.scale
+    )
   }
 
   handleFire(): boolean {
@@ -388,6 +397,17 @@ export class GameEngine {
   // Get buff manager for external access
   getBuffManager(): BuffManager {
     return this.buffManager
+  }
+
+  // Camera effects
+  /** Trigger camera shake (for impacts, deaths, etc.) */
+  triggerCameraShake(intensity: number, duration?: number): void {
+    this.camera.shake(intensity, duration)
+  }
+
+  /** Get camera for external access */
+  getCamera(): Camera {
+    return this.camera
   }
 
   // Lifecycle
@@ -505,6 +525,14 @@ export class GameEngine {
     this.scale = width / ARENA_SIZE.width
     
     this.renderPipeline.setScale(this.scale)
+    
+    // Configure camera for viewport (enables when viewport < arena)
+    this.camera.setViewport(width, height, this.scale)
+    
+    // Snap camera to player position if available
+    if (this.localPlayer) {
+      this.camera.snapTo(this.localPlayer.position)
+    }
   }
 
   start(): void { this.gameLoop.start() }
@@ -528,6 +556,11 @@ export class GameEngine {
     this.arenaManager.update(deltaTime, this.getPlayerPositions())
     this.playerController.update(deltaTime, this.localPlayer, this.opponent)
     this.updateTrails()
+    
+    // Update camera to follow local player
+    if (this.localPlayer) {
+      this.camera.follow(this.localPlayer.position, deltaTime)
+    }
     this.checkPowerUpCollisions()
     if (this.combatEnabled) this.updateCombat(deltaTime)
     this.emoteManager.update(deltaTime, this.getPlayerPositions())
