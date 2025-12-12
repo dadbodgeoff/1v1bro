@@ -230,6 +230,9 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
   const isSimpleTheme = mapConfig?.metadata?.theme === 'simple'
   const hexBgUrl = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/skins/Generated%20Image%20December%2012,%202025%20-%2012_04AM.jpeg'
 
+  // Show loading indicator until engine is ready (assets loaded)
+  const showLoadingOverlay = !engineReady
+
   return (
     <div 
       className="w-full h-full flex items-center justify-center relative overflow-hidden"
@@ -242,13 +245,22 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
         backgroundColor: 'var(--color-bg-base)',
       }}
     >
+      {/* Loading overlay - shows while assets are loading */}
+      {showLoadingOverlay && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+            <span className="text-xs text-white/60 font-mono">Loading arena...</span>
+          </div>
+        </div>
+      )}
       {/* Canvas container - needs w-full h-full for resize calculations */}
       <div className="relative w-full h-full flex items-center justify-center">
         {/* Inner wrapper for simple theme floating island effect */}
         <div
           className="relative"
           style={isSimpleTheme ? {
-            boxShadow: '0 0 60px 30px rgba(0, 0, 0, 0.9), 0 0 100px 60px rgba(0, 0, 0, 0.6)',
+            boxShadow: '0 0 40px 20px rgba(0, 0, 0, 0.4), 0 0 80px 40px rgba(0, 0, 0, 0.2)',
             border: '2px solid var(--color-border-subtle)',
             borderRadius: 'var(--radius-sm)',
           } : undefined}
@@ -257,20 +269,20 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
             ref={canvasRef}
             className="touch-none block"
             style={isSimpleTheme ? {
-              filter: 'saturate(90%) contrast(105%) brightness(98%)',
+              filter: 'saturate(95%) contrast(102%)',
             } : undefined}
             onMouseMove={combatEnabled ? handleMouseMove : undefined}
             onMouseDown={combatEnabled ? handleMouseDown : undefined}
             onTouchMove={combatEnabled ? handleTouchMove : undefined}
           />
           
-          {/* Vignette overlay for simple theme */}
+          {/* Subtle vignette overlay for simple theme - reduced intensity */}
           {isSimpleTheme && (
             <div 
               className="absolute inset-0 pointer-events-none"
               style={{
-                background: 'radial-gradient(circle at center, transparent 40%, rgba(0, 10, 20, 0.6) 100%)',
-                boxShadow: 'inset 0 0 100px 50px rgba(0, 0, 0, 0.5)',
+                background: 'radial-gradient(circle at center, transparent 60%, rgba(0, 10, 20, 0.25) 100%)',
+                boxShadow: 'inset 0 0 60px 20px rgba(0, 0, 0, 0.15)',
                 borderRadius: '4px',
               }}
             />

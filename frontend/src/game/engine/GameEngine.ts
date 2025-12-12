@@ -478,8 +478,12 @@ export class GameEngine {
   private update(deltaTime: number): void {
     const isSimpleTheme = this.currentMapConfig?.metadata?.theme === 'simple'
     
-    // Skip backdrop update for simple theme (grass tiles cover everything)
-    if (!isSimpleTheme) {
+    // Theme-specific updates
+    if (isSimpleTheme) {
+      // Simple theme: update simple arena renderer for animations
+      this.renderPipeline.updateSimpleRenderer(deltaTime)
+    } else {
+      // Other themes: update backdrop and animated tiles
       this.backdropSystem.update(deltaTime)
       animatedTileRenderer.update(deltaTime)
     }

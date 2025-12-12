@@ -7,6 +7,7 @@ import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, Leader
 import { Achievements } from '@/pages/Achievements'
 import { InstantPlay } from '@/pages/InstantPlay'
 import { AdminAnalytics } from '@/pages/AdminAnalytics'
+import { AdminAnalyticsEnterprise } from '@/pages/AdminAnalyticsEnterprise'
 import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
 import { VolcanicLanding } from '@/pages/VolcanicLanding'
 import { ArcadeLanding } from '@/pages/ArcadeLanding'
@@ -230,6 +231,15 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminAnalytics />
+            </ProtectedRoute>
+          }
+        />
+        {/* Enterprise Analytics Dashboard */}
+        <Route
+          path="/admin/analytics/enterprise"
+          element={
+            <ProtectedRoute>
+              <AdminAnalyticsEnterprise />
             </ProtectedRoute>
           }
         />

@@ -16,9 +16,10 @@ import { BaseRenderer } from '../renderers/BaseRenderer'
 import { ARENA_SIZE, GRID_SIZE } from '../config'
 import { PropRenderer } from '../props/PropRenderer'
 import { SIMPLE_ARENA_PROPS } from '../config/maps/simple-arena'
+import { getPreloadedImage } from '../assets/MapPreloader'
 
 // Grass tile URLs (80x80, need center crop extraction)
-const GRASS_TILES = {
+export const GRASS_TILE_URLS = {
   base: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/tilesets/grass%20(1).jpeg',
   dark: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/tilesets/image2.jpeg',
   light: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/tilesets/image3.jpeg',
@@ -135,9 +136,9 @@ export class SimpleArenaRenderer extends BaseRenderer {
         // The checkered pattern in the source images is just the AI preview, 
         // but the actual grass area should fill the entire tile
         const [baseImg, darkImg, lightImg] = await Promise.all([
-          this.loadImage(GRASS_TILES.base),
-          this.loadImage(GRASS_TILES.dark),
-          this.loadImage(GRASS_TILES.light),
+          this.loadImage(GRASS_TILE_URLS.base),
+          this.loadImage(GRASS_TILE_URLS.dark),
+          this.loadImage(GRASS_TILE_URLS.light),
         ])
 
         // Extract just the grass portion from center of each image
@@ -172,9 +173,16 @@ export class SimpleArenaRenderer extends BaseRenderer {
   }
 
   /**
-   * Load an image from URL
+   * Load an image from URL (uses preloaded cache if available)
    */
   private loadImage(src: string): Promise<HTMLImageElement> {
+    // Check preload cache first for instant loading
+    const preloaded = getPreloadedImage(src)
+    if (preloaded) {
+      return Promise.resolve(preloaded)
+    }
+
+    // Fall back to loading on demand
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = 'anonymous'

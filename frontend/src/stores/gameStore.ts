@@ -9,12 +9,20 @@ interface Question {
   startTime: number
 }
 
+interface QuizReward {
+  buff_type: 'damage_boost' | 'speed_boost' | 'vulnerability' | 'shield' | 'invulnerable'
+  value: number
+  duration: number
+  is_correct: boolean
+}
+
 interface RoundResult {
   correctAnswer: string
   localScore: number
   opponentScore: number
   localAnswer: string | null
   opponentAnswer: string | null
+  localReward?: QuizReward
 }
 
 interface FinalResult {

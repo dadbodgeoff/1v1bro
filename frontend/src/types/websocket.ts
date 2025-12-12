@@ -97,12 +97,21 @@ export interface AnswerPayload {
   time_ms: number
 }
 
+export interface QuizReward {
+  buff_type: 'damage_boost' | 'speed_boost' | 'vulnerability' | 'shield' | 'invulnerable'
+  value: number
+  duration: number
+  is_correct: boolean
+}
+
 export interface RoundResultPayload {
   q_num: number
   correct_answer: string
   scores: Record<string, number>
   answers: Record<string, string | null>
   total_scores: Record<string, number>
+  rewards?: Record<string, QuizReward>
+  is_final_question?: boolean
 }
 
 export interface PlayerSkinPayload {

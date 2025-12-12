@@ -9,8 +9,9 @@
  * Responsive, accessible, touch-friendly
  */
 
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import { useGameStore } from '@/stores/gameStore'
+import { useTTS } from '@/hooks/useTTS'
 
 interface ArenaQuizPanelProps {
   onAnswer: (answer: string, timeMs: number) => void
@@ -29,6 +30,8 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
   } = useGameStore()
 
   const [timeRemaining, setTimeRemaining] = useState(30)
+  const { speak, stop, enabled: ttsEnabled, setEnabled: setTtsEnabled, isSupported: ttsSupported } = useTTS()
+  const lastQuestionIdRef = useRef<string | null>(null)
 
   // Timer countdown
   useEffect(() => {
@@ -49,6 +52,24 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
     const interval = setInterval(updateTimer, 100)
     return () => clearInterval(interval)
   }, [currentQuestion, answerSubmitted, submitAnswer, onAnswer])
+
+  // TTS: Read question aloud when new question appears
+  useEffect(() => {
+    if (!currentQuestion || !visible) return
+    
+    // Only speak if this is a new question
+    const questionId = `${currentQuestion.qNum}-${currentQuestion.text}`
+    if (questionId === lastQuestionIdRef.current) return
+    lastQuestionIdRef.current = questionId
+    
+    // Speak the question text
+    speak(currentQuestion.text)
+    
+    return () => {
+      // Stop speaking when question changes or component unmounts
+      stop()
+    }
+  }, [currentQuestion, visible, speak, stop])
 
   const handleSelect = useCallback(
     (answer: string) => {
@@ -125,6 +146,23 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
             >
               {timeRemaining}s
             </span>
+            {/* TTS Toggle (compact) */}
+            {ttsSupported && (
+              <button
+                onClick={() => setTtsEnabled(!ttsEnabled)}
+                className={`p-0.5 rounded shrink-0 ${
+                  ttsEnabled ? 'text-indigo-400' : 'text-white/30'
+                }`}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  {ttsEnabled ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zm12-6l4 4m0-4l-4 4" />
+                  )}
+                </svg>
+              </button>
+            )}
             <p className="text-white/90 text-xs leading-tight truncate">
               {currentQuestion.text}
             </p>
@@ -211,6 +249,26 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
             >
               {timeRemaining}s
             </span>
+            {/* TTS Toggle */}
+            {ttsSupported && (
+              <button
+                onClick={() => setTtsEnabled(!ttsEnabled)}
+                className={`p-1 rounded transition-colors ${
+                  ttsEnabled 
+                    ? 'text-indigo-400 hover:text-indigo-300' 
+                    : 'text-white/30 hover:text-white/50'
+                }`}
+                title={ttsEnabled ? 'Disable voice (reading questions)' : 'Enable voice (read questions aloud)'}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  {ttsEnabled ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zm12-6l4 4m0-4l-4 4" />
+                  )}
+                </svg>
+              </button>
+            )}
           </div>
           <p className="text-white/90 text-sm lg:text-base leading-snug mt-0.5">
             {currentQuestion.text}

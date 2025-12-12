@@ -3,7 +3,7 @@
  * Removes various background types from images at runtime
  */
 
-export type BackgroundType = 'checkered' | 'checkered-light' | 'checkered-dark' | 'yellow' | 'dark' | 'white' | 'auto' | 'checkered-white' | 'none'
+export type BackgroundType = 'checkered' | 'checkered-light' | 'checkered-dark' | 'yellow' | 'dark' | 'white' | 'auto' | 'checkered-white' | 'dark-white' | 'none'
 
 /**
  * Check if a pixel is part of a checkered background pattern
@@ -116,6 +116,9 @@ function shouldMakeTransparent(r: number, g: number, b: number, bgType: Backgrou
     case 'checkered-white':
       // Remove both checkered background AND white/cream interior (for EMP icon)
       return isCheckeredBackgroundPixel(r, g, b) || isWhiteBackgroundPixel(r, g, b)
+    case 'dark-white':
+      // Remove dark/black background AND white/light artifacts (for 2xp token)
+      return isDarkBackgroundPixel(r, g, b) || isWhiteBackgroundPixel(r, g, b)
     case 'none':
       // No background removal
       return false

@@ -99,7 +99,8 @@ export async function loadGameAssets(): Promise<GameAssets> {
     loadImageWithTransparency(shieldImg),
     loadImageWithTransparency(sosImg),
     loadImageWithTransparency(timeStealImg),
-    loadImageWithTransparency(doublePointsImg),
+    // double-points has dark/black background with white artifacts
+    loadImageWithTransparency(doublePointsImg, 'dark-white'),
     loadImageRaw(floorTileImg), // Floor tile doesn't need transparency
     loadImageWithTransparency(barrierImg),
   ])

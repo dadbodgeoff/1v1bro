@@ -2010,15 +2010,15 @@
   z-index: 200; /* Above CRT effects (max 100) */
   overflow: hidden;
   
-  /* Mobile: Single column, stacked layout */
+  /* Mobile: Single column, stacked layout - give demo more space */
   grid-template-columns: 1fr;
-  grid-template-rows: minmax(120px, 1fr) auto auto;
+  grid-template-rows: minmax(200px, 1.5fr) auto auto;
   grid-template-areas:
     "demo"
     "content"
     "cta";
-  gap: 12px;
-  padding: 16px;
+  gap: 8px;
+  padding: 12px;
   align-items: center;
   justify-items: center;
 }
@@ -2250,12 +2250,13 @@
   min-height: 200px;
 }
 
-/* Mobile: constrain demo height */
+/* Mobile: give demo enough height to show trivia questions */
 @media (max-width: 767px) {
   .demo-container {
-    max-height: 180px;
-    min-height: 120px;
+    max-height: none;
+    min-height: 180px;
     aspect-ratio: 16 / 9;
+    flex: 1;
   }
 }
 
@@ -2263,7 +2264,7 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   .demo-container {
     max-height: none;
-    min-height: 180px;
+    min-height: 220px;
   }
 }
 
@@ -2533,15 +2534,16 @@
     border-radius: 4px;
   }
   
-  /* Mobile grid: compact stacked layout */
+  /* Mobile grid: give demo more space for trivia questions */
   .dashboard-ui {
-    grid-template-rows: minmax(100px, 0.8fr) auto auto;
-    gap: 10px;
-    padding: 12px;
+    grid-template-rows: minmax(180px, 1.2fr) auto auto;
+    gap: 8px;
+    padding: 10px;
   }
   
   .demo-container {
-    max-height: 160px;
+    max-height: none;
+    min-height: 160px;
   }
   
   .boot-sequence {
@@ -2584,13 +2586,14 @@
 /* Small mobile: < 400px */
 @media (max-width: 399px) {
   .dashboard-ui {
-    grid-template-rows: minmax(80px, 0.6fr) auto auto;
-    gap: 8px;
+    grid-template-rows: minmax(140px, 1fr) auto auto;
+    gap: 6px;
     padding: 8px;
   }
   
   .demo-container {
-    max-height: 120px;
+    max-height: none;
+    min-height: 130px;
   }
   
   .arcade-headline--mobile {
@@ -2635,7 +2638,8 @@
   }
   
   .demo-container {
-    max-height: 240px;
+    max-height: none;
+    min-height: 200px;
   }
   
   .arcade-marquee {
@@ -2673,7 +2677,8 @@
   }
   
   .dashboard-ui--desktop .demo-container {
-    max-height: 280px;
+    max-height: none;
+    min-height: 250px;
   }
   
   .arcade-headline--desktop {
@@ -2713,6 +2718,7 @@
   }
   
   .dashboard-ui--desktop .demo-container {
-    max-height: 360px;
+    max-height: none;
+    min-height: 320px;
   }
 }

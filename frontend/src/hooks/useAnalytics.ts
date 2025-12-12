@@ -20,6 +20,7 @@ export interface AnalyticsEvent {
   name: string
   timestamp: Date
   sessionId: string
+  visitorId: string  // Persistent ID for same user across visits
   userId?: string
   properties: Record<string, unknown>
 }
@@ -77,17 +78,30 @@ export interface CommandExecutedProps {
   source: 'palette' | 'shortcut'
 }
 
-// Generate session ID
-const generateSessionId = (): string => {
+// Generate unique ID
+const generateId = (): string => {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 }
 
-// Get or create session ID
+// Get or create persistent visitor ID (survives browser restarts)
+// This identifies the same user across multiple visits on the same device
+const getVisitorId = (): string => {
+  const key = 'analytics_visitor_id'
+  let visitorId = localStorage.getItem(key)
+  if (!visitorId) {
+    visitorId = `v_${generateId()}`
+    localStorage.setItem(key, visitorId)
+  }
+  return visitorId
+}
+
+// Get or create session ID (resets per browser session/tab)
+// This tracks individual browsing sessions
 const getSessionId = (): string => {
   const key = 'analytics_session_id'
   let sessionId = sessionStorage.getItem(key)
   if (!sessionId) {
-    sessionId = generateSessionId()
+    sessionId = `s_${generateId()}`
     sessionStorage.setItem(key, sessionId)
   }
   return sessionId
@@ -132,6 +146,7 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
   const { enabled = true, trackOnMount = false, source = 'dashboard' } = options
   const user = useAuthStore(state => state.user)
   const sessionId = useRef(getSessionId())
+  const visitorId = useRef(getVisitorId())
   const mountTracked = useRef(false)
 
   // Core track function
@@ -145,6 +160,7 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
       name,
       timestamp: new Date(),
       sessionId: sessionId.current,
+      visitorId: visitorId.current,
       userId: user?.id,
       properties: {
         ...properties,
@@ -234,5 +250,6 @@ export function useAnalytics(options: UseAnalyticsOptions = {}) {
     trackShortcutUsed,
     startTimer,
     sessionId: sessionId.current,
+    visitorId: visitorId.current,
   }
 }

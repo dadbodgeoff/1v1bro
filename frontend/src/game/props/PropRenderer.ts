@@ -8,6 +8,7 @@
  */
 
 import { removeBackground, type BackgroundType } from '../assets/ImageProcessor'
+import { getPreloadedImage } from '../assets/MapPreloader'
 import type { PropDefinition, PropPlacement } from './PropRegistry'
 import { getPropDefinition } from './PropRegistry'
 
@@ -163,9 +164,16 @@ export class PropRenderer {
   }
 
   /**
-   * Load an image from URL
+   * Load an image from URL (uses preloaded cache if available)
    */
   private loadImage(src: string): Promise<HTMLImageElement> {
+    // Check preload cache first for instant loading
+    const preloaded = getPreloadedImage(src)
+    if (preloaded) {
+      return Promise.resolve(preloaded)
+    }
+
+    // Fall back to loading on demand
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = 'anonymous'

@@ -18,7 +18,8 @@ export class HubRenderer extends BaseRenderer {
     if (!this.ctx) return
 
     // Skip hub rendering for volcanic theme - the LavaVortexRenderer handles the center
-    if (this.theme === 'volcanic') {
+    // Skip hub rendering for simple theme - no central hub needed
+    if (this.theme === 'volcanic' || this.theme === 'simple') {
       return
     }
 

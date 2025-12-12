@@ -18,6 +18,7 @@ router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 class SessionData(BaseModel):
     session_id: str
+    visitor_id: Optional[str] = None  # Persistent ID across visits (same device)
     device_type: Optional[str] = None
     browser: Optional[str] = None
     os: Optional[str] = None
@@ -62,6 +63,9 @@ async def track_session(data: SessionData, request: Request):
     """
     Initialize or update an analytics session.
     Called once per visitor on first page load.
+    
+    Uses visitor_id (localStorage) to identify returning users on same device.
+    Uses session_id (sessionStorage) to track individual browsing sessions.
     """
     try:
         supabase = get_supabase_service_client()
@@ -77,9 +81,19 @@ async def track_session(data: SessionData, request: Request):
                 "last_seen": datetime.utcnow().isoformat()
             }).eq("session_id", data.session_id).execute()
         else:
+            # Check if this is a returning visitor (same visitor_id, different session)
+            is_returning = False
+            if data.visitor_id:
+                prev_visits = supabase.table("analytics_sessions").select(
+                    "id", count="exact"
+                ).eq("visitor_id", data.visitor_id).execute()
+                is_returning = (prev_visits.count or 0) > 0
+            
             # Create new session
             supabase.table("analytics_sessions").insert({
                 "session_id": data.session_id,
+                "visitor_id": data.visitor_id,
+                "is_returning_visitor": is_returning,
                 "device_type": data.device_type,
                 "browser": data.browser,
                 "os": data.os,
@@ -235,15 +249,38 @@ async def get_analytics_overview(
             "id", count="exact"
         ).gte("viewed_at", start_date).lt("viewed_at", end_date_inclusive).execute()
         
-        # Period unique visitors
-        period_sessions_data = supabase.table("analytics_page_views").select(
-            "session_id"
-        ).gte("viewed_at", start_date).lt("viewed_at", end_date_inclusive).execute()
-        unique_visitors = len(set(s.get("session_id") for s in (period_sessions_data.data or [])))
+        # Period unique visitors (by visitor_id for true unique count)
+        period_sessions_data = supabase.table("analytics_sessions").select(
+            "session_id, visitor_id"
+        ).gte("first_seen", start_date).lt("first_seen", end_date_inclusive).execute()
         
-        # Total visitors all time
+        # Count unique visitor_ids (true unique users on same device)
+        visitor_ids = set()
+        session_ids = set()
+        for s in (period_sessions_data.data or []):
+            session_ids.add(s.get("session_id"))
+            if s.get("visitor_id"):
+                visitor_ids.add(s.get("visitor_id"))
+        
+        unique_visitors = len(visitor_ids) if visitor_ids else len(session_ids)
+        total_sessions_period = len(session_ids)
+        
+        # Total unique visitors all time (by visitor_id)
+        all_visitors = supabase.table("analytics_sessions").select(
+            "visitor_id"
+        ).not_.is_("visitor_id", "null").execute()
+        total_unique_visitors = len(set(v.get("visitor_id") for v in (all_visitors.data or [])))
+        
+        # Total sessions all time
         total_sessions = supabase.table("analytics_sessions").select(
             "id", count="exact"
+        ).execute()
+        
+        # Returning visitors in period
+        returning_in_period = supabase.table("analytics_sessions").select(
+            "id", count="exact"
+        ).gte("first_seen", start_date).lt("first_seen", end_date_inclusive).eq(
+            "is_returning_visitor", True
         ).execute()
         
         # Total conversions
@@ -293,13 +330,16 @@ async def get_analytics_overview(
         return APIResponse.ok({
             "period": {
                 "page_views": period_views.count or 0,
-                "unique_visitors": unique_visitors,
+                "unique_visitors": unique_visitors,  # True unique users (by visitor_id)
+                "sessions": total_sessions_period,   # Total sessions (may include repeat visits)
+                "returning_visitors": returning_in_period.count or 0,
                 "events": event_counts,
             },
             "totals": {
-                "visitors": total_sessions.count or 0,
+                "unique_visitors": total_unique_visitors,  # True unique users all time
+                "sessions": total_sessions.count or 0,     # Total sessions all time
                 "conversions": total_conversions.count or 0,
-                "conversion_rate": round((total_conversions.count or 0) / max(total_sessions.count or 1, 1) * 100, 2),
+                "conversion_rate": round((total_conversions.count or 0) / max(total_unique_visitors, 1) * 100, 2),
             },
             "devices": device_counts,
             "top_referrers": [{"source": r[0], "count": r[1]} for r in top_referrers],

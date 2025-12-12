@@ -205,8 +205,10 @@ export class RenderPipeline {
       this.arenaManager.render(this.ctx)
     }
 
-    // Layer 3.5: Gameplay props (AAA visual system)
-    this.visualCoordinator?.renderGameplayProps(this.ctx)
+    // Layer 3.5: Gameplay props (AAA visual system) - skip for simple theme
+    if (!this.isSimpleTheme()) {
+      this.visualCoordinator?.renderGameplayProps(this.ctx)
+    }
 
     // Layer 4: Hub
     this.hubRenderer.setContext(context)
@@ -269,14 +271,17 @@ export class RenderPipeline {
       this.combatEffectsRenderer.render()
     }
 
-    // Layer 6.5: Foreground props (AAA visual system - stalactites, steam)
-    this.visualCoordinator?.renderForegroundProps(this.ctx)
+    // Layer 6.5-8: AAA visual system effects - skip for simple theme
+    if (!this.isSimpleTheme()) {
+      // Layer 6.5: Foreground props (AAA visual system - stalactites, steam)
+      this.visualCoordinator?.renderForegroundProps(this.ctx)
 
-    // Layer 7: Environmental events (debris, lava bursts)
-    this.visualCoordinator?.renderEnvironmentalEvents(this.ctx)
+      // Layer 7: Environmental events (debris, lava bursts)
+      this.visualCoordinator?.renderEnvironmentalEvents(this.ctx)
 
-    // Layer 8: Post-processing - Vignette (final pass)
-    this.visualCoordinator?.applyVignette(this.ctx)
+      // Layer 8: Post-processing - Vignette (final pass)
+      this.visualCoordinator?.applyVignette(this.ctx)
+    }
 
     // Layer 9: Respawn/Death overlay (UI layer - always on top)
     if (combatEnabled && localPlayer) {

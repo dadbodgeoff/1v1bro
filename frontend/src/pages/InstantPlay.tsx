@@ -15,12 +15,14 @@ import { GameArena } from '@/components/game/GameArena'
 import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
 import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
+import { BuffRewardToast } from '@/components/game/BuffRewardToast'
 import { QuickCategoryPicker } from '@/components/game/QuickCategoryPicker'
-import { InstantPlayTutorial } from '@/components/game/InstantPlayTutorial'
+import { GameTutorial } from '@/components/game/GameTutorial'
 import { GuestMatchSummary } from '@/components/game/GuestMatchSummary'
 import { ConversionPromptModal } from '@/components/game/ConversionPromptModal'
 import { SIMPLE_ARENA } from '@/game/config/maps'
 import { useInstantPlay } from '@/hooks/useInstantPlay'
+import { useGameStore } from '@/stores/gameStore'
 
 export function InstantPlay() {
   const {
@@ -74,10 +76,9 @@ export function InstantPlay() {
   if (phase === 'tutorial') {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <InstantPlayTutorial
+        <GameTutorial
           visible={true}
           onDismiss={handleTutorialDismiss}
-          autoDismissMs={5000}
         />
         {questionsLoading && (
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
@@ -167,6 +168,7 @@ export function InstantPlay() {
           )}
 
           <RoundResultOverlay visible={showRoundResult} />
+          <BuffRewardToast reward={useGameStore.getState().roundResult?.localReward} />
 
           <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 hidden lg:block z-10">
             <div className="px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">

@@ -10,6 +10,8 @@ import { GameArena } from '@/components/game/GameArena'
 import { ArenaScoreboard, type KillFeedEntry } from '@/components/game/ArenaScoreboard'
 import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
+import { BuffRewardToast } from '@/components/game/BuffRewardToast'
+import { GameTutorial, useGameTutorial } from '@/components/game/GameTutorial'
 import { PWAInstallPrompt } from '@/components/game/PWAInstallPrompt'
 import { ArenaGameSetup, RotateDeviceHint } from '@/components/game/ArenaGameSetup'
 import { 
@@ -32,6 +34,9 @@ export function ArenaGame() {
   const [isMobileLandscape, setIsMobileLandscape] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 })
+  
+  // Game tutorial for first-time players
+  const { shouldShow: showTutorial, dismiss: dismissTutorial } = useGameTutorial()
 
   // Track fullscreen state
   useEffect(() => {
@@ -94,7 +99,7 @@ export function ArenaGame() {
     sendEmote, setRemoteEmoteCallback, equippedSkin, opponentSkin, mapConfig,
   } = useArenaGame(code)
 
-  const { localPlayerId, localPlayerName, opponentName } = useGameStore()
+  const { localPlayerId, localPlayerName, opponentName, roundResult } = useGameStore()
 
   const [localHealth, setLocalHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
   const [opponentHealth, setOpponentHealth] = useState({ playerId: '', health: 100, maxHealth: 100 })
@@ -181,8 +186,9 @@ export function ArenaGame() {
   return (
     <>
       <PWAInstallPrompt />
+      <GameTutorial visible={showTutorial && status === 'playing'} onDismiss={dismissTutorial} />
       <RotateDeviceHint 
-        visible={showRotateHint} 
+        visible={showRotateHint && !showTutorial} 
         onDismiss={() => setHintDismissed(true)} 
         onFullscreen={handleFullscreenRequest} 
       />
@@ -244,6 +250,7 @@ export function ArenaGame() {
             />
 
             <RoundResultOverlay visible={showRoundResult} />
+            <BuffRewardToast reward={roundResult?.localReward} />
 
             <MobileLandscapeHUD 
               visible={isMobileLandscape} 

@@ -65,12 +65,16 @@ export function useQuizEvents(lobbyCode?: string) {
       const data = payload as RoundResultPayload
       const localId = useAuthStore.getState().user?.id
 
+      // Extract local player's reward if present
+      const localReward = localId && data.rewards ? data.rewards[localId] : undefined
+
       setRoundResult({
         correctAnswer: data.correct_answer,
         localScore: data.scores[localId || ''] || 0,
         opponentScore: Object.entries(data.scores).find(([id]) => id !== localId)?.[1] || 0,
         localAnswer: data.answers[localId || ''] || null,
         opponentAnswer: Object.entries(data.answers).find(([id]) => id !== localId)?.[1] || null,
+        localReward,
       })
 
       const localTotal = data.total_scores[localId || ''] || 0

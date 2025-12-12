@@ -49,6 +49,10 @@ class PlayerCombatState:
     respawn_time: Optional[float] = None
     invulnerable_until: Optional[float] = None
     last_fire_time: float = 0.0
+    # Health regeneration tracking
+    last_position: Optional[Tuple[float, float]] = None
+    stationary_since: Optional[float] = None  # When player stopped moving
+    is_regenerating: bool = False
     
 
 @dataclass
@@ -74,6 +78,11 @@ class ServerCombatSystem:
     HIT_RADIUS = 25.0  # collision radius
     RESPAWN_TIME = 3.0  # seconds
     INVULNERABILITY_TIME = 2.0  # seconds after respawn
+    
+    # Health regeneration config
+    REGEN_DELAY = 2.0  # seconds of standing still before regen starts
+    REGEN_RATE = 10.0  # HP per second
+    MOVEMENT_THRESHOLD = 5.0  # pixels - movement below this is considered stationary
     
     # Arena bounds
     ARENA_WIDTH = 1280
@@ -236,10 +245,13 @@ class ServerCombatSystem:
         for proj_id in projectiles_to_remove:
             self._projectiles.pop(proj_id, None)
         
-        # Check respawns
+        # Check respawns and health regeneration
         for player_id, state in self._combat_states.items():
             if state.is_dead and state.respawn_time and current_time >= state.respawn_time:
                 self._respawn_player(player_id, player_positions, current_time)
+            elif not state.is_dead:
+                # Health regeneration for living players
+                self._update_health_regen(player_id, player_positions.get(player_id), delta_time, current_time)
     
     def _check_barrier_collision(self, x: float, y: float) -> bool:
         """Check if position collides with any barrier."""
@@ -297,6 +309,77 @@ class ServerCombatSystem:
                 }
             ))
     
+    def _update_health_regen(
+        self,
+        player_id: str,
+        position: Optional[Tuple[float, float]],
+        delta_time: float,
+        current_time: float,
+    ) -> None:
+        """Update health regeneration for a player based on movement."""
+        state = self._combat_states.get(player_id)
+        if not state or not position:
+            return
+        
+        # Check if player is at max health - no need to regen
+        if state.health >= state.max_health:
+            state.is_regenerating = False
+            state.stationary_since = None
+            state.last_position = position
+            return
+        
+        # Check if player has moved
+        moved = False
+        if state.last_position:
+            dx = position[0] - state.last_position[0]
+            dy = position[1] - state.last_position[1]
+            dist = math.sqrt(dx * dx + dy * dy)
+            moved = dist > self.MOVEMENT_THRESHOLD
+        
+        state.last_position = position
+        
+        if moved:
+            # Player moved - reset regen timer
+            if state.is_regenerating:
+                state.is_regenerating = False
+                self._pending_events.append(CombatEvent(
+                    event_type='regen_stop',
+                    data={'player_id': player_id}
+                ))
+            state.stationary_since = None
+        else:
+            # Player is stationary
+            if state.stationary_since is None:
+                state.stationary_since = current_time
+            
+            # Check if regen should start
+            time_stationary = current_time - state.stationary_since
+            if time_stationary >= self.REGEN_DELAY:
+                # Start or continue regenerating
+                if not state.is_regenerating:
+                    state.is_regenerating = True
+                    self._pending_events.append(CombatEvent(
+                        event_type='regen_start',
+                        data={'player_id': player_id}
+                    ))
+                
+                # Apply regeneration
+                heal_amount = self.REGEN_RATE * delta_time
+                old_health = state.health
+                state.health = min(state.max_health, state.health + heal_amount)
+                
+                # Only emit heal event if health actually changed (integer threshold)
+                if int(state.health) > int(old_health):
+                    self._pending_events.append(CombatEvent(
+                        event_type='heal',
+                        data={
+                            'player_id': player_id,
+                            'amount': int(state.health) - int(old_health),
+                            'health': int(state.health),
+                            'source': 'regen',
+                        }
+                    ))
+
     def _respawn_player(
         self,
         player_id: str,
@@ -364,10 +447,11 @@ class ServerCombatSystem:
             ],
             'players': {
                 pid: {
-                    'health': s.health,
+                    'health': int(s.health),
                     'max_health': s.max_health,
                     'is_dead': s.is_dead,
                     'invulnerable': s.invulnerable_until is not None and time.time() < s.invulnerable_until,
+                    'is_regenerating': s.is_regenerating,
                 }
                 for pid, s in self._combat_states.items()
             }

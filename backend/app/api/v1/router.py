@@ -25,6 +25,7 @@ from app.api.v1.webhooks import router as webhooks_router
 from app.api.v1.questions import router as questions_router
 from app.api.v1.storage import router as storage_router
 from app.api.v1.analytics import router as analytics_router
+from app.api.v1.analytics_enterprise import router as analytics_enterprise_router
 from app.api.v1.practice import router as practice_router
 from app.api.v1.notifications import router as notifications_router
 from app.api.v1.achievements import router as achievements_router
@@ -66,6 +67,7 @@ router.include_router(admin_rotations_router)
 
 # Analytics routes (no auth required)
 router.include_router(analytics_router)
+router.include_router(analytics_enterprise_router)
 
 # Practice mode routes
 router.include_router(practice_router)

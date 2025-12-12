@@ -117,8 +117,41 @@ export function RoundResultOverlay({ visible }: RoundResultOverlayProps) {
               {getCorrectAnswerDisplay()}
             </span>
           </div>
+
+          {/* Buff reward indicator */}
+          {roundResult.localReward && (
+            <>
+              <div className="w-px h-4 bg-white/[0.1]" />
+              <BuffIndicator reward={roundResult.localReward} />
+            </>
+          )}
         </div>
       </div>
+    </div>
+  )
+}
+
+// Compact buff indicator for the result overlay
+function BuffIndicator({ reward }: { reward: { buff_type: string; value: number; duration: number } }) {
+  const config: Record<string, { icon: string; color: string }> = {
+    damage_boost: { icon: '⚔️', color: 'text-orange-400' },
+    speed_boost: { icon: '⚡', color: 'text-cyan-400' },
+    vulnerability: { icon: '💔', color: 'text-red-400' },
+    shield: { icon: '🛡️', color: 'text-blue-400' },
+    invulnerable: { icon: '✨', color: 'text-yellow-400' },
+  }
+  
+  const c = config[reward.buff_type]
+  if (!c) return null
+  
+  const percent = Math.round(reward.value * 100)
+  
+  return (
+    <div className="flex items-center gap-1">
+      <span>{c.icon}</span>
+      <span className={`text-xs font-medium ${c.color}`}>
+        +{percent}% {reward.duration}s
+      </span>
     </div>
   )
 }

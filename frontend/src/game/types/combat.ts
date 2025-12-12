@@ -45,6 +45,7 @@ export interface HealthState {
   lastDamageTime: number
   isInvulnerable: boolean
   invulnerabilityEnd: number
+  isRegenerating?: boolean
 }
 
 export interface CombatState {

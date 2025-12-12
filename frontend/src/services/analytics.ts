@@ -17,13 +17,19 @@
 
 import { API_BASE } from '@/utils/constants'
 
-// Generate a persistent session ID (fingerprint-lite)
-function getSessionId(): string {
-  const key = '1v1bro_session_id'
-  let sessionId = localStorage.getItem(key)
+// Generate a unique ID
+function generateId(): string {
+  return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
+}
+
+// Get or create persistent VISITOR ID (survives browser restarts)
+// This identifies the same user across multiple visits on the same device
+function getVisitorId(): string {
+  const key = '1v1bro_visitor_id'
+  let visitorId = localStorage.getItem(key)
   
-  if (!sessionId) {
-    // Generate a simple fingerprint from available browser data
+  if (!visitorId) {
+    // Generate a fingerprint-based ID for persistence
     const components = [
       navigator.userAgent,
       navigator.language,
@@ -39,8 +45,22 @@ function getSessionId(): string {
       return a & a
     }, 0)
     
-    sessionId = `${Math.abs(hash).toString(36)}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
-    localStorage.setItem(key, sessionId)
+    visitorId = `v_${Math.abs(hash).toString(36)}_${generateId()}`
+    localStorage.setItem(key, visitorId)
+  }
+  
+  return visitorId
+}
+
+// Get or create SESSION ID (resets per browser session/tab)
+// This tracks individual browsing sessions for the same visitor
+function getSessionId(): string {
+  const key = '1v1bro_session_id'
+  let sessionId = sessionStorage.getItem(key)
+  
+  if (!sessionId) {
+    sessionId = `s_${generateId()}`
+    sessionStorage.setItem(key, sessionId)
   }
   
   return sessionId
@@ -118,17 +138,22 @@ async function sendAnalytics(endpoint: string, data: Record<string, unknown>): P
 
 class Analytics {
   private sessionId: string
+  private visitorId: string
   private initialized = false
   private pageLoadTime = Date.now()
   private currentPage = ''
   private maxScrollDepth = 0
 
   constructor() {
-    this.sessionId = getSessionId()
+    this.visitorId = getVisitorId()  // Persistent across visits
+    this.sessionId = getSessionId()  // Per browser session
   }
 
   /**
    * Initialize analytics session (call once on app load)
+   * 
+   * visitor_id: Identifies the same user across multiple visits (localStorage)
+   * session_id: Identifies individual browsing sessions (sessionStorage)
    */
   init(): void {
     if (this.initialized) return
@@ -138,6 +163,7 @@ class Analytics {
     
     sendAnalytics('/session', {
       session_id: this.sessionId,
+      visitor_id: this.visitorId,  // Send persistent visitor ID
       device_type: getDeviceType(),
       browser: getBrowser(),
       os: getOS(),

@@ -96,6 +96,10 @@ export function useBotGame() {
   const [waitingForBot, setWaitingForBot] = useState(false)
   const botAnswerTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Countdown state - game doesn't truly start until countdown completes
+  const [countdown, setCountdown] = useState<number | null>(null)
+  const [countdownComplete, setCountdownComplete] = useState(false)
+
   // Initialize bot callbacks
   useEffect(() => {
     botControllerRef.current.setCallbacks({
@@ -142,6 +146,24 @@ export function useBotGame() {
 
   const equippedEmoteId = loadoutWithDetails?.emote_equipped?.id ?? null
 
+  // Derive skin data from loadout
+  const equippedSkin = loadoutWithDetails?.skin_equipped
+    ? {
+        skinId: loadoutWithDetails.skin_equipped.skin_id || undefined,
+        spriteSheetUrl: loadoutWithDetails.skin_equipped.sprite_sheet_url || undefined,
+        metadataUrl: loadoutWithDetails.skin_equipped.sprite_meta_url || undefined,
+      }
+    : isGuest
+      ? {
+          // Guest default skin - Frostborne Valkyrie
+          spriteSheetUrl: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/skins/Frostborne Valkyrie.jpg',
+          metadataUrl: undefined,
+        }
+      : undefined
+
+  // Bot skin - pink for contrast
+  const opponentSkin = { skinId: 'pink' as const }
+
   // Bot mode runs entirely client-side
   // Player projectiles are handled by local CombatSystem
   // Bot projectiles are synced via callback to GameEngine for rendering
@@ -154,8 +176,9 @@ export function useBotGame() {
   }, [playerHealth, botHealth, userId])
 
   // Bot update loop - also syncs bot projectiles to GameEngine
+  // Only runs after countdown completes to prevent bot moving before map renders
   useEffect(() => {
-    if (!gameStarted) return
+    if (!gameStarted || !countdownComplete) return
     let last = performance.now()
     let id: number
     const loop = () => {
@@ -171,7 +194,7 @@ export function useBotGame() {
     }
     id = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(id)
-  }, [gameStarted])
+  }, [gameStarted, countdownComplete])
 
   // Power-up spawning loop
   useEffect(() => {
@@ -254,26 +277,42 @@ export function useBotGame() {
     await fetchQuestions(selectedCategory)
   }, [selectedCategory, fetchQuestions])
 
-  // Auto-start when questions loaded
+  // Auto-start when questions loaded - begin countdown
   useEffect(() => {
     if (questions.length > 0 && !questionsLoading && !questionsError && !gameStarted) {
       botControllerRef.current.reset()
       setGameStarted(true)
+      setCountdown(3) // Start 3-second countdown
+      setCountdownComplete(false)
       setStatus('playing')
     }
   }, [questions, questionsLoading, questionsError, gameStarted, setStatus])
 
-  // Set first question
+  // Countdown timer - ticks down from 3 to 0, then enables gameplay
   useEffect(() => {
-    if (gameStarted && questions.length > 0 && status === 'playing' && questionIndex === 0 && !currentQuestion) {
+    if (countdown === null) return
+    if (countdown <= 0) {
+      setCountdownComplete(true)
+      setCountdown(null)
+      return
+    }
+    const timer = setTimeout(() => {
+      setCountdown(c => (c !== null ? c - 1 : null))
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [countdown])
+
+  // Set first question - only after countdown completes
+  useEffect(() => {
+    if (gameStarted && countdownComplete && questions.length > 0 && status === 'playing' && questionIndex === 0 && !currentQuestion) {
       const q = questions[0]
       setQuestion({ qNum: 1, text: q.text, options: q.options, startTime: Date.now() })
     }
-  }, [gameStarted, questions, status, questionIndex, currentQuestion, setQuestion])
+  }, [gameStarted, countdownComplete, questions, status, questionIndex, currentQuestion, setQuestion])
 
-  // Bot answer timer
+  // Bot answer timer - only after countdown completes
   useEffect(() => {
-    if (!gameStarted || status !== 'playing' || !currentQuestion || !questions.length) return
+    if (!gameStarted || !countdownComplete || status !== 'playing' || !currentQuestion || !questions.length) return
     if (botAnswerTimeoutRef.current) clearTimeout(botAnswerTimeoutRef.current)
     setPlayerAnswer(null)
     setBotAnswer(null)
@@ -423,6 +462,8 @@ export function useBotGame() {
     setBotKills(0)
     setPlayerCorrectAnswers(0)
     setPlayerAnsweredCount(0)
+    setCountdown(null)
+    setCountdownComplete(false)
     botControllerRef.current.reset()
   }, [reset])
 
@@ -432,6 +473,8 @@ export function useBotGame() {
     // Game state
     status, currentQuestion, localScore, opponentScore,
     gameStarted, waitingForBot,
+    // Countdown
+    countdown, countdownComplete,
     // Questions
     questions, questionsLoading, questionsError,
     selectedCategory, setSelectedCategory,
@@ -458,5 +501,8 @@ export function useBotGame() {
     // Emotes
     inventoryEmotes,
     equippedEmoteId,
+    // Skins
+    equippedSkin,
+    opponentSkin,
   }
 }

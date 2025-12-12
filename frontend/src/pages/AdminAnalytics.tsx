@@ -441,6 +441,12 @@ export function AdminAnalytics() {
               </div>
               
               <button
+                onClick={() => navigate('/admin/analytics/enterprise')}
+                className="px-3 py-2 bg-orange-500/20 text-orange-400 rounded-lg text-sm hover:bg-orange-500/30"
+              >
+                Enterprise View →
+              </button>
+              <button
                 onClick={() => navigate('/dashboard')}
                 className="text-sm text-neutral-400 hover:text-white"
               >

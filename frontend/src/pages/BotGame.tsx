@@ -9,10 +9,14 @@ import { GameArena } from '@/components/game/GameArena'
 import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
 import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
+import { BuffRewardToast } from '@/components/game/BuffRewardToast'
+import { GameTutorial, useGameTutorial } from '@/components/game/GameTutorial'
 import { useBotGame } from '@/hooks/useBotGame'
+import { useGameStore } from '@/stores/gameStore'
 import { SIMPLE_ARENA, type MapConfig } from '@/game/config/maps'
 import { AVAILABLE_MAPS as MAP_INFO } from '@/game/config/maps/map-loader'
 import { getMapConfig } from '@/game/config/maps/map-loader'
+import { preloadMapAssets } from '@/game/assets'
 import { BREAKPOINTS } from '@/utils/breakpoints'
 import type { FireEvent, HitEvent, DeathEvent } from '@/game'
 
@@ -28,9 +32,12 @@ export function BotGame() {
   const navigate = useNavigate()
   const [isMobileLandscape, setIsMobileLandscape] = useState(false)
   const [mapConfig, setMapConfig] = useState<MapConfig>(SIMPLE_ARENA)
+  const { shouldShow: shouldShowTutorial, dismiss: dismissTutorial } = useGameTutorial()
+  const [showTutorial, setShowTutorial] = useState(false)
 
   const {
     userId, isGuest, status, localScore, opponentScore, gameStarted, waitingForBot,
+    countdown, countdownComplete,
     questionsLoading, questionsError, selectedCategory, setSelectedCategory,
     categories, categoriesLoading, botPosition, playerKills, botKills,
     localHealth, opponentHealth, startGame, handleAnswer, handlePositionUpdate,
@@ -41,6 +48,7 @@ export function BotGame() {
     handleLocalTrapTriggered,
     inventoryEmotes, equippedEmoteId,
     powerUps, handlePowerUpCollect,
+    equippedSkin, opponentSkin,
   } = useBotGame()
 
   useEffect(() => {
@@ -62,6 +70,18 @@ export function BotGame() {
   const onCombatFire = (_: FireEvent) => {}
   const onCombatDeath = (_: DeathEvent) => {}
 
+  // Show tutorial for first-time users when game starts
+  useEffect(() => {
+    if (gameStarted && shouldShowTutorial && !showTutorial) {
+      setShowTutorial(true)
+    }
+  }, [gameStarted, shouldShowTutorial, showTutorial])
+
+  const handleTutorialDismiss = () => {
+    setShowTutorial(false)
+    dismissTutorial()
+  }
+
   if (!gameStarted) {
     return (
       <SetupScreen categories={categories} categoriesLoading={categoriesLoading}
@@ -80,27 +100,38 @@ export function BotGame() {
     )
   }
 
-  const showQuestion = status === 'playing' && !waitingForBot
+  const showQuestion = status === 'playing' && !waitingForBot && countdownComplete
   const showRoundResult = status === 'round_result'
+  const showCountdown = countdown !== null && countdown > 0
 
   return (
     <div className="h-screen w-screen flex flex-col bg-[#0a0a0a] overflow-hidden">
+      {/* Tutorial overlay - shows on first play */}
+      {showTutorial && countdown !== null && (
+        <GameTutorial visible={showTutorial} onDismiss={handleTutorialDismiss} />
+      )}
+      
       <ArenaScoreboard localHealth={localHealth} opponentHealth={opponentHealth} showHealth showQuestion={false} onAnswer={handleAnswer} />
       <div className="flex-1 relative min-h-0">
         <div className="h-full relative">
           <GameArena playerId={userId} isPlayer1 opponentId="bot" opponentPosition={botPosition}
             powerUps={powerUps} onPositionUpdate={handlePositionUpdate} onPowerUpCollect={handlePowerUpCollect}
-            mapConfig={mapConfig} combatEnabled onCombatFire={onCombatFire} onCombatHit={onCombatHit}
+            mapConfig={mapConfig} combatEnabled={countdownComplete} onCombatFire={onCombatFire} onCombatHit={onCombatHit}
             onCombatDeath={onCombatDeath}
             setServerProjectilesCallback={setServerProjectilesCallback}
             setServerHealthCallback={setServerHealthCallback}
             onLocalHazardDamage={handleLocalHazardDamage}
             onLocalTrapTriggered={handleLocalTrapTriggered}
             inventoryEmotes={inventoryEmotes}
-            equippedEmoteId={equippedEmoteId} />
-          {waitingForBot && <BotThinkingIndicator />}
+            equippedEmoteId={equippedEmoteId}
+            equippedSkin={equippedSkin}
+            opponentSkin={opponentSkin} />
+          {/* Countdown overlay */}
+          {showCountdown && <CountdownOverlay count={countdown} />}
+          {waitingForBot && countdownComplete && <BotThinkingIndicator />}
           <RoundResultOverlay visible={showRoundResult} />
-          <ControlsHint />
+          <BuffRewardToast reward={useGameStore.getState().roundResult?.localReward} />
+          {countdownComplete && <ControlsHint />}
           <LeaveButton onClick={handleLeave} isMobileLandscape={isMobileLandscape} />
         </div>
       </div>
@@ -127,6 +158,13 @@ interface SetupProps {
 function SetupScreen({ categories, categoriesLoading, selectedCategory, setSelectedCategory,
   selectedMap, setSelectedMap, questionsLoading, questionsError, onStart, onBack, isGuest }: SetupProps) {
   const navigate = useNavigate()
+  
+  // Preload map assets when map is selected (eliminates loading delay)
+  useEffect(() => {
+    const theme = selectedMap?.metadata?.theme ?? 'simple'
+    preloadMapAssets(theme as 'simple' | 'volcanic' | 'space')
+  }, [selectedMap])
+  
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0a] px-4">
       <h1 className="text-3xl font-semibold text-white tracking-tight mb-2">Practice Mode</h1>
@@ -212,6 +250,32 @@ function ResultsScreen({ localScore, opponentScore, playerKills, botKills, isGue
         <button onClick={onPlayAgain} className="px-6 py-2.5 min-h-[44px] bg-white text-black text-sm rounded-lg">Play Again</button>
         <button onClick={onBack} className="px-6 py-2.5 min-h-[44px] bg-white/[0.06] text-neutral-300 text-sm rounded-lg border border-white/[0.1]">{isGuest ? 'Home' : 'Menu'}</button>
       </div>
+    </div>
+  )
+}
+
+function CountdownOverlay({ count }: { count: number }) {
+  return (
+    <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="flex flex-col items-center gap-4">
+        <div 
+          key={count}
+          className="text-8xl font-bold text-white tabular-nums animate-[countdown-pulse_0.5s_ease-out]"
+          style={{
+            textShadow: '0 0 40px rgba(255,255,255,0.5), 0 0 80px rgba(99,102,241,0.3)',
+          }}
+        >
+          {count}
+        </div>
+        <p className="text-sm text-white/60 uppercase tracking-widest">Get Ready</p>
+      </div>
+      <style>{`
+        @keyframes countdown-pulse {
+          0% { transform: scale(1.5); opacity: 0; }
+          50% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
     </div>
   )
 }

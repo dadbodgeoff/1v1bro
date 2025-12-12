@@ -110,7 +110,17 @@ export function useGameLoop({
       requestAnimationFrame(() => engine.resize())
     })
     
-    setEngineReady(true)
+    // Wait for assets to load before marking engine as ready
+    // This prevents the loading overlay from disappearing before the map renders
+    const checkAssetsLoaded = () => {
+      if (engine.areAssetsLoaded()) {
+        setEngineReady(true)
+      } else {
+        // Check again in 50ms
+        setTimeout(checkAssetsLoaded, 50)
+      }
+    }
+    checkAssetsLoaded()
 
     return () => {
       engine.destroy()

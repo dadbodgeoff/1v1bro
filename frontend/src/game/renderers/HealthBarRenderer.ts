@@ -68,6 +68,24 @@ export class HealthBarRenderer extends BaseRenderer {
       this.ctx.strokeRect(x - 2, y - 6, barWidth + 4, barHeight + 8)
       this.ctx.globalAlpha = 1
     }
+
+    // Regeneration indicator (green pulsing glow)
+    if (state.isRegenerating) {
+      const pulse = this.getPulse(0.3) // Slow pulse
+      this.ctx.strokeStyle = '#22c55e' // Green
+      this.ctx.lineWidth = 2
+      this.ctx.globalAlpha = 0.4 + pulse * 0.4
+      this.ctx.strokeRect(x - 1, y - 1, barWidth + 2, barHeight + 2)
+      this.ctx.globalAlpha = 1
+      
+      // Small + icon to indicate healing
+      this.ctx.fillStyle = '#22c55e'
+      this.ctx.font = 'bold 8px sans-serif'
+      this.ctx.textAlign = 'right'
+      this.ctx.globalAlpha = 0.6 + pulse * 0.4
+      this.ctx.fillText('+', x + barWidth + 8, y + barHeight)
+      this.ctx.globalAlpha = 1
+    }
   }
 
   private getHealthColor(percent: number): string {
