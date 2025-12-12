@@ -21,6 +21,7 @@ import {
 import { useArenaGame } from '@/hooks/useArenaGame'
 import { useGameStore } from '@/stores/gameStore'
 import { wsService } from '@/services/websocket'
+import { BREAKPOINTS } from '@/utils/breakpoints'
 import type { Vector2, FireEvent, HitEvent, DeathEvent } from '@/game'
 import type { StateUpdatePayload, CombatRespawnPayload } from '@/types/websocket'
 
@@ -48,7 +49,7 @@ export function ArenaGame() {
   // Orientation and viewport tracking
   useEffect(() => {
     const checkOrientation = () => {
-      const isMobile = window.innerWidth < 1024
+      const isMobile = window.innerWidth < BREAKPOINTS.tablet
       const portrait = window.innerHeight > window.innerWidth
       const landscape = window.innerWidth > window.innerHeight
       

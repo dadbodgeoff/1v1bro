@@ -99,7 +99,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
   // Overlay mode: Fixed position at top of screen for mobile fullscreen
   if (overlayMode) {
     return (
-      <div className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-md border-b border-purple-500/30 safe-area-top">
+      <div className="fixed top-0 left-0 right-0 z-40 bg-black/80 backdrop-blur-md border-b border-indigo-500/30 safe-area-top">
         {/* Timer bar */}
         <div className="h-1 bg-white/[0.04]">
           <div
@@ -108,7 +108,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
                 ? 'bg-red-500 animate-pulse' 
                 : isWarning 
                   ? 'bg-amber-500' 
-                  : 'bg-purple-500/70'
+                  : 'bg-indigo-500/70'
             }`}
             style={{ width: `${timerPercent}%` }}
           />
@@ -120,7 +120,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <span
               className={`text-sm font-mono font-bold tabular-nums shrink-0 ${
-                isUrgent ? 'text-red-400 animate-pulse' : isWarning ? 'text-amber-400' : 'text-purple-400'
+                isUrgent ? 'text-red-400 animate-pulse' : isWarning ? 'text-amber-400' : 'text-indigo-400'
               }`}
             >
               {timeRemaining}s
@@ -143,7 +143,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
                   className={`
                     flex items-center gap-1 px-2 py-1.5 rounded-md text-left transition-all min-w-[60px] max-w-[100px]
                     ${isSelected
-                      ? 'bg-purple-600/60 border border-purple-400/80'
+                      ? 'bg-indigo-600/60 border border-indigo-400/80'
                       : 'bg-white/10 border border-white/20 active:bg-white/20'
                     }
                     ${answerSubmitted && !isSelected ? 'opacity-40' : ''}
@@ -151,7 +151,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
                 >
                   <span
                     className={`w-5 h-5 rounded text-[10px] font-bold flex items-center justify-center shrink-0 ${
-                      isSelected ? 'bg-white text-purple-900' : 'bg-white/20 text-white/70'
+                      isSelected ? 'bg-white text-indigo-900' : 'bg-white/20 text-white/70'
                     }`}
                   >
                     {index + 1}
@@ -168,9 +168,9 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
           {answerSubmitted && (
             <div className="flex items-center gap-1 text-white/50 shrink-0">
               <div className="flex gap-0.5">
-                <div className="w-1 h-1 rounded-full bg-purple-400/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1 h-1 rounded-full bg-purple-400/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1 h-1 rounded-full bg-purple-400/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-1 h-1 rounded-full bg-indigo-400/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1 h-1 rounded-full bg-indigo-400/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-1 h-1 rounded-full bg-indigo-400/60 animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           )}
@@ -181,7 +181,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
 
   // Standard mode: Below canvas
   return (
-    <div className="w-full bg-gradient-to-b from-[#12101a] to-[#0a0a0a] border-t border-purple-500/20 safe-area-bottom">
+    <div className="w-full bg-[#0a0a0a] border-t border-indigo-500/20 safe-area-bottom">
       {/* Timer bar - full width */}
       <div className="h-1 bg-white/[0.04]">
         <div
@@ -190,7 +190,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
               ? 'bg-red-500 animate-pulse' 
               : isWarning 
                 ? 'bg-amber-500' 
-                : 'bg-purple-500/70'
+                : 'bg-indigo-500/70'
           }`}
           style={{ width: `${timerPercent}%` }}
         />
@@ -201,7 +201,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
         {/* Question section - inline on mobile */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono text-purple-400/70 uppercase tracking-wider">
+            <span className="text-[10px] font-mono text-indigo-400/70 uppercase tracking-wider">
               Q{currentQuestion.qNum}
             </span>
             <span
@@ -232,7 +232,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
                   flex items-center gap-1.5 lg:gap-2 px-2 lg:px-3 py-2 lg:py-2.5 rounded-lg text-left transition-all
                   min-h-[44px] lg:min-w-[160px] lg:max-w-[200px]
                   ${isSelected
-                    ? 'bg-purple-600/40 border-2 border-purple-400/60 shadow-lg shadow-purple-500/20'
+                    ? 'bg-indigo-600/40 border-2 border-indigo-400/60 shadow-lg shadow-indigo-500/20'
                     : 'bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.12]'
                   }
                   ${answerSubmitted && !isSelected ? 'opacity-40' : ''}
@@ -244,7 +244,7 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
                   className={`
                     w-5 h-5 lg:w-6 lg:h-6 rounded-md text-[10px] lg:text-xs font-bold flex items-center justify-center shrink-0
                     ${isSelected
-                      ? 'bg-white text-purple-900'
+                      ? 'bg-white text-indigo-900'
                       : 'bg-white/10 text-white/60'
                     }
                   `}
@@ -264,9 +264,9 @@ export function ArenaQuizPanel({ onAnswer, visible, overlayMode = false }: Arena
         {answerSubmitted && (
           <div className="flex items-center gap-2 text-white/40">
             <div className="flex gap-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-purple-400/50 animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-1.5 h-1.5 rounded-full bg-purple-400/50 animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-1.5 h-1.5 rounded-full bg-purple-400/50 animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="w-1.5 h-1.5 rounded-full bg-indigo-400/50 animate-bounce" style={{ animationDelay: '0ms' }} />
+              <div className="w-1.5 h-1.5 rounded-full bg-indigo-400/50 animate-bounce" style={{ animationDelay: '150ms' }} />
+              <div className="w-1.5 h-1.5 rounded-full bg-indigo-400/50 animate-bounce" style={{ animationDelay: '300ms' }} />
             </div>
             <span className="text-xs">waiting</span>
           </div>

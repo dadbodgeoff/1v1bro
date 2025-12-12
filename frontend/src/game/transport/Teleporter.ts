@@ -29,6 +29,7 @@ export class Teleporter {
   private radius: number
   private linkedTeleporterId: string | null = null
   private playerCooldowns: Map<string, number> = new Map()
+  private randomExits: Vector2[] | null = null
 
   /**
    * Create a new teleporter
@@ -41,6 +42,7 @@ export class Teleporter {
     this.position = { ...state.position }
     this.radius = state.radius
     this.linkedTeleporterId = state.linkedTeleporterId
+    this.randomExits = state.randomExits ? [...state.randomExits] : null
   }
 
   /**
@@ -86,6 +88,25 @@ export class Teleporter {
    */
   linkTo(otherTeleporter: Teleporter): void {
     this.linkedTeleporterId = otherTeleporter.getId()
+  }
+
+  /**
+   * Check if this teleporter has random exit destinations
+   */
+  hasRandomExits(): boolean {
+    return this.randomExits !== null && this.randomExits.length > 0
+  }
+
+  /**
+   * Get a random exit destination
+   * @returns Random exit position or null if no random exits configured
+   */
+  getRandomExit(): Vector2 | null {
+    if (!this.randomExits || this.randomExits.length === 0) {
+      return null
+    }
+    const index = Math.floor(Math.random() * this.randomExits.length)
+    return { ...this.randomExits[index] }
   }
 
   /**

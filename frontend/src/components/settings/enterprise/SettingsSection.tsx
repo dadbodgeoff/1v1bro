@@ -45,12 +45,12 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-6 hover:bg-white/[0.02] transition-colors"
+        className="w-full flex items-center justify-between p-6 hover:bg-white/[0.02] transition-colors min-h-[72px] touch-manipulation"
         aria-expanded={expanded}
         aria-controls={`${id}-content`}
       >
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-xl">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 flex items-center justify-center text-xl">
             {icon}
           </div>
           <div className="text-left">

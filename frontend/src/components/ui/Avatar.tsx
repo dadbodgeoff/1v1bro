@@ -20,13 +20,14 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
     : '?'
 
   const colorIndex = name ? name.charCodeAt(0) % 6 : 0
+  // Enterprise gradients - no teal, purple, or violet
   const gradients = [
     'from-indigo-500 to-indigo-600',
-    'from-emerald-500 to-teal-600',
+    'from-emerald-500 to-emerald-600',
     'from-amber-500 to-orange-600',
-    'from-rose-500 to-pink-600',
-    'from-blue-500 to-indigo-600',
-    'from-violet-500 to-indigo-600',
+    'from-rose-500 to-rose-600',
+    'from-blue-500 to-blue-600',
+    'from-slate-500 to-slate-600',
   ]
 
   if (src) {

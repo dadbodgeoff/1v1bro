@@ -5,9 +5,8 @@
  * Requirements: 4.2, 4.5
  */
 
-import { NEXUS_ARENA } from './nexus-arena'
 import { VORTEX_ARENA } from './vortex-arena'
-import { INDUSTRIAL_FACILITY } from './industrial-facility'
+import { SIMPLE_ARENA } from './simple-arena'
 import type { MapConfig } from './map-schema'
 
 /**
@@ -15,9 +14,8 @@ import type { MapConfig } from './map-schema'
  * Using Object.create(null) to avoid prototype pollution issues.
  */
 const MAP_REGISTRY: Record<string, MapConfig> = Object.assign(Object.create(null), {
-  'nexus-arena': NEXUS_ARENA,
   'vortex-arena': VORTEX_ARENA,
-  'industrial-facility': INDUSTRIAL_FACILITY,
+  'simple-arena': SIMPLE_ARENA,
 })
 
 /**
@@ -28,22 +26,24 @@ export interface MapInfo {
   name: string
   description: string
   thumbnail: string
-  theme: 'space' | 'volcanic' | 'industrial'
+  theme: 'volcanic' | 'simple'
 }
 
 /**
- * Feature flags for maps.
- * Set to true when maps are ready for production.
- */
-const NEXUS_ARENA_ENABLED = false      // Basic first map - disabled for now
-const INDUSTRIAL_MAP_ENABLED = false   // Tilesets not ready
-
-/**
  * Available maps with display metadata.
- * Only Vortex Arena is currently enabled.
+ * Runtime Ruins (simple-arena) is the default/primary map for quick play.
+ * Vortex Arena is the secondary option.
  */
 export const AVAILABLE_MAPS: MapInfo[] = [
-  // Vortex Arena - primary map
+  // Runtime Ruins - default quick play map
+  {
+    slug: 'simple-arena',
+    name: 'Runtime Ruins',
+    description: 'Ancient ruins simulated in a high-tech arena',
+    thumbnail: '/maps/simple-arena-thumb.png',
+    theme: 'simple',
+  },
+  // Vortex Arena - secondary map
   {
     slug: 'vortex-arena',
     name: 'Vortex Arena',
@@ -51,37 +51,27 @@ export const AVAILABLE_MAPS: MapInfo[] = [
     thumbnail: '/maps/vortex-arena-thumb.png',
     theme: 'volcanic',
   },
-  // Nexus Arena hidden until we want to bring it back
-  ...(NEXUS_ARENA_ENABLED ? [{
-    slug: 'nexus-arena',
-    name: 'Nexus Arena',
-    description: 'Classic three-lane space arena',
-    thumbnail: '/maps/nexus-arena-thumb.png',
-    theme: 'space' as const,
-  }] : []),
-  // Industrial map hidden behind feature flag until tilesets are ready
-  ...(INDUSTRIAL_MAP_ENABLED ? [{
-    slug: 'industrial-facility',
-    name: 'Industrial Facility',
-    description: 'Military facility with strategic cover and hazard zones',
-    thumbnail: '/maps/industrial-facility-thumb.png',
-    theme: 'industrial' as const,
-  }] : []),
 ]
+
+/**
+ * Default map for quick play and fallback.
+ */
+export const DEFAULT_MAP = SIMPLE_ARENA
+export const DEFAULT_MAP_SLUG = 'simple-arena'
 
 /**
  * Get a map configuration by slug.
  * 
- * @param slug - Map slug (e.g., 'nexus-arena', 'vortex-arena', 'industrial-facility')
- * @returns MapConfig for the specified slug, or VORTEX_ARENA if invalid/missing
+ * @param slug - Map slug (e.g., 'simple-arena', 'vortex-arena')
+ * @returns MapConfig for the specified slug, or SIMPLE_ARENA (Runtime Ruins) if invalid/missing
  * 
  * Requirements: 4.2, 4.5
  */
 export function getMapConfig(slug: string | undefined | null): MapConfig {
   if (!slug) {
-    return VORTEX_ARENA
+    return SIMPLE_ARENA
   }
-  return MAP_REGISTRY[slug] ?? VORTEX_ARENA
+  return MAP_REGISTRY[slug] ?? SIMPLE_ARENA
 }
 
 /**

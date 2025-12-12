@@ -77,13 +77,13 @@ export function ProgressSection({
           {/* XP Stats Row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <XPIcon className="w-4 h-4 text-[#a855f7]" />
+              <XPIcon className="w-4 h-4 text-[#6366f1]" />
               <span className="text-sm text-[var(--color-text-secondary)]">
                 <span className="font-bold text-white tabular-nums">
                   {currentXP.toLocaleString()}
                 </span>
                 {' / '}
-                <span className="tabular-nums">{xpToNextTier.toLocaleString()} XP</span>
+                <span className="tabular-nums">{(currentXP + xpToNextTier).toLocaleString()} XP</span>
               </span>
             </div>
 
@@ -107,7 +107,7 @@ export function ProgressSection({
                 className="h-full rounded-full transition-all duration-500 ease-out"
                 style={{
                   width: `${percentage}%`,
-                  background: 'linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+                  background: 'linear-gradient(90deg, #4338ca 0%, #6366f1 100%)',
                 }}
               />
             </div>

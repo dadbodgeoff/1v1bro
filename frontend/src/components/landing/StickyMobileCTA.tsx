@@ -7,6 +7,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { BREAKPOINTS } from '@/utils/breakpoints'
 
 interface StickyMobileCTAProps {
   onCTAClick: () => void
@@ -18,9 +19,9 @@ export function StickyMobileCTA({ onCTAClick, isAuthenticated }: StickyMobileCTA
   const [isDismissed, setIsDismissed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
-  // Check if mobile
+  // Check if mobile - use centralized tablet breakpoint
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    const checkMobile = () => setIsMobile(window.innerWidth < BREAKPOINTS.tablet)
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
@@ -65,7 +66,7 @@ export function StickyMobileCTA({ onCTAClick, isAuthenticated }: StickyMobileCTA
           <div className="flex items-center justify-between gap-4">
             <button
               onClick={onCTAClick}
-              className="flex-1 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg transition-transform active:scale-95"
+              className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition-all active:scale-95"
             >
               {isAuthenticated ? 'Play Now' : 'Sign Up Free'}
             </button>

@@ -236,8 +236,9 @@ export function Shop() {
                 badgeVariant="hot"
                 icon={<StarIcon className="w-5 h-5" />}
               >
-                <div className="grid grid-cols-4 grid-rows-2 gap-4" style={{ gridTemplateRows: 'repeat(2, minmax(200px, 1fr))' }}>
-                  {/* Hero Item - spans 2 cols x 2 rows */}
+                {/* Mobile: Stack hero + 2x2 grid. Desktop: 4-col with hero spanning 2x2 */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Hero Item - full width on mobile, 2x2 on desktop */}
                   {featuredItems[0] && (
                     <ItemDisplayBox
                       key={featuredItems[0].id}
@@ -246,9 +247,10 @@ export function Shop() {
                       isOwned={ownedIds.has(featuredItems[0].id)}
                       onPurchase={() => openPurchaseModal(featuredItems[0])}
                       onViewDetails={() => {/* TODO: Item detail modal */}}
+                      className="col-span-2 md:row-span-2"
                     />
                   )}
-                  {/* Supporting Items - 2x2 grid on the right */}
+                  {/* Supporting Items - 2x2 grid */}
                   {featuredItems.slice(1, 5).map((item) => (
                     <ItemDisplayBox
                       key={item.id}
@@ -257,7 +259,6 @@ export function Shop() {
                       isOwned={ownedIds.has(item.id)}
                       onPurchase={() => openPurchaseModal(item)}
                       onViewDetails={() => {/* TODO: Item detail modal */}}
-                      className="col-span-1 row-span-1"
                     />
                   ))}
                 </div>

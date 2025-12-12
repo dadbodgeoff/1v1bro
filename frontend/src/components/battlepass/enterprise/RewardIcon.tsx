@@ -106,7 +106,7 @@ export function RewardIcon({ reward, size }: RewardIconProps) {
         </div>
       )
     case 'xp_boost':
-      return <XPBoostIcon className="text-[#a855f7]" style={{ width: iconSize, height: iconSize }} />
+      return <XPBoostIcon className="text-[#6366f1]" style={{ width: iconSize, height: iconSize }} />
     case 'title':
       return <TitleIcon className="text-white" style={{ width: iconSize, height: iconSize }} />
     default:

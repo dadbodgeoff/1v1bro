@@ -115,7 +115,7 @@ def build_game_start(
     player2_id: str,
     player_skins: Optional[Dict[str, Dict]] = None,
     category: str = "fortnite",
-    map_slug: str = "nexus-arena",
+    map_slug: str = "simple-arena",
 ) -> Dict:
     """Build game_start message with explicit player assignments, skin data, trivia category, and arena map."""
     return build_message(WSEventType.GAME_START, {
@@ -199,7 +199,7 @@ def build_lobby_state(
     can_start: bool,
     host_id: str,
     category: str = "fortnite",
-    map_slug: str = "nexus-arena",
+    map_slug: str = "simple-arena",
 ) -> Dict:
     """Build lobby_state message with trivia category and arena map."""
     return build_message(WSEventType.LOBBY_STATE, {

@@ -62,7 +62,7 @@ export function FooterCTA({ onCTAClick, playerCount, isAuthenticated }: FooterCT
           >
             <button
               onClick={onCTAClick}
-              className="px-12 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="px-12 py-4 bg-[#F97316] text-white text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:bg-[#FB923C] hover:shadow-lg hover:shadow-[#F97316]/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:ring-offset-2 focus:ring-offset-black"
             >
               {isAuthenticated ? 'Play Now' : playerCount ? `Join ${playerCount.toLocaleString()} Players Now` : 'Sign Up Free'}
             </button>

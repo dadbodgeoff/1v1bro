@@ -7,6 +7,7 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGameStore } from '@/stores/gameStore'
 import { useAuthStore } from '@/stores/authStore'
+import { useCosmeticsStore } from '@/stores/cosmeticsStore'
 import { useCategories } from '@/hooks/useCategories'
 import { API_BASE } from '@/utils/constants'
 import { GuestSessionManager, type MatchResult } from '@/game/guest'
@@ -18,8 +19,9 @@ import {
   DEFAULT_BOT_QUIZ_CONFIG,
   type BotAnswer,
 } from '@/game/bot/BotQuizBehavior'
-import type { Vector2 } from '@/game'
+import type { Vector2, PowerUpState, PowerUpType } from '@/game'
 import type { MapConfig } from '@/game/config/maps'
+import { SIMPLE_ARENA } from '@/game/config/maps'
 
 interface PracticeQuestion {
   id: number
@@ -30,6 +32,11 @@ interface PracticeQuestion {
 }
 
 const QUESTIONS_PER_GAME = 15
+
+// Power-up configuration
+const POWER_UP_TYPES: PowerUpType[] = ['sos', 'time_steal', 'shield', 'double_points']
+const POWER_UP_SPAWN_INTERVAL = 15000 // 15 seconds
+const POWER_UP_DURATION = 10000 // 10 seconds before despawn
 
 export function useBotGame() {
   const navigate = useNavigate()
@@ -45,6 +52,9 @@ export function useBotGame() {
     setRoundResult, setStatus, reset,
   } = useGameStore()
   const { categories, isLoading: categoriesLoading } = useCategories()
+
+  // Cosmetics store for emotes
+  const { inventory, loadoutWithDetails, fetchInventory, fetchLoadout } = useCosmeticsStore()
 
   // Bot controller
   const botControllerRef = useRef(new BotController(DEFAULT_BOT_CONFIG))
@@ -70,6 +80,15 @@ export function useBotGame() {
   // Combat stats
   const [playerKills, setPlayerKills] = useState(0)
   const [botKills, setBotKills] = useState(0)
+  
+  // Quiz stats - track actual correct answers
+  const [playerCorrectAnswers, setPlayerCorrectAnswers] = useState(0)
+  const [playerAnsweredCount, setPlayerAnsweredCount] = useState(0)
+  
+  // Power-up state
+  const [powerUps, setPowerUps] = useState<PowerUpState[]>([])
+  const powerUpIdRef = useRef(0)
+  const lastPowerUpSpawnRef = useRef(0)
 
   // Answer state
   const [playerAnswer, setPlayerAnswer] = useState<{ answer: string; timeMs: number } | null>(null)
@@ -104,9 +123,29 @@ export function useBotGame() {
     setStatus('waiting')
   }, [userId, userName, reset, setLocalPlayer, setOpponent, setStatus])
 
-  // Bot mode runs entirely client-side - no server projectile sync needed
+  // Fetch inventory and loadout for emotes (authenticated users only)
+  useEffect(() => {
+    if (isAuthenticated && token) {
+      fetchInventory(token)
+      fetchLoadout(token)
+    }
+  }, [isAuthenticated, token, fetchInventory, fetchLoadout])
+
+  // Derive emote data from inventory and loadout
+  const inventoryEmotes = inventory
+    .filter(item => item.cosmetic?.type === 'emote')
+    .map(item => ({
+      id: item.cosmetic!.id,
+      name: item.cosmetic!.name,
+      image_url: item.cosmetic!.image_url || '',
+    }))
+
+  const equippedEmoteId = loadoutWithDetails?.emote_equipped?.id ?? null
+
+  // Bot mode runs entirely client-side
   // Player projectiles are handled by local CombatSystem
-  // Bot projectiles are handled by BotController and merged into the render
+  // Bot projectiles are synced via callback to GameEngine for rendering
+  const serverProjectilesCallbackRef = useRef<((projectiles: import('@/game').Projectile[]) => void) | null>(null)
 
   // Sync health
   useEffect(() => {
@@ -114,7 +153,7 @@ export function useBotGame() {
     serverHealthCallbackRef.current?.('bot', botHealth, 100)
   }, [playerHealth, botHealth, userId])
 
-  // Bot update loop
+  // Bot update loop - also syncs bot projectiles to GameEngine
   useEffect(() => {
     if (!gameStarted) return
     let last = performance.now()
@@ -122,12 +161,64 @@ export function useBotGame() {
     const loop = () => {
       const now = performance.now()
       botControllerRef.current.update((now - last) / 1000, playerPositionRef.current)
+      
+      // Sync bot projectiles to GameEngine for rendering
+      const botProjectiles = botControllerRef.current.getProjectiles()
+      serverProjectilesCallbackRef.current?.(botProjectiles)
+      
       last = now
       id = requestAnimationFrame(loop)
     }
     id = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(id)
   }, [gameStarted])
+
+  // Power-up spawning loop
+  useEffect(() => {
+    if (!gameStarted) return
+    
+    const spawnPowerUp = () => {
+      const now = Date.now()
+      if (now - lastPowerUpSpawnRef.current < POWER_UP_SPAWN_INTERVAL) return
+      
+      // Get spawn positions from selected map or default
+      const spawnPositions = selectedMap?.powerUpSpawns || SIMPLE_ARENA.powerUpSpawns
+      if (spawnPositions.length === 0) return
+      
+      // Pick random position and type
+      const pos = spawnPositions[Math.floor(Math.random() * spawnPositions.length)]
+      const type = POWER_UP_TYPES[Math.floor(Math.random() * POWER_UP_TYPES.length)]
+      
+      const newPowerUp: PowerUpState = {
+        id: powerUpIdRef.current++,
+        position: { x: pos.x, y: pos.y },
+        type,
+        active: true,
+        collected: false,
+      }
+      
+      setPowerUps(prev => [...prev, newPowerUp])
+      lastPowerUpSpawnRef.current = now
+      
+      // Auto-despawn after duration
+      setTimeout(() => {
+        setPowerUps(prev => prev.filter(p => p.id !== newPowerUp.id))
+      }, POWER_UP_DURATION)
+    }
+    
+    // Spawn initial power-up after 3 seconds
+    const initialTimeout = setTimeout(() => {
+      spawnPowerUp()
+    }, 3000)
+    
+    // Then spawn periodically
+    const interval = setInterval(spawnPowerUp, POWER_UP_SPAWN_INTERVAL)
+    
+    return () => {
+      clearTimeout(initialTimeout)
+      clearInterval(interval)
+    }
+  }, [gameStarted, selectedMap])
 
   // Fetch questions
   const fetchQuestions = useCallback(async (cat: string) => {
@@ -210,6 +301,13 @@ export function useBotGame() {
     const pScore = calculateAnswerScore(playerAnswer.answer, q.correct_answer, playerAnswer.timeMs)
     const bScore = calculateAnswerScore(botAnswer.answer, q.correct_answer, botAnswer.timeMs)
     const correctText = getCorrectAnswerText(q)
+    
+    // Track actual correct answers (pScore > 0 means correct)
+    const playerWasCorrect = pScore > 0
+    if (playerWasCorrect) {
+      setPlayerCorrectAnswers(prev => prev + 1)
+    }
+    setPlayerAnsweredCount(prev => prev + 1)
 
     setRoundResult({
       correctAnswer: correctText,
@@ -234,8 +332,8 @@ export function useBotGame() {
             botScore: opponentScore,
             kills: playerKills,
             deaths: botKills,
-            questionsAnswered: questions.length,
-            questionsCorrect: Math.floor(localScore / 100),
+            questionsAnswered: playerAnsweredCount + (playerWasCorrect ? 1 : 1), // Include current answer
+            questionsCorrect: playerCorrectAnswers + (playerWasCorrect ? 1 : 0), // Include current if correct
             matchDurationMs: 0,
             category: selectedCategory,
           } as MatchResult)
@@ -243,7 +341,7 @@ export function useBotGame() {
         setStatus('finished')
       }
     }, 3000)
-  }, [playerAnswer, botAnswer, questionIndex, localScore, opponentScore, status, questions, setRoundResult, updateScores, setQuestion, setStatus, isGuest, playerKills, botKills, selectedCategory])
+  }, [playerAnswer, botAnswer, questionIndex, localScore, opponentScore, status, questions, setRoundResult, updateScores, setQuestion, setStatus, isGuest, playerKills, botKills, selectedCategory, playerCorrectAnswers, playerAnsweredCount])
 
   // Handlers
   const handleAnswer = useCallback((ans: string, time: number) => {
@@ -260,7 +358,51 @@ export function useBotGame() {
     if (targetId === 'bot') botControllerRef.current.applyDamage(damage)
   }, [])
 
-  // Note: No setServerProjectilesCallback needed - bot mode runs client-side
+  // Handle power-up collection
+  const handlePowerUpCollect = useCallback((powerUpId: number) => {
+    setPowerUps(prev => prev.map(p => 
+      p.id === powerUpId ? { ...p, collected: true, active: false } : p
+    ))
+    // Remove after brief delay for collection animation
+    setTimeout(() => {
+      setPowerUps(prev => prev.filter(p => p.id !== powerUpId))
+    }, 500)
+  }, [])
+
+  // Handle local hazard damage (offline mode - player steps on hazard)
+  const handleLocalHazardDamage = useCallback((targetId: string, damage: number) => {
+    if (targetId === userId) {
+      setPlayerHealth(prev => {
+        const newH = Math.max(0, prev - damage)
+        if (newH <= 0) {
+          // Player died to hazard
+          setBotKills(k => k + 1)
+          setTimeout(() => setPlayerHealth(100), 1500)
+        }
+        return newH
+      })
+    }
+  }, [userId])
+
+  // Handle local trap triggered (offline mode - player triggers trap)
+  const handleLocalTrapTriggered = useCallback((targetId: string, damage: number) => {
+    if (targetId === userId) {
+      setPlayerHealth(prev => {
+        const newH = Math.max(0, prev - damage)
+        if (newH <= 0) {
+          // Player died to trap
+          setBotKills(k => k + 1)
+          setTimeout(() => setPlayerHealth(100), 1500)
+        }
+        return newH
+      })
+    }
+  }, [userId])
+
+  // Bot projectiles callback - syncs bot projectiles to GameEngine for rendering
+  const setServerProjectilesCallback = useCallback((cb: (projectiles: import('@/game').Projectile[]) => void) => {
+    serverProjectilesCallbackRef.current = cb
+  }, [])
 
   const setServerHealthCallback = useCallback((cb: (id: string, h: number, m: number) => void) => {
     serverHealthCallbackRef.current = cb
@@ -279,6 +421,8 @@ export function useBotGame() {
     setBotHealth(100)
     setPlayerKills(0)
     setBotKills(0)
+    setPlayerCorrectAnswers(0)
+    setPlayerAnsweredCount(0)
     botControllerRef.current.reset()
   }, [reset])
 
@@ -298,12 +442,21 @@ export function useBotGame() {
     // Combat
     botPosition, botHealth, playerHealth,
     playerKills, botKills,
+    // Power-ups
+    powerUps, handlePowerUpCollect,
     // Handlers
     startGame, handleAnswer, handlePositionUpdate, handleCombatHit,
     handleLeave, handlePlayAgain,
+    setServerProjectilesCallback,
     setServerHealthCallback,
+    // Local hazard/trap damage handlers for offline mode
+    handleLocalHazardDamage,
+    handleLocalTrapTriggered,
     // For health display
     localHealth: { playerId: userId, health: playerHealth, maxHealth: 100 },
     opponentHealth: { playerId: 'bot', health: botHealth, maxHealth: 100 },
+    // Emotes
+    inventoryEmotes,
+    equippedEmoteId,
   }
 }

@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuthStore } from '@/stores/authStore'
 import { trackMobileCtaShown, trackMobileCtaClick } from '@/services/analytics'
+import { BREAKPOINTS } from '@/utils/breakpoints'
 
 export interface StickyMobileCTAProps {
   /** Scroll threshold to show the CTA (in pixels) */
@@ -25,10 +26,10 @@ export function StickyMobileCTA({ showAfterScroll = 600 }: StickyMobileCTAProps)
   const [isMobile, setIsMobile] = useState(false)
   const [hasTrackedShow, setHasTrackedShow] = useState(false)
 
-  // Check if mobile
+  // Check if mobile - use centralized tablet breakpoint
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+      setIsMobile(window.innerWidth < BREAKPOINTS.tablet)
     }
     checkMobile()
     window.addEventListener('resize', checkMobile)

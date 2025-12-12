@@ -35,9 +35,6 @@ import type { GameEngineCallbacks, PlayerState, PowerUpState, Vector2, Projectil
 // AAA Visual System
 import { VisualSystemCoordinator } from '../visual'
 
-// Tileset system
-import { tilesetLoader } from '../terrain/TilesetLoader'
-
 export class GameEngine {
   private canvas: HTMLCanvasElement
   private scale = 1
@@ -63,7 +60,6 @@ export class GameEngine {
 
   // State
   private assetsLoaded = false
-  private industrialTilesetsReady = false
   private combatEnabled = false
   private mousePosition: Vector2 = { x: 0, y: 0 }
   private localPlayer: PlayerState | null = null
@@ -71,6 +67,7 @@ export class GameEngine {
   private powerUps: PowerUpState[] = []
   private callbacks: GameEngineCallbacks = {}
   private currentMapConfig: MapConfig
+  private isOfflineMode = false
 
   constructor(canvas: HTMLCanvasElement, mapConfig?: MapConfig) {
     this.canvas = canvas
@@ -88,12 +85,12 @@ export class GameEngine {
     this.emoteManager = new EmoteManager()
     this.emoteRenderer = new EmoteRenderer()
 
-    // Initialize AAA Visual System Coordinator
+    // Initialize AAA Visual System Coordinator (disabled for simple theme - uses its own renderer)
     this.visualCoordinator = new VisualSystemCoordinator({
       width: ARENA_SIZE.width,
       height: ARENA_SIZE.height,
       themeId: theme === 'volcanic' ? 'volcanic' : 'space',
-      enableAAA: theme === 'volcanic', // Enable AAA visuals for volcanic theme
+      enableAAA: theme === 'volcanic', // Only enable AAA visuals for volcanic theme
     })
 
     // Initialize modules
@@ -137,9 +134,10 @@ export class GameEngine {
   }
 
   private loadMap(): void {
-    // Disable client-side dynamic spawning - server controls hazard/trap spawns
-    // Client only renders what server tells it to via WebSocket events
-    this.arenaManager.loadMap(this.currentMapConfig, false)
+    // Enable dynamic spawning for offline/bot modes, disable for online (server controls)
+    // In offline mode, hazards/traps spawn randomly on timers
+    // In online mode, server controls spawns via WebSocket events
+    this.arenaManager.loadMap(this.currentMapConfig, this.isOfflineMode)
     this.arenaManager.setCallbacks({
       onBarrierDestroyed: (_id, pos) => this.renderPipeline.getCombatEffectsRenderer().addDeathEffect(pos),
       onTrapTriggered: () => this.handleTrapEffects(),
@@ -149,23 +147,35 @@ export class GameEngine {
           this.playerController.setLaunch(velocity)
         }
       },
-      // NOTE: Local hazard damage is disabled - all damage comes from server via handleServerHazardDamage()
-      // This prevents double damage and ensures client/server health sync
-      onHazardDamage: () => {
-        // No-op: Server handles all hazard damage via arena_hazard_damage WebSocket events
+      // Local hazard damage - enabled for offline/bot modes via callback
+      // If onLocalHazardDamage callback is set, apply damage locally
+      // Otherwise, server handles via arena_hazard_damage WebSocket events
+      onHazardDamage: (playerId, damage, _sourceId) => {
+        if (this.callbacks.onLocalHazardDamage) {
+          this.callbacks.onLocalHazardDamage(playerId, damage)
+          // Visual feedback
+          if (this.localPlayer && playerId === this.localPlayer.id) {
+            this.renderPipeline.getCombatEffectsRenderer().addDamageNumber(
+              { x: this.localPlayer.position.x, y: this.localPlayer.position.y - 20 },
+              damage
+            )
+          }
+        }
       },
     })
   }
 
   private handleTrapEffects(): void {
-    // NOTE: Local trap damage is disabled - all damage comes from server via handleServerTrapTriggered()
-    // This only handles visual effects for locally-detected trap triggers
+    // Local trap damage - enabled for offline/bot modes via callback
+    // If onLocalTrapTriggered callback is set, apply damage locally
+    // Otherwise, server handles via arena_trap_triggered WebSocket events
     const results = this.arenaManager.getTrapEffectResults()
     for (const result of results) {
-      // Don't apply damage locally - server handles this via arena_trap_triggered
-      // if (result.type === 'damage_burst') {
-      //   this.combatSystem.applyDamage(result.playerId, result.value, 'trap')
-      // }
+      // Apply damage locally if callback is set (offline/bot mode)
+      if (this.callbacks.onLocalTrapTriggered && result.type === 'damage_burst') {
+        this.callbacks.onLocalTrapTriggered(result.playerId, result.value)
+      }
+      // Visual feedback always
       this.renderPipeline.getCombatEffectsRenderer().addHitMarker(result.position)
       this.renderPipeline.getCombatEffectsRenderer().addDamageNumber(result.position, result.value)
     }
@@ -175,22 +185,28 @@ export class GameEngine {
     try {
       const theme = this.currentMapConfig?.metadata?.theme ?? 'space'
       
-      // Load core assets
+      // Load core assets (always needed)
       const coreLoads: Promise<unknown>[] = [
         loadGameAssets(),
-        arenaAssets.load(),
-        this.visualCoordinator.initialize(),
       ]
       
-      // Load industrial tilesets if theme requires them
-      if (theme === 'industrial') {
-        coreLoads.push(this.loadIndustrialTilesets())
+      // Theme-specific asset loading
+      if (theme === 'simple') {
+        // Simple theme: load simple arena tiles + arena assets for hazard icons
+        coreLoads.push(this.loadSimpleArenaTile())
+        coreLoads.push(arenaAssets.load()) // Needed for hazard zone icons
+      } else {
+        // Other themes: load arena assets and AAA visual system
+        coreLoads.push(arenaAssets.load())
+        coreLoads.push(this.visualCoordinator.initialize())
       }
       
       await Promise.all(coreLoads)
       
-      // Register hazards with visual system after map is loaded
-      this.registerVisualsFromMap()
+      // Register hazards with visual system after map is loaded (non-simple themes only)
+      if (theme !== 'simple') {
+        this.registerVisualsFromMap()
+      }
       
       this.assetsLoaded = true
       this.callbacks.onAssetsLoaded?.()
@@ -201,33 +217,20 @@ export class GameEngine {
   }
 
   /**
-   * Load industrial tilesets for industrial theme maps
-   * Requirements: 1.1, 1.2
+   * Load simple arena floor tile
    */
-  private async loadIndustrialTilesets(): Promise<void> {
-    // Core tilesets required for industrial map rendering
-    // Note: wall-tiles and arena-border are optional (used for border rendering)
-    const requiredTilesets = [
-      'floor-tiles',
-      'cover-tiles',
-      'hazard-tiles',
-      'prop-tiles',
-    ]
-    
+  private async loadSimpleArenaTile(): Promise<void> {
     try {
-      console.log('[GameEngine] Loading industrial tilesets...')
-      await tilesetLoader.preloadAll(requiredTilesets)
-      
+      console.log('[GameEngine] Loading simple arena tile...')
+
       const ctx = this.canvas.getContext('2d')
       if (ctx) {
-        await this.renderPipeline.initializeIndustrialRenderer(ctx)
+        await this.renderPipeline.initializeSimpleRenderer(ctx)
       }
-      
-      this.industrialTilesetsReady = true
-      console.log('[GameEngine] Industrial tilesets loaded successfully')
+
+      console.log('[GameEngine] Simple arena tile loaded successfully')
     } catch (err) {
-      console.error('[GameEngine] Industrial tileset loading failed:', err)
-      this.industrialTilesetsReady = false
+      console.error('[GameEngine] Simple arena tile loading failed:', err)
       // Fall back to procedural rendering - don't throw, just log
     }
   }
@@ -267,10 +270,10 @@ export class GameEngine {
 
   // Public API
   areAssetsLoaded(): boolean { return this.assetsLoaded }
-  areIndustrialTilesetsReady(): boolean { return this.industrialTilesetsReady }
 
   setCallbacks(callbacks: GameEngineCallbacks): void {
     this.callbacks = callbacks
+    
     wireCombatCallbacks(
       {
         combatSystem: this.combatSystem,
@@ -299,6 +302,15 @@ export class GameEngine {
   }
 
   setCombatEnabled(enabled: boolean): void { this.combatEnabled = enabled }
+
+  /** Enable offline mode with dynamic hazard/trap spawning */
+  setOfflineMode(enabled: boolean): void {
+    if (enabled !== this.isOfflineMode) {
+      this.isOfflineMode = enabled
+      // Reload map with dynamic spawning enabled/disabled
+      this.loadMap()
+    }
+  }
 
   /** Enable mobile mode with boosted aim assist */
   setMobileMode(isMobile: boolean): void { this.combatSystem.setMobileMode(isMobile) }
@@ -341,6 +353,9 @@ export class GameEngine {
 
   // Server-authoritative methods (delegate to ServerSync)
   setServerProjectiles(projectiles: Projectile[]): void { this.serverSync.setServerProjectiles(projectiles) }
+  
+  /** Merge external projectiles (e.g., bot projectiles) with local ones - used in bot mode */
+  mergeExternalProjectiles(projectiles: Projectile[]): void { this.combatSystem.mergeExternalProjectiles(projectiles) }
   setServerHealth(playerId: string, health: number, maxHealth: number): void { this.serverSync.setServerHealth(playerId, health, maxHealth) }
   handleServerDeath(playerId: string, killerId: string): void { this.serverSync.handleServerDeath(playerId, killerId) }
   handleServerRespawn(playerId: string, x: number, y: number): void { this.serverSync.handleServerRespawn(playerId, x, y) }
@@ -377,9 +392,6 @@ export class GameEngine {
 
   // Lifecycle
   resize(): void {
-    const container = this.canvas.parentElement
-    if (!container) return
-    
     // Detect mobile/touch device
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0
     const isLandscape = window.innerWidth > window.innerHeight
@@ -401,9 +413,32 @@ export class GameEngine {
         clientHeight = clientHeight - quizPanelHeight
       }
     } else {
-      // Fallback to container dimensions
-      clientWidth = container.clientWidth
-      clientHeight = container.clientHeight
+      // Desktop: Find a container with MEANINGFUL dimensions (larger than default canvas 300x150)
+      // The shadow wrapper div inherits canvas default size, so we need to traverse up
+      // to find the actual game container with full dimensions
+      const MIN_VALID_WIDTH = 400 // Must be larger than default canvas width (300)
+      const MIN_VALID_HEIGHT = 200 // Must be larger than default canvas height (150)
+      
+      let container = this.canvas.parentElement
+      let depth = 0
+      
+      // Traverse up until we find a container with meaningful dimensions
+      while (container && depth < 10) {
+        if (container.clientWidth >= MIN_VALID_WIDTH && container.clientHeight >= MIN_VALID_HEIGHT) {
+          break
+        }
+        container = container.parentElement
+        depth++
+      }
+      
+      if (container && container.clientWidth >= MIN_VALID_WIDTH && container.clientHeight >= MIN_VALID_HEIGHT) {
+        clientWidth = container.clientWidth
+        clientHeight = container.clientHeight
+      } else {
+        // Fallback to window dimensions minus some padding for UI elements
+        clientWidth = window.innerWidth
+        clientHeight = window.innerHeight - 120 // Account for scoreboard and quiz panel
+      }
     }
     
     if (isMobile) {
@@ -441,8 +476,14 @@ export class GameEngine {
 
   // Update and render
   private update(deltaTime: number): void {
-    this.backdropSystem.update(deltaTime)
-    animatedTileRenderer.update(deltaTime)
+    const isSimpleTheme = this.currentMapConfig?.metadata?.theme === 'simple'
+    
+    // Skip backdrop update for simple theme (grass tiles cover everything)
+    if (!isSimpleTheme) {
+      this.backdropSystem.update(deltaTime)
+      animatedTileRenderer.update(deltaTime)
+    }
+    
     this.arenaManager.update(deltaTime, this.getPlayerPositions())
     this.playerController.update(deltaTime, this.localPlayer, this.opponent)
     this.updateTrails()
@@ -452,8 +493,10 @@ export class GameEngine {
     this.renderPipeline.setPlayers(this.localPlayer, this.opponent)
     this.renderPipeline.updateAnimations(deltaTime)
     
-    // Update AAA visual systems
-    this.visualCoordinator.update(deltaTime)
+    // Update AAA visual systems (skip for simple theme)
+    if (!isSimpleTheme) {
+      this.visualCoordinator.update(deltaTime)
+    }
   }
 
   private render(): void {

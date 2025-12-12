@@ -291,3 +291,7 @@ export const trackSignupFormError = (error: string) => analytics.trackEvent('sig
 // Mobile CTA events
 export const trackMobileCtaShown = () => analytics.trackEvent('mobile_cta_shown')
 export const trackMobileCtaClick = () => analytics.trackEvent('mobile_cta_click')
+
+// Generic event tracking (for arcade landing and other custom events)
+export const trackEvent = (eventName: string, metadata?: Record<string, unknown>) => 
+  analytics.trackEvent(eventName, metadata)

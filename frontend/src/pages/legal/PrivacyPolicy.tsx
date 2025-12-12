@@ -165,7 +165,7 @@ export function PrivacyPolicy() {
             <h2 className="text-[20px] font-bold text-white mb-4">11. Contact Us</h2>
             <p className="text-[#B4B4B4] leading-[1.7]">
               If you have questions about this Privacy Policy, please contact us at:<br />
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-purple-400 hover:text-purple-300">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-500 hover:text-blue-400">
                 {CONTACT_EMAIL}
               </a>
             </p>

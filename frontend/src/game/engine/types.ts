@@ -25,6 +25,8 @@ export interface GameEngineCallbacks {
   onCombatDeath?: (event: DeathEvent) => void
   onCombatRespawn?: (event: RespawnEvent) => void
   onDeathReplayReady?: (replay: DeathReplay) => void
+  onLocalHazardDamage?: (playerId: string, damage: number) => void
+  onLocalTrapTriggered?: (playerId: string, damage: number) => void
 }
 
 export interface GameState {

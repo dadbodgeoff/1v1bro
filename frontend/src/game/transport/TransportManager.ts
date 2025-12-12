@@ -59,7 +59,8 @@ export class TransportManager {
         position: { ...config.position },
         radius: config.radius,
         linkedTeleporterId: null,
-        playerCooldowns: new Map()
+        playerCooldowns: new Map(),
+        randomExits: config.randomExits,
       }
       this.teleporters.set(config.id, new Teleporter(state))
     }
@@ -148,15 +149,28 @@ export class TransportManager {
       if (!teleporter.isInRange(position)) continue
       if (!teleporter.canTeleport(playerId, currentTime)) continue
 
+      const from = teleporter.getPosition()
+      let to: Vector2
+
+      // Check for random exits first (chaos teleporters)
+      if (teleporter.hasRandomExits()) {
+        const randomExit = teleporter.getRandomExit()
+        if (randomExit) {
+          teleporter.applyCooldown(playerId, currentTime)
+          to = randomExit
+          this.callbacks.onTeleport?.(playerId, from, to)
+          return to
+        }
+      }
+
+      // Fall back to linked teleporter pair
       const linkedId = teleporter.getLinkedTeleporterId()
       if (!linkedId) continue
 
       const destination = this.teleporters.get(linkedId)
       if (!destination) continue
 
-      const from = teleporter.getPosition()
-      const to = teleporter.teleport(playerId, destination, currentTime)
-
+      to = teleporter.teleport(playerId, destination, currentTime)
       this.callbacks.onTeleport?.(playerId, from, to)
       return to
     }
@@ -244,6 +258,11 @@ export class TransportManager {
   private renderTeleporter(ctx: CanvasRenderingContext2D, teleporter: Teleporter): void {
     if (this.theme === 'volcanic') {
       this.renderVolcanicTeleporter(ctx, teleporter)
+      return
+    }
+    
+    // Simple theme uses prop-based rendering, skip engine rendering
+    if (this.theme === 'simple') {
       return
     }
 
@@ -343,6 +362,11 @@ export class TransportManager {
   private renderJumpPad(ctx: CanvasRenderingContext2D, jumpPad: JumpPad): void {
     if (this.theme === 'volcanic') {
       this.renderVolcanicJumpPad(ctx, jumpPad)
+      return
+    }
+    
+    // Simple theme uses prop-based rendering, skip engine rendering
+    if (this.theme === 'simple') {
       return
     }
 

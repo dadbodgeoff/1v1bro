@@ -162,7 +162,7 @@ export function renderOneWayIndicator(
   const centerY = position.y + size.y / 2
   const dir = oneWay.getPhaseDirection()
 
-  ctx.fillStyle = '#00ffff88'
+  ctx.fillStyle = '#3b82f688'
   ctx.beginPath()
   ctx.moveTo(centerX, centerY)
   ctx.lineTo(centerX + dir.x * 20 - dir.y * 10, centerY + dir.y * 20 + dir.x * 10)

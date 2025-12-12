@@ -178,7 +178,7 @@ function PhaseIndicator({ phase, matchTime, loopDuration }: {
         phase === 'intro' && 'bg-[#F97316] text-white',
         phase === 'question' && 'bg-blue-500 text-white',
         phase === 'combat' && 'bg-red-500 text-white',
-        phase === 'finale' && 'bg-purple-500 text-white animate-pulse',
+        phase === 'finale' && 'bg-indigo-500 text-white animate-pulse',
         phase === 'reset' && 'bg-white/20 text-white/60',
       )}>
         {phaseLabels[phase]}

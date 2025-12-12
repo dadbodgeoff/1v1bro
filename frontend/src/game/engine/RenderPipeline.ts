@@ -12,6 +12,7 @@ import {
   CombatEffectsRenderer,
   QuestionBroadcastRenderer,
   BuffRenderer,
+  RespawnOverlayRenderer,
 } from '../renderers'
 import type { BroadcastState } from '../renderers'
 import { BackdropSystem } from '../backdrop'
@@ -19,8 +20,7 @@ import { ArenaManager } from '../arena'
 import { CombatSystem, BuffManager } from '../combat'
 import type { RenderContext, PlayerState, PowerUpState, Vector2, HealthState } from './types'
 import type { VisualSystemCoordinator } from '../visual'
-import { IndustrialArenaRenderer } from '../terrain/TileRenderer'
-import { INDUSTRIAL_ARENA } from '../terrain/IndustrialArenaMap'
+import { SimpleArenaRenderer } from '../terrain/SimpleArenaRenderer'
 
 export class RenderPipeline {
   private ctx: CanvasRenderingContext2D
@@ -40,6 +40,7 @@ export class RenderPipeline {
   private healthBarRenderer: HealthBarRenderer
   private combatEffectsRenderer: CombatEffectsRenderer
   private buffRenderer: BuffRenderer
+  private respawnOverlayRenderer: RespawnOverlayRenderer
 
   // Buff manager reference
   private buffManager: BuffManager | null = null
@@ -47,9 +48,11 @@ export class RenderPipeline {
   // AAA Visual System Coordinator
   private visualCoordinator: VisualSystemCoordinator | null = null
 
-  // Industrial tileset renderer
-  private industrialRenderer: IndustrialArenaRenderer | null = null
-  private industrialRendererReady = false
+  private currentTheme: import('../config/maps/map-schema').MapTheme = 'simple'
+
+  // Simple arena renderer
+  private simpleRenderer: SimpleArenaRenderer | null = null
+  private simpleRendererReady = false
 
   constructor(
     ctx: CanvasRenderingContext2D,
@@ -71,6 +74,7 @@ export class RenderPipeline {
     this.healthBarRenderer = new HealthBarRenderer()
     this.combatEffectsRenderer = new CombatEffectsRenderer()
     this.buffRenderer = new BuffRenderer()
+    this.respawnOverlayRenderer = new RespawnOverlayRenderer()
   }
 
   setBuffManager(buffManager: BuffManager): void {
@@ -85,32 +89,43 @@ export class RenderPipeline {
    * Set the map theme for theme-aware renderers
    */
   setTheme(theme: import('../config/maps/map-schema').MapTheme): void {
+    this.currentTheme = theme
     this.hubRenderer.setTheme(theme)
   }
 
   /**
-   * Initialize industrial tileset renderer for industrial theme maps
+   * Check if simple renderer should be used
    */
-  async initializeIndustrialRenderer(ctx: CanvasRenderingContext2D): Promise<void> {
-    if (this.industrialRenderer) return
-    
-    this.industrialRenderer = new IndustrialArenaRenderer(ctx, 80)
-    
+  isSimpleTheme(): boolean {
+    return this.currentTheme === 'simple'
+  }
+
+  /**
+   * Initialize simple arena renderer for simple theme maps
+   */
+  async initializeSimpleRenderer(ctx: CanvasRenderingContext2D): Promise<void> {
+    if (this.simpleRenderer) return
+
+    this.simpleRenderer = new SimpleArenaRenderer()
+    this.simpleRenderer.setContext({ ctx, animationTime: 0, scale: this.scale })
+
     try {
-      await this.industrialRenderer.loadMap(INDUSTRIAL_ARENA)
-      this.industrialRendererReady = true
-      console.log('[RenderPipeline] Industrial tilesets loaded successfully')
+      await this.simpleRenderer.loadTile()
+      this.simpleRendererReady = true
+      console.log('[RenderPipeline] Simple arena tile loaded successfully')
     } catch (err) {
-      console.error('[RenderPipeline] Failed to load industrial tilesets:', err)
-      this.industrialRendererReady = false
+      console.error('[RenderPipeline] Failed to load simple arena tile:', err)
+      this.simpleRendererReady = false
     }
   }
 
   /**
-   * Check if industrial renderer should be used
+   * Update simple renderer animation time
    */
-  isIndustrialTheme(): boolean {
-    return this.backdropSystem.getTheme() === 'industrial'
+  updateSimpleRenderer(deltaTime: number): void {
+    if (this.simpleRenderer) {
+      this.simpleRenderer.update(deltaTime)
+    }
   }
 
   setScale(scale: number): void {
@@ -140,6 +155,7 @@ export class RenderPipeline {
     this.combatEffectsRenderer.update(deltaTime)
     this.questionBroadcastRenderer.update(deltaTime)
     this.buffRenderer.update(deltaTime)
+    this.respawnOverlayRenderer.update(deltaTime)
   }
 
   render(
@@ -160,24 +176,32 @@ export class RenderPipeline {
     this.ctx.imageSmoothingQuality = 'high'
     this.ctx.scale(this.scale, this.scale)
 
-    // Layer 0: Background (AAA parallax if enabled, otherwise standard backdrop)
-    if (this.visualCoordinator?.isEnabled()) {
-      this.visualCoordinator.renderBackground(this.ctx)
+    // Layer 0: Background (skip for simple theme - grass tiles cover everything)
+    if (!this.isSimpleTheme()) {
+      if (this.visualCoordinator?.isEnabled()) {
+        this.visualCoordinator.renderBackground(this.ctx)
+      } else {
+        this.backdropSystem.render(this.ctx)
+      }
+
+      // Layer 0.5: Background props (AAA visual system)
+      this.visualCoordinator?.renderBackgroundProps(this.ctx)
+    }
+
+    // Layer 1: Simple arena floor tiles (if simple theme)
+    if (this.isSimpleTheme() && this.simpleRendererReady && this.simpleRenderer) {
+      this.simpleRenderer.setContext(context)
+      this.simpleRenderer.render()
+    }
+
+    // Layer 1-3: Arena (hazards, barriers, etc.)
+    // For simple theme: clean floor only, skip ArenaManager rendering entirely
+    // For other themes: use ArenaManager for everything
+    if (this.isSimpleTheme()) {
+      // Simple theme: clean floor only, no arena elements rendered
+      // Props are rendered by SimpleArenaRenderer, not ArenaManager
     } else {
-      this.backdropSystem.render(this.ctx)
-    }
-
-    // Layer 0.5: Background props (AAA visual system)
-    this.visualCoordinator?.renderBackgroundProps(this.ctx)
-
-    // Layer 1: Industrial tileset floor/obstacles (if industrial theme)
-    if (this.isIndustrialTheme() && this.industrialRendererReady && this.industrialRenderer) {
-      this.industrialRenderer.render()
-      this.industrialRenderer.renderBorder()
-    }
-
-    // Layer 1-3: Arena (hazards, barriers, etc.) - skip for industrial as tilesets handle it
-    if (!this.isIndustrialTheme() || !this.industrialRendererReady) {
+      // Default: render everything through ArenaManager
       this.arenaManager.render(this.ctx)
     }
 
@@ -228,6 +252,11 @@ export class RenderPipeline {
     this.playerRenderer.setContext(context)
     this.playerRenderer.render()
 
+    // Layer 5.3: Foreground props (grass) - renders ABOVE players for stealth effect
+    if (this.isSimpleTheme() && this.simpleRendererReady && this.simpleRenderer) {
+      this.simpleRenderer.renderForeground()
+    }
+
     // Layer 5.5: Buff effects (rendered around players)
     if (combatEnabled && this.buffManager) {
       this.renderBuffEffects(context, localPlayer, opponent)
@@ -249,7 +278,41 @@ export class RenderPipeline {
     // Layer 8: Post-processing - Vignette (final pass)
     this.visualCoordinator?.applyVignette(this.ctx)
 
+    // Layer 9: Respawn/Death overlay (UI layer - always on top)
+    if (combatEnabled && localPlayer) {
+      this.renderRespawnOverlay(context, localPlayer)
+    }
+
     this.ctx.restore()
+  }
+
+  /**
+   * Render respawn/death overlay for local player
+   */
+  private renderRespawnOverlay(context: RenderContext, localPlayer: PlayerState): void {
+    const isRespawning = this.combatSystem.isPlayerRespawning(localPlayer.id)
+    const isAlive = this.combatSystem.isPlayerAlive(localPlayer.id)
+    const healthState = this.combatSystem.getHealthState(localPlayer.id)
+    
+    const isInvulnerable = healthState?.isInvulnerable ?? false
+    const invulnerabilityEnd = healthState?.invulnerabilityEnd ?? 0
+    const invulnerabilityRemaining = Math.max(0, invulnerabilityEnd - Date.now())
+    
+    const respawnTimeRemaining = this.combatSystem.getRespawnTimeRemaining(localPlayer.id)
+    
+    // Can't shoot if dead, respawning, or invulnerable
+    const canShoot = isAlive && !isRespawning
+
+    this.respawnOverlayRenderer.setContext(context)
+    this.respawnOverlayRenderer.setState({
+      isDead: !isAlive,
+      isRespawning,
+      isInvulnerable,
+      respawnTimeRemaining,
+      invulnerabilityRemaining,
+      canShoot,
+    })
+    this.respawnOverlayRenderer.render()
   }
 
   private renderBuffEffects(

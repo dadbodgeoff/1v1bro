@@ -117,7 +117,7 @@ export function LogoReveal({ duration = 1500, reducedMotion }: LogoRevealProps) 
         animate={{ opacity: isRevealed ? 0.3 : 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="w-full h-full bg-gradient-to-r from-white via-indigo-500 to-purple-500" />
+        <div className="w-full h-full bg-gradient-to-r from-white via-indigo-500 to-indigo-400" />
       </motion.div>
     </div>
   )

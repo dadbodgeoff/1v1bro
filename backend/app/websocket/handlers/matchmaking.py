@@ -28,7 +28,7 @@ class MatchmakingHandler(BaseHandler):
 
             # Extract category and map from payload
             category = payload.get("category", "fortnite")
-            map_slug = payload.get("map_slug", "nexus-arena")
+            map_slug = payload.get("map_slug", "simple-arena")
 
             await service.join_queue(user_id, player_name, category=category, map_slug=map_slug)
 

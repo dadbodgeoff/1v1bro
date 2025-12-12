@@ -72,9 +72,13 @@ export function UrgencyCTA({
     <button
       onClick={onClick}
       disabled={disabled || loading || isOwned}
+      aria-label={label || styles.label}
+      aria-busy={loading}
       className={cn(
         'relative font-semibold rounded-lg transition-all duration-200',
         'flex items-center justify-center gap-2',
+        // Accessibility utilities
+        'focus-ring press-feedback touch-target',
         sizeStyles[size],
         styles.base,
         styles.glow,

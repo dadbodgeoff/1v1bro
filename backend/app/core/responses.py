@@ -78,3 +78,25 @@ class PaginatedResponse(BaseModel, Generic[T]):
     page: int = Field(..., description="Current page number")
     page_size: int = Field(..., description="Items per page")
     has_more: bool = Field(..., description="Whether more pages exist")
+
+
+def success_response(
+    data: Any = None,
+    message: Optional[str] = None,
+) -> dict:
+    """
+    Create a simple success response dict.
+    
+    Args:
+        data: Optional data payload
+        message: Optional success message
+        
+    Returns:
+        Dict with success=True and optional data/message
+    """
+    response = {"success": True}
+    if data is not None:
+        response["data"] = data
+    if message is not None:
+        response["message"] = message
+    return response

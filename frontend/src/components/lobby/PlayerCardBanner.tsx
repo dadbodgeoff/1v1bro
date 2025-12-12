@@ -33,13 +33,34 @@ interface PlayerCardBannerProps {
     isHost?: boolean
     isReady?: boolean
   }
+  /** Custom size config override */
+  sizeConfig?: Partial<Record<PlayerCardSize, PlayerCardSizeConfig>>
 }
 
-/** Size dimensions for each variant */
-const SIZE_CONFIG: Record<PlayerCardSize, { width: number; height: number; nameSize: string }> = {
+/** 
+ * Size dimensions for each variant
+ * Configurable for enterprise customization
+ */
+export interface PlayerCardSizeConfig {
+  width: number
+  height: number
+  nameSize: string
+}
+
+const SIZE_CONFIG: Record<PlayerCardSize, PlayerCardSizeConfig> = {
   small: { width: 120, height: 180, nameSize: 'text-xs' },
   medium: { width: 180, height: 270, nameSize: 'text-sm' },
   large: { width: 240, height: 360, nameSize: 'text-base' },
+}
+
+/**
+ * Get size config - allows override via props
+ */
+export function getPlayerCardSizeConfig(
+  size: PlayerCardSize, 
+  customConfig?: Partial<Record<PlayerCardSize, PlayerCardSizeConfig>>
+): PlayerCardSizeConfig {
+  return customConfig?.[size] || SIZE_CONFIG[size]
 }
 
 /**
@@ -93,8 +114,9 @@ export function PlayerCardBanner({
   isCurrentUser = false,
   size = 'medium',
   showStatus,
+  sizeConfig,
 }: PlayerCardBannerProps) {
-  const { width, height, nameSize } = SIZE_CONFIG[size]
+  const { width, height, nameSize } = getPlayerCardSizeConfig(size, sizeConfig)
   const rarityColor = playercard ? RARITY_COLORS[playercard.rarity] : '#4b5563'
 
   return (

@@ -115,7 +115,7 @@ export const SettingsSelect: React.FC<SettingsSelectProps> = ({
             disabled={disabled || loading}
             aria-haspopup="listbox"
             aria-expanded={isOpen}
-            className={`flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] rounded-lg text-sm font-medium transition-colors min-w-[140px] justify-between ${
+            className={`flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-elevated)] border border-[var(--color-border-subtle)] rounded-lg text-sm font-medium transition-colors min-w-[140px] min-h-[44px] justify-between touch-manipulation ${
               disabled || loading
                 ? 'opacity-50 cursor-not-allowed text-[var(--color-text-secondary)]'
                 : 'text-white hover:border-indigo-500/50'
@@ -156,7 +156,7 @@ export const SettingsSelect: React.FC<SettingsSelectProps> = ({
                     setIsOpen(false);
                   }}
                   onMouseEnter={() => setFocusedIndex(index)}
-                  className={`px-4 py-2 cursor-pointer transition-colors ${
+                  className={`px-4 py-3 cursor-pointer transition-colors min-h-[44px] ${
                     option.value === value
                       ? 'bg-indigo-500/20 text-indigo-400'
                       : focusedIndex === index

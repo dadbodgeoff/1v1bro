@@ -22,17 +22,26 @@
  */
 
 import { cn } from '@/utils/helpers'
-import type { InventoryItem, Rarity, CosmeticType } from '@/types/cosmetic'
+import type { InventoryItem, CosmeticType } from '@/types/cosmetic'
 import { getCosmeticTypeName } from '@/types/cosmetic'
 import { SkinPreview, type SkinId } from '@/components/shop/SkinPreview'
 import { DynamicImage } from '@/components/shop/DynamicImage'
 import { Badge } from '@/components/ui/Badge'
 import { EquipCTA } from './EquipCTA'
+import {
+  rarityBorders,
+  rarityGlows,
+  rarityBgGradients,
+  equippedGlow,
+} from '@/styles/rarity'
 
 // Types that are coming soon and not yet implemented
 const COMING_SOON_TYPES: CosmeticType[] = ['nameplate', 'effect', 'trail']
 
 export type DisplaySize = 'xl' | 'lg' | 'md' | 'sm'
+
+// Re-export for backward compatibility
+export { rarityBorders, rarityGlows, rarityBgGradients, equippedGlow }
 
 interface InventoryItemBoxProps {
   item: InventoryItem
@@ -130,31 +139,7 @@ export const sizeConfig = {
   },
 }
 
-export const rarityBorders: Record<Rarity, string> = {
-  common: 'border-[#737373]/40',
-  uncommon: 'border-[#10b981]/40',
-  rare: 'border-[#3b82f6]/40',
-  epic: 'border-[#a855f7]/40',
-  legendary: 'border-[#f59e0b]/50',
-}
 
-export const rarityGlows: Record<Rarity, string> = {
-  common: '',
-  uncommon: 'hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]',
-  rare: 'hover:shadow-[0_0_30px_rgba(59,130,246,0.25)]',
-  epic: 'hover:shadow-[0_0_35px_rgba(168,85,247,0.3)]',
-  legendary: 'hover:shadow-[0_0_40px_rgba(245,158,11,0.35)]',
-}
-
-export const rarityBgGradients: Record<Rarity, string> = {
-  common: 'from-[#737373]/5 to-transparent',
-  uncommon: 'from-[#10b981]/10 to-transparent',
-  rare: 'from-[#3b82f6]/10 to-transparent',
-  epic: 'from-[#a855f7]/10 to-transparent',
-  legendary: 'from-[#f59e0b]/15 to-transparent',
-}
-
-export const equippedGlow = 'shadow-[0_0_20px_rgba(16,185,129,0.3)]'
 
 function formatRelativeDate(dateString: string): string {
   const date = new Date(dateString)
@@ -187,10 +172,21 @@ export function InventoryItemBox({
 
   return (
     <div
+      role={onViewDetails ? 'button' : undefined}
+      tabIndex={onViewDetails ? 0 : undefined}
+      aria-label={`${cosmetic.name}, ${cosmetic.rarity} ${getCosmeticTypeName(cosmetic.type)}${item.is_equipped ? ', equipped' : ''}`}
+      onKeyDown={(e) => {
+        if (onViewDetails && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault()
+          onViewDetails()
+        }
+      }}
       className={cn(
         'group relative bg-[var(--color-bg-card)] rounded-xl border-2 overflow-hidden',
         'transition-all duration-300 ease-out cursor-pointer',
         'hover:scale-[1.02] hover:-translate-y-0.5',
+        // Accessibility utilities
+        'focus-ring press-feedback touch-target',
         rarityBorders[cosmetic.rarity],
         rarityGlows[cosmetic.rarity],
         item.is_equipped && equippedGlow,

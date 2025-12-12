@@ -19,9 +19,8 @@ import { QuickCategoryPicker } from '@/components/game/QuickCategoryPicker'
 import { InstantPlayTutorial } from '@/components/game/InstantPlayTutorial'
 import { GuestMatchSummary } from '@/components/game/GuestMatchSummary'
 import { ConversionPromptModal } from '@/components/game/ConversionPromptModal'
-import { VORTEX_ARENA } from '@/game/config/maps'
+import { SIMPLE_ARENA } from '@/game/config/maps'
 import { useInstantPlay } from '@/hooks/useInstantPlay'
-import type { PowerUpState } from '@/game'
 
 export function InstantPlay() {
   const {
@@ -41,6 +40,7 @@ export function InstantPlay() {
     showConversionPrompt,
     currentPrompt,
     isMobileLandscape,
+    powerUps,
     handleCategorySelect,
     handleTutorialDismiss,
     handleAnswer,
@@ -48,15 +48,16 @@ export function InstantPlay() {
     handleCombatFire,
     handleCombatHit,
     handleCombatDeath,
+    handlePowerUpCollect,
     setServerProjectilesCallback,
     setServerHealthCallback,
+    handleLocalHazardDamage,
+    handleLocalTrapTriggered,
     handlePlayAgain,
     handleLeave,
     handlePromptDismiss,
     handlePromptCta,
   } = useInstantPlay()
-
-  const powerUps: PowerUpState[] = []
 
 
   // Category picker phase
@@ -136,14 +137,16 @@ export function InstantPlay() {
             opponentPosition={botPosition}
             powerUps={powerUps}
             onPositionUpdate={handlePositionUpdate}
-            onPowerUpCollect={() => {}}
-            mapConfig={VORTEX_ARENA}
+            onPowerUpCollect={handlePowerUpCollect}
+            mapConfig={SIMPLE_ARENA}
             combatEnabled={true}
             onCombatFire={handleCombatFire}
             onCombatHit={handleCombatHit}
             onCombatDeath={handleCombatDeath}
             setServerProjectilesCallback={setServerProjectilesCallback}
             setServerHealthCallback={setServerHealthCallback}
+            onLocalHazardDamage={handleLocalHazardDamage}
+            onLocalTrapTriggered={handleLocalTrapTriggered}
             equippedSkin={equippedSkin}
             opponentSkin={opponentSkin}
           />
@@ -171,10 +174,22 @@ export function InstantPlay() {
             </div>
           </div>
 
-          <div className="absolute bottom-3 right-3 z-10" style={{ bottom: isMobileLandscape ? '140px' : '12px' }}>
+          {/* Leave button - top-right in landscape to avoid Fire button overlap */}
+          <div
+            className={`absolute z-10 ${isMobileLandscape ? '' : 'safe-area-bottom'}`}
+            style={
+              isMobileLandscape
+                ? {
+                    top: 'max(8px, env(safe-area-inset-top, 8px))',
+                    right: 'max(8px, env(safe-area-inset-right, 8px))',
+                    bottom: 'auto',
+                  }
+                : { bottom: '12px', right: '12px' }
+            }
+          >
             <button
               onClick={handleLeave}
-              className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px]"
+              className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px] touch-manipulation"
             >
               Leave
             </button>

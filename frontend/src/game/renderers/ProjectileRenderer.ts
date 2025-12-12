@@ -1,12 +1,18 @@
 /**
- * Projectile Renderer
- * Renders projectiles with glowing trails
+ * Projectile Renderer - AAA Enterprise Grade
+ * Renders projectiles with glowing trails and interpolation support
+ *
+ * Features:
+ * - Smooth interpolation between physics ticks
+ * - Trail rendering with fade
+ * - Glow effects
  */
 
 import { BaseRenderer } from './BaseRenderer'
 import { PROJECTILE_CONFIG } from '../config'
 import { COLORS } from '../config/colors'
 import type { Projectile } from '../types'
+import type { InterpolatedProjectile } from '../combat'
 
 interface TrailPoint {
   x: number
@@ -17,13 +23,42 @@ interface TrailPoint {
 export class ProjectileRenderer extends BaseRenderer {
   private projectiles: Projectile[] = []
   private trails: Map<string, TrailPoint[]> = new Map()
+  private interpolationAlpha = 1.0 // For smooth rendering between physics ticks
 
   setProjectiles(projectiles: Projectile[]): void {
     this.projectiles = projectiles
   }
 
   /**
+   * Set interpolation alpha for smooth rendering
+   * @param alpha - Value between 0-1, where 1 = current position, 0 = previous position
+   */
+  setInterpolationAlpha(alpha: number): void {
+    this.interpolationAlpha = Math.max(0, Math.min(1, alpha))
+  }
+
+  /**
+   * Get interpolated position for a projectile
+   */
+  private getInterpolatedPosition(projectile: Projectile): { x: number; y: number } {
+    // Check if projectile has interpolation data
+    const interpolated = projectile as InterpolatedProjectile
+    if (interpolated.prevPosition && this.interpolationAlpha < 1) {
+      return {
+        x:
+          interpolated.prevPosition.x +
+          (projectile.position.x - interpolated.prevPosition.x) * this.interpolationAlpha,
+        y:
+          interpolated.prevPosition.y +
+          (projectile.position.y - interpolated.prevPosition.y) * this.interpolationAlpha,
+      }
+    }
+    return { x: projectile.position.x, y: projectile.position.y }
+  }
+
+  /**
    * Update trails - call each frame before render
+   * Uses interpolated positions for smoother trails
    */
   updateTrails(): void {
     // Update existing trails
@@ -34,10 +69,11 @@ export class ProjectileRenderer extends BaseRenderer {
         this.trails.set(projectile.id, trail)
       }
 
-      // Add current position to trail
+      // Add interpolated position to trail for smoother visuals
+      const pos = this.getInterpolatedPosition(projectile)
       trail.unshift({
-        x: projectile.position.x,
-        y: projectile.position.y,
+        x: pos.x,
+        y: pos.y,
         alpha: 1,
       })
 
@@ -97,24 +133,25 @@ export class ProjectileRenderer extends BaseRenderer {
   private renderProjectile(projectile: Projectile): void {
     if (!this.ctx) return
 
-    const { position } = projectile
+    // Use interpolated position for smooth rendering
+    const pos = this.getInterpolatedPosition(projectile)
 
     // Outer glow
-    this.drawCircle(position.x, position.y, PROJECTILE_CONFIG.hitboxRadius + 6, COLORS.projectile, {
+    this.drawCircle(pos.x, pos.y, PROJECTILE_CONFIG.hitboxRadius + 6, COLORS.projectile, {
       alpha: 0.2,
       glowColor: COLORS.projectile,
       glowBlur: 16,
     })
 
     // Inner glow
-    this.drawCircle(position.x, position.y, PROJECTILE_CONFIG.hitboxRadius + 2, COLORS.projectile, {
+    this.drawCircle(pos.x, pos.y, PROJECTILE_CONFIG.hitboxRadius + 2, COLORS.projectile, {
       alpha: 0.5,
       glowColor: COLORS.projectile,
       glowBlur: 8,
     })
 
     // Core (bright white center)
-    this.drawCircle(position.x, position.y, PROJECTILE_CONFIG.hitboxRadius, COLORS.white, {
+    this.drawCircle(pos.x, pos.y, PROJECTILE_CONFIG.hitboxRadius, COLORS.white, {
       glowColor: COLORS.projectile,
       glowBlur: 4,
     })

@@ -46,8 +46,8 @@ function PopupItem({ popup, onComplete }: { popup: XpPopup; onComplete: (id: str
       transition={{ duration: 0.3, ease: 'easeOut' }}
       className={cn(
         'flex items-center gap-2 px-3 py-2 rounded-lg',
-        'bg-gradient-to-r from-purple-500/90 to-orange-500/90',
-        'backdrop-blur-sm shadow-lg shadow-purple-500/20',
+        'bg-gradient-to-r from-indigo-500/90 to-orange-500/90',
+        'backdrop-blur-sm shadow-lg shadow-indigo-500/20',
         'border border-white/20'
       )}
     >

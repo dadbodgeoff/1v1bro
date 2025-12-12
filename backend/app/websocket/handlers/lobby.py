@@ -196,7 +196,7 @@ class LobbyHandler(BaseHandler):
                     player2_id=lobby["opponent_id"],
                     player_skins=player_skins,
                     category=lobby.get("game_mode", "fortnite"),
-                    map_slug=lobby.get("map_slug", "nexus-arena"),
+                    map_slug=lobby.get("map_slug", "simple-arena"),
                 )
             )
 
@@ -265,7 +265,7 @@ class LobbyHandler(BaseHandler):
                     can_start=lobby.get("can_start", False),
                     host_id=lobby["host_id"],
                     category=lobby.get("game_mode", "fortnite"),
-                    map_slug=lobby.get("map_slug", "nexus-arena"),
+                    map_slug=lobby.get("map_slug", "simple-arena"),
                 )
             )
 

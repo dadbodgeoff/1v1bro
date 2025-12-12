@@ -25,15 +25,15 @@ const COLORS = {
   victim: '#ff4444',
   killer: '#44ff44',
   other: '#4488ff',
-  projectile: '#ffaa00',
+  projectile: '#f59e0b',
   trail: '#ffffff',
-  hitbox: 'rgba(255, 255, 0, 0.4)',
-  projectileHitbox: 'rgba(255, 0, 255, 0.4)',
-  velocity: '#00ffff',
-  healthHigh: '#44ff44',
-  healthMed: '#ffff44',
-  healthLow: '#ff4444',
-  shield: '#4488ff',
+  hitbox: 'rgba(245, 158, 11, 0.4)',
+  projectileHitbox: 'rgba(99, 102, 241, 0.4)',
+  velocity: '#3b82f6',
+  healthHigh: '#10b981',
+  healthMed: '#f59e0b',
+  healthLow: '#ef4444',
+  shield: '#3b82f6',
 }
 
 export class ReplayRenderer {

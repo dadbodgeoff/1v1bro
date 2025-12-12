@@ -51,7 +51,7 @@ export function BattlePassWelcomeModal({ onClose }: BattlePassWelcomeModalProps)
         >
           {/* Decorative glow effects */}
           <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#F97316]/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-[#A855F7]/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-[#6366F1]/20 rounded-full blur-3xl pointer-events-none" />
           
           {/* Header with gradient */}
           <div className="relative px-6 py-8 md:px-8 md:py-10 border-b border-white/10">
@@ -143,7 +143,7 @@ export function BattlePassWelcomeModal({ onClose }: BattlePassWelcomeModalProps)
               </div>
 
               {/* Premium Track */}
-              <div className="relative p-5 rounded-xl bg-gradient-to-br from-[#F97316]/10 to-[#A855F7]/10 border border-[#F97316]/30">
+              <div className="relative p-5 rounded-xl bg-gradient-to-br from-[#F97316]/10 to-[#F59E0B]/10 border border-[#F97316]/30">
                 {/* Premium badge */}
                 <div className="absolute -top-2 -right-2">
                   <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-black bg-gradient-to-r from-[#F97316] to-[#FBBF24] rounded-full shadow-lg shadow-[#F97316]/30">
@@ -197,14 +197,14 @@ export function BattlePassWelcomeModal({ onClose }: BattlePassWelcomeModalProps)
               <div className="grid grid-cols-3 gap-4">
                 {[
                   { icon: '🎮', color: 'blue', title: 'Play', desc: 'Earn XP in matches' },
-                  { icon: '📈', color: 'purple', title: 'Level Up', desc: '35 tiers to unlock' },
+                  { icon: '📈', color: 'indigo', title: 'Level Up', desc: '35 tiers to unlock' },
                   { icon: '🎁', color: 'emerald', title: 'Claim', desc: 'Get your rewards' },
                 ].map((step, i) => (
                   <div key={i} className="text-center">
                     <div className={cn(
                       'w-12 h-12 mx-auto mb-2 rounded-xl flex items-center justify-center text-xl',
                       step.color === 'blue' && 'bg-blue-500/20',
-                      step.color === 'purple' && 'bg-purple-500/20',
+                      step.color === 'indigo' && 'bg-indigo-500/20',
                       step.color === 'emerald' && 'bg-emerald-500/20',
                     )}>
                       {step.icon}

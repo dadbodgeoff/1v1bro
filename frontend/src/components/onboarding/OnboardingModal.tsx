@@ -16,96 +16,36 @@
  * - Labels: text-[12px] font-semibold uppercase tracking-[0.02em]
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils/helpers'
+import { 
+  DEFAULT_ONBOARDING_STEPS, 
+  getEnabledOnboardingSteps, 
+  getAccentColor,
+  type OnboardingStep 
+} from '@/config/onboarding'
 
 const STORAGE_KEY = 'onboarding_completed'
 
-interface OnboardingStep {
-  id: string
-  icon: string
-  title: string
-  subtitle: string
-  highlights: Array<{ icon: string; text: string }>
-  accentColor: string
-}
-
-const ONBOARDING_STEPS: OnboardingStep[] = [
-  {
-    id: 'welcome',
-    icon: '🎮',
-    title: 'Welcome to 1v1 Bro',
-    subtitle: "We're in Alpha! Player counts may vary, but the action is real. Here's a quick tour of what you can do.",
-    highlights: [
-      { icon: '⚔️', text: 'Real-time 1v1 arena combat' },
-      { icon: '🧠', text: 'Trivia questions during battle' },
-      { icon: '🏆', text: 'Earn XP, coins, and rewards' },
-    ],
-    accentColor: '#A855F7', // Purple
-  },
-  {
-    id: 'practice',
-    icon: '🤖',
-    title: 'Practice Mode',
-    subtitle: 'Warm up against an AI opponent. Perfect for learning the controls and testing strategies.',
-    highlights: [
-      { icon: '🎯', text: 'Fight a bot that shoots back' },
-      { icon: '📚', text: 'Real trivia questions' },
-      { icon: '🔄', text: 'Play anytime, no waiting' },
-    ],
-    accentColor: '#22C55E', // Green
-  },
-  {
-    id: 'matchmaking',
-    icon: '⚡',
-    title: 'Live Matchmaking',
-    subtitle: 'Queue up for real PvP battles. See how many players are waiting and jump into action.',
-    highlights: [
-      { icon: '👥', text: 'Live player queue count' },
-      { icon: '🌐', text: 'Match with real opponents' },
-      { icon: '📊', text: 'Ranked & casual modes' },
-    ],
-    accentColor: '#3B82F6', // Blue
-  },
-  {
-    id: 'shop',
-    icon: '🛒',
-    title: 'Shop & Battle Pass',
-    subtitle: 'Customize your look with skins, emotes, and more. Progress through the Battle Pass for exclusive rewards.',
-    highlights: [
-      { icon: '🎭', text: 'Unique character skins' },
-      { icon: '⭐', text: '35 tiers of Battle Pass rewards' },
-      { icon: '🪙', text: 'Earn coins by playing' },
-    ],
-    accentColor: '#F97316', // Orange
-  },
-  {
-    id: 'profile',
-    icon: '👤',
-    title: 'Your Profile',
-    subtitle: 'Track your stats, manage your loadout, and customize your settings.',
-    highlights: [
-      { icon: '📦', text: 'Inventory - equip your items' },
-      { icon: '⚙️', text: 'Settings - audio, controls, display' },
-      { icon: '📈', text: 'Profile - stats and match history' },
-    ],
-    accentColor: '#EC4899', // Pink
-  },
-]
-
 interface OnboardingModalProps {
   onClose: () => void
+  /** Custom steps (defaults to DEFAULT_ONBOARDING_STEPS) */
+  steps?: OnboardingStep[]
 }
 
-export function OnboardingModal({ onClose }: OnboardingModalProps) {
+export function OnboardingModal({ onClose, steps }: OnboardingModalProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [dontShowAgain, setDontShowAgain] = useState(true) // Default to true for onboarding
 
-  const step = ONBOARDING_STEPS[currentStep]
+  // Get enabled steps from config
+  const enabledSteps = useMemo(() => getEnabledOnboardingSteps(steps || DEFAULT_ONBOARDING_STEPS), [steps])
+  
+  const step = enabledSteps[currentStep]
+  const accentColor = getAccentColor(step.accentColorVar)
   const isFirstStep = currentStep === 0
-  const isLastStep = currentStep === ONBOARDING_STEPS.length - 1
-  const progress = ((currentStep + 1) / ONBOARDING_STEPS.length) * 100
+  const isLastStep = currentStep === enabledSteps.length - 1
+  const progress = ((currentStep + 1) / enabledSteps.length) * 100
 
   const handleNext = () => {
     if (isLastStep) {
@@ -153,14 +93,14 @@ export function OnboardingModal({ onClose }: OnboardingModalProps) {
           {/* Decorative glow effect */}
           <div
             className="absolute -top-32 -right-32 w-64 h-64 rounded-full blur-3xl pointer-events-none opacity-20"
-            style={{ backgroundColor: step.accentColor }}
+            style={{ backgroundColor: accentColor }}
           />
 
           {/* Progress bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-white/5">
             <motion.div
               className="h-full"
-              style={{ backgroundColor: step.accentColor }}
+              style={{ backgroundColor: accentColor }}
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.3 }}
@@ -179,7 +119,7 @@ export function OnboardingModal({ onClose }: OnboardingModalProps) {
           <div className="relative px-6 py-8 md:px-8 md:py-10 border-b border-white/10">
             {/* Step indicator */}
             <div className="flex items-center justify-center gap-1.5 mb-6">
-              {ONBOARDING_STEPS.map((_, idx) => (
+              {enabledSteps.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentStep(idx)}
@@ -190,7 +130,7 @@ export function OnboardingModal({ onClose }: OnboardingModalProps) {
                       : 'hover:opacity-80'
                   )}
                   style={{
-                    backgroundColor: idx === currentStep ? step.accentColor : 'rgba(255,255,255,0.2)',
+                    backgroundColor: idx === currentStep ? accentColor : 'rgba(255,255,255,0.2)',
                   }}
                 />
               ))}
@@ -202,7 +142,7 @@ export function OnboardingModal({ onClose }: OnboardingModalProps) {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1 }}
               className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center text-3xl"
-              style={{ backgroundColor: `${step.accentColor}20` }}
+              style={{ backgroundColor: `${accentColor}20` }}
             >
               {step.icon}
             </motion.div>
@@ -287,8 +227,8 @@ export function OnboardingModal({ onClose }: OnboardingModalProps) {
                       'group-hover:border-white/40'
                     )}
                     style={{
-                      borderColor: dontShowAgain ? step.accentColor : undefined,
-                      backgroundColor: dontShowAgain ? step.accentColor : undefined,
+                      borderColor: dontShowAgain ? accentColor : undefined,
+                      backgroundColor: dontShowAgain ? accentColor : undefined,
                     }}
                   >
                     {dontShowAgain && (
@@ -334,8 +274,8 @@ export function OnboardingModal({ onClose }: OnboardingModalProps) {
                   isFirstStep && 'flex-none w-full'
                 )}
                 style={{
-                  background: `linear-gradient(135deg, ${step.accentColor}, ${step.accentColor}dd)`,
-                  boxShadow: `0 8px 24px ${step.accentColor}40`,
+                  background: `linear-gradient(135deg, ${accentColor}, ${accentColor}dd)`,
+                  boxShadow: `0 8px 24px ${accentColor}40`,
                 }}
               >
                 {isLastStep ? "Let's Go!" : 'Next'}

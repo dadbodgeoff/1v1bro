@@ -272,9 +272,9 @@ export class PlayerRenderer extends BaseRenderer {
     const { state, color, animator, isFlashing, isRespawning } = data
     const { position } = state
 
-    // Ghost effect for respawning players
-    const ghostAlpha = isRespawning ? 0.4 : 1.0
-    const ghostPulse = isRespawning ? 0.1 * Math.sin(Date.now() / 200) : 0
+    // Ghost effect for respawning players - more dramatic visual
+    const ghostAlpha = isRespawning ? 0.3 : 1.0
+    const ghostPulse = isRespawning ? 0.15 * Math.sin(Date.now() / 150) : 0
 
     // Try to render sprite
     if (animator) {
@@ -290,6 +290,11 @@ export class PlayerRenderer extends BaseRenderer {
         ctx.imageSmoothingEnabled = false
         ctx.globalAlpha = ghostAlpha + ghostPulse
 
+        // Apply grayscale filter for respawning players
+        if (isRespawning) {
+          ctx.filter = 'grayscale(80%) brightness(0.7)'
+        }
+
         // Draw sprite (ghost effect is just transparency via globalAlpha)
         ctx.drawImage(frame, x, y, spriteSize, spriteSize)
 
@@ -301,6 +306,12 @@ export class PlayerRenderer extends BaseRenderer {
         }
 
         ctx.restore()
+
+        // Draw "ghost" indicator for respawning players
+        if (isRespawning) {
+          this.renderRespawningIndicator(position, spriteSize)
+        }
+
         return
       }
     }
@@ -322,6 +333,45 @@ export class PlayerRenderer extends BaseRenderer {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText(state.isLocal ? 'P1' : 'P2', position.x, position.y)
+    ctx.restore()
+
+    // Draw respawning indicator for fallback too
+    if (isRespawning) {
+      this.renderRespawningIndicator(position, PLAYER_CONFIG.radius * 4)
+    }
+  }
+
+  /**
+   * Render visual indicator that player is respawning (ghost state)
+   */
+  private renderRespawningIndicator(position: Vector2, size: number): void {
+    if (!this.ctx) return
+    const ctx = this.ctx
+
+    const pulse = 0.5 + Math.sin(Date.now() / 200) * 0.5
+    const radius = size / 2 + 8
+
+    ctx.save()
+
+    // Pulsing ring around ghost player
+    ctx.strokeStyle = `rgba(100, 200, 255, ${pulse * 0.6})`
+    ctx.lineWidth = 3
+    ctx.setLineDash([8, 4])
+    ctx.lineDashOffset = -Date.now() / 50  // Animated dash
+    ctx.beginPath()
+    ctx.arc(position.x, position.y, radius, 0, Math.PI * 2)
+    ctx.stroke()
+
+    // "RESPAWNING" text above player
+    ctx.setLineDash([])
+    ctx.font = 'bold 10px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillStyle = `rgba(100, 200, 255, ${0.7 + pulse * 0.3})`
+    ctx.shadowColor = '#64c8ff'
+    ctx.shadowBlur = 4
+    ctx.fillText('RESPAWNING', position.x, position.y - radius - 12)
+
     ctx.restore()
   }
 }

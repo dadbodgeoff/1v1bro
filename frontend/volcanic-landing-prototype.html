@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1v1 Bro - Volcanic Landing Prototype</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --color-brand: #F97316;
+      --color-brand-light: #FB923C;
+      --color-brand-dark: #EA580C;
+      --color-bg-base: #09090B;
+      --color-bg-card: #111111;
+      --color-text-primary: #FFFFFF;
+      --color-text-secondary: #B4B4B4;
+      --color-accent-primary: #6366F1;
+      --lava-orange: #FF6B35;
+      --lava-red: #DC2626;
+      --lava-yellow: #FCD34D;
+      --ember-glow: rgba(249, 115, 22, 0.6);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ============================================
+     * BOOT SEQUENCE CONTAINER
+     * ============================================ */
+    .boot-sequence {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .boot-sequence.fade-out {
+      animation: bootFadeOut 1s ease-out forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes bootFadeOut {
+      to {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+
+    /* ============================================
+     * VOLCANIC CRACKS OVERLAY
+     * ============================================ */
+    .cracks-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      opacity: 0;
+      animation: cracksAppear 1s ease-out forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes cracksAppear {
+      to { opacity: 1; }
+    }
+
+    .crack {
+      position: absolute;
+      background: linear-gradient(90deg, transparent, var(--lava-orange), var(--lava-yellow), var(--lava-orange), transparent);
+      filter: blur(2px);
+      box-shadow: 0 0 20px var(--lava-orange), 0 0 40px var(--lava-red);
+      transform-origin: center;
+    }
+
+    .crack-1 {
+      width: 60%;
+      height: 3px;
+      top: 30%;
+      left: 20%;
+      animation: crackGlow 2s ease-in-out infinite alternate;
+    }
+
+    .crack-2 {
+      width: 40%;
+      height: 2px;
+      top: 50%;
+      left: 35%;
+      transform: rotate(-15deg);
+      animation: crackGlow 2.5s ease-in-out infinite alternate;
+      animation-delay: 0.3s;
+    }
+
+    .crack-3 {
+      width: 50%;
+      height: 2px;
+      top: 70%;
+      left: 25%;
+      transform: rotate(10deg);
+      animation: crackGlow 1.8s ease-in-out infinite alternate;
+      animation-delay: 0.6s;
+    }
+
+    .crack-4 {
+      width: 3px;
+      height: 40%;
+      top: 25%;
+      left: 40%;
+      animation: crackGlow 2.2s ease-in-out infinite alternate;
+      animation-delay: 0.2s;
+    }
+
+    .crack-5 {
+      width: 2px;
+      height: 35%;
+      top: 35%;
+      left: 60%;
+      transform: rotate(20deg);
+      animation: crackGlow 2s ease-in-out infinite alternate;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes crackGlow {
+      0% {
+        opacity: 0.6;
+        filter: blur(2px);
+      }
+      100% {
+        opacity: 1;
+        filter: blur(1px);
+      }
+    }
+
+    /* ============================================
+     * BOOT TEXT
+     * ============================================ */
+    .boot-text {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      font-family: 'Inter', monospace;
+    }
+
+    .boot-line {
+      opacity: 0;
+      font-size: 14px;
+      color: var(--lava-orange);
+      text-shadow: 0 0 10px var(--ember-glow);
+      margin: 8px 0;
+      letter-spacing: 0.05em;
+    }
+
+    .boot-line:nth-child(1) { animation: bootLineIn 0.3s ease-out forwards; animation-delay: 1s; }
+    .boot-line:nth-child(2) { animation: bootLineIn 0.3s ease-out forwards; animation-delay: 1.4s; }
+    .boot-line:nth-child(3) { animation: bootLineIn 0.3s ease-out forwards; animation-delay: 1.8s; }
+    .boot-line:nth-child(4) { animation: bootLineIn 0.3s ease-out forwards; animation-delay: 2.2s; }
+    .boot-line:nth-child(5) { animation: bootLineIn 0.3s ease-out forwards; animation-delay: 2.6s; }
+
+    @keyframes bootLineIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .boot-logo {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--color-text-primary);
+      text-shadow: 0 0 30px var(--color-brand), 0 0 60px var(--lava-red);
+      opacity: 0;
+      animation: logoReveal 1s ease-out forwards;
+      animation-delay: 3s;
+      margin-top: 32px;
+    }
+
+    @keyframes logoReveal {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+        filter: blur(10px);
+      }
+      50% {
+        filter: blur(0);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+      }
+    }
+
+    /* ============================================
+     * PROGRESS BAR
+     * ============================================ */
+    .boot-progress {
+      width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 24px;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeIn 0.3s ease-out forwards;
+      animation-delay: 3.2s;
+    }
+
+    .boot-progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--lava-red), var(--color-brand), var(--lava-yellow));
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--color-brand);
+      animation: progressFill 1.5s ease-out forwards;
+      animation-delay: 3.4s;
+    }
+
+    @keyframes progressFill {
+      to { width: 100%; }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* ============================================
+     * EMBER PARTICLES
+     * ============================================ */
+    .embers-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .ember {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--lava-orange);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--lava-orange), 0 0 12px var(--lava-red);
+      animation: emberFloat 4s ease-out infinite;
+    }
+
+    @keyframes emberFloat {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-20vh) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* ============================================
+     * MAIN CONTENT (DASHBOARD)
+     * ============================================ */
+    .main-content {
+      opacity: 0;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    .main-content.visible {
+      animation: contentReveal 1s ease-out forwards;
+      animation-delay: 0.3s;
+    }
+
+    @keyframes contentReveal {
+      to { opacity: 1; }
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 40px 20px;
+    }
+
+    /* Volcanic Background Effect */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 50% 120%, rgba(220, 38, 38, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 30% 100%, rgba(249, 115, 22, 0.2) 0%, transparent 40%),
+        radial-gradient(ellipse at 70% 100%, rgba(249, 115, 22, 0.2) 0%, transparent 40%);
+      animation: volcanicPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes volcanicPulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .hero-logo {
+      font-size: 72px;
+      font-weight: 800;
+      color: var(--color-text-primary);
+      text-shadow: 0 0 40px var(--color-brand);
+      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-tagline {
+      font-size: 24px;
+      color: var(--color-text-secondary);
+      margin-bottom: 48px;
+      font-weight: 500;
+    }
+
+    /* CTA Buttons */
+    .cta-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+
+    .btn {
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--color-brand);
+      color: white;
+      border: none;
+      box-shadow: 0 0 30px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: var(--color-brand-light);
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(249, 115, 22, 0.6);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+    }
+
+    /* Demo Preview */
+    .demo-preview {
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16/9;
+      background: var(--color-bg-card);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+    }
+
+    .demo-placeholder {
+      color: var(--color-text-muted);
+      font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .play-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--color-brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(249, 115, 22, 0.5);
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+    }
+
+    .play-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 50px rgba(249, 115, 22, 0.7);
+    }
+
+    .play-icon svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+      margin-left: 4px;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 20px;
+      background: var(--color-bg-card);
+    }
+
+    .features-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      background: var(--color-bg-elevated);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.2s ease-out;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(249, 115, 22, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(249, 115, 22, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .feature-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .feature-desc {
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Floating Embers on Main Content */
+    .ambient-embers {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* Skip Button */
+    .skip-btn {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.2s ease-out;
+      opacity: 0;
+      animation: fadeIn 0.3s ease-out forwards;
+      animation-delay: 1s;
+    }
+
+    .skip-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    /* Replay Button */
+    .replay-btn {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.2s ease-out;
+      display: none;
+    }
+
+    .replay-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    .replay-btn.visible {
+      display: block;
+    }
+
+    /* Heat Distortion Effect */
+    .heat-distortion {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to top, rgba(249, 115, 22, 0.05), transparent);
+      animation: heatWave 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes heatWave {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.05); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-logo {
+        font-size: 48px;
+      }
+      .hero-tagline {
+        font-size: 18px;
+      }
+      .boot-logo {
+        font-size: 36px;
+      }
+      .cta-group {
+        flex-direction: column;
+        align-items: center;
+      }
+      .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Boot Sequence -->
+  <div class="boot-sequence" id="bootSequence">
+    <div class="cracks-container">
+      <div class="crack crack-1"></div>
+      <div class="crack crack-2"></div>
+      <div class="crack crack-3"></div>
+      <div class="crack crack-4"></div>
+      <div class="crack crack-5"></div>
+    </div>
+    
+    <div class="embers-container" id="bootEmbers"></div>
+    
+    <div class="boot-text">
+      <div class="boot-line">INITIALIZING ARENA SYSTEMS...</div>
+      <div class="boot-line">LOADING VOLCANIC CORE... OK</div>
+      <div class="boot-line">CALIBRATING COMBAT MODULES...</div>
+      <div class="boot-line">SYNCING PLAYER DATA...</div>
+      <div class="boot-line">ARENA READY</div>
+      
+      <div class="boot-logo">1v1 BRO</div>
+      
+      <div class="boot-progress">
+        <div class="boot-progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <button class="skip-btn" id="skipBtn">Skip Intro</button>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <div class="ambient-embers" id="ambientEmbers"></div>
+    
+    <section class="hero">
+      <div class="heat-distortion"></div>
+      
+      <div class="hero-content">
+        <h1 class="hero-logo">1v1 BRO</h1>
+        <p class="hero-tagline">Competitive Arena Combat Meets Trivia</p>
+        
+        <div class="cta-group">
+          <a href="#" class="btn btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            Play Now
+          </a>
+          <a href="#" class="btn btn-secondary">Learn More</a>
+        </div>
+        
+        <div class="demo-preview">
+          <div class="demo-placeholder">
+            <div class="play-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <span>Watch Gameplay Demo</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚔️</div>
+          <h3 class="feature-title">Fast-Paced Combat</h3>
+          <p class="feature-desc">Intense 1v1 arena battles with skill-based mechanics. Every match is a test of reflexes and strategy.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3 class="feature-title">Trivia Twist</h3>
+          <p class="feature-desc">Answer questions to gain power-ups and advantages. Knowledge is literally power in the arena.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <h3 class="feature-title">Ranked Matches</h3>
+          <p class="feature-desc">Climb the leaderboards and prove you're the ultimate 1v1 champion. Seasons, rewards, and glory await.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="replay-btn" id="replayBtn">🔥 Replay Intro</button>
+
+  <script>
+    // Create ember particles
+    function createEmbers(container, count) {
+      for (let i = 0; i < count; i++) {
+        const ember = document.createElement('div');
+        ember.className = 'ember';
+        ember.style.left = Math.random() * 100 + '%';
+        ember.style.animationDelay = Math.random() * 4 + 's';
+        ember.style.animationDuration = (3 + Math.random() * 2) + 's';
+        container.appendChild(ember);
+      }
+    }
+
+    // Initialize boot embers
+    createEmbers(document.getElementById('bootEmbers'), 30);
+    createEmbers(document.getElementById('ambientEmbers'), 15);
+
+    // Boot sequence timing
+    const bootDuration = 5500; // 5.5 seconds
+    const bootSequence = document.getElementById('bootSequence');
+    const mainContent = document.getElementById('mainContent');
+    const skipBtn = document.getElementById('skipBtn');
+    const replayBtn = document.getElementById('replayBtn');
+
+    function endBootSequence() {
+      bootSequence.classList.add('fade-out');
+      mainContent.classList.add('visible');
+      skipBtn.style.display = 'none';
+      replayBtn.classList.add('visible');
+    }
+
+    // Auto-end boot sequence
+    let bootTimeout = setTimeout(endBootSequence, bootDuration);
+
+    // Skip button
+    skipBtn.addEventListener('click', () => {
+      clearTimeout(bootTimeout);
+      endBootSequence();
+    });
+
+    // Replay button
+    replayBtn.addEventListener('click', () => {
+      location.reload();
+    });
+
+    // Keyboard skip (spacebar or enter)
+    document.addEventListener('keydown', (e) => {
+      if ((e.code === 'Space' || e.code === 'Enter') && !bootSequence.classList.contains('fade-out')) {
+        clearTimeout(bootTimeout);
+        endBootSequence();
+      }
+    });
+  </script>
+</body>
+</html>

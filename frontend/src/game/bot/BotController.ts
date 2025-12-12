@@ -5,9 +5,79 @@
  */
 
 import type { Vector2, Projectile } from '../types'
+import { SIMPLE_ARENA } from '../config/maps'
 
 // Bot behavior patterns
 type BotBehavior = 'patrol' | 'chase' | 'evade' | 'strafe'
+
+// Helper: Check if a line segment intersects a rectangle (for wall collision)
+function lineIntersectsRect(
+  x1: number, y1: number, x2: number, y2: number,
+  rx: number, ry: number, rw: number, rh: number
+): boolean {
+  const left = rx
+  const right = rx + rw
+  const top = ry
+  const bottom = ry + rh
+
+  // Check if either endpoint is inside the rectangle
+  if ((x1 >= left && x1 <= right && y1 >= top && y1 <= bottom) ||
+      (x2 >= left && x2 <= right && y2 >= top && y2 <= bottom)) {
+    return true
+  }
+
+  const dx = x2 - x1
+  const dy = y2 - y1
+  let tMin = 0
+  let tMax = 1
+
+  if (dx !== 0) {
+    const tLeft = (left - x1) / dx
+    const tRight = (right - x1) / dx
+    const t1 = Math.min(tLeft, tRight)
+    const t2 = Math.max(tLeft, tRight)
+    tMin = Math.max(tMin, t1)
+    tMax = Math.min(tMax, t2)
+  } else if (x1 < left || x1 > right) {
+    return false
+  }
+
+  if (dy !== 0) {
+    const tTop = (top - y1) / dy
+    const tBottom = (bottom - y1) / dy
+    const t1 = Math.min(tTop, tBottom)
+    const t2 = Math.max(tTop, tBottom)
+    tMin = Math.max(tMin, t1)
+    tMax = Math.min(tMax, t2)
+  } else if (y1 < top || y1 > bottom) {
+    return false
+  }
+
+  return tMax >= tMin && tMax >= 0 && tMin <= 1
+}
+
+// Check if there's a clear line of sight between two points
+function hasLineOfSight(x1: number, y1: number, x2: number, y2: number): boolean {
+  const barriers = SIMPLE_ARENA.barriers
+  for (const barrier of barriers) {
+    if (lineIntersectsRect(x1, y1, x2, y2, barrier.position.x, barrier.position.y, barrier.size.x, barrier.size.y)) {
+      return false
+    }
+  }
+  return true
+}
+
+// Check if a point is inside any wall barrier
+function pointInWall(x: number, y: number): boolean {
+  const barriers = SIMPLE_ARENA.barriers
+  for (const barrier of barriers) {
+    if (x >= barrier.position.x && x <= barrier.position.x + barrier.size.x &&
+        y >= barrier.position.y && y <= barrier.position.y + barrier.size.y) {
+      return true
+    }
+  }
+  return false
+}
 
 // Bot configuration
 export interface BotConfig {
@@ -23,7 +93,7 @@ export interface BotConfig {
 
 // Default moderate difficulty
 export const DEFAULT_BOT_CONFIG: BotConfig = {
-  shootCooldown: 800,
+  shootCooldown: 1200, // Increased from 800ms to reduce spam
   shootAccuracy: 0.7,
   aggroRange: 400,
   retreatHealth: 30,
@@ -237,7 +307,13 @@ export class BotController {
   private updateShooting(now: number, playerPosition: Vector2): void {
     const distToPlayer = this.distanceTo(playerPosition)
     
+    // Only shoot if in range, cooldown elapsed, AND has line of sight
     if (distToPlayer < 500 && now - this.lastShot > this.config.shootCooldown) {
+      // Check line of sight - don't shoot through walls
+      if (!hasLineOfSight(this.position.x, this.position.y, playerPosition.x, playerPosition.y)) {
+        return
+      }
+      
       this.lastShot = now
       
       let dx = playerPosition.x - this.position.x
@@ -283,6 +359,12 @@ export class BotController {
       // Check bounds
       if (proj.position.x < 0 || proj.position.x > 1280 ||
           proj.position.y < 0 || proj.position.y > 720) {
+        toRemove.push(id)
+        continue
+      }
+      
+      // Check wall collision - destroy projectile if it hits a wall
+      if (pointInWall(proj.position.x, proj.position.y)) {
         toRemove.push(id)
         continue
       }

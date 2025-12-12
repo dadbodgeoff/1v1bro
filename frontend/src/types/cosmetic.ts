@@ -31,7 +31,7 @@ export const RARITY_GRADIENTS: Record<Rarity, string> = {
   common: 'from-gray-600 to-gray-700',
   uncommon: 'from-green-600 to-green-700',
   rare: 'from-blue-600 to-blue-700',
-  epic: 'from-purple-600 to-purple-700',
+  epic: 'from-[#a855f7] to-[#9333ea]',
   legendary: 'from-orange-500 to-yellow-600',
 };
 

@@ -40,7 +40,7 @@ export function TutorialOverlay({
           {/* Step indicator */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-purple-500" />
+              <div className="w-2 h-2 rounded-full bg-indigo-500" />
               <span className="text-xs text-neutral-400 uppercase tracking-wider">
                 Tutorial
               </span>
@@ -62,15 +62,15 @@ export function TutorialOverlay({
           <ul className="space-y-2 mb-4">
             {content.instructions.map((instruction, i) => (
               <li key={i} className="flex items-start gap-2 text-sm">
-                <span className="text-purple-400 mt-0.5">•</span>
+                <span className="text-indigo-400 mt-0.5">•</span>
                 <span className="text-neutral-300">{instruction}</span>
               </li>
             ))}
           </ul>
 
           {/* Completion hint */}
-          <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg px-4 py-3 mb-4">
-            <p className="text-purple-300 text-sm">{content.completionHint}</p>
+          <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-lg px-4 py-3 mb-4">
+            <p className="text-indigo-300 text-sm">{content.completionHint}</p>
           </div>
 
           {/* Progress dots */}
@@ -80,9 +80,9 @@ export function TutorialOverlay({
                 key={i}
                 className={`w-2 h-2 rounded-full transition-colors ${
                   i < stepNumber
-                    ? 'bg-purple-500'
+                    ? 'bg-indigo-500'
                     : i === stepNumber - 1
-                      ? 'bg-purple-400'
+                      ? 'bg-indigo-400'
                       : 'bg-neutral-700'
                 }`}
               />
@@ -99,7 +99,7 @@ export function TutorialOverlay({
             </button>
             <button
               onClick={onComplete}
-              className="px-4 py-2 bg-purple-500 text-white text-sm font-medium rounded-lg hover:bg-purple-600 transition-colors"
+              className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 transition-colors"
             >
               I Got It
             </button>
@@ -124,9 +124,9 @@ export function TutorialPrompt({ onAccept, onDecline }: TutorialPromptProps) {
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
       <div className="bg-neutral-900 border border-white/10 rounded-2xl p-8 max-w-md mx-4">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-purple-400"
+              className="w-5 h-5 text-indigo-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -158,7 +158,7 @@ export function TutorialPrompt({ onAccept, onDecline }: TutorialPromptProps) {
           </button>
           <button
             onClick={onAccept}
-            className="flex-1 px-4 py-2.5 bg-purple-500 text-white text-sm font-medium rounded-lg hover:bg-purple-600 transition-colors"
+            className="flex-1 px-4 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 transition-colors"
           >
             Start Tutorial
           </button>

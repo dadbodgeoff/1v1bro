@@ -3,7 +3,7 @@
  * Removes various background types from images at runtime
  */
 
-export type BackgroundType = 'checkered' | 'yellow' | 'dark' | 'white' | 'auto' | 'checkered-white'
+export type BackgroundType = 'checkered' | 'checkered-light' | 'checkered-dark' | 'yellow' | 'dark' | 'white' | 'auto' | 'checkered-white' | 'none'
 
 /**
  * Check if a pixel is part of a checkered background pattern
@@ -20,6 +20,38 @@ function isCheckeredBackgroundPixel(r: number, g: number, b: number): boolean {
   // Checkered patterns use gray values roughly between 30-210
   // This covers light (~128/191), medium (~64/96), and dark (~30-50) checker patterns
   return r >= 30 && r <= 210
+}
+
+/**
+ * Check if a pixel is part of a LIGHT checkered background pattern only
+ * More conservative - only catches the lighter gray squares (128-210)
+ * Use this when the prop itself has gray/dark colors that shouldn't be removed
+ */
+function isLightCheckeredBackgroundPixel(r: number, g: number, b: number): boolean {
+  const tolerance = 15
+  const isGray =
+    Math.abs(r - g) < tolerance && Math.abs(g - b) < tolerance && Math.abs(r - b) < tolerance
+
+  if (!isGray) return false
+
+  // Only catch the lighter checker squares (avoid removing gray prop content)
+  return r >= 115 && r <= 210
+}
+
+/**
+ * Check if a pixel is part of a DARK checkered background pattern only
+ * Catches the darker gray squares (30-100)
+ * Use this when the prop has light colors but dark checkered background
+ */
+function isDarkCheckeredBackgroundPixel(r: number, g: number, b: number): boolean {
+  const tolerance = 15
+  const isGray =
+    Math.abs(r - g) < tolerance && Math.abs(g - b) < tolerance && Math.abs(r - b) < tolerance
+
+  if (!isGray) return false
+
+  // Only catch the darker checker squares
+  return r >= 30 && r <= 100
 }
 
 /**
@@ -63,6 +95,12 @@ function shouldMakeTransparent(r: number, g: number, b: number, bgType: Backgrou
   switch (bgType) {
     case 'checkered':
       return isCheckeredBackgroundPixel(r, g, b)
+    case 'checkered-light':
+      // Only remove light gray checkers (for props with gray content like rocks)
+      return isLightCheckeredBackgroundPixel(r, g, b)
+    case 'checkered-dark':
+      // Only remove dark gray checkers (for props with light content like trees)
+      return isDarkCheckeredBackgroundPixel(r, g, b)
     case 'yellow':
       return isYellowBackgroundPixel(r, g, b)
     case 'dark':
@@ -78,6 +116,9 @@ function shouldMakeTransparent(r: number, g: number, b: number, bgType: Backgrou
     case 'checkered-white':
       // Remove both checkered background AND white/cream interior (for EMP icon)
       return isCheckeredBackgroundPixel(r, g, b) || isWhiteBackgroundPixel(r, g, b)
+    case 'none':
+      // No background removal
+      return false
     default:
       return false
   }

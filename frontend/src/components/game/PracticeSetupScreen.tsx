@@ -203,13 +203,13 @@ export function PracticeSetupScreen({
                 onClick={() => onPracticeTypeSelect(type)}
                 className={`p-3 rounded-xl border transition-all text-center ${
                   isSelected
-                    ? 'bg-purple-500/20 border-purple-500/40 ring-1 ring-purple-500/30'
+                    ? 'bg-indigo-500/20 border-indigo-500/40 ring-1 ring-indigo-500/30'
                     : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1]'
                 }`}
               >
                 <div
                   className={`w-2 h-2 rounded-full mx-auto mb-2 ${
-                    isSelected ? 'bg-purple-400' : 'bg-neutral-600'
+                    isSelected ? 'bg-indigo-400' : 'bg-neutral-600'
                   }`}
                 />
                 <span className="text-sm font-medium text-white">
@@ -246,7 +246,7 @@ export function PracticeSetupScreen({
                     !hasQuestions
                       ? 'bg-white/[0.01] border-white/[0.03] opacity-50 cursor-not-allowed'
                       : selectedCategory === cat.slug
-                        ? 'bg-purple-500/20 border-purple-500/40 ring-1 ring-purple-500/30'
+                        ? 'bg-indigo-500/20 border-indigo-500/40 ring-1 ring-indigo-500/30'
                         : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1]'
                   }`}
                 >
@@ -256,7 +256,7 @@ export function PracticeSetupScreen({
                         !hasQuestions
                           ? 'bg-neutral-700'
                           : selectedCategory === cat.slug
-                            ? 'bg-purple-400'
+                            ? 'bg-indigo-400'
                             : 'bg-neutral-600'
                       }`}
                     />
@@ -371,7 +371,7 @@ export function PracticeSetupScreen({
           Playing as guest ·{' '}
           <button
             onClick={() => navigate('/register')}
-            className="text-purple-400 hover:text-purple-300"
+            className="text-blue-500 hover:text-blue-400"
           >
             Sign up
           </button>{' '}

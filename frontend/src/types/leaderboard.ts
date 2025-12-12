@@ -27,7 +27,7 @@ export const RANK_TIERS: Record<RankTier, { min: number; max: number; icon: stri
   bronze: { min: 100, max: 799, icon: '🥉', color: '#cd7f32' },
   silver: { min: 800, max: 1199, icon: '🥈', color: '#c0c0c0' },
   gold: { min: 1200, max: 1599, icon: '🥇', color: '#ffd700' },
-  platinum: { min: 1600, max: 1999, icon: '💎', color: '#00d4ff' },
+  platinum: { min: 1600, max: 1999, icon: '💎', color: '#60A5FA' },
   diamond: { min: 2000, max: 2399, icon: '💠', color: '#b9f2ff' },
   master: { min: 2400, max: 2799, icon: '👑', color: '#ff6b6b' },
   grandmaster: { min: 2800, max: 3000, icon: '🏆', color: '#ffd700' },
@@ -170,7 +170,7 @@ export const CATEGORY_META: Record<LeaderboardCategory, CategoryMeta> = {
     description: 'Highest win percentage (10+ games)',
     format: (v) => `${v.toFixed(1)}%`,
     secondaryFormat: (v) => `${v} games`,
-    gradient: 'from-emerald-500 to-teal-600',
+    gradient: 'from-emerald-500 to-emerald-600',
   },
   total_score: {
     id: 'total_score',
@@ -179,7 +179,7 @@ export const CATEGORY_META: Record<LeaderboardCategory, CategoryMeta> = {
     description: 'Cumulative points earned',
     format: (v) => v.toLocaleString(),
     secondaryFormat: (v) => `${v} games`,
-    gradient: 'from-violet-500 to-purple-600',
+    gradient: 'from-indigo-500 to-indigo-600',
   },
   kills: {
     id: 'kills',
@@ -242,7 +242,7 @@ export const CATEGORY_META: Record<LeaderboardCategory, CategoryMeta> = {
     description: 'Competitive ranking',
     format: (v) => v.toLocaleString(),
     secondaryFormat: (v) => `Peak: ${v}`,
-    gradient: 'from-indigo-500 to-purple-600',
+    gradient: 'from-indigo-500 to-indigo-600',
   },
 }
 

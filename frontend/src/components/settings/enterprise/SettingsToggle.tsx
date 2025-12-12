@@ -67,12 +67,12 @@ export const SettingsToggle: React.FC<SettingsToggleProps> = ({
         onClick={() => !disabled && !loading && onChange(!checked)}
         onKeyDown={handleKeyDown}
         disabled={disabled || loading}
-        className={`relative w-12 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--color-bg-card)] ${
+        className={`relative w-14 h-8 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--color-bg-card)] touch-manipulation ${
           checked ? 'bg-indigo-600' : 'bg-gray-600'
         } ${disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <div
-          className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 flex items-center justify-center ${
+          className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-transform duration-200 flex items-center justify-center ${
             checked ? 'translate-x-7' : 'translate-x-1'
           }`}
         >

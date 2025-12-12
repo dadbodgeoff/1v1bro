@@ -16,8 +16,8 @@ import type {
   ValidationResult
 } from '../../arena/types'
 
-// Re-export ValidationResult for consumers
-export type { ValidationResult }
+// Re-export types for consumers
+export type { ValidationResult, TeleporterConfig }
 
 // ============================================================================
 // Map Configuration Types
@@ -34,7 +34,7 @@ export interface TileDefinition {
 /**
  * Available backdrop themes for maps
  */
-export type MapTheme = 'space' | 'volcanic' | 'cyber' | 'void' | 'industrial'
+export type MapTheme = 'space' | 'volcanic' | 'void' | 'industrial' | 'simple'
 
 /**
  * Map metadata
@@ -208,8 +208,14 @@ function validateTileGrid(tiles: TileDefinition[][], errors: string[]): void {
  */
 function validateTeleporterPairs(teleporters: TeleporterConfig[], errors: string[]): void {
   const pairCounts = new Map<string, number>()
+  const randomExitTeleporters = new Set<string>()
 
   for (const tp of teleporters) {
+    // Teleporters with randomExits don't need pairs - they teleport to random locations
+    if (tp.randomExits && tp.randomExits.length > 0) {
+      randomExitTeleporters.add(tp.id)
+      continue
+    }
     pairCounts.set(tp.pairId, (pairCounts.get(tp.pairId) || 0) + 1)
   }
 

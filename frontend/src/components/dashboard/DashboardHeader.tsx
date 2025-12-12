@@ -17,10 +17,12 @@ import { useProfile } from '@/hooks/useProfile'
 import { useBalance } from '@/hooks/useBalance'
 import { useBattlePass } from '@/hooks/useBattlePass'
 import { useViewport } from '@/hooks/useViewport'
-import { useEffect, useState, useCallback } from 'react'
+import { useNotifications } from '@/hooks/useNotifications'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { getRankTier, RANK_TIERS, type RankTier } from '@/types/leaderboard'
 import { leaderboardAPI } from '@/services/api'
 import { TOUCH_TARGET } from '@/utils/breakpoints'
+import { NotificationDropdown } from './NotificationDropdown'
 
 // Coin icon component
 function CoinIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -85,9 +87,17 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
   const { profile, fetchProfile } = useProfile()
   const { progress, fetchProgress } = useBattlePass()
   const { isTouch } = useViewport()
+  const { 
+    notifications, 
+    unreadCount, 
+    markAsRead, 
+    markAllAsRead, 
+    deleteNotification 
+  } = useNotifications()
   const [eloRating, setEloRating] = useState<number | null>(null)
   const [rankTier, setRankTier] = useState<RankTier>('bronze')
-  const [unreadNotifications, setUnreadNotifications] = useState(0)
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
+  const notificationButtonRef = useRef<HTMLButtonElement>(null)
 
   const fetchEloRating = useCallback(async () => {
     try {
@@ -108,9 +118,18 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
     fetchProfile()
     fetchProgress()
     fetchEloRating()
-    // TODO: Fetch actual notification count from API
-    setUnreadNotifications(0)
   }, [fetchProfile, fetchProgress, fetchEloRating])
+
+  // Map notifications to dropdown format
+  const dropdownNotifications = notifications.map(n => ({
+    id: n.id,
+    type: n.type,
+    title: n.title,
+    message: n.message,
+    timestamp: n.created_at,
+    isRead: n.is_read,
+    actionUrl: n.action_url,
+  }))
 
   const displayName = profile?.display_name || user?.display_name || user?.email || 'Player'
   const avatarUrl = profile?.avatar_url
@@ -172,18 +191,34 @@ export function DashboardHeader({ onMenuToggle }: DashboardHeaderProps) {
       </div>
 
       {/* Notification Bell - touch optimized */}
-      <button
-        className="relative p-2 text-[var(--color-text-secondary)] hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors touch-manipulation"
-        style={touchButtonStyles}
-        aria-label={`Notifications${unreadNotifications > 0 ? ` (${unreadNotifications} unread)` : ''}`}
-      >
-        <BellIcon className="w-5 h-5" />
-        {unreadNotifications > 0 && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-[var(--color-accent-error)] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-            {unreadNotifications > 9 ? '9+' : unreadNotifications}
-          </span>
-        )}
-      </button>
+      <div className="relative">
+        <button
+          ref={notificationButtonRef}
+          onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+          className="relative p-2 text-[var(--color-text-secondary)] hover:text-white hover:bg-white/[0.05] rounded-lg transition-colors touch-manipulation"
+          style={touchButtonStyles}
+          aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+          aria-expanded={isNotificationOpen}
+          aria-haspopup="true"
+        >
+          <BellIcon className="w-5 h-5" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 w-4 h-4 bg-[var(--color-accent-error)] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </button>
+        
+        <NotificationDropdown
+          isOpen={isNotificationOpen}
+          onClose={() => setIsNotificationOpen(false)}
+          notifications={dropdownNotifications}
+          onMarkAsRead={(id) => markAsRead([id])}
+          onMarkAllAsRead={markAllAsRead}
+          onDismiss={deleteNotification}
+          anchorRef={notificationButtonRef}
+        />
+      </div>
 
       {/* Settings - touch optimized */}
       <button

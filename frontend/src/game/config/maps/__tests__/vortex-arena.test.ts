@@ -7,7 +7,6 @@
 
 import { describe, it, expect } from 'vitest'
 import { VORTEX_ARENA } from '../vortex-arena'
-import { NEXUS_ARENA } from '../nexus-arena'
 import { validateMapConfig } from '../map-schema'
 
 // ============================================================================
@@ -454,27 +453,4 @@ describe('Vortex Arena - Property Tests', () => {
   })
 })
 
-// ============================================================================
-// Comparison with Nexus Arena
-// ============================================================================
 
-describe('Vortex Arena vs Nexus Arena', () => {
-  it('should be a distinct map from Nexus Arena', () => {
-    expect(VORTEX_ARENA.metadata.name).not.toBe(NEXUS_ARENA.metadata.name)
-  })
-
-  it('should have more teleporter pairs than Nexus Arena', () => {
-    const vortexPairs = new Set(VORTEX_ARENA.teleporters.map(t => t.pairId)).size
-    const nexusPairs = new Set(NEXUS_ARENA.teleporters.map(t => t.pairId)).size
-    expect(vortexPairs).toBeGreaterThanOrEqual(nexusPairs)
-  })
-
-  it('should have more jump pads than Nexus Arena', () => {
-    expect(VORTEX_ARENA.jumpPads.length).toBeGreaterThan(NEXUS_ARENA.jumpPads.length)
-  })
-
-  it('should have destructible barriers (Nexus Arena may not)', () => {
-    const vortexDestructible = VORTEX_ARENA.barriers.filter(b => b.type === 'destructible')
-    expect(vortexDestructible.length).toBeGreaterThan(0)
-  })
-})

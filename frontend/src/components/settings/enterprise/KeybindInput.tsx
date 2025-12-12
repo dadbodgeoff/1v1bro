@@ -81,7 +81,7 @@ export const KeybindInput: React.FC<KeybindInputProps> = ({
           {!isDefault && (
             <button
               onClick={() => onCapture(defaultKey)}
-              className="text-xs text-[var(--color-text-secondary)] hover:text-white transition-colors px-2 py-1"
+              className="text-xs text-[var(--color-text-secondary)] hover:text-white transition-colors px-3 py-2 min-h-[44px] touch-manipulation"
             >
               Reset
             </button>
@@ -90,7 +90,7 @@ export const KeybindInput: React.FC<KeybindInputProps> = ({
             ref={inputRef}
             id={id}
             onClick={() => setCapturing(true)}
-            className={`min-w-[100px] px-4 py-2 rounded-lg font-mono text-sm font-medium transition-all ${
+            className={`min-w-[100px] min-h-[44px] px-4 py-2 rounded-lg font-mono text-sm font-medium transition-all touch-manipulation ${
               capturing
                 ? 'bg-indigo-500/30 border-2 border-indigo-500 text-indigo-300 animate-pulse'
                 : hasConflict

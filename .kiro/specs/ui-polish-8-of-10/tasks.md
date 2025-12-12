@@ -1,0 +1,184 @@
+# Implementation Plan
+
+- [x] 1. Create shared accessibility and animation utilities
+  - [x] 1.1 Create useReducedMotion hook
+    - Create `frontend/src/hooks/useReducedMotion.ts`
+    - Implement media query listener for `prefers-reduced-motion: reduce`
+    - Return reactive boolean that updates on preference change
+    - _Requirements: 3.4, 5.4_
+  - [x] 1.2 Write property test for reduced motion preference propagation
+    - **Property 9: Reduced motion disables animations**
+    - **Validates: Requirements 3.4, 5.4**
+  - [x] 1.3 Create useStaggerAnimation hook
+    - Create `frontend/src/hooks/useStaggerAnimation.ts`
+    - Implement delay calculation: `index * baseDelay`
+    - Implement maxConcurrent limit for batched animations
+    - Integrate with useReducedMotion to skip when enabled
+    - _Requirements: 1.2, 4.3_
+  - [x] 1.4 Write property test for stagger delay calculation
+    - **Property 2: Stagger delay calculation is linear**
+    - **Validates: Requirements 1.2**
+  - [x] 1.5 Write property test for concurrent animation limits
+    - **Property 12: Stagger limits concurrent animations**
+    - **Validates: Requirements 4.3**
+  - [x] 1.6 Create useAnimatedValue hook
+    - Create `frontend/src/hooks/useAnimatedValue.ts`
+    - Implement smooth number interpolation using requestAnimationFrame
+    - Support configurable duration and easing
+    - Respect reduced motion preference
+    - _Requirements: 1.4_
+  - [x] 1.7 Write property test for animated value bounds
+    - **Property 3: Animated value stays within bounds**
+    - **Validates: Requirements 1.4**
+
+- [x] 2. Create CSS utility classes
+  - [x] 2.1 Add focus-ring utility class
+    - Add to `frontend/src/index.css` or create `frontend/src/styles/utilities.css`
+    - Implement `focus-visible:ring-2 focus-visible:ring-[#6366f1] focus-visible:ring-offset-2`
+    - _Requirements: 3.1_
+  - [x] 2.2 Write property test for focus ring visibility
+    - **Property 6: Focus ring applies on focus-visible**
+    - **Validates: Requirements 3.1**
+  - [x] 2.3 Add press-feedback utility class
+    - Implement `active:scale-[0.97] transition-transform duration-100`
+    - _Requirements: 1.1_
+  - [x] 2.4 Write property test for press feedback transform
+    - **Property 1: Press feedback applies correct transform**
+    - **Validates: Requirements 1.1**
+  - [x] 2.5 Add touch-target utility class
+    - Implement `min-h-[44px] min-w-[44px]`
+    - _Requirements: 2.2_
+  - [x] 2.6 Write property test for touch target minimum size
+    - **Property 4: Touch targets meet minimum size**
+    - **Validates: Requirements 2.2**
+  - [x] 2.7 Add safe-area utility classes
+    - Implement `padding-bottom: env(safe-area-inset-bottom, 0px)`
+    - Add variants for top, left, right insets
+    - _Requirements: 2.4_
+
+- [x] 3. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 4. Create AccessibleCard component
+  - [x] 4.1 Create AccessibleCard wrapper component
+    - Create `frontend/src/components/ui/AccessibleCard.tsx`
+    - Add role="button" and tabindex="0" for clickable cards
+    - Handle keyboard events (Enter, Space) for activation
+    - Include focus-ring and press-feedback classes
+    - _Requirements: 3.2, 3.6_
+  - [x] 4.2 Write property test for ARIA attributes on clickable cards
+    - **Property 10: Clickable cards have correct ARIA attributes**
+    - **Validates: Requirements 3.6**
+  - [x] 4.3 Write property test for keyboard accessibility
+    - **Property 7: Interactive elements are keyboard accessible**
+    - **Validates: Requirements 3.2**
+
+- [x] 5. Create responsive components
+  - [x] 5.1 Create BottomSheetModal component
+    - Create `frontend/src/components/ui/BottomSheetModal.tsx`
+    - Implement slide-up animation from bottom
+    - Add drag-to-dismiss gesture support
+    - Include snap points for partial/full height
+    - Apply safe-area padding
+    - _Requirements: 2.3, 2.4_
+  - [x] 5.2 Create SwipeCarousel component
+    - Create `frontend/src/components/ui/SwipeCarousel.tsx`
+    - Implement horizontal scroll with snap-to-item
+    - Add visual scroll indicators
+    - Enable touch swipe gestures
+    - _Requirements: 2.5, 2.6_
+  - [x] 5.3 Write property test for carousel threshold
+    - **Property 5: Carousel enables on threshold**
+    - **Validates: Requirements 2.5**
+
+- [x] 6. Update Badge component for accessibility
+  - [x] 6.1 Add aria-label to Badge component
+    - Update `frontend/src/components/ui/Badge.tsx`
+    - Add aria-label prop with rarity description
+    - Ensure all rarity variants have descriptive labels
+    - _Requirements: 3.3_
+  - [x] 6.2 Write property test for rarity badge aria-labels
+    - **Property 8: Rarity badges have descriptive aria-labels**
+    - **Validates: Requirements 3.3**
+
+- [x] 7. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 8. Update enterprise item box components
+  - [x] 8.1 Update ItemDisplayBox with new utilities
+    - Add focus-ring class to container
+    - Add press-feedback class to CTA buttons
+    - Add touch-target class to interactive elements
+    - Integrate useStaggerAnimation for grid entry
+    - Wrap with AccessibleCard for keyboard support
+    - _Requirements: 1.1, 1.2, 2.2, 3.1, 3.2_
+  - [x] 8.2 Update InventoryItemBox with new utilities
+    - Apply same enhancements as ItemDisplayBox
+    - Add aria-label for equipped state
+    - _Requirements: 1.1, 1.2, 2.2, 3.1, 3.2_
+  - [x] 8.3 Update RewardDisplayBox with new utilities
+    - Apply same enhancements as ItemDisplayBox
+    - Add claim animation glow burst (400ms)
+    - _Requirements: 1.1, 1.2, 1.5, 2.2, 3.1, 3.2_
+
+- [x] 9. Update CTA button components
+  - [x] 9.1 Update UrgencyCTA with press-feedback and focus-ring
+    - Add press-feedback class for active state
+    - Add focus-ring class for keyboard focus
+    - Add touch-target class for mobile
+    - _Requirements: 1.1, 2.2, 3.1_
+  - [x] 9.2 Update EquipCTA with press-feedback and focus-ring
+    - Apply same enhancements as UrgencyCTA
+    - _Requirements: 1.1, 2.2, 3.1_
+  - [x] 9.3 Update ClaimCTA with press-feedback and focus-ring
+    - Apply same enhancements as UrgencyCTA
+    - _Requirements: 1.1, 2.2, 3.1_
+
+- [x] 10. Update progress components with animated values
+  - [x] 10.1 Update XPProgressBar with useAnimatedValue
+    - Integrate useAnimatedValue for smooth fill animation
+    - Add 600ms duration with ease-out easing
+    - Respect reduced motion preference
+    - _Requirements: 1.4_
+  - [x] 10.2 Update ProgressSection with animated tier display
+    - Animate tier number changes
+    - Add subtle scale animation on tier up
+    - _Requirements: 1.4_
+
+- [x] 11. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 12. Update page layouts for mobile responsiveness
+  - [x] 12.1 Update Shop page with mobile-first featured section
+    - Convert 4-column grid to single-column on mobile
+    - Wrap daily rotation in SwipeCarousel on mobile
+    - Use BottomSheetModal for purchase modal on mobile
+    - _Requirements: 2.1, 2.3, 2.5_
+  - [x] 12.2 Update Inventory page with mobile optimizations
+    - Add SwipeCarousel for loadout slots on mobile
+    - Ensure filter bar is touch-friendly
+    - _Requirements: 2.2, 2.5_
+  - [x] 12.3 Update BattlePass page with mobile optimizations
+    - Ensure track has snap-to-tier scrolling
+    - Add swipe indicators on mobile
+    - _Requirements: 2.6_
+
+- [x] 13. Update toast system for accessibility
+  - [x] 13.1 Add aria-live region to toast container
+    - Update toast provider/container component
+    - Add aria-live="polite" attribute
+    - Ensure announcements work with screen readers
+    - _Requirements: 3.5_
+
+- [x] 14. Verify animation performance
+  - [x] 14.1 Audit animation classes for GPU-accelerated properties
+    - Review all animation/transition classes
+    - Ensure only transform and opacity are animated
+    - Remove any layout-triggering property animations
+    - _Requirements: 4.1_
+  - [x] 14.2 Write property test for GPU-accelerated properties
+    - **Property 11: Animations use GPU-accelerated properties only**
+    - **Validates: Requirements 4.1**
+
+- [x] 15. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

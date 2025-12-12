@@ -15,7 +15,7 @@ interface MapSelectorProps {
 // Theme-based styling
 const themeStyles: Record<string, { gradient: string; accent: string; icon: string }> = {
   space: {
-    gradient: 'from-indigo-500/20 to-purple-500/20',
+    gradient: 'from-indigo-500/20 to-indigo-600/20',
     accent: 'border-indigo-500',
     icon: '🌌',
   },

@@ -21,7 +21,7 @@
  * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5
  */
 
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gameAPI } from '@/services/api'
 import type { RecentMatch } from '@/types/matchHistory'
@@ -244,13 +244,13 @@ export function MatchHistoryWidget({ maxItems = 5, className }: MatchHistoryWidg
   )
 }
 
-// Match Item Component
+// Match Item Component - Memoized for performance (Requirements 6.3)
 interface MatchItemProps {
   match: RecentMatch
   onClick: () => void
 }
 
-function MatchItem({ match, onClick }: MatchItemProps) {
+const MatchItem = memo(function MatchItem({ match, onClick }: MatchItemProps) {
   const result = getMatchResultDisplay(match)
 
   return (
@@ -265,6 +265,7 @@ function MatchItem({ match, onClick }: MatchItemProps) {
             src={match.opponent_avatar_url}
             alt={match.opponent_name || 'Opponent'}
             className="w-8 h-8 rounded-full object-cover"
+            loading="lazy"
           />
         ) : (
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-600 to-neutral-700 flex items-center justify-center text-white text-xs font-medium">
@@ -298,7 +299,7 @@ function MatchItem({ match, onClick }: MatchItemProps) {
       </div>
     </button>
   )
-}
+})
 
 // Icon Components
 function MatchIcon({ className }: { className?: string }) {

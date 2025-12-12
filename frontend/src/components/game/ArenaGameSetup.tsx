@@ -48,7 +48,7 @@ export function RotateDeviceHint({ visible, onDismiss, onFullscreen }: RotateDev
   return (
     <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center px-8">
       {/* Animated phone rotation icon */}
-      <div className="w-20 h-20 mb-6 text-purple-400">
+      <div className="w-20 h-20 mb-6 text-indigo-400">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="animate-[spin_3s_ease-in-out_infinite]" style={{ animationDirection: 'alternate' }}>
           <rect x="4" y="2" width="16" height="20" rx="2" />
           <path d="M12 18h.01" />
@@ -61,13 +61,13 @@ export function RotateDeviceHint({ visible, onDismiss, onFullscreen }: RotateDev
       <div className="flex flex-col gap-3 w-full max-w-xs">
         <button
           onClick={onFullscreen}
-          className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold rounded-xl transition-colors"
+          className="w-full px-6 py-3 min-h-[48px] bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors touch-manipulation"
         >
           Enter Fullscreen & Play
         </button>
         <button
           onClick={onDismiss}
-          className="w-full px-6 py-3 bg-white/10 hover:bg-white/20 text-white/70 text-sm font-medium rounded-xl transition-colors"
+          className="w-full px-6 py-3 min-h-[48px] bg-white/10 hover:bg-white/20 text-white/70 text-sm font-medium rounded-xl transition-colors touch-manipulation"
         >
           Continue in Portrait
         </button>

@@ -43,7 +43,7 @@ class LobbyService(BaseService):
         host_id: str,
         game_mode: str = "fortnite",
         category: str | None = None,
-        map_slug: str = "nexus-arena",
+        map_slug: str = "simple-arena",
     ) -> dict:
         """
         Create a new lobby with a unique code.
@@ -52,7 +52,7 @@ class LobbyService(BaseService):
             host_id: Host user UUID
             game_mode: Game mode/category
             category: Trivia category (overrides game_mode if provided)
-            map_slug: Arena map slug (nexus-arena, vortex-arena)
+            map_slug: Arena map slug (simple-arena, vortex-arena)
             
         Returns:
             Created lobby dict with code

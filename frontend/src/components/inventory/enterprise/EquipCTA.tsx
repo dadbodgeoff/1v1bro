@@ -72,10 +72,13 @@ export function EquipCTA({
     <button
       onClick={isClickable ? onClick : undefined}
       disabled={variant === 'loading'}
+      aria-label={getButtonText()}
+      aria-busy={variant === 'loading'}
       className={cn(
         'w-full rounded-lg font-bold transition-all duration-200',
         'flex items-center justify-center gap-2',
-        'active:scale-[0.98]',
+        // Accessibility utilities - use press-feedback instead of inline active:scale
+        'focus-ring press-feedback touch-target',
         variantStyles[variant],
         sizeStyles[size],
         className

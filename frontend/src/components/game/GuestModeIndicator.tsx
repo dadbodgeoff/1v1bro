@@ -80,8 +80,8 @@ export function GuestModeIndicator({
             onClick={handleSignup}
             className={cn(
               'px-2 py-1 rounded text-xs font-medium',
-              'bg-gradient-to-r from-purple-500/80 to-orange-500/80 text-white',
-              'hover:from-purple-500 hover:to-orange-500 transition-all',
+              'bg-[#F97316] text-white',
+              'hover:bg-[#FB923C] transition-all',
               'min-h-[28px] min-w-[44px]' // Touch target compliance
             )}
           >

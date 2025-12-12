@@ -107,7 +107,7 @@ export function BattlePassWidget({ className = '' }: BattlePassWidgetProps) {
         {/* XP text */}
         <div className="flex items-center justify-between text-xs">
           <span className="text-neutral-500">
-            {progress.current_xp} / {progress.xp_to_next_tier} XP
+            {progress.current_xp} / {progress.current_xp + progress.xp_to_next_tier} XP
           </span>
           {daysRemaining !== null && (
             <span className="text-neutral-500">

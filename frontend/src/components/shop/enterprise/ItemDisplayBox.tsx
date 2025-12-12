@@ -15,13 +15,14 @@
  */
 
 import { cn } from '@/utils/helpers'
-import type { Cosmetic, Rarity } from '@/types/cosmetic'
+import type { Cosmetic } from '@/types/cosmetic'
 import { getCosmeticTypeName } from '@/types/cosmetic'
 import { SkinPreview, type SkinId } from '../SkinPreview'
 import { DynamicImage } from '../DynamicImage'
 import { PriceTag } from './PriceTag'
 import { UrgencyCTA } from './UrgencyCTA'
 import { Badge } from '@/components/ui/Badge'
+import { rarityBorders, rarityGlows, rarityBgGradients } from '@/styles/rarity'
 
 type DisplaySize = 'xl' | 'lg' | 'md' | 'sm'
 
@@ -128,29 +129,7 @@ const sizeConfig = {
   },
 }
 
-const rarityBorders: Record<Rarity, string> = {
-  common: 'border-[#737373]/40',
-  uncommon: 'border-[#10b981]/40',
-  rare: 'border-[#3b82f6]/40',
-  epic: 'border-[#a855f7]/40',
-  legendary: 'border-[#f59e0b]/50',
-}
 
-const rarityGlows: Record<Rarity, string> = {
-  common: '',
-  uncommon: 'hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]',
-  rare: 'hover:shadow-[0_0_30px_rgba(59,130,246,0.25)]',
-  epic: 'hover:shadow-[0_0_35px_rgba(168,85,247,0.3)]',
-  legendary: 'hover:shadow-[0_0_40px_rgba(245,158,11,0.35)]',
-}
-
-const rarityBgGradients: Record<Rarity, string> = {
-  common: 'from-[#737373]/5 to-transparent',
-  uncommon: 'from-[#10b981]/10 to-transparent',
-  rare: 'from-[#3b82f6]/10 to-transparent',
-  epic: 'from-[#a855f7]/10 to-transparent',
-  legendary: 'from-[#f59e0b]/15 to-transparent',
-}
 
 export function ItemDisplayBox({
   item,
@@ -175,10 +154,21 @@ export function ItemDisplayBox({
 
   return (
     <div
+      role={onViewDetails ? 'button' : undefined}
+      tabIndex={onViewDetails ? 0 : undefined}
+      aria-label={`${item.name}, ${item.rarity} ${getCosmeticTypeName(item.type)}${isOwned ? ', owned' : ''}`}
+      onKeyDown={(e) => {
+        if (onViewDetails && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault()
+          onViewDetails()
+        }
+      }}
       className={cn(
         'group relative bg-[var(--color-bg-card)] rounded-xl border-2 overflow-hidden',
         'transition-all duration-300 ease-out cursor-pointer',
         'hover:scale-[1.02]',
+        // Accessibility utilities
+        'focus-ring press-feedback touch-target',
         rarityBorders[item.rarity],
         rarityGlows[item.rarity],
         config.container,

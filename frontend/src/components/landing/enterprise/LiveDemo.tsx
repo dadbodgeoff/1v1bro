@@ -23,6 +23,13 @@ export interface LiveDemoProps {
   className?: string
 }
 
+// Player colors - using CSS variable fallbacks for game rendering
+// These match --color-game-player1 and --color-rarity-epic from tokens.css
+const PLAYER_COLORS = {
+  player1: '#F97316', // --color-brand (orange)
+  player2: '#A855F7', // --color-rarity-epic (purple)
+} as const
+
 // Default player states for initial render
 const defaultPlayer: DemoPlayerState = {
   id: 'player1',
@@ -31,7 +38,7 @@ const defaultPlayer: DemoPlayerState = {
   health: 100,
   maxHealth: 100,
   score: 0,
-  color: '#F97316',
+  color: PLAYER_COLORS.player1,
   isAlive: true,
   facingRight: true,
 }
@@ -55,7 +62,7 @@ export function LiveDemo({
 
   // HUD state
   const [player1, setPlayer1] = useState<DemoPlayerState>(defaultPlayer)
-  const [player2, setPlayer2] = useState<DemoPlayerState>({ ...defaultPlayer, id: 'player2', color: '#A855F7', position: { x: 650, y: 225 }, facingRight: false })
+  const [player2, setPlayer2] = useState<DemoPlayerState>({ ...defaultPlayer, id: 'player2', color: PLAYER_COLORS.player2, position: { x: 650, y: 225 }, facingRight: false })
   const [question, setQuestion] = useState<DemoQuestion | null>(null)
   const [questionTimer, setQuestionTimer] = useState(0)
   const [killFeed, setKillFeed] = useState<KillFeedEntry[]>([])

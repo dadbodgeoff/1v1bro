@@ -80,7 +80,7 @@ export function ConversionPromptModal({
             {/* Card */}
             <div className="bg-neutral-900 border border-white/10 rounded-2xl overflow-hidden">
               {/* Gradient header */}
-              <div className="h-1 bg-gradient-to-r from-purple-500 to-orange-500" />
+              <div className="h-1 bg-[#F97316]" />
               
               {/* Content */}
               <div className="p-6">
@@ -117,8 +117,8 @@ export function ConversionPromptModal({
                     onClick={handlePrimaryCta}
                     className={cn(
                       'w-full px-6 py-3 rounded-xl font-semibold text-sm',
-                      'bg-gradient-to-r from-purple-500 to-orange-500 text-white',
-                      'hover:opacity-90 transition-opacity',
+                      'bg-[#F97316] text-white',
+                      'hover:bg-[#FB923C] transition-colors',
                       'min-h-[48px]' // Touch target compliance
                     )}
                   >

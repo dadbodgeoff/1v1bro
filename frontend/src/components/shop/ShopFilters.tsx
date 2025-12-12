@@ -68,14 +68,14 @@ export function ShopFilters({
 }: ShopFiltersProps) {
   return (
     <div className="space-y-4">
-      {/* Type Filter Pills */}
-      <div className="flex flex-wrap gap-2">
+      {/* Type Filter Pills - horizontal scroll on mobile, wrap on desktop */}
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
         {typeOptions.map((option) => (
           <button
             key={option.value ?? 'all'}
             onClick={() => onTypeChange(option.value)}
             className={cn(
-              'px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
+              'px-4 py-2.5 min-h-[44px] rounded-full text-sm font-medium transition-all duration-200 flex-shrink-0 touch-manipulation',
               selectedType === option.value
                 ? 'bg-[#6366f1] text-white'
                 : 'bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] hover:bg-white/10 hover:text-white'
@@ -86,9 +86,9 @@ export function ShopFilters({
         ))}
       </div>
 
-      {/* Rarity & Sort Dropdowns */}
-      <div className="flex flex-wrap gap-3">
-        <div className="w-48">
+      {/* Rarity & Sort Dropdowns - stack on mobile, row on desktop */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="w-full sm:w-48">
           <Select
             value={selectedRarity ?? ''}
             onChange={(value) => onRarityChange(value === '' ? null : (value as Rarity))}
@@ -97,10 +97,11 @@ export function ShopFilters({
               label: opt.label,
             }))}
             placeholder="Filter by Rarity"
+            className="min-h-[44px]"
           />
         </div>
 
-        <div className="w-56">
+        <div className="w-full sm:w-56">
           <Select
             value={selectedSort}
             onChange={(value) => onSortChange(value as SortOption)}
@@ -109,6 +110,7 @@ export function ShopFilters({
               label: opt.label,
             }))}
             placeholder="Sort by"
+            className="min-h-[44px]"
           />
         </div>
       </div>

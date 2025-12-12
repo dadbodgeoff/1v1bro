@@ -1,13 +1,20 @@
 /**
- * Combat System
+ * Combat System - AAA Enterprise Grade
  * Main coordinator for all combat logic
+ *
+ * Features:
+ * - Object pooling via ProjectileManager
+ * - Lag compensation for fair hit detection
+ * - Server-reconcilable spread calculation
+ * - Configurable arena bounds
  */
 
 import { WeaponManager } from './WeaponManager'
-import { ProjectileManager } from './ProjectileManager'
+import { ProjectileManager, type ProjectileCollisionConfig } from './ProjectileManager'
 import { HealthManager } from './HealthManager'
 import { RespawnManager } from './RespawnManager'
 import { AimAssist } from './AimAssist'
+import { LagCompensation } from './LagCompensation'
 import { HIT_RADIUS } from '../config'
 import type {
   Vector2,
@@ -18,6 +25,7 @@ import type {
   DeathEvent,
   RespawnEvent,
   CombatCallbacks,
+  Rectangle,
 } from '../types'
 
 export class CombatSystem {
@@ -26,6 +34,7 @@ export class CombatSystem {
   private healthManager: HealthManager
   private respawnManager: RespawnManager
   private aimAssist: AimAssist
+  private lagCompensation: LagCompensation
 
   private localPlayerId: string | null = null
   private aimDirection: Vector2 = { x: 1, y: 0 }
@@ -40,6 +49,7 @@ export class CombatSystem {
     this.healthManager = new HealthManager()
     this.respawnManager = new RespawnManager()
     this.aimAssist = new AimAssist()
+    this.lagCompensation = new LagCompensation()
   }
 
   setLocalPlayer(playerId: string): void {
@@ -54,6 +64,27 @@ export class CombatSystem {
 
   setCallbacks(callbacks: CombatCallbacks): void {
     this.callbacks = callbacks
+  }
+
+  /**
+   * Configure arena bounds for projectile collision (call when map changes)
+   */
+  setArenaBounds(width: number, height: number): void {
+    this.projectileManager.setArenaBounds(width, height)
+  }
+
+  /**
+   * Configure barriers for projectile collision (call when map changes)
+   */
+  setBarriers(barriers: Rectangle[]): void {
+    this.projectileManager.setBarriers(barriers)
+  }
+
+  /**
+   * Full collision config update
+   */
+  setCollisionConfig(config: ProjectileCollisionConfig): void {
+    this.projectileManager.setCollisionConfig(config)
   }
 
   /**
@@ -115,8 +146,9 @@ export class CombatSystem {
     if (this.respawnManager.isRespawning(this.localPlayerId)) return false
     if (!this.weaponManager.canFire()) return false
 
-    this.weaponManager.recordFire()
-    this.fireSequence++
+    // Record fire and get fire record with spread seed
+    const fireRecord = this.weaponManager.recordFire()
+    this.fireSequence = fireRecord.sequence
 
     // Mobile auto-aim
     let fireDirection = this.aimDirection
@@ -128,10 +160,13 @@ export class CombatSystem {
       }
     }
 
-    // Apply spread to aim direction
-    const spreadDirection = this.weaponManager.applySpread(fireDirection)
+    // Apply seeded spread for server reconciliation
+    const spreadDirection = this.weaponManager.applySeededSpread(
+      fireDirection,
+      fireRecord.spreadSeed
+    )
 
-    // Spawn predicted projectile locally
+    // Spawn predicted projectile locally (uses object pooling)
     this.projectileManager.spawnProjectile(
       this.localPlayerId,
       playerPosition,
@@ -139,12 +174,12 @@ export class CombatSystem {
       true
     )
 
-    // Notify via callback
+    // Notify via callback with spread seed for server validation
     const event: FireEvent = {
       playerId: this.localPlayerId,
       position: { ...playerPosition },
       direction: { ...spreadDirection },
-      timestamp: Date.now(),
+      timestamp: fireRecord.timestamp,
       sequenceNum: this.fireSequence,
     }
     this.callbacks.onFire?.(event)
@@ -153,6 +188,11 @@ export class CombatSystem {
   }
 
   update(deltaTime: number, players: Map<string, Vector2>): void {
+    // Record positions for lag compensation
+    for (const [playerId, position] of players) {
+      this.lagCompensation.recordPosition(playerId, position)
+    }
+
     this.projectileManager.update(deltaTime)
     const hits = this.checkProjectileCollisions(players)
     for (const hit of hits) {
@@ -306,6 +346,14 @@ export class CombatSystem {
     this.projectileManager.setFromServer(projectiles)
   }
 
+  /**
+   * Merge external projectiles (e.g., bot projectiles) with local ones
+   * Used in bot mode where player projectiles are local and bot projectiles come from BotController
+   */
+  mergeExternalProjectiles(projectiles: Projectile[]): void {
+    this.projectileManager.mergeExternal(projectiles)
+  }
+
   setServerHealth(playerId: string, health: number, maxHealth: number): void {
     this.healthManager.setFromServer(playerId, health, maxHealth)
   }
@@ -313,5 +361,61 @@ export class CombatSystem {
   handleServerRespawn(playerId: string): void {
     this.healthManager.respawn(playerId)
     this.respawnManager.clearRespawn(playerId)
+  }
+
+  // Lag Compensation Support
+  /**
+   * Get player position at a specific timestamp (for lag-compensated hit detection)
+   */
+  getPositionAtTime(playerId: string, timestamp: number): Vector2 | null {
+    return this.lagCompensation.getPositionAtTime(playerId, timestamp)
+  }
+
+  /**
+   * Get all player positions at a specific timestamp
+   */
+  getAllPositionsAtTime(timestamp: number): Map<string, Vector2> {
+    return this.lagCompensation.getAllPositionsAtTime(timestamp)
+  }
+
+  /**
+   * Validate a hit using lag compensation
+   * Rewinds target position to shooter's view time
+   */
+  validateHitWithLagCompensation(
+    projectile: Projectile,
+    targetId: string,
+    shooterTimestamp: number
+  ): boolean {
+    const targetPosAtTime = this.lagCompensation.getPositionAtTime(targetId, shooterTimestamp)
+    if (!targetPosAtTime) return false
+
+    const dx = projectile.position.x - targetPosAtTime.x
+    const dy = projectile.position.y - targetPosAtTime.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
+
+    return distance <= HIT_RADIUS
+  }
+
+  // Pool Statistics (for debugging/monitoring)
+  /**
+   * Get projectile pool statistics
+   */
+  getPoolStats(): { poolSize: number; inUse: number; available: number } {
+    return this.projectileManager.getPoolStats()
+  }
+
+  /**
+   * Get lag compensation statistics
+   */
+  getLagCompensationStats(): { entityCount: number; totalSnapshots: number } {
+    return this.lagCompensation.getStats()
+  }
+
+  /**
+   * Get weapon fire history (for anti-cheat validation)
+   */
+  getFireHistory(): readonly { timestamp: number; sequence: number; spreadSeed: number }[] {
+    return this.weaponManager.getFireHistory()
   }
 }

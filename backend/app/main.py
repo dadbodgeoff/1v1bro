@@ -234,7 +234,7 @@ async def matchmaking_websocket_endpoint(
                         service = get_matchmaking_service()
                         payload = data.get("payload", {})
                         category = payload.get("category", "fortnite")
-                        map_slug = payload.get("map_slug", "nexus-arena")
+                        map_slug = payload.get("map_slug", "simple-arena")
                         ticket = await service.join_queue(
                             player_id=user_id,
                             player_name=user_email or "Unknown",

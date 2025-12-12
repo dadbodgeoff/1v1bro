@@ -18,6 +18,7 @@ from app.database.supabase_client import get_supabase_service_client
 from app.services.base import BaseService
 from app.services.presence_service import presence_service
 from app.websocket.manager import manager as ws_manager
+from app.services.notification_service import NotificationService
 
 
 class FriendService(BaseService):
@@ -29,6 +30,7 @@ class FriendService(BaseService):
         self.friend_repo = FriendRepository(service_client)
         self.invite_repo = GameInviteRepository(service_client)
         self.user_repo = UserRepository(service_client)
+        self.notification_service = NotificationService(client)
 
     async def get_friends_list(self, user_id: str) -> dict:
         """
@@ -400,12 +402,23 @@ class FriendService(BaseService):
     ) -> None:
         """Send friend request notification."""
         sender = await self.user_repo.get_by_id(from_user_id)
+        display_name = sender.get("display_name") if sender else "Someone"
+        
+        # Create persistent notification
+        await self.notification_service.notify_friend_request(
+            user_id=to_user_id,
+            from_user_id=from_user_id,
+            from_display_name=display_name,
+            friendship_id=friendship_id,
+        )
+        
+        # Also send real-time WebSocket notification for immediate UI update
         await ws_manager.send_to_user(to_user_id, {
             "type": "friend_request",
             "payload": {
                 "friendship_id": friendship_id,
                 "from_user_id": from_user_id,
-                "display_name": sender.get("display_name") if sender else None,
+                "display_name": display_name,
                 "avatar_url": sender.get("avatar_url") if sender else None,
             }
         })
@@ -417,11 +430,20 @@ class FriendService(BaseService):
     ) -> None:
         """Send friend request accepted notification."""
         accepter = await self.user_repo.get_by_id(accepter_id)
+        display_name = accepter.get("display_name") if accepter else "Someone"
+        
+        # Create persistent notification
+        await self.notification_service.notify_friend_accepted(
+            user_id=requester_id,
+            friend_display_name=display_name,
+        )
+        
+        # Also send real-time WebSocket notification
         await ws_manager.send_to_user(requester_id, {
             "type": "friend_accepted",
             "payload": {
                 "user_id": accepter_id,
-                "display_name": accepter.get("display_name") if accepter else None,
+                "display_name": display_name,
             }
         })
 
@@ -434,12 +456,24 @@ class FriendService(BaseService):
         from_display_name: Optional[str]
     ) -> None:
         """Send game invite notification."""
+        display_name = from_display_name or "Someone"
+        
+        # Create persistent notification
+        await self.notification_service.notify_match_invite(
+            user_id=to_user_id,
+            from_user_id=from_user_id,
+            from_display_name=display_name,
+            lobby_code=lobby_code,
+            invite_id=invite_id,
+        )
+        
+        # Also send real-time WebSocket notification
         await ws_manager.send_to_user(to_user_id, {
             "type": "game_invite",
             "payload": {
                 "invite_id": invite_id,
                 "from_user_id": from_user_id,
-                "from_display_name": from_display_name,
+                "from_display_name": display_name,
                 "lobby_code": lobby_code,
             }
         })

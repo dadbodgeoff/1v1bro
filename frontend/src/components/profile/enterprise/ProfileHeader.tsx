@@ -38,6 +38,7 @@ interface ProfileHeaderProps {
 }
 
 // Tier ring configuration - responsive sizes
+// Uses CSS variables for colors to maintain design system consistency
 const TIER_RING_CONFIG = {
   mobile: {
     size: 96,  // Smaller on mobile
@@ -47,8 +48,15 @@ const TIER_RING_CONFIG = {
     size: 120,
     strokeWidth: 4,
   },
-  progressColor: '#6366f1', // indigo-500
-  trackColor: '#374151',    // gray-700
+  // CSS variable names - resolved at render time
+  progressColorVar: '--color-accent-primary',
+  trackColorVar: '--color-border-subtle',
+}
+
+// Get CSS variable value at runtime
+function getCSSVar(varName: string, fallback: string): string {
+  if (typeof window === 'undefined') return fallback
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim() || fallback
 }
 
 // Country flag mapping
@@ -165,7 +173,7 @@ export function ProfileHeader({
                 cy={ringConfig.size / 2}
                 r={radius}
                 fill="none"
-                stroke={TIER_RING_CONFIG.trackColor}
+                stroke={getCSSVar(TIER_RING_CONFIG.trackColorVar, '#374151')}
                 strokeWidth={ringConfig.strokeWidth}
               />
               {/* Progress Arc */}
@@ -174,7 +182,7 @@ export function ProfileHeader({
                 cy={ringConfig.size / 2}
                 r={radius}
                 fill="none"
-                stroke={TIER_RING_CONFIG.progressColor}
+                stroke={getCSSVar(TIER_RING_CONFIG.progressColorVar, '#6366f1')}
                 strokeWidth={ringConfig.strokeWidth}
                 strokeLinecap="round"
                 strokeDasharray={circumference}

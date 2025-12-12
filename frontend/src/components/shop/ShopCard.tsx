@@ -13,32 +13,17 @@
 
 import { cn } from '@/utils/helpers'
 import { Badge } from '@/components/ui/Badge'
-import type { Cosmetic, Rarity } from '@/types/cosmetic'
+import type { Cosmetic } from '@/types/cosmetic'
 import { getCosmeticTypeName } from '@/types/cosmetic'
 import { SkinPreview, type SkinId } from './SkinPreview'
 import { DynamicImage } from './DynamicImage'
+import { rarityBorders, rarityGlowsSubtle } from '@/styles/rarity'
 
 interface ShopCardProps {
   item: Cosmetic
   isOwned: boolean
   onPurchase: () => void
   onViewDetails: () => void
-}
-
-const rarityBorderColors: Record<Rarity, string> = {
-  common: 'border-[#737373]/50',
-  uncommon: 'border-[#10b981]/50',
-  rare: 'border-[#3b82f6]/50',
-  epic: 'border-[#a855f7]/50',
-  legendary: 'border-[#f59e0b]/50',
-}
-
-const rarityGlowColors: Record<Rarity, string> = {
-  common: '',
-  uncommon: 'hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]',
-  rare: 'hover:shadow-[0_0_20px_rgba(59,130,246,0.2)]',
-  epic: 'hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]',
-  legendary: 'hover:shadow-[0_0_20px_rgba(245,158,11,0.3)]',
 }
 
 export function ShopCard({ item, isOwned, onPurchase, onViewDetails }: ShopCardProps) {
@@ -58,8 +43,8 @@ export function ShopCard({ item, isOwned, onPurchase, onViewDetails }: ShopCardP
         'group relative bg-[var(--color-bg-card)] rounded-xl border-2 overflow-hidden',
         'transition-all duration-200 ease-out cursor-pointer',
         'hover:scale-[1.02] hover:shadow-xl',
-        rarityBorderColors[item.rarity],
-        rarityGlowColors[item.rarity],
+        rarityBorders[item.rarity],
+        rarityGlowsSubtle[item.rarity],
         isOwned && 'opacity-80'
       )}
       onClick={onViewDetails}

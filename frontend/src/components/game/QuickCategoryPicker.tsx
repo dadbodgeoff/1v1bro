@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils/helpers'
 import { useCategories } from '@/hooks/useCategories'
+import { getCategoryConfig, getCategoryColor } from '@/config/categories'
 
 export interface QuickCategoryPickerProps {
   /** Whether the picker is visible */
@@ -20,18 +21,6 @@ export interface QuickCategoryPickerProps {
   onSelect: (categorySlug: string) => void
   /** Additional CSS classes */
   className?: string
-}
-
-/**
- * Category display config with icons
- */
-const CATEGORY_CONFIG: Record<string, { icon: string; color: string; label: string }> = {
-  fortnite: { icon: '🎮', color: '#9333EA', label: 'Fortnite' },
-  nfl: { icon: '🏈', color: '#059669', label: 'NFL' },
-  sports: { icon: '⚽', color: '#2563EB', label: 'Sports' },
-  movies: { icon: '🎬', color: '#DC2626', label: 'Movies' },
-  music: { icon: '🎵', color: '#EC4899', label: 'Music' },
-  general: { icon: '🧠', color: '#F97316', label: 'General' },
 }
 
 export function QuickCategoryPicker({
@@ -101,11 +90,8 @@ export function QuickCategoryPicker({
             ) : (
               <div className="grid grid-cols-2 gap-3">
                 {availableCategories.map((category) => {
-                  const config = CATEGORY_CONFIG[category.slug] || {
-                    icon: '❓',
-                    color: '#6B7280',
-                    label: category.name,
-                  }
+                  const config = getCategoryConfig(category.slug)
+                  const color = getCategoryColor(category.slug)
                   const isSelected = selectedSlug === category.slug
 
                   return (
@@ -122,7 +108,7 @@ export function QuickCategoryPicker({
                           : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
                       )}
                       style={{
-                        boxShadow: isSelected ? `0 0 20px ${config.color}40` : undefined,
+                        boxShadow: isSelected ? `0 0 20px ${color}40` : undefined,
                       }}
                     >
                       {/* Icon */}

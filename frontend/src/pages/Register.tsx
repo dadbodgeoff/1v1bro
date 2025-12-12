@@ -182,19 +182,19 @@ export function Register() {
               id="terms"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 w-4 h-4 rounded border-white/20 bg-white/[0.04] text-purple-500 focus:ring-purple-500 focus:ring-offset-0 focus:ring-offset-transparent"
+              className="mt-1 w-4 h-4 rounded border-white/20 bg-white/[0.04] text-blue-500 focus:ring-blue-500 focus:ring-offset-0 focus:ring-offset-transparent"
             />
             <label htmlFor="terms" className="text-xs text-neutral-400 leading-relaxed">
               I agree to the{' '}
-              <Link to="/terms" className="text-purple-400 hover:text-purple-300 underline" target="_blank">
+              <Link to="/terms" className="text-blue-500 hover:text-blue-400 underline" target="_blank">
                 Terms of Service
               </Link>
               {' '}and{' '}
-              <Link to="/privacy" className="text-purple-400 hover:text-purple-300 underline" target="_blank">
+              <Link to="/privacy" className="text-blue-500 hover:text-blue-400 underline" target="_blank">
                 Privacy Policy
               </Link>
               , and acknowledge that all purchases are final per the{' '}
-              <Link to="/refunds" className="text-purple-400 hover:text-purple-300 underline" target="_blank">
+              <Link to="/refunds" className="text-blue-500 hover:text-blue-400 underline" target="_blank">
                 Refund Policy
               </Link>
               .

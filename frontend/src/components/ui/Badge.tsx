@@ -14,6 +14,8 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: StatusVariant | RarityVariant | RankVariant
   size?: 'sm' | 'md' | 'lg'
   shimmer?: boolean // For legendary items
+  /** Accessible label for screen readers */
+  'aria-label'?: string
 }
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
@@ -112,7 +114,12 @@ export function RankBadge({ rank }: { rank: number }) {
   )
 }
 
-// Rarity badge helper
+/**
+ * Rarity badge helper with built-in aria-label
+ * 
+ * **Feature: ui-polish-8-of-10, Property 8: Rarity badges have descriptive aria-labels**
+ * **Validates: Requirements 3.3**
+ */
 export function RarityBadge({
   rarity,
   shimmer = false,
@@ -128,11 +135,38 @@ export function RarityBadge({
     legendary: 'Legendary',
   }
 
+  const ariaLabels: Record<RarityVariant, string> = {
+    common: 'Common rarity item',
+    uncommon: 'Uncommon rarity item',
+    rare: 'Rare rarity item',
+    epic: 'Epic rarity item',
+    legendary: 'Legendary rarity item',
+  }
+
   return (
-    <Badge variant={rarity} shimmer={shimmer && rarity === 'legendary'}>
+    <Badge 
+      variant={rarity} 
+      shimmer={shimmer && rarity === 'legendary'}
+      aria-label={ariaLabels[rarity]}
+    >
       {labels[rarity]}
     </Badge>
   )
+}
+
+/**
+ * Get aria-label for a rarity value
+ * Used for property testing
+ */
+export function getRarityAriaLabel(rarity: RarityVariant): string {
+  const ariaLabels: Record<RarityVariant, string> = {
+    common: 'Common rarity item',
+    uncommon: 'Uncommon rarity item',
+    rare: 'Rare rarity item',
+    epic: 'Epic rarity item',
+    legendary: 'Legendary rarity item',
+  }
+  return ariaLabels[rarity]
 }
 
 // Export rarity type for use in other components

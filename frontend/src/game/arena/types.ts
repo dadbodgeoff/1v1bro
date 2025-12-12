@@ -197,6 +197,7 @@ export interface TeleporterConfig {
   pairId: string            // Matching pair identifier (A↔A, B↔B, etc.)
   position: Vector2
   radius: number            // Trigger radius (default: 30px)
+  randomExits?: Vector2[]   // Optional: random exit destinations (chaos teleporters)
 }
 
 /**
@@ -209,6 +210,7 @@ export interface TeleporterState {
   radius: number
   linkedTeleporterId: string | null
   playerCooldowns: Map<string, number>  // playerId -> cooldown end timestamp
+  randomExits?: Vector2[]   // Optional: random exit destinations (chaos teleporters)
 }
 
 /**

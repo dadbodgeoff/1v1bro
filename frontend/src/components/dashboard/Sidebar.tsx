@@ -13,37 +13,32 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { NavItem } from './DashboardLayout'
-
-interface NavItemConfig {
-  id: NavItem
-  label: string
-  icon: string
-  path: string
-  badge?: number
-}
-
-const NAV_ITEMS: NavItemConfig[] = [
-  { id: 'play', label: 'Play', icon: '🎮', path: '/dashboard' },
-  { id: 'profile', label: 'Profile', icon: '👤', path: '/profile' },
-  { id: 'battlepass', label: 'Battle Pass', icon: '⭐', path: '/battlepass' },
-  { id: 'shop', label: 'Shop', icon: '🛒', path: '/shop' },
-  { id: 'inventory', label: 'Inventory', icon: '🎒', path: '/inventory' },
-  { id: 'coins', label: 'Get Coins', icon: '🪙', path: '/coins' },
-  { id: 'leaderboards', label: 'Leaderboards', icon: '🏆', path: '/leaderboards' },
-  { id: 'friends', label: 'Friends', icon: '👥', path: '/friends' },
-  { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },
-]
+import { DEFAULT_NAV_ITEMS, getEnabledNavItems, type NavItemConfig, type NavItemId } from '@/config/navigation'
 
 interface SidebarProps {
   activeItem: NavItem
   isCollapsed: boolean
   onToggle: () => void
-  badges?: Partial<Record<NavItem, number>>
+  badges?: Partial<Record<NavItemId, number>>
+  /** Custom navigation items (defaults to DEFAULT_NAV_ITEMS) */
+  navItems?: NavItemConfig[]
+  /** Feature flags for conditional nav items */
+  featureFlags?: Record<string, boolean>
 }
 
-export function Sidebar({ activeItem, isCollapsed, onToggle, badges = {} }: SidebarProps) {
+export function Sidebar({ 
+  activeItem, 
+  isCollapsed, 
+  onToggle, 
+  badges = {},
+  navItems = DEFAULT_NAV_ITEMS,
+  featureFlags,
+}: SidebarProps) {
   const navigate = useNavigate()
   const location = useLocation()
+  
+  // Filter to enabled nav items
+  const enabledNavItems = getEnabledNavItems(navItems, featureFlags)
 
   const handleNavClick = (item: NavItemConfig) => {
     navigate(item.path)
@@ -87,7 +82,7 @@ export function Sidebar({ activeItem, isCollapsed, onToggle, badges = {} }: Side
         {/* Navigation */}
         <nav className="flex-1 py-4 overflow-y-auto">
           <ul className="space-y-1 px-3">
-            {NAV_ITEMS.map((item) => {
+            {enabledNavItems.map((item) => {
               const isActive = item.path === location.pathname || activeItem === item.id
               const badge = badges[item.id] || item.badge
 

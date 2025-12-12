@@ -23,6 +23,7 @@ import { cn } from '@/utils/helpers'
 import type { Loadout, InventoryItem, CosmeticType, Rarity } from '@/types/cosmetic'
 import { RARITY_COLORS } from '@/types/cosmetic'
 import { DynamicImage } from '@/components/shop/DynamicImage'
+import { rarityBorders, rarityGlows } from '@/styles/rarity'
 
 interface LoadoutPreviewProps {
   loadout: Loadout | null
@@ -62,29 +63,10 @@ export function getRaritySlotStyle(rarity: Rarity): {
   border: string
   glow: string
 } {
-  const styles: Record<Rarity, { border: string; glow: string }> = {
-    common: { 
-      border: `border-[${RARITY_COLORS.common}]`, 
-      glow: '' 
-    },
-    uncommon: { 
-      border: `border-[${RARITY_COLORS.uncommon}]`, 
-      glow: 'hover:shadow-[0_0_20px_rgba(34,197,94,0.3)]' 
-    },
-    rare: { 
-      border: `border-[${RARITY_COLORS.rare}]`, 
-      glow: 'hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]' 
-    },
-    epic: { 
-      border: `border-[${RARITY_COLORS.epic}]`, 
-      glow: 'hover:shadow-[0_0_25px_rgba(168,85,247,0.3)]' 
-    },
-    legendary: { 
-      border: `border-[${RARITY_COLORS.legendary}]`, 
-      glow: 'hover:shadow-[0_0_30px_rgba(245,158,11,0.4)]' 
-    },
+  return {
+    border: rarityBorders[rarity],
+    glow: rarityGlows[rarity],
   }
-  return styles[rarity]
 }
 
 /**

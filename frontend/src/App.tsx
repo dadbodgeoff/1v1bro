@@ -4,15 +4,19 @@ import { usePresence } from '@/hooks/usePresence'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/stores/authStore'
 import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
+import { Achievements } from '@/pages/Achievements'
 import { InstantPlay } from '@/pages/InstantPlay'
 import { AdminAnalytics } from '@/pages/AdminAnalytics'
 import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
+import { VolcanicLanding } from '@/pages/VolcanicLanding'
+import { ArcadeLanding } from '@/pages/ArcadeLanding'
 import { MatchHistory } from '@/pages/MatchHistory'
+import { SimpleArenaTest } from '@/pages/SimpleArenaTest'
 import { CoinShop } from '@/pages/CoinShop'
 import { CoinSuccess } from '@/pages/CoinSuccess'
 import { ProgressionProvider } from '@/components/progression'
 
-// Root route - shows Landing for guests, redirects to dashboard for authenticated users
+// Root route - shows CRT Arcade Landing for guests, redirects to dashboard for authenticated users
 function RootRoute() {
   const { isAuthenticated, isLoading } = useAuthStore()
   
@@ -22,7 +26,12 @@ function RootRoute() {
     </div>
   }
   
-  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />
+  // Use CRT Arcade Landing as the main landing page
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <ArcadeLanding />
 }
 
 function App() {
@@ -169,6 +178,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* Achievements page */}
+        <Route
+          path="/achievements"
+          element={
+            <ProtectedRoute>
+              <Achievements />
+            </ProtectedRoute>
+          }
+        />
         {/* Coin Shop pages */}
         <Route
           path="/coins"
@@ -196,8 +214,16 @@ function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/refunds" element={<RefundPolicy />} />
+        {/* Legacy landing page - old design preserved at /landing-classic */}
+        <Route path="/landing-classic" element={<Landing />} />
         {/* Legacy landing route - redirect to root */}
         <Route path="/landing" element={<Navigate to="/" replace />} />
+        {/* Volcanic landing page prototype */}
+        <Route path="/promo" element={<VolcanicLanding />} />
+        {/* CRT Arcade landing page - also available at /arcade */}
+        <Route path="/arcade" element={<ArcadeLanding />} />
+        {/* Simple Arena Test - floor tile rendering test */}
+        <Route path="/simple-arena-test" element={<SimpleArenaTest />} />
         {/* Admin Analytics Dashboard */}
         <Route
           path="/admin/analytics"

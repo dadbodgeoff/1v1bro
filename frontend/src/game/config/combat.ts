@@ -65,6 +65,36 @@ export const PLAYER_HURTBOX = {
 }
 
 // ============================================================================
+// Server Validation Configuration (Anti-Cheat)
+// ============================================================================
+
+export const SERVER_VALIDATION_CONFIG = {
+  /** Tolerance for fire rate validation (ms) - accounts for network jitter */
+  fireRateTolerance: 50,
+  /** Maximum allowed spread deviation from server-calculated spread */
+  maxSpreadDeviation: 5,
+  /** Enable server-side spread calculation */
+  serverSideSpread: true,
+  /** Lag compensation window (ms) - how far back server can rewind for hit detection */
+  lagCompensationWindow: 200,
+  /** Maximum position extrapolation (ms) */
+  maxExtrapolation: 100,
+}
+
+// ============================================================================
+// Interpolation Configuration
+// ============================================================================
+
+export const INTERPOLATION_CONFIG = {
+  /** Buffer size for position history (for lag compensation) */
+  positionHistorySize: 20,
+  /** Interpolation delay (ms) - trades latency for smoothness */
+  interpolationDelay: 100,
+  /** Extrapolation limit (ms) - max time to predict forward */
+  extrapolationLimit: 150,
+}
+
+// ============================================================================
 // Derived Constants
 // ============================================================================
 

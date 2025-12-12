@@ -91,7 +91,7 @@ export class VisualHierarchySystem {
     time: number
   ): void {
     for (const element of elements) {
-      const color = element.type === 'teleporter' ? '#00ffff' : '#00ff00'
+      const color = element.type === 'teleporter' ? '#3b82f6' : '#10b981'
       const pulse = 0.7 + 0.3 * Math.sin(time * Math.PI * 2)
 
       const gradient = ctx.createRadialGradient(

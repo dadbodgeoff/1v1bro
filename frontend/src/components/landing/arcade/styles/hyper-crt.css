@@ -1,0 +1,775 @@
+/**
+ * Hyper-CRT Tier-1 Visual Effects
+ * 
+ * Advanced CRT simulation styles:
+ * - Sub-pixel jitter (analog signal instability)
+ * - Scanline moiré patterns
+ * - Phosphor decay micro-interactions
+ * - GPU-accelerated composition layers
+ * - Always-on ambient effects
+ * 
+ * @module landing/arcade/styles/hyper-crt
+ */
+
+/* ============================================
+ * GPU Composition Layer Setup
+ * Force hardware acceleration on container layers
+ * ============================================ */
+
+.hyper-crt-container {
+  /* GPU composition hints */
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  
+  /* Container for all CRT effects */
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Child layers inherit GPU acceleration */
+.hyper-crt-layer {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ============================================
+ * Sub-Pixel Jitter Effect
+ * Simulates analog signal instability
+ * ============================================ */
+
+.hyper-crt-jitter {
+  animation: subpixel-jitter 0.1s steps(3) infinite;
+}
+
+@keyframes subpixel-jitter {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  33% {
+    transform: translate3d(0.5px, 0, 0);
+  }
+  66% {
+    transform: translate3d(-0.3px, 0.5px, 0);
+  }
+  100% {
+    transform: translate3d(0.2px, -0.3px, 0);
+  }
+}
+
+/* Reduced jitter for less aggressive effect */
+.hyper-crt-jitter--subtle {
+  animation: subpixel-jitter-subtle 0.15s steps(2) infinite;
+}
+
+@keyframes subpixel-jitter-subtle {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0.25px, 0.25px, 0);
+  }
+}
+
+/* ============================================
+ * Physical Scanlines (CRT Phosphor Rows)
+ * Creates the black lines between phosphor rows
+ * ============================================ */
+
+.hyper-crt-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  
+  /* Physical scanline pattern: 2px bright, 2px dark */
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  mix-blend-mode: multiply;
+}
+
+/* Animated scanline for "rolling" effect */
+.hyper-crt-scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(249, 115, 22, 0.03) 50%,
+    transparent 100%
+  );
+  background-size: 100% 200%;
+  animation: scanline-roll 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanline-roll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+/* ============================================
+ * Scanline Moiré Pattern
+ * Interacts with scanlines for interference
+ * ============================================ */
+
+.hyper-crt-moire {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 55;
+  
+  /* 1px height repeating pattern - creates moiré with scanlines */
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 1px,
+      rgba(0, 0, 0, 0.08) 1px,
+      rgba(0, 0, 0, 0.08) 2px
+    );
+  background-size: 100% 2px;
+  
+  /* Subtle animation for moiré shimmer */
+  animation: moire-shift 8s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes moire-shift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 4px;
+  }
+}
+
+/* Secondary moiré layer for interference pattern */
+.hyper-crt-moire::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(249, 115, 22, 0.02) 2px,
+      rgba(249, 115, 22, 0.02) 3px
+    );
+  background-size: 100% 3px;
+  animation: moire-shift-alt 12s linear infinite reverse;
+  mix-blend-mode: screen;
+}
+
+@keyframes moire-shift-alt {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 6px;
+  }
+}
+
+/* SVG-based scanline overlay for feDisplacementMap interaction */
+.hyper-crt-scanlines-svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 51;
+}
+
+.hyper-crt-scanlines-svg rect {
+  fill: url(#scanlines-pattern);
+}
+
+/* ============================================
+ * Phosphor Decay Effect
+ * Always-on micro-interaction for "live" aesthetic
+ * ============================================ */
+
+.hyper-crt-phosphor-decay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 42;
+  
+  /* Subtle phosphor persistence glow */
+  background: transparent;
+  box-shadow: 
+    inset 0 0 100px 20px rgba(249, 115, 22, 0.015),
+    inset 0 0 200px 40px rgba(249, 115, 22, 0.01);
+  
+  /* Slow pulsing decay animation */
+  animation: phosphor-decay-pulse 4s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes phosphor-decay-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 
+      inset 0 0 100px 20px rgba(249, 115, 22, 0.015),
+      inset 0 0 200px 40px rgba(249, 115, 22, 0.01);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 
+      inset 0 0 120px 30px rgba(249, 115, 22, 0.02),
+      inset 0 0 220px 50px rgba(249, 115, 22, 0.015);
+  }
+}
+
+/* Phosphor trail effect for moving elements */
+.hyper-crt-phosphor-trail {
+  position: relative;
+}
+
+.hyper-crt-phosphor-trail::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  filter: blur(4px);
+  opacity: 0.15;
+  transform: translate3d(-2px, 0, 0);
+  animation: phosphor-trail-fade 0.1s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes phosphor-trail-fade {
+  0% {
+    opacity: 0.2;
+    transform: translate3d(-3px, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-1px, 0, 0);
+  }
+}
+
+/* ============================================
+ * Signal Noise Effect
+ * Always-on static/interference
+ * ============================================ */
+
+.hyper-crt-signal-noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 65;
+  
+  /* SVG noise texture */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  
+  opacity: 0.02;
+  mix-blend-mode: overlay;
+  
+  /* Animate noise position for "live" static */
+  animation: signal-noise-shift 0.05s steps(4) infinite;
+}
+
+@keyframes signal-noise-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-5px, 3px, 0);
+  }
+  50% {
+    transform: translate3d(3px, -5px, 0);
+  }
+  75% {
+    transform: translate3d(-3px, -2px, 0);
+  }
+  100% {
+    transform: translate3d(5px, 5px, 0);
+  }
+}
+
+/* Occasional signal interference burst */
+.hyper-crt-signal-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 66;
+  background: transparent;
+  opacity: 0;
+  animation: signal-burst 15s ease-out infinite;
+}
+
+@keyframes signal-burst {
+  0%, 95%, 100% {
+    opacity: 0;
+    background: transparent;
+  }
+  96% {
+    opacity: 0.1;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 48%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 52%,
+      transparent 100%
+    );
+  }
+  97% {
+    opacity: 0.05;
+  }
+}
+
+/* ============================================
+ * Chromatic Aberration CSS Fallback
+ * For browsers without SVG filter support
+ * ============================================ */
+
+.hyper-crt-chromatic-css {
+  position: relative;
+}
+
+.hyper-crt-chromatic-css::before,
+.hyper-crt-chromatic-css::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.03;
+}
+
+.hyper-crt-chromatic-css::before {
+  /* Red channel offset */
+  background: rgba(255, 0, 0, 0.5);
+  transform: translate3d(-1.5px, 0, 0);
+  mask-image: inherit;
+  -webkit-mask-image: inherit;
+}
+
+.hyper-crt-chromatic-css::after {
+  /* Blue channel offset */
+  background: rgba(0, 0, 255, 0.5);
+  transform: translate3d(1.5px, 0, 0);
+  mask-image: inherit;
+  -webkit-mask-image: inherit;
+}
+
+/* High-energy chromatic burst state */
+.hyper-crt-chromatic-css--burst::before {
+  transform: translate3d(-4px, -1px, 0);
+  opacity: 0.08;
+  transition: transform 0.05s ease-out, opacity 0.05s ease-out;
+}
+
+.hyper-crt-chromatic-css--burst::after {
+  transform: translate3d(4px, 1px, 0);
+  opacity: 0.08;
+  transition: transform 0.05s ease-out, opacity 0.05s ease-out;
+}
+
+/* ============================================
+ * Handshake Boot Sequence Styles
+ * ============================================ */
+
+/* Phosphor Warm-up Stage */
+.phosphor-warmup {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phosphor-warmup-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.phosphor-flash-circle {
+  transform-origin: center;
+}
+
+.phosphor-flash-circle--flash {
+  fill: white;
+  opacity: 1;
+}
+
+.phosphor-flash-circle--expand {
+  animation: phosphor-expand 400ms ease-out forwards;
+}
+
+@keyframes phosphor-expand {
+  0% {
+    r: 5;
+    opacity: 1;
+  }
+  100% {
+    r: 80;
+    opacity: 0;
+  }
+}
+
+.phosphor-scan-line {
+  stroke-linecap: round;
+  filter: blur(1px);
+  box-shadow: 0 0 20px white;
+}
+
+/* Interlaced Loading Stage */
+.interlaced-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 999;
+  background: #000;
+}
+
+.interlaced-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boot-text-preview {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  color: #F97316;
+  text-shadow: 0 0 10px rgba(249, 115, 22, 0.6);
+  letter-spacing: 0.1em;
+  animation: boot-text-flicker 0.1s steps(2) infinite;
+}
+
+@keyframes boot-text-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* The Drop Stage */
+.the-drop {
+  position: absolute;
+  inset: 0;
+  z-index: 998;
+  pointer-events: none;
+}
+
+.shockwave-svg {
+  filter: url(#shockwave-displacement);
+}
+
+/* Boot noise overlay */
+.boot-noise-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1001;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  animation: boot-noise-flicker 0.08s steps(3) infinite;
+}
+
+@keyframes boot-noise-flicker {
+  0%, 100% {
+    opacity: 0.02;
+    transform: translate3d(0, 0, 0);
+  }
+  33% {
+    opacity: 0.04;
+    transform: translate3d(-2px, 1px, 0);
+  }
+  66% {
+    opacity: 0.03;
+    transform: translate3d(1px, -2px, 0);
+  }
+}
+
+/* ============================================
+ * Verlet Particle System Styles
+ * ============================================ */
+
+.verlet-particles {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Particle glow effect */
+.verlet-particle {
+  filter: url(#particle-glow);
+}
+
+/* ============================================
+ * SVG Filter Application Classes
+ * ============================================ */
+
+.hyper-crt-filter-bloom {
+  filter: url(#hyper-crt-bloom);
+}
+
+.hyper-crt-filter-vhold {
+  filter: url(#hyper-crt-vhold);
+}
+
+.hyper-crt-filter-chromatic {
+  filter: url(#hyper-crt-chromatic);
+}
+
+.hyper-crt-filter-gamma {
+  filter: url(#hyper-crt-gamma);
+}
+
+.hyper-crt-filter-composite {
+  filter: url(#hyper-crt-composite);
+}
+
+/* Combined filter stack */
+.hyper-crt-filter-full {
+  filter: 
+    url(#hyper-crt-gamma)
+    url(#hyper-crt-bloom)
+    url(#hyper-crt-chromatic);
+}
+
+/* ============================================
+ * V-Hold Glitch Effect
+ * Horizontal tearing animation
+ * ============================================ */
+
+.hyper-crt-vhold-glitch {
+  position: relative;
+}
+
+.hyper-crt-vhold-glitch::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  z-index: 100;
+  animation: vhold-tear 8s linear infinite;
+  opacity: 0;
+}
+
+@keyframes vhold-tear {
+  0%, 90%, 100% {
+    opacity: 0;
+    top: 0;
+    transform: scaleX(1);
+  }
+  92% {
+    opacity: 0.3;
+    top: 20%;
+    transform: scaleX(1.02) translateX(-2px);
+  }
+  94% {
+    opacity: 0.2;
+    top: 45%;
+    transform: scaleX(0.98) translateX(3px);
+  }
+  96% {
+    opacity: 0.4;
+    top: 70%;
+    transform: scaleX(1.01) translateX(-1px);
+  }
+  98% {
+    opacity: 0.1;
+    top: 90%;
+    transform: scaleX(1);
+  }
+}
+
+/* ============================================
+ * Reduced Motion Overrides
+ * ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .hyper-crt-jitter,
+  .hyper-crt-jitter--subtle {
+    animation: none;
+    transform: none;
+  }
+
+  .hyper-crt-moire,
+  .hyper-crt-moire::after {
+    animation: none;
+  }
+
+  .hyper-crt-phosphor-decay {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  .hyper-crt-signal-noise {
+    animation: none;
+    opacity: 0.01;
+  }
+
+  .hyper-crt-signal-burst {
+    display: none;
+  }
+
+  .boot-noise-overlay {
+    animation: none;
+    opacity: 0.02;
+  }
+
+  .hyper-crt-vhold-glitch::before {
+    display: none;
+  }
+}
+
+/* ============================================
+ * Performance Degradation Fallbacks
+ * Applied when FPS drops below threshold
+ * ============================================ */
+
+.hyper-crt--degraded .hyper-crt-moire,
+.hyper-crt--degraded .hyper-crt-signal-noise,
+.hyper-crt--degraded .hyper-crt-signal-burst,
+.hyper-crt--degraded .hyper-crt-phosphor-decay {
+  display: none;
+}
+
+.hyper-crt--degraded .hyper-crt-jitter {
+  animation: none;
+}
+
+.hyper-crt--degraded .hyper-crt-filter-full {
+  filter: none;
+}
+
+
+/* ============================================
+ * Mobile Responsive Adjustments
+ * ============================================ */
+
+/* Small mobile: < 480px */
+@media (max-width: 479px) {
+  .hyper-crt-scanlines {
+    /* Larger scanline gap on small screens for visibility */
+    background-size: 100% 3px;
+  }
+  
+  .hyper-crt-moire {
+    /* Reduce moiré intensity on small screens */
+    opacity: 0.4;
+  }
+  
+  .hyper-crt-signal-noise {
+    /* Reduce noise on mobile for performance */
+    opacity: 0.01;
+    animation-duration: 0.1s;
+  }
+  
+  .hyper-crt-phosphor-decay {
+    /* Simpler glow on mobile */
+    box-shadow: inset 0 0 50px 10px rgba(249, 115, 22, 0.01);
+  }
+  
+  .hyper-crt-jitter,
+  .hyper-crt-jitter--subtle {
+    /* Disable jitter on small mobile */
+    animation: none;
+  }
+}
+
+/* Mobile: < 768px */
+@media (max-width: 767px) {
+  .hyper-crt-container {
+    /* Use dynamic viewport height for mobile browsers */
+    height: 100dvh;
+  }
+  
+  .hyper-crt-signal-burst {
+    /* Disable signal burst on mobile */
+    display: none;
+  }
+  
+  .hyper-crt-vhold-glitch::before {
+    /* Disable V-hold glitch on mobile */
+    display: none;
+  }
+  
+  .verlet-particles {
+    /* Reduce particle layer complexity on mobile */
+    filter: none;
+  }
+}
+
+/* Tablet: 768px - 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hyper-crt-scanlines {
+    background-size: 100% 3px;
+  }
+  
+  .hyper-crt-moire {
+    opacity: 0.5;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .hyper-crt-jitter,
+  .hyper-crt-jitter--subtle {
+    /* Reduce jitter on touch devices */
+    animation: subpixel-jitter-subtle 0.2s steps(2) infinite;
+  }
+  
+  .hyper-crt-signal-noise {
+    /* Simpler noise animation on touch */
+    animation: signal-noise-shift 0.1s steps(2) infinite;
+  }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hyper-crt-container {
+    /* Ensure full height in landscape */
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* High DPI / Retina displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .hyper-crt-scanlines {
+    /* Finer scanlines on retina */
+    background-size: 100% 2px;
+  }
+  
+  .hyper-crt-moire {
+    /* Finer moiré on retina */
+    background-size: 100% 1.5px;
+  }
+}
+
+/* Safe area support for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+  .hyper-crt-container {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}

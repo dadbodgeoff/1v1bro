@@ -287,7 +287,7 @@ export function BattlePassTrack({
                   'mt-2 w-8 h-8 rounded-full flex items-center justify-center font-bold',
                   config.tierSize,
                   isUnlocked 
-                    ? 'bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] text-white' 
+                    ? 'bg-[#6366f1] text-white' 
                     : 'bg-[var(--color-bg-elevated)] text-[var(--color-text-muted)] border border-[var(--color-border-subtle)]'
                 )}
               >
@@ -301,7 +301,7 @@ export function BattlePassTrack({
       {/* Progress Line (behind cards) */}
       <div className="absolute bottom-[26px] left-12 right-12 h-1 bg-[var(--color-border-subtle)] pointer-events-none rounded-full -z-10">
         <div
-          className="h-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] transition-all duration-500 rounded-full"
+          className="h-full bg-[#6366f1] transition-all duration-500 rounded-full"
           style={{
             width: `${Math.min((currentTier / tiers.length) * 100, 100)}%`,
           }}
@@ -417,7 +417,7 @@ function CoinIcon({ style }: { style?: React.CSSProperties }) {
 
 function XPBoostIcon({ style }: { style?: React.CSSProperties }) {
   return (
-    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth={2}>
+    <svg style={style} viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
     </svg>
   )

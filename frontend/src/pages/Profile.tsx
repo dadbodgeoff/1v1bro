@@ -67,7 +67,6 @@ export const Profile: React.FC = () => {
   // Achievements data
   const {
     achievements,
-    fetchAchievements,
   } = useAchievements()
 
   useEffect(() => {
@@ -76,8 +75,8 @@ export const Profile: React.FC = () => {
     fetchInventory()
     fetchLoadout()
     fetchMatches()
-    fetchAchievements()
-  }, [fetchProfile, fetchProgress, fetchInventory, fetchLoadout, fetchMatches, fetchAchievements])
+    // Achievements are auto-fetched by the hook
+  }, [fetchProfile, fetchProgress, fetchInventory, fetchLoadout, fetchMatches])
 
   const handleSave = async (updates: ProfileUpdate) => {
     await updateProfile(updates)
@@ -118,7 +117,7 @@ export const Profile: React.FC = () => {
           <div className="text-red-400 text-xl mb-4">{profileError}</div>
           <button
             onClick={() => fetchProfile()}
-            className="bg-[#6366f1] hover:bg-[#818cf8] text-white px-6 py-2 rounded-lg font-medium transition-colors"
+            className="bg-[#6366f1] hover:bg-[#818cf8] text-white px-6 py-2 rounded-lg font-medium transition-colors min-h-[44px] touch-manipulation"
           >
             Retry
           </button>
@@ -136,17 +135,26 @@ export const Profile: React.FC = () => {
     )
   }
 
-  // Sort achievements by rarity and date
-  const sortedAchievements = sortAchievements(achievements).slice(0, 6)
+  // Sort achievements by rarity and date - map to AchievementBadge format
+  const sortedAchievements = sortAchievements(
+    achievements.map(a => ({
+      id: a.id,
+      name: a.name,
+      description: a.description,
+      icon_url: a.icon_url,
+      rarity: a.rarity,
+      earned_at: new Date().toISOString(), // Default for display
+    }))
+  ).slice(0, 6)
 
   return (
     <ProfileErrorBoundary>
       <div className="min-h-screen bg-[var(--color-bg-base)]">
-        {/* Back Button */}
+        {/* Back Button - Touch optimized */}
         <div className="max-w-6xl mx-auto px-4 py-4">
           <button
             onClick={() => navigate(-1)}
-            className="text-[var(--color-text-muted)] hover:text-white flex items-center gap-2 transition-colors"
+            className="text-[var(--color-text-muted)] hover:text-white flex items-center gap-2 transition-colors min-h-[44px] touch-manipulation"
           >
             <span>←</span> Back
           </button>

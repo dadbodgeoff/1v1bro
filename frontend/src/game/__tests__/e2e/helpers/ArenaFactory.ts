@@ -5,7 +5,7 @@
  */
 
 import { ArenaManager } from '../../../arena/ArenaManager'
-import { NEXUS_ARENA } from '../../../config/maps/nexus-arena'
+import { SIMPLE_ARENA } from '../../../config/maps/simple-arena'
 import type { MapConfig, TileDefinition } from '../../../config/maps/map-schema'
 import type { 
   BarrierConfig, 
@@ -81,11 +81,11 @@ export function createMinimalMapConfig(options: MinimalArenaOptions = {}): MapCo
  */
 export class ArenaFactory {
   /**
-   * Create ArenaManager with default NEXUS_ARENA config
+   * Create ArenaManager with default SIMPLE_ARENA config
    */
   static createDefault(): ArenaManager {
     const arena = new ArenaManager()
-    arena.loadMap(NEXUS_ARENA, false) // Static spawning for tests
+    arena.loadMap(SIMPLE_ARENA, false) // Static spawning for tests
     return arena
   }
   

@@ -30,6 +30,10 @@ interface SocialLinkButtonProps {
 
 /**
  * Platform configuration with colors and behavior
+ * 
+ * NOTE: These colors are intentionally hardcoded as they represent
+ * external brand colors (Twitter, Twitch, YouTube, Discord) and should
+ * NOT use design system tokens. These are official brand guidelines.
  */
 export const platformConfig: Record<SocialPlatform, {
   color: string
@@ -37,22 +41,22 @@ export const platformConfig: Record<SocialPlatform, {
   isUrl: boolean
 }> = {
   twitter: {
-    color: '#1DA1F2',
+    color: '#1DA1F2', // Official Twitter/X brand color
     label: 'Twitter',
     isUrl: true,
   },
   twitch: {
-    color: '#9146FF',
+    color: '#9146FF', // Official Twitch brand color
     label: 'Twitch',
     isUrl: true,
   },
   youtube: {
-    color: '#FF0000',
+    color: '#FF0000', // Official YouTube brand color
     label: 'YouTube',
     isUrl: true,
   },
   discord: {
-    color: '#5865F2',
+    color: '#5865F2', // Official Discord brand color
     label: 'Discord',
     isUrl: false, // Copy to clipboard
   },

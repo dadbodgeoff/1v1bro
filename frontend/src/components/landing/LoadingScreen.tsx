@@ -44,7 +44,7 @@ export function LoadingScreen({ progress }: LoadingScreenProps) {
             ease: 'easeInOut',
           }}
         >
-          <div className="w-full h-full bg-gradient-to-r from-indigo-500/50 to-purple-500/50" />
+          <div className="w-full h-full bg-gradient-to-r from-indigo-500/50 to-indigo-400/50" />
         </motion.div>
       </motion.div>
 
@@ -74,7 +74,7 @@ export function LoadingScreen({ progress }: LoadingScreenProps) {
       {/* Progress bar */}
       <div className="mt-4 w-48 h-1 bg-neutral-800 rounded-full overflow-hidden">
         <motion.div
-          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+          className="h-full bg-gradient-to-r from-indigo-500 to-indigo-400"
           initial={{ width: 0 }}
           animate={{ width: `${progress * 100}%` }}
           transition={{ duration: 0.3 }}

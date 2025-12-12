@@ -199,11 +199,11 @@ export function HeroSection({ className }: HeroSectionProps) {
           >
             {/* Demo container with glow effect */}
             <div className="relative">
-              {/* Outer glow */}
+              {/* Outer glow - brand orange only */}
               <div 
                 className="absolute -inset-3 md:-inset-4 rounded-2xl opacity-40 blur-xl"
                 style={{
-                  background: 'linear-gradient(135deg, #F97316 0%, #A855F7 100%)',
+                  background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
                 }}
                 aria-hidden="true"
               />

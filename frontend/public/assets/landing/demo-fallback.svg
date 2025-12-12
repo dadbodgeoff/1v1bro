@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#09090B"/>
+  
+  <!-- Grid pattern for game arena feel -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  
+  <!-- Center glow -->
+  <ellipse cx="960" cy="540" rx="600" ry="400" fill="url(#centerGlow)"/>
+  <defs>
+    <radialGradient id="centerGlow">
+      <stop offset="0%" stop-color="#F97316" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#F97316" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Player 1 placeholder -->
+  <circle cx="480" cy="540" r="30" fill="#F97316" opacity="0.8"/>
+  <text x="480" y="600" text-anchor="middle" fill="#F97316" font-family="Inter, sans-serif" font-size="16" font-weight="600">P1</text>
+  
+  <!-- Player 2 placeholder -->
+  <circle cx="1440" cy="540" r="30" fill="#3B82F6" opacity="0.8"/>
+  <text x="1440" y="600" text-anchor="middle" fill="#3B82F6" font-family="Inter, sans-serif" font-size="16" font-weight="600">P2</text>
+  
+  <!-- Center text -->
+  <text x="960" y="520" text-anchor="middle" fill="#737373" font-family="Inter, sans-serif" font-size="24" font-weight="600">LIVE DEMO</text>
+  <text x="960" y="560" text-anchor="middle" fill="#525252" font-family="Inter, sans-serif" font-size="16">Loading gameplay...</text>
+  
+  <!-- Unavailable badge (hidden by default, shown when demo fails) -->
+  <g id="unavailable-badge" opacity="0">
+    <rect x="810" y="620" width="300" height="40" rx="8" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+    <text x="960" y="646" text-anchor="middle" fill="#737373" font-family="Inter, sans-serif" font-size="14" font-weight="500">Live demo unavailable</text>
+  </g>
+</svg>

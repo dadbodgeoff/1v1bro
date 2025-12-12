@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
+@import "./styles/typography.css";
+@import "./styles/components.css";
 @import "./styles/responsive.css";
 
 /* Legacy color overrides removed - using design tokens from tokens.css */
@@ -220,6 +222,19 @@ a:focus-visible {
   }
 }
 
+/* ============================================
+ * Bottom Sheet Slide Up Animation
+ * Requirements: 2.3
+ * ============================================ */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes modalScaleIn {
   from {
     opacity: 0;
@@ -297,6 +312,19 @@ a:focus-visible {
  * ============================================ */
 .btn-press:active {
   transform: scale(0.98);
+}
+
+/* ============================================
+ * Press Feedback Utility
+ * Requirements: 1.1 - Scale 0.97 with 100ms transition
+ * **Feature: ui-polish-8-of-10, Property 1: Press feedback applies correct transform**
+ * ============================================ */
+.press-feedback {
+  transition: transform var(--transition-fast);
+}
+
+.press-feedback:active {
+  transform: scale(0.97);
 }
 
 /* ============================================

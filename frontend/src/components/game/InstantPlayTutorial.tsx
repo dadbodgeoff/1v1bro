@@ -165,6 +165,20 @@ export function InstantPlayTutorial({
     return () => clearTimeout(timer)
   }, [visible, autoDismissMs, onDismiss])
 
+  // Handle keyboard press to dismiss (for "press any key" functionality)
+  useEffect(() => {
+    if (!visible || isTouch) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore modifier keys alone
+      if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return
+      onDismiss()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [visible, isTouch, onDismiss])
+
   // Handle click/tap to dismiss
   const handleDismiss = useCallback(() => {
     onDismiss()

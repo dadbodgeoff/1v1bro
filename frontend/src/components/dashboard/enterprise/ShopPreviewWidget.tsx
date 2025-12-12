@@ -236,6 +236,7 @@ function ShopItemCard({ item, onClick }: ShopItemCardProps) {
             src={previewUrl}
             alt={item.name}
             className="w-full h-full object-cover"
+            loading="lazy"
           />
         ) : (
           <div className="w-full h-full bg-white/[0.05] flex items-center justify-center">

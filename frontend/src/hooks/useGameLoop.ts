@@ -29,6 +29,8 @@ interface CallbackRefs {
   onCombatHit: MutableRefObject<((event: HitEvent) => void) | undefined>
   onCombatDeath: MutableRefObject<((event: DeathEvent) => void) | undefined>
   onCombatRespawn: MutableRefObject<((event: RespawnEvent) => void) | undefined>
+  onLocalHazardDamage?: MutableRefObject<((playerId: string, damage: number) => void) | undefined>
+  onLocalTrapTriggered?: MutableRefObject<((playerId: string, damage: number) => void) | undefined>
 }
 
 interface UseGameLoopOptions {
@@ -92,9 +94,22 @@ export function useGameLoop({
           frames: replay.frames,
         })
       },
+      // Local hazard/trap damage for offline/bot modes
+      // Always provide wrapper functions that check the ref at call time
+      // The actual offline mode is enabled via setOfflineMode() in a separate effect
+      onLocalHazardDamage: (playerId, damage) => callbackRefs.onLocalHazardDamage?.current?.(playerId, damage),
+      onLocalTrapTriggered: (playerId, damage) => callbackRefs.onLocalTrapTriggered?.current?.(playerId, damage),
     })
     engine.start()
     engineRef.current = engine
+    
+    // Force resize after a short delay to ensure DOM is fully laid out
+    requestAnimationFrame(() => {
+      engine.resize()
+      // Double-check after another frame for good measure
+      requestAnimationFrame(() => engine.resize())
+    })
+    
     setEngineReady(true)
 
     return () => {
@@ -111,6 +126,20 @@ export function useGameLoop({
   useEffect(() => {
     engineRef.current?.setCombatEnabled(combatEnabled)
   }, [combatEnabled])
+
+  // Enable offline mode if local hazard/trap callbacks are provided
+  // This enables dynamic spawning of hazards and traps
+  // Check the refs after engine is ready - refs are initialized with the callback values
+  useEffect(() => {
+    if (!engineReady || !engineRef.current) return
+    
+    // The refs are initialized with the callback values in useCallbackRefs
+    // So we can check them immediately after engine is ready
+    const hasLocalCallbacks = !!(callbackRefs.onLocalHazardDamage?.current || callbackRefs.onLocalTrapTriggered?.current)
+    if (hasLocalCallbacks) {
+      engineRef.current.setOfflineMode(true)
+    }
+  }, [engineReady])
 
   // Detect mobile and enable boosted aim assist
   useEffect(() => {

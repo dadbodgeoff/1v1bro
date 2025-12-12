@@ -6,7 +6,23 @@
  * @module battlepass/enterprise/rewardConfig
  */
 
-import type { Rarity, SizeConfig, DisplaySize } from './types'
+import type { SizeConfig, DisplaySize } from './types'
+import {
+  rarityBorders as sharedRarityBorders,
+  rarityGlows as sharedRarityGlows,
+  rarityBgGradients as sharedRarityBgGradients,
+  premiumStyles as sharedPremiumStyles,
+  getRarityBorder as sharedGetRarityBorder,
+  getRarityGlow as sharedGetRarityGlow,
+} from '@/styles/rarity'
+
+// Re-export from shared rarity module for backward compatibility
+export const rarityBorders = sharedRarityBorders
+export const rarityGlows = sharedRarityGlows
+export const rarityBgGradients = sharedRarityBgGradients
+export const premiumStyles = sharedPremiumStyles
+export const getRarityBorder = sharedGetRarityBorder
+export const getRarityGlow = sharedGetRarityGlow
 
 /**
  * Enterprise Standard Size Configuration
@@ -84,50 +100,6 @@ export const sizeConfig: Record<DisplaySize, SizeConfig> = {
     badgeSize: 'sm',
     ctaSize: 'sm',
   },
-}
-
-export const rarityBorders: Record<Rarity, string> = {
-  common: 'border-[#737373]/40',
-  uncommon: 'border-[#10b981]/40',
-  rare: 'border-[#3b82f6]/40',
-  epic: 'border-[#a855f7]/40',
-  legendary: 'border-[#f59e0b]/50',
-}
-
-export const rarityGlows: Record<Rarity, string> = {
-  common: '',
-  uncommon: 'hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]',
-  rare: 'hover:shadow-[0_0_30px_rgba(59,130,246,0.25)]',
-  epic: 'hover:shadow-[0_0_35px_rgba(168,85,247,0.3)]',
-  legendary: 'hover:shadow-[0_0_40px_rgba(245,158,11,0.35)]',
-}
-
-export const rarityBgGradients: Record<Rarity, string> = {
-  common: 'from-[#737373]/5 to-transparent',
-  uncommon: 'from-[#10b981]/10 to-transparent',
-  rare: 'from-[#3b82f6]/10 to-transparent',
-  epic: 'from-[#a855f7]/10 to-transparent',
-  legendary: 'from-[#f59e0b]/15 to-transparent',
-}
-
-export const premiumStyles = {
-  background: 'from-[#f59e0b]/20 to-[#ea580c]/20',
-  border: 'border-[#f59e0b]/30',
-  glow: 'hover:shadow-[0_0_30px_rgba(245,158,11,0.3)]',
-}
-
-/**
- * Get rarity border class for a given rarity.
- */
-export function getRarityBorder(rarity: Rarity): string {
-  return rarityBorders[rarity]
-}
-
-/**
- * Get rarity glow class for a given rarity.
- */
-export function getRarityGlow(rarity: Rarity): string {
-  return rarityGlows[rarity]
 }
 
 /**

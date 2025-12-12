@@ -61,22 +61,22 @@ export interface BackdropColors {
   deepSpace: string
   darkPurple: string
   gridLine: string
-  circuitPrimary: string
-  circuitSecondary: string
+  circuitPrimary: string   // Blue (enterprise)
+  circuitSecondary: string // Indigo (enterprise)
   energyPulse: string
-  glowCyan: string
-  glowMagenta: string
+  glowCyan: string         // Blue glow (legacy name kept for compatibility)
+  glowMagenta: string      // Indigo glow (legacy name kept for compatibility)
 }
 
 export const BACKDROP_COLORS: BackdropColors = {
   deepSpace: '#050510',
   darkPurple: '#0a0a1a',
   gridLine: '#1a1a3a',
-  circuitPrimary: '#00ffff',
-  circuitSecondary: '#ff00ff',
-  energyPulse: '#00ff88',
-  glowCyan: 'rgba(0, 255, 255, 0.3)',
-  glowMagenta: 'rgba(255, 0, 255, 0.2)',
+  circuitPrimary: '#3b82f6',    // Blue-500 (was cyan)
+  circuitSecondary: '#6366f1',  // Indigo-500 (was magenta)
+  energyPulse: '#10b981',       // Emerald-500
+  glowCyan: 'rgba(59, 130, 246, 0.3)',    // Blue glow
+  glowMagenta: 'rgba(99, 102, 241, 0.2)', // Indigo glow
 }
 
 // ============================================================================

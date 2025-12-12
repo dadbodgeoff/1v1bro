@@ -171,7 +171,7 @@ export function GuestMatchSummary({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="mb-6 p-4 bg-gradient-to-r from-purple-500/20 to-orange-500/20 rounded-xl border border-purple-500/30"
+              className="mb-6 p-4 bg-indigo-500/10 rounded-xl border border-indigo-500/30"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-neutral-400 text-sm">Match XP</span>
@@ -179,7 +179,7 @@ export function GuestMatchSummary({
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-neutral-400 text-sm">Session Total</span>
-                <span className="text-purple-400 font-bold text-lg">{totalSessionXp} XP</span>
+                <span className="text-indigo-400 font-bold text-lg">{totalSessionXp} XP</span>
               </div>
               <p className="text-xs text-neutral-500 mt-2">
                 Sign up to keep your XP and unlock rewards!
@@ -227,8 +227,8 @@ export function GuestMatchSummary({
                 onClick={handleSignup}
                 className={cn(
                   'w-full px-6 py-3 rounded-xl font-semibold text-sm',
-                  'bg-gradient-to-r from-purple-500 to-orange-500 text-white',
-                  'hover:opacity-90 transition-opacity',
+                  'bg-[#F97316] text-white',
+                  'hover:bg-[#FB923C] transition-colors',
                   'min-h-[48px]' // Touch target compliance
                 )}
               >

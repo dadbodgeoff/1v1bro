@@ -1,0 +1,541 @@
+/**
+ * 1v1 Bro Component Utilities
+ * 
+ * Reusable component patterns for enterprise consistency.
+ * 
+ * @version 1.0.0
+ */
+
+/* ============================================
+ * CARD PATTERNS
+ * ============================================ */
+
+/* Base card */
+.card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding-md);
+}
+
+/* Elevated card */
+.card-elevated {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-visible);
+  border-radius: var(--radius-xl);
+  padding: var(--card-padding-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Interactive card */
+.card-interactive {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding-md);
+  transition: transform var(--transition-normal), 
+              box-shadow var(--transition-normal), 
+              border-color var(--transition-normal);
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-border-visible);
+}
+
+.card-interactive:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+ * BUTTON PATTERNS
+ * ============================================ */
+
+/* Button base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Button sizes */
+.btn-sm {
+  height: var(--btn-height-sm);
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-body-sm);
+  gap: var(--space-1);
+}
+
+.btn-md {
+  height: var(--btn-height-md);
+  padding: 0 var(--space-4);
+  font-size: var(--font-size-body);
+  gap: var(--space-2);
+}
+
+.btn-lg {
+  height: var(--btn-height-lg);
+  padding: 0 var(--space-6);
+  font-size: var(--font-size-body-lg);
+  gap: var(--space-2);
+}
+
+.btn-xl {
+  height: var(--btn-height-xl);
+  padding: 0 var(--space-8);
+  font-size: var(--font-size-body-lg);
+  gap: var(--space-3);
+  border-radius: var(--radius-xl);
+}
+
+/* Button variants */
+.btn-brand {
+  background: var(--color-brand);
+  color: white;
+  box-shadow: var(--shadow-glow-brand);
+}
+
+.btn-brand:hover:not(:disabled) {
+  background: var(--color-brand-light);
+  box-shadow: var(--shadow-glow-brand-intense);
+  transform: translateY(-2px);
+}
+
+.btn-brand:active:not(:disabled) {
+  background: var(--color-brand-dark);
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: var(--color-accent-primary);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-primary-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  background: var(--color-accent-primary-active);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  border: 1.5px solid var(--color-border-strong);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-bg-hover);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.btn-danger {
+  background: var(--color-accent-error);
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--color-accent-error-hover);
+}
+
+.btn-premium {
+  background: var(--gradient-premium);
+  color: black;
+  font-weight: var(--font-weight-bold);
+  box-shadow: var(--shadow-glow-premium);
+}
+
+.btn-premium:hover:not(:disabled) {
+  background: var(--gradient-premium-hover);
+}
+
+/* ============================================
+ * INPUT PATTERNS
+ * ============================================ */
+
+.input {
+  width: 100%;
+  height: var(--input-height-md);
+  padding: 0 var(--space-4);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-visible);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-body);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 2px var(--color-border-focus);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-sm {
+  height: var(--input-height-sm);
+  padding: 0 var(--space-3);
+  font-size: var(--font-size-body-sm);
+}
+
+.input-lg {
+  height: var(--input-height-lg);
+  padding: 0 var(--space-5);
+  font-size: var(--font-size-body-lg);
+}
+
+.input-error {
+  border-color: var(--color-accent-error);
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.3);
+}
+
+/* ============================================
+ * BADGE PATTERNS
+ * ============================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.badge-sm {
+  padding: 2px var(--space-2);
+  font-size: 10px;
+}
+
+.badge-lg {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-body-sm);
+}
+
+/* Badge variants */
+.badge-default {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.badge-success {
+  background: var(--color-accent-success-bg);
+  color: var(--color-accent-success);
+}
+
+.badge-error {
+  background: var(--color-accent-error-bg);
+  color: var(--color-accent-error);
+}
+
+.badge-warning {
+  background: var(--color-accent-warning-bg);
+  color: var(--color-accent-warning);
+}
+
+.badge-info {
+  background: var(--color-accent-info-bg);
+  color: var(--color-accent-info);
+}
+
+.badge-brand {
+  background: rgba(249, 115, 22, 0.2);
+  color: var(--color-brand);
+}
+
+/* Rarity badges */
+.badge-common {
+  background: var(--color-rarity-common-bg);
+  color: var(--color-rarity-common);
+}
+
+.badge-uncommon {
+  background: var(--color-rarity-uncommon-bg);
+  color: var(--color-rarity-uncommon);
+}
+
+.badge-rare {
+  background: var(--color-rarity-rare-bg);
+  color: var(--color-rarity-rare);
+}
+
+.badge-epic {
+  background: var(--color-rarity-epic-bg);
+  color: var(--color-rarity-epic);
+}
+
+.badge-legendary {
+  background: var(--color-rarity-legendary-bg);
+  color: var(--color-rarity-legendary);
+}
+
+/* ============================================
+ * AVATAR PATTERNS
+ * ============================================ */
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-elevated);
+  overflow: hidden;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-body-sm);
+}
+
+.avatar-md {
+  width: 40px;
+  height: 40px;
+  font-size: var(--font-size-body);
+}
+
+.avatar-lg {
+  width: 64px;
+  height: 64px;
+  font-size: var(--font-size-h4);
+}
+
+.avatar-xl {
+  width: 96px;
+  height: 96px;
+  font-size: var(--font-size-h2);
+}
+
+.avatar-2xl {
+  width: 120px;
+  height: 120px;
+  font-size: var(--font-size-h1);
+}
+
+/* ============================================
+ * PROGRESS BAR PATTERNS
+ * ============================================ */
+
+.progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-sm {
+  height: 4px;
+}
+
+.progress-lg {
+  height: 12px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-slow);
+}
+
+.progress-bar-brand {
+  background: var(--color-brand);
+}
+
+.progress-bar-success {
+  background: var(--color-accent-success);
+}
+
+.progress-bar-premium {
+  background: var(--gradient-premium);
+}
+
+/* ============================================
+ * DIVIDER PATTERNS
+ * ============================================ */
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border-subtle);
+}
+
+.divider-strong {
+  background: var(--color-border-visible);
+}
+
+.divider-vertical {
+  width: 1px;
+  height: 100%;
+}
+
+/* ============================================
+ * OVERLAY PATTERNS
+ * ============================================ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg-overlay);
+  z-index: var(--z-modal-backdrop);
+}
+
+.overlay-light {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.overlay-dark {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ============================================
+ * SKELETON PATTERNS
+ * ============================================ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-card) 0%,
+    var(--color-bg-elevated) 50%,
+    var(--color-bg-card) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ============================================
+ * GLOW EFFECTS
+ * ============================================ */
+
+.glow-brand {
+  box-shadow: var(--shadow-glow-brand);
+}
+
+.glow-primary {
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.glow-premium {
+  box-shadow: var(--shadow-glow-premium);
+}
+
+.glow-success {
+  box-shadow: var(--shadow-glow-success);
+}
+
+/* Pulsing glow animation */
+.glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px var(--glow-color, var(--color-accent-primary-glow));
+  }
+  50% {
+    box-shadow: 0 0 25px var(--glow-color, var(--color-accent-primary-glow));
+  }
+}
+
+.glow-pulse-brand {
+  --glow-color: var(--color-brand-glow);
+}
+
+.glow-pulse-success {
+  --glow-color: var(--color-accent-success-glow);
+}
+
+.glow-pulse-premium {
+  --glow-color: var(--color-accent-premium-glow);
+}
+
+/* ============================================
+ * INTERACTION STATES
+ * ============================================ */
+
+/* Press feedback */
+.press-feedback {
+  transition: transform var(--transition-fast);
+}
+
+.press-feedback:active {
+  transform: scale(0.97);
+}
+
+/* Hover lift */
+.hover-lift {
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Touch target enforcement */
+.touch-target {
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+}
+
+@media (pointer: coarse) {
+  .touch-target-auto {
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+  }
+}

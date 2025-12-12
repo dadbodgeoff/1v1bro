@@ -13,32 +13,17 @@
 import { cn } from '@/utils/helpers'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import type { Cosmetic, Rarity } from '@/types/cosmetic'
+import type { Cosmetic } from '@/types/cosmetic'
 import { getCosmeticTypeName } from '@/types/cosmetic'
 import { useCountdown } from '@/hooks/useCountdown'
 import { DynamicImage } from './DynamicImage'
+import { rarityBorders, rarityGlowsAlwaysOn } from '@/styles/rarity'
 
 interface FeaturedItemProps {
   item: Cosmetic
   isOwned: boolean
   onPurchase: () => void
   onViewDetails: () => void
-}
-
-const rarityGlowStyles: Record<Rarity, string> = {
-  common: 'shadow-[0_0_60px_rgba(115,115,115,0.3)]',
-  uncommon: 'shadow-[0_0_60px_rgba(16,185,129,0.3)]',
-  rare: 'shadow-[0_0_60px_rgba(59,130,246,0.3)]',
-  epic: 'shadow-[0_0_60px_rgba(168,85,247,0.4)]',
-  legendary: 'shadow-[0_0_80px_rgba(245,158,11,0.5)]',
-}
-
-const rarityBorderStyles: Record<Rarity, string> = {
-  common: 'border-[#737373]/30',
-  uncommon: 'border-[#10b981]/30',
-  rare: 'border-[#3b82f6]/30',
-  epic: 'border-[#a855f7]/30',
-  legendary: 'border-[#f59e0b]/40',
 }
 
 export function FeaturedItem({ item, isOwned, onPurchase, onViewDetails }: FeaturedItemProps) {
@@ -50,8 +35,8 @@ export function FeaturedItem({ item, isOwned, onPurchase, onViewDetails }: Featu
       className={cn(
         'relative bg-[var(--color-bg-card)] rounded-2xl border-2 overflow-hidden',
         'transition-all duration-300',
-        rarityBorderStyles[item.rarity],
-        rarityGlowStyles[item.rarity]
+        rarityBorders[item.rarity],
+        rarityGlowsAlwaysOn[item.rarity]
       )}
     >
       <div className="flex flex-col lg:flex-row">

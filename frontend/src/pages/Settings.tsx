@@ -19,37 +19,13 @@ import {
 import type { PrivacySettingsUpdate } from '../types/profile';
 import type { Keybinds, VideoQuality, ColorblindMode, FPSLimit } from '../types/settings';
 import { DEFAULT_KEYBINDS } from '../types/settings';
-
-const VIDEO_QUALITY_OPTIONS = [
-  { value: 'low', label: 'Low', description: 'Best performance' },
-  { value: 'medium', label: 'Medium', description: 'Balanced' },
-  { value: 'high', label: 'High', description: 'Recommended' },
-  { value: 'ultra', label: 'Ultra', description: 'Best quality' },
-];
-
-const FPS_LIMIT_OPTIONS = [
-  { value: '0', label: 'Unlimited', description: 'No FPS cap' },
-  { value: '30', label: '30 FPS', description: 'Low power' },
-  { value: '60', label: '60 FPS', description: 'Smooth' },
-  { value: '120', label: '120 FPS', description: 'High refresh' },
-];
-
-const COLORBLIND_OPTIONS = [
-  { value: 'none', label: 'None', description: 'Default colors' },
-  { value: 'protanopia', label: 'Protanopia', description: 'Red-blind' },
-  { value: 'deuteranopia', label: 'Deuteranopia', description: 'Green-blind' },
-  { value: 'tritanopia', label: 'Tritanopia', description: 'Blue-blind' },
-];
-
-const KEYBIND_ACTIONS = [
-  { key: 'move_up', label: 'Move Up' },
-  { key: 'move_down', label: 'Move Down' },
-  { key: 'move_left', label: 'Move Left' },
-  { key: 'move_right', label: 'Move Right' },
-  { key: 'use_powerup', label: 'Use Power-up' },
-  { key: 'open_emote', label: 'Open Emote Wheel' },
-  { key: 'toggle_scoreboard', label: 'Toggle Scoreboard' },
-];
+import {
+  VIDEO_QUALITY_OPTIONS,
+  FPS_LIMIT_OPTIONS,
+  COLORBLIND_OPTIONS,
+  KEYBIND_ACTIONS,
+  getConfigurableKeybinds,
+} from '@/config/settings';
 
 export const Settings: React.FC = () => {
   const navigate = useNavigate();
@@ -141,7 +117,7 @@ export const Settings: React.FC = () => {
         <div className="mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="text-[var(--color-text-secondary)] hover:text-white mb-4 flex items-center gap-2 transition-colors"
+            className="text-[var(--color-text-secondary)] hover:text-white mb-4 flex items-center gap-2 transition-colors min-h-[44px] touch-manipulation"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -187,11 +163,11 @@ export const Settings: React.FC = () => {
 
           {/* Controls Section */}
           <SettingsSection id="controls" icon="⌨️" title="Controls" description="Customize keyboard shortcuts" loading={loading}>
-            {KEYBIND_ACTIONS.map(({ key, label }) => (
+            {getConfigurableKeybinds().map(({ key, label }) => (
               <KeybindInput key={key} id={`keybind_${key}`} action={label} currentKey={localKeybinds[key as keyof Keybinds]} defaultKey={DEFAULT_KEYBINDS[key as keyof Keybinds]} onCapture={(k) => handleKeybindChange(key as keyof Keybinds, k)} conflictWith={getConflictFor(key)} />
             ))}
             <div className="pt-4">
-              <button onClick={handleResetKeybinds} className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+              <button onClick={handleResetKeybinds} className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors min-h-[44px] touch-manipulation">
                 Reset All to Defaults
               </button>
             </div>

@@ -77,19 +77,25 @@ export const VORTEX_ARENA: MapConfig = {
   ],
 
   barriers: [
-    // Full walls creating structure (4 total) - vertical pillars
-    { id: 'wall_tl', type: 'full', position: { x: 320, y: 0 }, size: { x: 80, y: 160 } },
-    { id: 'wall_tr', type: 'full', position: { x: 880, y: 0 }, size: { x: 80, y: 160 } },
-    { id: 'wall_bl', type: 'full', position: { x: 320, y: 560 }, size: { x: 80, y: 160 } },
-    { id: 'wall_br', type: 'full', position: { x: 880, y: 560 }, size: { x: 80, y: 160 } },
+    // Full walls creating structure - Enterprise standard: 80x80 per tile
+    // Top pillars (2 tiles each for visual impact)
+    { id: 'wall_tl_1', type: 'full', position: { x: 320, y: 0 }, size: { x: 80, y: 80 } },
+    { id: 'wall_tl_2', type: 'full', position: { x: 320, y: 80 }, size: { x: 80, y: 80 } },
+    { id: 'wall_tr_1', type: 'full', position: { x: 880, y: 0 }, size: { x: 80, y: 80 } },
+    { id: 'wall_tr_2', type: 'full', position: { x: 880, y: 80 }, size: { x: 80, y: 80 } },
+    // Bottom pillars (2 tiles each)
+    { id: 'wall_bl_1', type: 'full', position: { x: 320, y: 560 }, size: { x: 80, y: 80 } },
+    { id: 'wall_bl_2', type: 'full', position: { x: 320, y: 640 }, size: { x: 80, y: 80 } },
+    { id: 'wall_br_1', type: 'full', position: { x: 880, y: 560 }, size: { x: 80, y: 80 } },
+    { id: 'wall_br_2', type: 'full', position: { x: 880, y: 640 }, size: { x: 80, y: 80 } },
 
-    // Half walls for spawn protection (4 total)
+    // Half walls for spawn protection - Enterprise standard: 80x80 (1 tile)
     { id: 'cover_l1', type: 'half', position: { x: 80, y: 80 }, size: { x: 80, y: 80 } },
     { id: 'cover_l2', type: 'half', position: { x: 80, y: 560 }, size: { x: 80, y: 80 } },
     { id: 'cover_r1', type: 'half', position: { x: 1120, y: 80 }, size: { x: 80, y: 80 } },
     { id: 'cover_r2', type: 'half', position: { x: 1120, y: 560 }, size: { x: 80, y: 80 } },
 
-    // Destructible barriers for dynamic gameplay (4 total)
+    // Destructible barriers - Enterprise standard: 80x80 (1 tile), 100 HP
     { id: 'destruct_l1', type: 'destructible', position: { x: 160, y: 160 }, size: { x: 80, y: 80 }, health: 100 },
     { id: 'destruct_l2', type: 'destructible', position: { x: 160, y: 480 }, size: { x: 80, y: 80 }, health: 100 },
     { id: 'destruct_r1', type: 'destructible', position: { x: 1040, y: 160 }, size: { x: 80, y: 80 }, health: 100 },
@@ -98,20 +104,27 @@ export const VORTEX_ARENA: MapConfig = {
 
   hazards: [
     // Damage zones - Vortex arms forming X pattern (4 zones, 15 DPS)
-    { id: 'dmg_top', type: 'damage', bounds: { x: 560, y: 0, width: 160, height: 80 }, intensity: 15 },
-    { id: 'dmg_bot', type: 'damage', bounds: { x: 560, y: 640, width: 160, height: 80 }, intensity: 15 },
+    // Enterprise standard: 80x80 (1 tile) per zone for balanced gameplay
+    { id: 'dmg_top_l', type: 'damage', bounds: { x: 560, y: 0, width: 80, height: 80 }, intensity: 15 },
+    { id: 'dmg_top_r', type: 'damage', bounds: { x: 640, y: 0, width: 80, height: 80 }, intensity: 15 },
+    { id: 'dmg_bot_l', type: 'damage', bounds: { x: 560, y: 640, width: 80, height: 80 }, intensity: 15 },
+    { id: 'dmg_bot_r', type: 'damage', bounds: { x: 640, y: 640, width: 80, height: 80 }, intensity: 15 },
     { id: 'dmg_mid_l', type: 'damage', bounds: { x: 480, y: 320, width: 80, height: 80 }, intensity: 15 },
     { id: 'dmg_mid_r', type: 'damage', bounds: { x: 720, y: 320, width: 80, height: 80 }, intensity: 15 },
 
     // Slow fields - Approach control (4 zones, 0.5 speed multiplier)
+    // Enterprise standard: 80x80 (1 tile) per zone
     { id: 'slow_tl', type: 'slow', bounds: { x: 480, y: 80, width: 80, height: 80 }, intensity: 0.5 },
     { id: 'slow_tr', type: 'slow', bounds: { x: 720, y: 80, width: 80, height: 80 }, intensity: 0.5 },
     { id: 'slow_bl', type: 'slow', bounds: { x: 480, y: 560, width: 80, height: 80 }, intensity: 0.5 },
     { id: 'slow_br', type: 'slow', bounds: { x: 720, y: 560, width: 80, height: 80 }, intensity: 0.5 },
 
-    // EMP zones - Power-up denial at center approaches (2 zones)
-    { id: 'emp_top', type: 'emp', bounds: { x: 560, y: 160, width: 160, height: 80 }, intensity: 1 },
-    { id: 'emp_bot', type: 'emp', bounds: { x: 560, y: 480, width: 160, height: 80 }, intensity: 1 },
+    // EMP zones - Power-up denial at center approaches (4 zones)
+    // Enterprise standard: 80x80 (1 tile) per zone for balanced ability denial
+    { id: 'emp_tl', type: 'emp', bounds: { x: 560, y: 160, width: 80, height: 80 }, intensity: 1 },
+    { id: 'emp_tr', type: 'emp', bounds: { x: 640, y: 160, width: 80, height: 80 }, intensity: 1 },
+    { id: 'emp_bl', type: 'emp', bounds: { x: 560, y: 480, width: 80, height: 80 }, intensity: 1 },
+    { id: 'emp_br', type: 'emp', bounds: { x: 640, y: 480, width: 80, height: 80 }, intensity: 1 },
   ],
 
   traps: [

@@ -16,6 +16,8 @@ interface CallbackRefs {
   onCombatHit: MutableRefObject<((event: HitEvent) => void) | undefined>
   onCombatDeath: MutableRefObject<((event: DeathEvent) => void) | undefined>
   onCombatRespawn: MutableRefObject<((event: RespawnEvent) => void) | undefined>
+  onLocalHazardDamage?: MutableRefObject<((playerId: string, damage: number) => void) | undefined>
+  onLocalTrapTriggered?: MutableRefObject<((playerId: string, damage: number) => void) | undefined>
 }
 
 interface ServerCallbacks {
@@ -44,7 +46,9 @@ export function useCallbackRefs(
   onCombatFire?: (event: FireEvent) => void,
   onCombatHit?: (event: HitEvent) => void,
   onCombatDeath?: (event: DeathEvent) => void,
-  onCombatRespawn?: (event: RespawnEvent) => void
+  onCombatRespawn?: (event: RespawnEvent) => void,
+  onLocalHazardDamage?: (playerId: string, damage: number) => void,
+  onLocalTrapTriggered?: (playerId: string, damage: number) => void
 ): CallbackRefs {
   const onPositionUpdateRef = useRef(onPositionUpdate)
   const onPowerUpCollectRef = useRef(onPowerUpCollect)
@@ -52,6 +56,8 @@ export function useCallbackRefs(
   const onCombatHitRef = useRef(onCombatHit)
   const onCombatDeathRef = useRef(onCombatDeath)
   const onCombatRespawnRef = useRef(onCombatRespawn)
+  const onLocalHazardDamageRef = useRef(onLocalHazardDamage)
+  const onLocalTrapTriggeredRef = useRef(onLocalTrapTriggered)
 
 
   useEffect(() => {
@@ -61,7 +67,9 @@ export function useCallbackRefs(
     onCombatHitRef.current = onCombatHit
     onCombatDeathRef.current = onCombatDeath
     onCombatRespawnRef.current = onCombatRespawn
-  }, [onPositionUpdate, onPowerUpCollect, onCombatFire, onCombatHit, onCombatDeath, onCombatRespawn])
+    onLocalHazardDamageRef.current = onLocalHazardDamage
+    onLocalTrapTriggeredRef.current = onLocalTrapTriggered
+  }, [onPositionUpdate, onPowerUpCollect, onCombatFire, onCombatHit, onCombatDeath, onCombatRespawn, onLocalHazardDamage, onLocalTrapTriggered])
 
   // Memoize the return object to prevent unnecessary re-renders
   // The refs themselves are stable, but we need the container object to be stable too
@@ -72,6 +80,8 @@ export function useCallbackRefs(
     onCombatHit: onCombatHitRef,
     onCombatDeath: onCombatDeathRef,
     onCombatRespawn: onCombatRespawnRef,
+    onLocalHazardDamage: onLocalHazardDamageRef,
+    onLocalTrapTriggered: onLocalTrapTriggeredRef,
   }), [])
 }
 
@@ -93,7 +103,14 @@ export function useServerCallbacks(
   useEffect(() => {
     if (setServerProjectilesCallback) {
       setServerProjectilesCallback((projectiles) => {
-        engineRef.current?.setServerProjectiles(projectiles)
+        // Check if these are bot projectiles (bot mode) or server projectiles (online mode)
+        // Bot projectiles have 'bot-proj-' prefix and should be merged, not replaced
+        const isBotMode = projectiles.length > 0 && projectiles[0]?.id?.startsWith('bot-proj-')
+        if (isBotMode) {
+          engineRef.current?.mergeExternalProjectiles(projectiles)
+        } else {
+          engineRef.current?.setServerProjectiles(projectiles)
+        }
       })
     }
   }, [setServerProjectilesCallback, playerId])

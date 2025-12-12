@@ -50,17 +50,17 @@ export function XPNotification({
           exit={{ opacity: 0, y: -20, scale: 0.95 }}
           className="fixed top-4 right-4 z-50"
         >
-          <div className="bg-gradient-to-br from-[#1a1a2e] to-[#16213e] border border-[#0f3460]/50 rounded-xl p-4 shadow-2xl min-w-[280px]">
+          <div className="bg-[#111113] border border-white/10 rounded-xl p-4 shadow-2xl min-w-[280px]">
             {/* Header */}
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00d9ff] to-[#0099ff] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-[#6366f1] flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                 </svg>
               </div>
               <div>
                 <h3 className="text-white font-bold text-lg">XP Earned!</h3>
-                <p className="text-[#00d9ff] text-2xl font-bold">+{xpAwarded} XP</p>
+                <p className="text-[#6366f1] text-2xl font-bold">+{xpAwarded} XP</p>
               </div>
             </div>
 
@@ -98,7 +98,7 @@ export function XPNotification({
               <span className="text-white font-bold">{previousTier}</span>
               {tierAdvanced && (
                 <>
-                  <svg className="w-4 h-4 text-[#00d9ff]" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-4 h-4 text-[#6366f1]" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z" />
                   </svg>
                   <motion.span

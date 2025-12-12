@@ -19,6 +19,7 @@
 
 import { cn } from '@/utils/helpers'
 import type { Rarity } from '@/types/cosmetic'
+import { achievementRarityStyles } from '@/styles/rarity'
 
 export interface Achievement {
   id: string
@@ -35,52 +36,14 @@ interface AchievementBadgeProps {
   className?: string
 }
 
-/**
- * Rarity styling configuration
- */
-export const rarityStyles: Record<Rarity, {
-  border: string
-  glow: string
-  bgGradient: string
-  shimmer: boolean
-}> = {
-  common: {
-    border: 'border-[#737373]',
-    glow: '',
-    bgGradient: 'from-gray-600 to-gray-700',
-    shimmer: false,
-  },
-  uncommon: {
-    border: 'border-[#10b981]',
-    glow: 'shadow-[0_0_20px_rgba(16,185,129,0.3)]',
-    bgGradient: 'from-green-600 to-green-700',
-    shimmer: false,
-  },
-  rare: {
-    border: 'border-[#3b82f6]',
-    glow: 'shadow-[0_0_20px_rgba(59,130,246,0.3)]',
-    bgGradient: 'from-blue-600 to-blue-700',
-    shimmer: false,
-  },
-  epic: {
-    border: 'border-[#a855f7]',
-    glow: 'shadow-[0_0_25px_rgba(168,85,247,0.3)]',
-    bgGradient: 'from-purple-600 to-purple-700',
-    shimmer: false,
-  },
-  legendary: {
-    border: 'border-[#f59e0b]',
-    glow: 'shadow-[0_0_30px_rgba(245,158,11,0.4)]',
-    bgGradient: 'from-orange-500 to-yellow-600',
-    shimmer: true,
-  },
-}
+// Re-export for backward compatibility
+export const rarityStyles = achievementRarityStyles
 
 /**
  * Get rarity style for an achievement
  */
 export function getRarityStyle(rarity: Rarity) {
-  return rarityStyles[rarity]
+  return achievementRarityStyles[rarity]
 }
 
 /**

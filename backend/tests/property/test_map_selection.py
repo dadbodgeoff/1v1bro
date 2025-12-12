@@ -11,8 +11,8 @@ from hypothesis import given, strategies as st, settings
 from app.matchmaking.models import MatchTicket, MatchFoundEvent
 
 
-# Valid map slugs
-VALID_MAP_SLUGS = ['nexus-arena', 'vortex-arena']
+# Valid map slugs (simple-arena is default, vortex-arena is secondary)
+VALID_MAP_SLUGS = ['simple-arena', 'vortex-arena']
 map_slug_strategy = st.sampled_from(VALID_MAP_SLUGS)
 
 
@@ -100,9 +100,9 @@ class TestMatchTicketMapSlug:
         
         assert restored.map_slug == original.map_slug
     
-    def test_match_ticket_defaults_to_nexus_arena(self):
+    def test_match_ticket_defaults_to_simple_arena(self):
         """
-        Example: MatchTicket defaults to nexus-arena when map_slug not provided.
+        Example: MatchTicket defaults to simple-arena when map_slug not provided.
         
         **Feature: map-selection, Property 3: Match ticket stores map**
         **Validates: Requirements 2.1**
@@ -113,7 +113,7 @@ class TestMatchTicketMapSlug:
             queue_time=datetime.utcnow(),
         )
         
-        assert ticket.map_slug == "nexus-arena"
+        assert ticket.map_slug == "simple-arena"
 
 
 class TestMatchFoundEventMapSlug:
@@ -191,9 +191,9 @@ class TestLobbyMapSlugRoundTrip:
         assert 'map_slug' in lobby_data
         assert lobby_data['map_slug'] == map_slug
     
-    def test_lobby_defaults_to_nexus_arena(self):
+    def test_lobby_defaults_to_simple_arena(self):
         """
-        Example: Lobby without explicit map_slug defaults to nexus-arena.
+        Example: Lobby without explicit map_slug defaults to simple-arena.
         
         **Feature: map-selection, Property 5: Lobby stores and returns map**
         **Validates: Requirements 5.3**
@@ -205,10 +205,10 @@ class TestLobbyMapSlugRoundTrip:
             "host_id": "test-host-id",
             "status": "waiting",
             "game_mode": "fortnite",
-            "map_slug": "nexus-arena",  # Default value
+            "map_slug": "simple-arena",  # Default value
         }
         
-        assert lobby_data.get('map_slug', 'nexus-arena') == 'nexus-arena'
+        assert lobby_data.get('map_slug', 'simple-arena') == 'simple-arena'
 
 
 
@@ -286,7 +286,7 @@ class TestSameMapMatching:
             player_name="Player 1",
             queue_time=datetime.utcnow(),
             game_mode="fortnite",
-            map_slug="nexus-arena",
+            map_slug="simple-arena",
         )
         ticket2 = MatchTicket(
             player_id="player-2",
@@ -409,9 +409,9 @@ class TestWebSocketEventsMapSlug:
         assert 'map_slug' in event['payload']
         assert event['payload']['map_slug'] == map_slug
     
-    def test_lobby_state_defaults_to_nexus_arena(self):
+    def test_lobby_state_defaults_to_simple_arena(self):
         """
-        Example: build_lobby_state defaults to nexus-arena when map_slug not provided.
+        Example: build_lobby_state defaults to simple-arena when map_slug not provided.
         
         **Feature: map-selection, Property 6: WebSocket events include map**
         **Validates: Requirements 6.1**
@@ -426,11 +426,11 @@ class TestWebSocketEventsMapSlug:
             host_id="test-host",
         )
         
-        assert event['payload']['map_slug'] == 'nexus-arena'
+        assert event['payload']['map_slug'] == 'simple-arena'
     
-    def test_game_start_defaults_to_nexus_arena(self):
+    def test_game_start_defaults_to_simple_arena(self):
         """
-        Example: build_game_start defaults to nexus-arena when map_slug not provided.
+        Example: build_game_start defaults to simple-arena when map_slug not provided.
         
         **Feature: map-selection, Property 6: WebSocket events include map**
         **Validates: Requirements 6.2**
@@ -444,4 +444,4 @@ class TestWebSocketEventsMapSlug:
             player2_id="player-2",
         )
         
-        assert event['payload']['map_slug'] == 'nexus-arena'
+        assert event['payload']['map_slug'] == 'simple-arena'

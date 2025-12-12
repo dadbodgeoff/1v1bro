@@ -97,7 +97,7 @@ class MatchmakingService:
         player_id: str,
         player_name: str,
         category: str = "fortnite",
-        map_slug: str = "nexus-arena",
+        map_slug: str = "simple-arena",
     ) -> MatchTicket:
         """
         Add player to matchmaking queue.
@@ -106,7 +106,7 @@ class MatchmakingService:
             player_id: Player UUID
             player_name: Display name
             category: Trivia category (fortnite, nfl, etc.)
-            map_slug: Arena map slug (nexus-arena, vortex-arena)
+            map_slug: Arena map slug (simple-arena, vortex-arena)
             
         Returns:
             Created MatchTicket

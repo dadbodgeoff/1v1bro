@@ -58,10 +58,13 @@ export function ClaimCTA({
     <button
       onClick={isDisabled ? undefined : onClick}
       disabled={isDisabled}
+      aria-label={getButtonText(variant)}
+      aria-busy={isLoading}
       className={cn(
         'inline-flex items-center justify-center rounded-lg font-bold uppercase tracking-wide',
         'transition-all duration-200 ease-out',
-        'active:scale-[0.98]',
+        // Accessibility utilities - use press-feedback instead of inline active:scale
+        'focus-ring press-feedback touch-target',
         variantStyles[variant],
         sizeStyles[size],
         isLoading && 'opacity-70',

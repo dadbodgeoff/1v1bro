@@ -95,9 +95,20 @@ export function RewardDisplayBox({
 
   return (
     <div
+      role={onClaim && isClaimable ? 'button' : undefined}
+      tabIndex={onClaim && isClaimable ? 0 : undefined}
+      aria-label={`${getRewardName(reward)}, ${rarity} ${getRewardTypeLabel(reward.type)}${isPremium ? ', premium' : ''}${isClaimed ? ', claimed' : ''}${isClaimable ? ', claimable' : ''}`}
+      onKeyDown={(e) => {
+        if (onClaim && isClaimable && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault()
+          onClaim()
+        }
+      }}
       className={cn(
         'group relative rounded-xl border-2 overflow-hidden',
         'transition-all duration-300 ease-out',
+        // Accessibility utilities
+        'focus-ring press-feedback touch-target',
         // Base styling
         isPremium
           ? cn('bg-gradient-to-br', premiumStyles.background, premiumStyles.border)

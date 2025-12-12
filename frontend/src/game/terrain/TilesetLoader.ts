@@ -48,6 +48,23 @@ export interface LoadedTileset {
 // ============================================================================
 
 export const TILESET_CONFIGS: Record<string, Omit<TilesetConfig, 'url'>> = {
+  // Cyber Arena tilesets (88x88 tiles)
+  'cyber-tilesheet': {
+    id: 'cyber-tilesheet',
+    columns: 4,
+    rows: 4,
+    tileWidth: 88,
+    tileHeight: 88,
+    removeBackground: false,
+  },
+  'cyber-tilesheet2': {
+    id: 'cyber-tilesheet2',
+    columns: 4,
+    rows: 3,
+    tileWidth: 88,
+    tileHeight: 88,
+    removeBackground: false,
+  },
   // New industrial tilesets
   'floor-tiles': {
     id: 'floor-tiles',
@@ -170,14 +187,29 @@ class TilesetLoaderClass {
     }
 
     const newTilesets = ['floor-tiles', 'wall-tiles', 'cover-tiles', 'hazard-tiles', 'prop-tiles', 'arena-border']
-    const extension = newTilesets.includes(tilesetId) ? 'jpg' : 'jpeg'
+    const cyberTilesets = ['cyber-tilesheet', 'cyber-tilesheet2']
+
+    let extension = 'jpeg'
+    if (newTilesets.includes(tilesetId) || cyberTilesets.includes(tilesetId)) {
+      extension = 'jpg'
+    }
+    
+    // Map cyber tileset IDs to actual filenames
+    let filename = tilesetId
+    if (tilesetId === 'cyber-tilesheet') {
+      filename = 'tilesheet'
+    } else if (tilesetId === 'cyber-tilesheet2') {
+      filename = 'tilesheet2'
+    }
     const shouldRemoveBackground = baseConfig.removeBackground !== undefined 
       ? baseConfig.removeBackground 
       : true
+
+    console.log(`[TilesetLoader] Config for ${tilesetId}: removeBackground in baseConfig = ${baseConfig.removeBackground}, shouldRemoveBackground = ${shouldRemoveBackground}`)
     
     const config: TilesetConfig = {
       ...baseConfig,
-      url: this.buildStorageUrl(`${tilesetId}.${extension}`),
+      url: this.buildStorageUrl(`${filename}.${extension}`),
       removeBackground: shouldRemoveBackground,
     }
 
@@ -236,10 +268,14 @@ class TilesetLoaderClass {
     const tileWidth = config.tileWidth > 0 ? config.tileWidth : Math.floor(img.width / columns)
     const tileHeight = config.tileHeight > 0 ? config.tileHeight : Math.floor(img.height / rows)
 
+    console.log(`[TilesetLoader] Extracting tiles from ${config.id}: ${columns}x${rows}, removeBackground=${shouldRemove}`)
+
     let sourceCanvas: HTMLCanvasElement
     if (shouldRemove) {
+      console.log(`[TilesetLoader] Removing background for ${config.id}`)
       sourceCanvas = removeBackground(img, 'auto')
     } else {
+      console.log(`[TilesetLoader] Keeping original image for ${config.id} (no background removal)`)
       sourceCanvas = document.createElement('canvas')
       sourceCanvas.width = img.width
       sourceCanvas.height = img.height

@@ -16,9 +16,9 @@
  */
 
 import { cn } from '@/utils/helpers'
-import type { Loadout, InventoryItem, CosmeticType, Rarity } from '@/types/cosmetic'
+import type { Loadout, InventoryItem, CosmeticType } from '@/types/cosmetic'
 import { getCosmeticTypeName } from '@/types/cosmetic'
-import { rarityBorders } from './InventoryItemBox'
+import { rarityBorders, rarityGlowsSubtle } from '@/styles/rarity'
 import { DynamicImage } from '@/components/shop/DynamicImage'
 import { SkinPreview, type SkinId } from '@/components/shop/SkinPreview'
 
@@ -43,14 +43,6 @@ export const SLOT_ICONS: Record<CosmeticType, string> = {
   effect: '✨',
   trail: '🌟',
   playercard: '🎴',
-}
-
-const rarityHoverGlows: Record<Rarity, string> = {
-  common: 'hover:shadow-[0_0_15px_rgba(115,115,115,0.2)]',
-  uncommon: 'hover:shadow-[0_0_15px_rgba(16,185,129,0.25)]',
-  rare: 'hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]',
-  epic: 'hover:shadow-[0_0_15px_rgba(168,85,247,0.35)]',
-  legendary: 'hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]',
 }
 
 export function LoadoutPanel({
@@ -85,7 +77,7 @@ export function LoadoutPanel({
                 equippedItem ? [
                   'bg-[var(--color-bg-elevated)] border-2',
                   rarity && rarityBorders[rarity],
-                  rarity && rarityHoverGlows[rarity],
+                  rarity && rarityGlowsSubtle[rarity],
                 ] : [
                   'bg-[var(--color-bg-card)] border-2 border-dashed border-[var(--color-border-subtle)]',
                   'hover:border-[var(--color-border-default)] hover:bg-[var(--color-bg-elevated)]',

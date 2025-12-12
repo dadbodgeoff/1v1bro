@@ -17,6 +17,7 @@ import { useGameStore } from '@/stores/gameStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useCosmeticsStore } from '@/stores/cosmeticsStore'
 import { API_BASE } from '@/utils/constants'
+import { BREAKPOINTS } from '@/utils/breakpoints'
 import {
   getInstantPlayManager,
   GuestSessionManager,
@@ -26,7 +27,8 @@ import {
   type MatchResult,
   type GuestMilestone,
 } from '@/game/guest'
-import type { Vector2, FireEvent, HitEvent, DeathEvent, Projectile } from '@/game'
+import type { Vector2, FireEvent, HitEvent, DeathEvent, Projectile, PowerUpState, PowerUpType } from '@/game'
+import { SIMPLE_ARENA } from '@/game/config/maps'
 import {
   trackInstantPlayStart,
   trackInstantPlayCategorySelect,
@@ -62,11 +64,91 @@ const BOT_CONFIG = {
   quizAccuracy: 0.55,
   minAnswerTime: 2500,
   maxAnswerTime: 8000,
-  shootCooldown: 800,
+  shootCooldown: 1200, // Increased from 800ms to reduce spam
   shootAccuracy: 0.7,
   aggroRange: 400,
   retreatHealth: 30,
 }
+
+// Helper: Check if a line segment intersects a rectangle (for wall collision)
+function lineIntersectsRect(
+  x1: number, y1: number, x2: number, y2: number,
+  rx: number, ry: number, rw: number, rh: number
+): boolean {
+  // Check if line segment from (x1,y1) to (x2,y2) intersects rectangle at (rx,ry) with size (rw,rh)
+  const left = rx
+  const right = rx + rw
+  const top = ry
+  const bottom = ry + rh
+
+  // Check if either endpoint is inside the rectangle
+  if ((x1 >= left && x1 <= right && y1 >= top && y1 <= bottom) ||
+      (x2 >= left && x2 <= right && y2 >= top && y2 <= bottom)) {
+    return true
+  }
+
+  // Check line intersection with each edge
+  const dx = x2 - x1
+  const dy = y2 - y1
+
+  // Parametric line: P = P1 + t * (P2 - P1), t in [0,1]
+  let tMin = 0
+  let tMax = 1
+
+  // Check against left/right edges
+  if (dx !== 0) {
+    const tLeft = (left - x1) / dx
+    const tRight = (right - x1) / dx
+    const t1 = Math.min(tLeft, tRight)
+    const t2 = Math.max(tLeft, tRight)
+    tMin = Math.max(tMin, t1)
+    tMax = Math.min(tMax, t2)
+  } else if (x1 < left || x1 > right) {
+    return false
+  }
+
+  // Check against top/bottom edges
+  if (dy !== 0) {
+    const tTop = (top - y1) / dy
+    const tBottom = (bottom - y1) / dy
+    const t1 = Math.min(tTop, tBottom)
+    const t2 = Math.max(tTop, tBottom)
+    tMin = Math.max(tMin, t1)
+    tMax = Math.min(tMax, t2)
+  } else if (y1 < top || y1 > bottom) {
+    return false
+  }
+
+  return tMax >= tMin && tMax >= 0 && tMin <= 1
+}
+
+// Check if there's a clear line of sight between two points (no walls blocking)
+function hasLineOfSight(x1: number, y1: number, x2: number, y2: number): boolean {
+  const barriers = SIMPLE_ARENA.barriers
+  for (const barrier of barriers) {
+    if (lineIntersectsRect(x1, y1, x2, y2, barrier.position.x, barrier.position.y, barrier.size.x, barrier.size.y)) {
+      return false
+    }
+  }
+  return true
+}
+
+// Check if a point is inside any wall barrier
+function pointInWall(x: number, y: number): boolean {
+  const barriers = SIMPLE_ARENA.barriers
+  for (const barrier of barriers) {
+    if (x >= barrier.position.x && x <= barrier.position.x + barrier.size.x &&
+        y >= barrier.position.y && y <= barrier.position.y + barrier.size.y) {
+      return true
+    }
+  }
+  return false
+}
+
+// Power-up configuration
+const POWER_UP_TYPES: PowerUpType[] = ['sos', 'time_steal', 'shield', 'double_points']
+const POWER_UP_SPAWN_INTERVAL = 15000 // 15 seconds
+const POWER_UP_DURATION = 10000 // 10 seconds before despawn
 
 type BotBehavior = 'patrol' | 'chase' | 'evade' | 'strafe'
 
@@ -147,11 +229,20 @@ export function useInstantPlay() {
   const [questions, setQuestions] = useState<PracticeQuestion[]>([])
   const [questionsLoading, setQuestionsLoading] = useState(false)
   
+  // Power-up state
+  const [powerUps, setPowerUps] = useState<PowerUpState[]>([])
+  const powerUpIdRef = useRef(0)
+  const lastPowerUpSpawnRef = useRef(0)
+  
   // Combat stats
   const [playerKills, setPlayerKills] = useState(0)
   const [botKills, setBotKills] = useState(0)
   const [answerStreak, setAnswerStreak] = useState(0)
   const [killStreak, setKillStreak] = useState(0)
+  
+  // Quiz stats - track actual correct answers
+  const [playerCorrectAnswers, setPlayerCorrectAnswers] = useState(0)
+  const [playerAnsweredCount, setPlayerAnsweredCount] = useState(0)
 
   // Answer tracking
   const [playerAnswer, setPlayerAnswer] = useState<{ answer: string; timeMs: number } | null>(null)
@@ -171,10 +262,10 @@ export function useInstantPlay() {
   const [isMobileLandscape, setIsMobileLandscape] = useState(false)
 
 
-  // Check orientation
+  // Check orientation - use centralized breakpoint
   useEffect(() => {
     const checkOrientation = () => {
-      const isMobile = window.innerWidth < 1024
+      const isMobile = window.innerWidth < BREAKPOINTS.tablet
       const landscape = window.innerWidth > window.innerHeight
       setIsMobileLandscape(isMobile && landscape)
     }
@@ -268,6 +359,53 @@ export function useInstantPlay() {
   }, [phase, questions, currentQuestion, setQuestion])
 
 
+  // Power-up spawning loop
+  useEffect(() => {
+    if (phase !== 'playing') return
+    
+    const spawnPowerUp = () => {
+      const now = Date.now()
+      if (now - lastPowerUpSpawnRef.current < POWER_UP_SPAWN_INTERVAL) return
+      
+      // Get spawn positions from map config
+      const spawnPositions = SIMPLE_ARENA.powerUpSpawns
+      if (spawnPositions.length === 0) return
+      
+      // Pick random position and type
+      const pos = spawnPositions[Math.floor(Math.random() * spawnPositions.length)]
+      const type = POWER_UP_TYPES[Math.floor(Math.random() * POWER_UP_TYPES.length)]
+      
+      const newPowerUp: PowerUpState = {
+        id: powerUpIdRef.current++,
+        position: { x: pos.x, y: pos.y },
+        type,
+        active: true,
+        collected: false,
+      }
+      
+      setPowerUps(prev => [...prev, newPowerUp])
+      lastPowerUpSpawnRef.current = now
+      
+      // Auto-despawn after duration
+      setTimeout(() => {
+        setPowerUps(prev => prev.filter(p => p.id !== newPowerUp.id))
+      }, POWER_UP_DURATION)
+    }
+    
+    // Spawn initial power-up after 3 seconds
+    const initialTimeout = setTimeout(() => {
+      spawnPowerUp()
+    }, 3000)
+    
+    // Then spawn periodically
+    const interval = setInterval(spawnPowerUp, POWER_UP_SPAWN_INTERVAL)
+    
+    return () => {
+      clearTimeout(initialTimeout)
+      clearInterval(interval)
+    }
+  }, [phase])
+
   // Bot movement loop
   useEffect(() => {
     if (phase !== 'playing') return
@@ -348,23 +486,26 @@ export function useInstantPlay() {
       state.position.y = Math.max(100, Math.min(620, state.position.y))
       setBotPosition({ ...state.position })
 
-      // Bot shooting
+      // Bot shooting - only if has line of sight to player (no walls blocking)
       if (distToPlayer < 500 && now - state.lastShot > BOT_CONFIG.shootCooldown) {
-        state.lastShot = now
-        let shotDx = dx, shotDy = dy
-        if (Math.random() > BOT_CONFIG.shootAccuracy) {
-          const spread = 0.3
-          shotDx += (Math.random() - 0.5) * distToPlayer * spread
-          shotDy += (Math.random() - 0.5) * distToPlayer * spread
+        // Check line of sight before shooting
+        if (hasLineOfSight(state.position.x, state.position.y, playerPosition.x, playerPosition.y)) {
+          state.lastShot = now
+          let shotDx = dx, shotDy = dy
+          if (Math.random() > BOT_CONFIG.shootAccuracy) {
+            const spread = 0.3
+            shotDx += (Math.random() - 0.5) * distToPlayer * spread
+            shotDy += (Math.random() - 0.5) * distToPlayer * spread
+          }
+          const shotDist = Math.sqrt(shotDx * shotDx + shotDy * shotDy)
+          setBotProjectiles(prev => [...prev, {
+            id: projectileIdRef.current++,
+            x: state.position.x,
+            y: state.position.y,
+            vx: (shotDx / shotDist) * 400,
+            vy: (shotDy / shotDist) * 400,
+          }])
         }
-        const shotDist = Math.sqrt(shotDx * shotDx + shotDy * shotDy)
-        setBotProjectiles(prev => [...prev, {
-          id: projectileIdRef.current++,
-          x: state.position.x,
-          y: state.position.y,
-          vx: (shotDx / shotDist) * 400,
-          vy: (shotDy / shotDist) * 400,
-        }])
       }
     }
     const interval = setInterval(updateBot, 1000 / 60)
@@ -382,7 +523,11 @@ export function useInstantPlay() {
         for (const p of prev) {
           const newX = p.x + p.vx * deltaTime
           const newY = p.y + p.vy * deltaTime
+          // Check bounds
           if (newX < 0 || newX > 1280 || newY < 0 || newY > 720) continue
+          // Check wall collision - destroy projectile if it hits a wall
+          if (pointInWall(newX, newY)) continue
+          // Check player hit
           const dx = newX - playerPosition.x
           const dy = newY - playerPosition.y
           if (Math.sqrt(dx * dx + dy * dy) < 30) {
@@ -458,8 +603,8 @@ export function useInstantPlay() {
       botScore: opponentScore,
       kills: playerKills,
       deaths: botKills,
-      questionsAnswered: questions.length,
-      questionsCorrect: Math.floor(localScore / 100),
+      questionsAnswered: playerAnsweredCount,
+      questionsCorrect: playerCorrectAnswers,
       matchDurationMs: Date.now() - (instantPlayManager.getInitTimeMs() > 0 ? Date.now() - instantPlayManager.getInitTimeMs() : 0),
       category: selectedCategory,
     }
@@ -486,7 +631,7 @@ export function useInstantPlay() {
       trackConversionPromptShown(prompt.id, session.matchesPlayed)
       setTimeout(() => setShowConversionPrompt(true), 2000)
     }
-  }, [localScore, opponentScore, playerKills, botKills, questions.length, selectedCategory])
+  }, [localScore, opponentScore, playerKills, botKills, playerAnsweredCount, playerCorrectAnswers, selectedCategory])
 
   // Process round when both answered
   useEffect(() => {
@@ -498,6 +643,12 @@ export function useInstantPlay() {
     const playerScoreVal = playerCorrect ? Math.max(100, 1000 - Math.floor(playerAnswer.timeMs / 30)) : 0
     const botCorrect = botAnswer.answer === q.correct_answer
     const botScoreVal = botCorrect ? Math.max(100, 1000 - Math.floor(botAnswer.timeMs / 30)) : 0
+
+    // Track actual correct answers
+    if (playerCorrect) {
+      setPlayerCorrectAnswers(prev => prev + 1)
+    }
+    setPlayerAnsweredCount(prev => prev + 1)
 
     if (playerCorrect) {
       const newStreak = answerStreak + 1
@@ -568,6 +719,47 @@ export function useInstantPlay() {
 
   const handleCombatDeath = useCallback((_event: DeathEvent) => {}, [])
 
+  // Handle power-up collection
+  const handlePowerUpCollect = useCallback((powerUpId: number) => {
+    setPowerUps(prev => prev.map(p => 
+      p.id === powerUpId ? { ...p, collected: true, active: false } : p
+    ))
+    // Remove after brief delay for collection animation
+    setTimeout(() => {
+      setPowerUps(prev => prev.filter(p => p.id !== powerUpId))
+    }, 500)
+  }, [])
+
+  // Handle local hazard damage (offline mode - player steps on hazard)
+  const handleLocalHazardDamage = useCallback((targetId: string, damage: number) => {
+    if (targetId === 'guest') {
+      setPlayerHealth(prev => {
+        const newHealth = Math.max(0, prev - damage)
+        if (newHealth <= 0) {
+          setBotKills(k => k + 1)
+          setKillStreak(0)
+          setTimeout(() => setPlayerHealth(100), 1500)
+        }
+        return newHealth
+      })
+    }
+  }, [])
+
+  // Handle local trap triggered (offline mode - player triggers trap)
+  const handleLocalTrapTriggered = useCallback((targetId: string, damage: number) => {
+    if (targetId === 'guest') {
+      setPlayerHealth(prev => {
+        const newHealth = Math.max(0, prev - damage)
+        if (newHealth <= 0) {
+          setBotKills(k => k + 1)
+          setKillStreak(0)
+          setTimeout(() => setPlayerHealth(100), 1500)
+        }
+        return newHealth
+      })
+    }
+  }, [])
+
   const setServerProjectilesCallback = useCallback((callback: (projectiles: Projectile[]) => void) => {
     serverProjectilesCallbackRef.current = callback
   }, [])
@@ -589,6 +781,8 @@ export function useInstantPlay() {
     setBotKills(0)
     setAnswerStreak(0)
     setKillStreak(0)
+    setPlayerCorrectAnswers(0)
+    setPlayerAnsweredCount(0)
     setBotProjectiles([])
     botStateRef.current.health = 100
     setMatchResult(null)
@@ -651,6 +845,10 @@ export function useInstantPlay() {
     localHealth: { playerId: 'guest', health: playerHealth, maxHealth: 100 },
     opponentHealth: { playerId: 'bot', health: botHealth, maxHealth: 100 },
     
+    // Power-ups
+    powerUps,
+    handlePowerUpCollect,
+    
     // Skins
     equippedSkin,
     opponentSkin,
@@ -677,6 +875,9 @@ export function useInstantPlay() {
     handleCombatDeath,
     setServerProjectilesCallback,
     setServerHealthCallback,
+    // Local hazard/trap damage handlers for offline mode
+    handleLocalHazardDamage,
+    handleLocalTrapTriggered,
     handlePlayAgain,
     handleLeave,
     handlePromptDismiss,

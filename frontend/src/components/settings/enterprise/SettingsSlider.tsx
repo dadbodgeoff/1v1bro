@@ -57,7 +57,7 @@ export const SettingsSlider: React.FC<SettingsSliderProps> = ({
           {showReset && defaultValue !== undefined && !isDefault && (
             <button
               onClick={() => onChange(defaultValue)}
-              className="text-xs text-[var(--color-text-secondary)] hover:text-white transition-colors"
+              className="text-xs text-[var(--color-text-secondary)] hover:text-white transition-colors px-2 py-1 min-h-[32px] touch-manipulation"
             >
               Reset
             </button>
@@ -68,7 +68,7 @@ export const SettingsSlider: React.FC<SettingsSliderProps> = ({
           {onMute && (
             <button
               onClick={onMute}
-              className={`p-1.5 rounded-lg transition-colors ${
+              className={`p-2 rounded-lg transition-colors min-w-[40px] min-h-[40px] touch-manipulation ${
                 muted
                   ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
                   : 'bg-white/5 text-[var(--color-text-secondary)] hover:bg-white/10 hover:text-white'
@@ -98,18 +98,18 @@ export const SettingsSlider: React.FC<SettingsSliderProps> = ({
           step={step}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="w-full h-2 bg-gray-700 rounded-full appearance-none cursor-pointer
+          className="w-full h-3 bg-gray-700 rounded-full appearance-none cursor-pointer touch-manipulation
             [&::-webkit-slider-thumb]:appearance-none
-            [&::-webkit-slider-thumb]:w-4
-            [&::-webkit-slider-thumb]:h-4
+            [&::-webkit-slider-thumb]:w-6
+            [&::-webkit-slider-thumb]:h-6
             [&::-webkit-slider-thumb]:rounded-full
             [&::-webkit-slider-thumb]:bg-white
             [&::-webkit-slider-thumb]:shadow-lg
             [&::-webkit-slider-thumb]:cursor-pointer
             [&::-webkit-slider-thumb]:transition-transform
             [&::-webkit-slider-thumb]:hover:scale-110
-            [&::-moz-range-thumb]:w-4
-            [&::-moz-range-thumb]:h-4
+            [&::-moz-range-thumb]:w-6
+            [&::-moz-range-thumb]:h-6
             [&::-moz-range-thumb]:rounded-full
             [&::-moz-range-thumb]:bg-white
             [&::-moz-range-thumb]:border-0

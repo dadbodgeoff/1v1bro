@@ -52,6 +52,9 @@ interface GameArenaProps {
   setHazardDespawnCallback?: (callback: (id: string) => void) => void
   setTrapSpawnCallback?: (callback: (trap: { id: string; type: string; x: number; y: number; radius: number; effect: string; effectValue: number }) => void) => void
   setTrapDespawnCallback?: (callback: (id: string) => void) => void
+  // Local hazard/trap damage callbacks for offline/bot modes
+  onLocalHazardDamage?: (playerId: string, damage: number) => void
+  onLocalTrapTriggered?: (playerId: string, damage: number) => void
   sendArenaConfig?: (config: unknown) => void
   questionBroadcast?: {
     question: QuestionBroadcastData | null
@@ -108,6 +111,8 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
   setHazardDespawnCallback,
   setTrapSpawnCallback,
   setTrapDespawnCallback,
+  onLocalHazardDamage,
+  onLocalTrapTriggered,
   sendArenaConfig,
   questionBroadcast,
   setBuffUpdateCallback,
@@ -128,7 +133,9 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
     onCombatFire,
     onCombatHit,
     onCombatDeath,
-    onCombatRespawn
+    onCombatRespawn,
+    onLocalHazardDamage,
+    onLocalTrapTriggered
   )
 
   // Game loop and engine lifecycle
@@ -219,15 +226,58 @@ export const GameArena = forwardRef<GameArenaRef, GameArenaProps>(function GameA
     },
   }), [mobileVelocityRef])
 
+  // Check if using simple theme for special styling
+  const isSimpleTheme = mapConfig?.metadata?.theme === 'simple'
+  const hexBgUrl = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/skins/Generated%20Image%20December%2012,%202025%20-%2012_04AM.jpeg'
+
   return (
-    <div className="w-full h-full flex items-center justify-center bg-slate-950 relative">
-      <canvas
-        ref={canvasRef}
-        className="max-w-full max-h-full touch-none"
-        onMouseMove={combatEnabled ? handleMouseMove : undefined}
-        onMouseDown={combatEnabled ? handleMouseDown : undefined}
-        onTouchMove={combatEnabled ? handleTouchMove : undefined}
-      />
+    <div 
+      className="w-full h-full flex items-center justify-center relative overflow-hidden"
+      style={isSimpleTheme ? {
+        backgroundColor: 'var(--color-bg-base)',
+        backgroundImage: `url(${hexBgUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      } : {
+        backgroundColor: 'var(--color-bg-base)',
+      }}
+    >
+      {/* Canvas container - needs w-full h-full for resize calculations */}
+      <div className="relative w-full h-full flex items-center justify-center">
+        {/* Inner wrapper for simple theme floating island effect */}
+        <div
+          className="relative"
+          style={isSimpleTheme ? {
+            boxShadow: '0 0 60px 30px rgba(0, 0, 0, 0.9), 0 0 100px 60px rgba(0, 0, 0, 0.6)',
+            border: '2px solid var(--color-border-subtle)',
+            borderRadius: 'var(--radius-sm)',
+          } : undefined}
+        >
+          <canvas
+            ref={canvasRef}
+            className="touch-none block"
+            style={isSimpleTheme ? {
+              filter: 'saturate(90%) contrast(105%) brightness(98%)',
+            } : undefined}
+            onMouseMove={combatEnabled ? handleMouseMove : undefined}
+            onMouseDown={combatEnabled ? handleMouseDown : undefined}
+            onTouchMove={combatEnabled ? handleTouchMove : undefined}
+          />
+          
+          {/* Vignette overlay for simple theme */}
+          {isSimpleTheme && (
+            <div 
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle at center, transparent 40%, rgba(0, 10, 20, 0.6) 100%)',
+                boxShadow: 'inset 0 0 100px 50px rgba(0, 0, 0, 0.5)',
+                borderRadius: '4px',
+              }}
+            />
+          )}
+        </div>
+      </div>
+
       {/* Respawn overlay */}
       <RespawnOverlay
         visible={isRespawning}

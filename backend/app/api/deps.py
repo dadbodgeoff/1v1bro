@@ -12,6 +12,14 @@ from supabase import Client as SupabaseClient
 
 # Type alias for service client dependency
 SupabaseServiceClient = Annotated[SupabaseClient, Depends(get_supabase_service_client)]
+
+
+def get_supabase_client() -> SupabaseClient:
+    """Get Supabase service client for API endpoints.
+    
+    This is an alias for get_supabase_service_client for backward compatibility.
+    """
+    return get_supabase_service_client()
 from app.middleware.auth import AuthenticatedUser, get_current_user, get_current_user_optional
 from app.services.auth_service import AuthService
 from app.services.lobby_service import LobbyService

@@ -189,7 +189,7 @@ export function LoadoutPreviewWidget({ className }: LoadoutPreviewWidgetProps) {
       {/* Slots grid - Requirements 5.1 */}
       <div className="grid grid-cols-3 gap-3">
         {slots.map((slot) => (
-          <LoadoutSlot key={slot.type} slot={slot} />
+          <LoadoutSlot key={slot.type} slot={slot} onClick={handleClick} />
         ))}
       </div>
     </DashboardSection>
@@ -199,25 +199,44 @@ export function LoadoutPreviewWidget({ className }: LoadoutPreviewWidgetProps) {
 // Loadout Slot Component
 interface LoadoutSlotProps {
   slot: LoadoutSlotData
+  onClick?: () => void
 }
 
-function LoadoutSlot({ slot }: LoadoutSlotProps) {
+function LoadoutSlot({ slot, onClick }: LoadoutSlotProps) {
   const hasItem = slot.item !== null
   const rarityColor = slot.item?.rarity ? RARITY_COLORS[slot.item.rarity] : null
   const isSkin = slot.type === 'skin'
 
   return (
-    <div className="text-center">
+    <button
+      onClick={onClick}
+      className="group text-center transition-all duration-200 hover:-translate-y-0.5 w-full"
+    >
       {/* Slot preview - 64px - Requirements 5.2, 5.3 */}
       <div
         className={`
-          relative aspect-square rounded-lg overflow-hidden mb-2
+          relative aspect-square rounded-lg overflow-hidden mb-2 transition-all duration-200
           ${hasItem 
             ? 'border-2' 
-            : 'border-2 border-dashed border-white/[0.08]'
+            : 'border-2 border-dashed border-white/[0.08] group-hover:border-white/20'
           }
         `}
-        style={hasItem && rarityColor ? { borderColor: rarityColor } : undefined}
+        style={hasItem && rarityColor ? { 
+          borderColor: `${rarityColor}66`,
+          boxShadow: `0 0 0 0 ${rarityColor}00`
+        } : undefined}
+        onMouseEnter={(e) => {
+          if (hasItem && rarityColor) {
+            e.currentTarget.style.borderColor = rarityColor
+            e.currentTarget.style.boxShadow = `0 0 12px ${rarityColor}40`
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (hasItem && rarityColor) {
+            e.currentTarget.style.borderColor = `${rarityColor}66`
+            e.currentTarget.style.boxShadow = `0 0 0 0 ${rarityColor}00`
+          }
+        }}
       >
         {hasItem && slot.item ? (
           // Equipped item - Requirements 5.2
@@ -235,6 +254,7 @@ function LoadoutSlot({ slot }: LoadoutSlotProps) {
               src={slot.item.previewUrl}
               alt={slot.item.name}
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           ) : (
             <div className="w-full h-full bg-white/[0.05] flex items-center justify-center">
@@ -243,17 +263,30 @@ function LoadoutSlot({ slot }: LoadoutSlotProps) {
           )
         ) : (
           // Empty slot - Requirements 5.3
-          <div className="w-full h-full bg-white/[0.02] flex items-center justify-center">
-            <SlotIcon type={slot.type} className="w-6 h-6 text-neutral-600 opacity-50" />
+          <div className="w-full h-full bg-white/[0.02] flex items-center justify-center group-hover:bg-white/[0.04]">
+            <SlotIcon type={slot.type} className="w-6 h-6 text-neutral-600 opacity-50 group-hover:opacity-70" />
           </div>
+        )}
+
+        {/* Rarity indicator dot for equipped items */}
+        {hasItem && rarityColor && (
+          <div 
+            className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
+            style={{ backgroundColor: rarityColor }}
+          />
         )}
       </div>
 
       {/* Slot label/name - xs font, truncated - Requirements 5.2, 5.3 */}
-      <p className={`text-xs truncate ${hasItem ? 'text-neutral-300' : 'text-neutral-500'}`}>
+      <p className={`text-xs truncate ${hasItem ? 'text-neutral-300 group-hover:text-white' : 'text-neutral-500 group-hover:text-neutral-400'}`}>
         {hasItem && slot.item ? slot.item.name : 'Empty'}
       </p>
-    </div>
+      
+      {/* Slot type label */}
+      <p className="text-[10px] text-neutral-600 group-hover:text-neutral-500">
+        {slot.label}
+      </p>
+    </button>
   )
 }
 

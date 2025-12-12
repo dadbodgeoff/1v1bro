@@ -82,7 +82,7 @@ export function PracticeResultsScreen({
           </h3>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-400 tabular-nums">
+              <div className="text-2xl font-bold text-indigo-400 tabular-nums">
                 {stats.accuracy.toFixed(1)}%
               </div>
               <div className="text-xs text-neutral-500">Accuracy</div>
@@ -153,7 +153,7 @@ export function PracticeResultsScreen({
               <div className="text-xs text-neutral-500">Duration</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold text-cyan-400 tabular-nums">
+              <div className="text-xl font-bold text-blue-400 tabular-nums">
                 {formatDifficulty(stats.effectiveDifficulty)}
               </div>
               <div className="text-xs text-neutral-500">Final Difficulty</div>
@@ -163,17 +163,17 @@ export function PracticeResultsScreen({
 
         {/* XP Rewards */}
         {rewards.totalXP > 0 && !isGuest && (
-          <div className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/30 rounded-xl p-4">
-            <h3 className="text-xs text-purple-400 uppercase tracking-wider mb-3">
+          <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
+            <h3 className="text-xs text-indigo-400 uppercase tracking-wider mb-3">
               XP Earned
             </h3>
             <div className="space-y-2">
               {rewardMessages.map((msg, i) => (
-                <div key={i} className="text-sm text-purple-300">
+                <div key={i} className="text-sm text-indigo-300">
                   {msg}
                 </div>
               ))}
-              <div className="pt-2 border-t border-purple-500/20">
+              <div className="pt-2 border-t border-indigo-500/20">
                 <span className="text-lg font-bold text-white">
                   Total: {rewards.totalXP} XP
                 </span>
@@ -184,7 +184,7 @@ export function PracticeResultsScreen({
 
         {/* Guest XP prompt */}
         {rewards.totalXP > 0 && isGuest && (
-          <div className="bg-gradient-to-r from-purple-500/20 to-orange-500/20 border border-purple-500/30 rounded-xl p-4">
+          <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4">
             <p className="text-white font-medium mb-1">
               You earned {rewards.totalXP} XP!
             </p>
@@ -193,7 +193,7 @@ export function PracticeResultsScreen({
             </p>
             <button
               onClick={() => navigate('/register')}
-              className="w-full px-4 py-2.5 bg-gradient-to-r from-purple-500 to-orange-500 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity"
+              className="w-full px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors"
             >
               Create Free Account
             </button>

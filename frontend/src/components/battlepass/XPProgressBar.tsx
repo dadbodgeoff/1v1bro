@@ -7,10 +7,14 @@
  * - Gradient progress bar (indigo → purple)
  * - "currentXP / xpToNextTier XP" text format
  * - Percentage label on bar
- * - Animated fill on XP changes
+ * - Animated fill on XP changes (600ms ease-out)
+ * 
+ * **Feature: ui-polish-8-of-10**
+ * **Validates: Requirements 1.4**
  */
 
 import { cn } from '@/utils/helpers'
+import { useAnimatedValue } from '@/hooks/useAnimatedValue'
 
 interface XPProgressBarProps {
   currentTier: number
@@ -26,7 +30,15 @@ export function XPProgressBar({
   className,
 }: XPProgressBarProps) {
   // Calculate percentage, clamped to 0-100
-  const percentage = Math.min(Math.max((currentXP / xpToNextTier) * 100, 0), 100)
+  const targetPercentage = Math.min(Math.max((currentXP / xpToNextTier) * 100, 0), 100)
+  
+  // Animate the percentage value for smooth transitions
+  const { value: percentage } = useAnimatedValue({
+    from: 0,
+    to: targetPercentage,
+    duration: 600,
+    easing: 'ease-out',
+  })
 
   return (
     <div className={cn('space-y-3', className)}>
@@ -42,7 +54,7 @@ export function XPProgressBar({
 
         {/* XP Text */}
         <div className="flex items-center gap-2">
-          <XPIcon className="w-4 h-4 text-[#a855f7]" />
+          <XPIcon className="w-4 h-4 text-[#6366f1]" />
           <span className="text-sm text-[var(--color-text-secondary)]">
             <span className="font-semibold text-white">{currentXP.toLocaleString()}</span>
             {' / '}

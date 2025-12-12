@@ -18,7 +18,7 @@
  * Requirements: 8.1, 8.2, 8.3, 8.4
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFriends } from '@/hooks/useFriends'
 import type { Friend } from '@/types/friend'
@@ -59,7 +59,8 @@ export function FriendsWidget({ maxItems = 5, className }: FriendsWidgetProps) {
     loadFriends()
   }, [fetchFriends])
 
-  const onlineFriends = filterOnlineFriends(friends)
+  // Memoize filtered friends list (Requirements 6.3)
+  const onlineFriends = useMemo(() => filterOnlineFriends(friends), [friends])
   const displayedFriends = onlineFriends.slice(0, maxItems)
   const onlineCount = onlineFriends.length
 
@@ -187,12 +188,12 @@ export function FriendsWidget({ maxItems = 5, className }: FriendsWidgetProps) {
   )
 }
 
-// Friend Item Component
+// Friend Item Component - Memoized for performance (Requirements 6.3)
 interface FriendItemProps {
   friend: Friend
 }
 
-function FriendItem({ friend }: FriendItemProps) {
+const FriendItem = memo(function FriendItem({ friend }: FriendItemProps) {
   return (
     <div className="flex items-center gap-3 p-2 rounded-lg">
       {/* Avatar with online indicator - 32px, rounded - Requirements 8.2 */}
@@ -201,7 +202,8 @@ function FriendItem({ friend }: FriendItemProps) {
           <img 
             src={friend.avatar_url} 
             alt={friend.display_name || 'Friend'} 
-            className="w-8 h-8 rounded-full object-cover" 
+            className="w-8 h-8 rounded-full object-cover"
+            loading="lazy"
           />
         ) : (
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-neutral-600 to-neutral-700 flex items-center justify-center text-white text-xs font-medium">
@@ -222,7 +224,7 @@ function FriendItem({ friend }: FriendItemProps) {
       </div>
     </div>
   )
-}
+})
 
 // Icon Components
 function FriendsIcon({ className }: { className?: string }) {

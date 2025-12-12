@@ -1,120 +1,193 @@
 /**
- * useAchievements hook - Fetches achievements for the current user.
- * Requirements: Profile Enterprise - Achievements Section
- * 
- * Features:
- * - Achievement fetching with caching
- * - Exponential backoff retry for network failures
- * - Manual retry functionality
+ * useAchievements Hook
+ * Requirements: 4.1, 4.2, 4.5, 10.1, 10.2, 10.3, 10.4
  */
 
-import { useState, useCallback, useRef } from 'react'
-import { useAuthStore } from '../stores/authStore'
-import type { Achievement } from '../components/profile/enterprise'
-
-interface AchievementsResponse {
-  achievements: Achievement[]
-  total: number
-}
+import { useState, useEffect, useCallback } from 'react';
+import { achievementAPI } from '@/services/achievementService';
+import type {
+  Achievement,
+  UserAchievement,
+  AchievementProgress,
+  AchievementStats,
+  AchievementUnlock,
+  AchievementCategory,
+  AchievementsByCategory,
+} from '@/types/achievements';
 
 interface UseAchievementsReturn {
-  achievements: Achievement[]
-  total: number
-  loading: boolean
-  error: string | null
-  retryCount: number
-  fetchAchievements: () => Promise<void>
-  retry: () => Promise<void>
-}
-
-const API_BASE = import.meta.env.VITE_API_URL || ''
-const MAX_RETRIES = 3
-const BASE_DELAY_MS = 1000
-
-/**
- * Exponential backoff delay calculation
- */
-function getRetryDelay(attempt: number): number {
-  return Math.min(BASE_DELAY_MS * Math.pow(2, attempt), 10000)
-}
-
-/**
- * Sleep utility for retry delays
- */
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  // Data
+  achievements: Achievement[];
+  userAchievements: UserAchievement[];
+  progress: AchievementProgress[];
+  stats: AchievementStats | null;
+  categories: AchievementCategory[];
+  achievementsByCategory: AchievementsByCategory;
+  
+  // State
+  isLoading: boolean;
+  error: string | null;
+  
+  // Actions
+  refetch: () => Promise<void>;
+  checkAchievements: () => Promise<AchievementUnlock[]>;
+  
+  // Helpers
+  getAchievementById: (id: string) => Achievement | undefined;
+  isAchievementUnlocked: (achievementId: string) => boolean;
+  getProgressForAchievement: (achievementId: string) => AchievementProgress | undefined;
 }
 
 export function useAchievements(): UseAchievementsReturn {
-  const token = useAuthStore((state) => state.token)
-  const [achievements, setAchievements] = useState<Achievement[]>([])
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [retryCount, setRetryCount] = useState(0)
-  const isFetching = useRef(false)
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [userAchievements, setUserAchievements] = useState<UserAchievement[]>([]);
+  const [progress, setProgress] = useState<AchievementProgress[]>([]);
+  const [stats, setStats] = useState<AchievementStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchWithRetry = useCallback(async (attempt: number = 0): Promise<AchievementsResponse> => {
-    const response = await fetch(
-      `${API_BASE}/api/v1/profiles/me/achievements`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-
-    if (!response.ok) {
-      // Retry on 5xx errors or network issues
-      if (response.status >= 500 && attempt < MAX_RETRIES) {
-        await sleep(getRetryDelay(attempt))
-        return fetchWithRetry(attempt + 1)
-      }
-      throw new Error(`Failed to fetch achievements: ${response.status}`)
-    }
-
-    const result = await response.json()
-    return result.data
-  }, [token])
-
-  const fetchAchievements = useCallback(async () => {
-    if (!token) {
-      setError('Not authenticated')
-      return
-    }
-
-    // Prevent duplicate fetches
-    if (isFetching.current) return
-    isFetching.current = true
-
-    setLoading(true)
-    setError(null)
+  // Fetch all achievement data
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const data = await fetchWithRetry()
-      setAchievements(data.achievements)
-      setTotal(data.total)
-      setRetryCount(0)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch achievements')
-      setRetryCount(prev => prev + 1)
-    } finally {
-      setLoading(false)
-      isFetching.current = false
-    }
-  }, [token, fetchWithRetry])
+      const [achievementsData, userAchievementsData, progressData, statsData] =
+        await Promise.all([
+          achievementAPI.getAchievements(),
+          achievementAPI.getUserAchievements(),
+          achievementAPI.getAchievementProgress(),
+          achievementAPI.getAchievementStats(),
+        ]);
 
-  const retry = useCallback(async () => {
-    await fetchAchievements()
-  }, [fetchAchievements])
+      setAchievements(achievementsData);
+      setUserAchievements(userAchievementsData);
+      setProgress(progressData);
+      setStats(statsData);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to load achievements';
+      setError(message);
+      console.error('Failed to fetch achievements:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Initial fetch
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Check achievements manually
+  const checkAchievements = useCallback(async (): Promise<AchievementUnlock[]> => {
+    try {
+      const unlocks = await achievementAPI.checkAchievements();
+      
+      // Refetch data if any achievements were unlocked
+      if (unlocks.length > 0) {
+        await fetchData();
+      }
+      
+      return unlocks;
+    } catch (err) {
+      console.error('Failed to check achievements:', err);
+      throw err;
+    }
+  }, [fetchData]);
+
+  // Get unique categories from achievements
+  const categories = Array.from(
+    new Set(achievements.map((a) => a.category))
+  ) as AchievementCategory[];
+
+  // Group achievements by category
+  const achievementsByCategory: AchievementsByCategory = achievements.reduce(
+    (acc, achievement) => {
+      const category = achievement.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(achievement);
+      return acc;
+    },
+    {} as AchievementsByCategory
+  );
+
+  // Helper to get achievement by ID
+  const getAchievementById = useCallback(
+    (id: string): Achievement | undefined => {
+      return achievements.find((a) => a.id === id);
+    },
+    [achievements]
+  );
+
+  // Helper to check if achievement is unlocked
+  const isAchievementUnlocked = useCallback(
+    (achievementId: string): boolean => {
+      return userAchievements.some((ua) => ua.achievement_id === achievementId);
+    },
+    [userAchievements]
+  );
+
+  // Helper to get progress for an achievement
+  const getProgressForAchievement = useCallback(
+    (achievementId: string): AchievementProgress | undefined => {
+      return progress.find((p) => p.achievement_id === achievementId);
+    },
+    [progress]
+  );
 
   return {
     achievements,
-    total,
-    loading,
+    userAchievements,
+    progress,
+    stats,
+    categories,
+    achievementsByCategory,
+    isLoading,
     error,
-    retryCount,
-    fetchAchievements,
-    retry,
-  }
+    refetch: fetchData,
+    checkAchievements,
+    getAchievementById,
+    isAchievementUnlocked,
+    getProgressForAchievement,
+  };
+}
+
+/**
+ * Hook for viewing another user's achievements
+ */
+export function useUserAchievements(userId: string) {
+  const [achievements, setAchievements] = useState<UserAchievement[]>([]);
+  const [stats, setStats] = useState<AchievementStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const [achievementsData, statsData] = await Promise.all([
+          achievementAPI.getUserAchievementsById(userId),
+          achievementAPI.getUserAchievementStatsById(userId),
+        ]);
+
+        setAchievements(achievementsData);
+        setStats(statsData);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to load achievements';
+        setError(message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (userId) {
+      fetchData();
+    }
+  }, [userId]);
+
+  return { achievements, stats, isLoading, error };
 }

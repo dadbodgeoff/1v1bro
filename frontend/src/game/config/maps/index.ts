@@ -19,9 +19,8 @@ export {
 } from './map-schema'
 
 // Export map configurations
-export { NEXUS_ARENA } from './nexus-arena'
 export { VORTEX_ARENA } from './vortex-arena'
-export { INDUSTRIAL_FACILITY, INDUSTRIAL_FACILITY_INFO, INDUSTRIAL_FACILITY_DIMENSIONS } from './industrial-facility'
+export { SIMPLE_ARENA, SIMPLE_TILE_SIZE, SIMPLE_ARENA_SIZE } from './simple-arena'
 
 // Export map loading utilities
 export {

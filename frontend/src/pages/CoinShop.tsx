@@ -35,10 +35,10 @@ export function CoinShop() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        {/* Back Button */}
+        {/* Back Button - Touch optimized */}
         <button
           onClick={() => navigate(-1)}
-          className="text-[#737373] hover:text-white mb-6 flex items-center gap-2 transition-colors text-[14px]"
+          className="text-[#737373] hover:text-white mb-6 flex items-center gap-2 transition-colors text-[14px] min-h-[44px] touch-manipulation"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -101,7 +101,7 @@ export function CoinShop() {
             <p className="text-[14px] text-red-400">{error}</p>
             <button 
               onClick={fetchPackages} 
-              className="mt-2 text-[13px] text-red-300 hover:text-red-200 underline transition-colors"
+              className="mt-2 text-[13px] text-red-300 hover:text-red-200 underline transition-colors min-h-[44px] touch-manipulation"
             >
               Try again
             </button>
@@ -287,12 +287,12 @@ function CoinPackageCard({
         </div>
       </div>
 
-      {/* Buy Button */}
+      {/* Buy Button - Touch optimized */}
       <button
         onClick={() => onPurchase(pkg.id)}
         disabled={loading}
         className={`
-          w-full py-4 font-bold text-[14px] uppercase tracking-wider transition-all duration-150
+          w-full py-4 font-bold text-[14px] uppercase tracking-wider transition-all duration-150 min-h-[48px] touch-manipulation
           ${loading
             ? 'bg-[#333] cursor-wait text-[#737373]'
             : 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 active:scale-[0.98] text-black'

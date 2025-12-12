@@ -11,6 +11,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { cn } from '@/utils/helpers'
+import { BREAKPOINTS } from '@/utils/breakpoints'
 
 export interface GlobalBackgroundProps {
   /** Additional CSS classes */
@@ -75,9 +76,9 @@ export function GlobalBackground({
     return () => mediaQuery.removeEventListener('change', handler)
   }, [])
 
-  // Detect mobile viewport
+  // Detect mobile viewport - use centralized tablet breakpoint
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    const checkMobile = () => setIsMobile(window.innerWidth < BREAKPOINTS.tablet)
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)

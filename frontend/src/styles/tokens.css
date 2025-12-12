@@ -1,74 +1,182 @@
 /**
- * Design System Tokens
- * 2025 Frontend Redesign - CSS Custom Properties
- * Requirements: 1.1, 1.3, 1.4, 1.5, 1.6, 1.7
+ * 1v1 Bro Enterprise Design System Tokens
+ * 
+ * Complete branding package for consistent styling across all modules.
+ * No gradients, no cyan/teal/purple (except epic rarity).
+ * 
+ * @version 2.0.0
+ * @updated 2025-12-11
  */
 
 :root {
   /* ============================================
-   * Background Colors
+   * BRAND COLORS
+   * Primary brand identity - Orange
    * ============================================ */
-  --color-bg-base: #0a0a0a;
+  --color-brand: #F97316;
+  --color-brand-light: #FB923C;
+  --color-brand-dark: #EA580C;
+  --color-brand-glow: rgba(249, 115, 22, 0.3);
+
+  /* ============================================
+   * BACKGROUND COLORS
+   * Dark theme foundation
+   * ============================================ */
+  --color-bg-base: #09090B;
   --color-bg-card: #111111;
-  --color-bg-elevated: #1a1a1a;
+  --color-bg-elevated: #1A1A1A;
   --color-bg-hover: rgba(255, 255, 255, 0.04);
   --color-bg-active: rgba(255, 255, 255, 0.06);
+  --color-bg-overlay: rgba(0, 0, 0, 0.6);
 
   /* ============================================
-   * Text Colors
+   * TEXT COLORS
+   * Hierarchy for readability
    * ============================================ */
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #a3a3a3;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B4B4B4;
   --color-text-muted: #737373;
   --color-text-disabled: #525252;
+  --color-text-inverse: #09090B;
 
   /* ============================================
-   * Accent Colors
+   * ACCENT COLORS
+   * Action and semantic colors
    * ============================================ */
-  --color-accent-primary: #6366f1;
-  --color-accent-primary-hover: #4f46e5;
-  --color-accent-primary-active: #4338ca;
   
-  --color-accent-premium: #f59e0b;
-  --color-accent-premium-hover: #d97706;
-  --color-accent-premium-light: #fbbf24;
+  /* Primary Action - Indigo */
+  --color-accent-primary: #6366F1;
+  --color-accent-primary-hover: #4F46E5;
+  --color-accent-primary-active: #4338CA;
+  --color-accent-primary-glow: rgba(99, 102, 241, 0.3);
   
-  --color-accent-success: #10b981;
+  /* Premium/Coins - Amber */
+  --color-accent-premium: #F59E0B;
+  --color-accent-premium-hover: #D97706;
+  --color-accent-premium-light: #FBBF24;
+  --color-accent-premium-glow: rgba(245, 158, 11, 0.3);
+  
+  /* Success - Emerald */
+  --color-accent-success: #10B981;
   --color-accent-success-hover: #059669;
+  --color-accent-success-bg: rgba(16, 185, 129, 0.1);
+  --color-accent-success-glow: rgba(16, 185, 129, 0.3);
   
-  --color-accent-error: #f43f5e;
-  --color-accent-error-hover: #e11d48;
+  /* Error - Rose */
+  --color-accent-error: #F43F5E;
+  --color-accent-error-hover: #E11D48;
+  --color-accent-error-bg: rgba(244, 63, 94, 0.1);
   
-  --color-accent-warning: #f59e0b;
-  --color-accent-info: #3b82f6;
+  /* Warning - Amber */
+  --color-accent-warning: #F59E0B;
+  --color-accent-warning-bg: rgba(245, 158, 11, 0.1);
+  
+  /* Info - Blue */
+  --color-accent-info: #3B82F6;
+  --color-accent-info-hover: #2563EB;
+  --color-accent-info-bg: rgba(59, 130, 246, 0.1);
 
   /* ============================================
-   * Border Colors
+   * LINK COLORS
+   * Enterprise blue links (no purple)
+   * ============================================ */
+  --color-link: #3B82F6;
+  --color-link-hover: #60A5FA;
+  --color-link-visited: #6366F1;
+
+  /* ============================================
+   * BORDER COLORS
+   * Subtle separators
    * ============================================ */
   --color-border-subtle: rgba(255, 255, 255, 0.06);
   --color-border-visible: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
   --color-border-focus: rgba(99, 102, 241, 0.5);
+  --color-border-brand: rgba(249, 115, 22, 0.5);
 
   /* ============================================
-   * Rarity Colors
+   * RARITY COLORS
+   * Gaming convention (epic purple is exception)
    * ============================================ */
   --color-rarity-common: #737373;
   --color-rarity-common-bg: rgba(115, 115, 115, 0.2);
   
-  --color-rarity-uncommon: #10b981;
+  --color-rarity-uncommon: #10B981;
   --color-rarity-uncommon-bg: rgba(16, 185, 129, 0.2);
   
-  --color-rarity-rare: #3b82f6;
+  --color-rarity-rare: #3B82F6;
   --color-rarity-rare-bg: rgba(59, 130, 246, 0.2);
   
-  --color-rarity-epic: #a855f7;
+  --color-rarity-epic: #A855F7;
   --color-rarity-epic-bg: rgba(168, 85, 247, 0.2);
   
-  --color-rarity-legendary: #f59e0b;
+  --color-rarity-legendary: #F59E0B;
   --color-rarity-legendary-bg: rgba(245, 158, 11, 0.2);
 
   /* ============================================
-   * Spacing Scale (4px base unit)
+   * GAME COLORS
+   * In-game visual elements
+   * ============================================ */
+  --color-game-player1: #10B981;
+  --color-game-player2: #F43F5E;
+  --color-game-projectile: #60A5FA;
+  --color-game-shield: #3B82F6;
+  --color-game-barrier: #4F46E5;
+  --color-game-health-high: #10B981;
+  --color-game-health-med: #F59E0B;
+  --color-game-health-low: #EF4444;
+  --color-game-respawn: #10B981;
+  --color-game-damage: #DC2626;
+
+  /* ============================================
+   * TYPOGRAPHY
+   * Font family and weights
+   * ============================================ */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* ============================================
+   * TYPE SCALE
+   * Consistent sizing hierarchy
+   * ============================================ */
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-caption: 13px;
+  --font-size-body-sm: 14px;
+  --font-size-body: 16px;
+  --font-size-body-lg: 18px;
+  --font-size-h6: 18px;
+  --font-size-h5: 20px;
+  --font-size-h4: 24px;
+  --font-size-h3: 28px;
+  --font-size-h2: 36px;
+  --font-size-h1: 48px;
+  --font-size-display: 64px;
+
+  /* Line Heights */
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.75;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.03em;
+  --letter-spacing-snug: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+  --letter-spacing-wider: 0.08em;
+
+  /* ============================================
+   * SPACING SCALE
+   * 4px base unit
    * ============================================ */
   --space-0: 0px;
   --space-1: 4px;
@@ -85,34 +193,8 @@
   --space-24: 96px;
 
   /* ============================================
-   * Typography
-   * ============================================ */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
-  /* Font Sizes */
-  --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 20px;
-  --font-size-2xl: 24px;
-  --font-size-3xl: 30px;
-  --font-size-4xl: 36px;
-  --font-size-5xl: 48px;
-
-  /* Font Weights */
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  /* Line Heights */
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
-
-  /* ============================================
-   * Border Radius
+   * BORDER RADIUS
+   * Consistent rounding
    * ============================================ */
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -122,7 +204,8 @@
   --radius-full: 9999px;
 
   /* ============================================
-   * Shadows
+   * SHADOWS
+   * Depth hierarchy
    * ============================================ */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
@@ -130,13 +213,16 @@
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.25);
   --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.35);
   
-  /* Glow shadows for special effects */
-  --shadow-glow-primary: 0 0 20px rgba(99, 102, 241, 0.3);
-  --shadow-glow-premium: 0 0 20px rgba(245, 158, 11, 0.3);
-  --shadow-glow-success: 0 0 20px rgba(16, 185, 129, 0.3);
+  /* Glow Shadows */
+  --shadow-glow-brand: 0 0 20px var(--color-brand-glow);
+  --shadow-glow-brand-intense: 0 0 30px rgba(249, 115, 22, 0.5);
+  --shadow-glow-primary: 0 0 20px var(--color-accent-primary-glow);
+  --shadow-glow-premium: 0 0 20px var(--color-accent-premium-glow);
+  --shadow-glow-success: 0 0 20px var(--color-accent-success-glow);
 
   /* ============================================
-   * Transitions
+   * TRANSITIONS
+   * Animation timing
    * ============================================ */
   --transition-fast: 100ms ease-out;
   --transition-normal: 200ms ease-out;
@@ -144,8 +230,10 @@
   --transition-slower: 500ms ease-out;
 
   /* ============================================
-   * Z-Index Scale
+   * Z-INDEX SCALE
+   * Layering hierarchy
    * ============================================ */
+  --z-base: 0;
   --z-dropdown: 100;
   --z-sticky: 200;
   --z-modal-backdrop: 300;
@@ -155,13 +243,15 @@
   --z-confetti: 700;
 
   /* ============================================
-   * Component-Specific Tokens
+   * COMPONENT TOKENS
+   * Specific component sizing
    * ============================================ */
   
   /* Buttons */
   --btn-height-sm: 32px;
   --btn-height-md: 40px;
   --btn-height-lg: 48px;
+  --btn-height-xl: 56px;
   
   /* Inputs */
   --input-height-sm: 32px;
@@ -185,29 +275,47 @@
   
   /* Header */
   --header-height: 64px;
+  --header-height-mobile: 56px;
   
   /* Touch targets */
   --touch-target-min: 44px;
-}
+  --touch-target-recommended: 48px;
+  --touch-target-comfortable: 56px;
 
-/* ============================================
- * Gradient Definitions
- * ============================================ */
-:root {
-  /* Premium gradient */
-  --gradient-premium: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-  --gradient-premium-hover: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+  /* ============================================
+   * GRADIENTS
+   * Allowed gradients only
+   * ============================================ */
   
-  /* Primary gradient */
-  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  /* Premium/Gold (for monetization) */
+  --gradient-premium: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+  --gradient-premium-hover: linear-gradient(135deg, #FBBF24 0%, #F97316 100%);
   
-  /* XP progress gradient */
-  --gradient-xp: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+  /* Primary action (indigo only, no purple) */
+  --gradient-primary: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+  
+  /* XP progress (indigo only) */
+  --gradient-xp: linear-gradient(90deg, #4338CA 0%, #6366F1 100%);
   
   /* Rarity gradients (for borders/backgrounds) */
   --gradient-rarity-common: linear-gradient(135deg, #525252 0%, #737373 100%);
-  --gradient-rarity-uncommon: linear-gradient(135deg, #059669 0%, #10b981 100%);
-  --gradient-rarity-rare: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-  --gradient-rarity-epic: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-  --gradient-rarity-legendary: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+  --gradient-rarity-uncommon: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  --gradient-rarity-rare: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  --gradient-rarity-epic: linear-gradient(135deg, #7C3AED 0%, #A855F7 100%);
+  --gradient-rarity-legendary: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  
+  /* Rank gradients (leaderboard) */
+  --gradient-rank-gold: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
+  --gradient-rank-silver: linear-gradient(135deg, #9CA3AF 0%, #D1D5DB 100%);
+  --gradient-rank-bronze: linear-gradient(135deg, #B45309 0%, #F59E0B 100%);
+
+  /* ============================================
+   * CONTAINER WIDTHS
+   * Layout constraints
+   * ============================================ */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1440px;
 }

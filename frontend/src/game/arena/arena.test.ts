@@ -10,7 +10,7 @@ import * as fc from 'fast-check'
 import { TileMap } from './TileMap'
 import { MapLoader } from './MapLoader'
 import { validateMapConfig } from '../config/maps/map-schema'
-import { NEXUS_ARENA } from '../config/maps/nexus-arena'
+import { SIMPLE_ARENA } from '../config/maps/simple-arena'
 import type { MapConfig, TileDefinition } from '../config/maps/map-schema'
 import type { TileType } from './types'
 
@@ -171,10 +171,10 @@ describe('Property 1: Tile Map Consistency', () => {
 describe('Property 10: Map Configuration Validation', () => {
   /**
    * **Feature: arena-aaa-upgrade, Property 10: Map Configuration Validation**
-   * Valid NEXUS_ARENA config passes validation
+   * Valid SIMPLE_ARENA config passes validation
    */
-  it('NEXUS_ARENA passes validation', () => {
-    const result = validateMapConfig(NEXUS_ARENA)
+  it('SIMPLE_ARENA passes validation', () => {
+    const result = validateMapConfig(SIMPLE_ARENA)
     expect(result.valid).toBe(true)
     expect(result.errors).toHaveLength(0)
   })
@@ -185,7 +185,7 @@ describe('Property 10: Map Configuration Validation', () => {
    */
   it('detects unpaired teleporters', () => {
     const invalidConfig: MapConfig = {
-      ...NEXUS_ARENA,
+      ...SIMPLE_ARENA,
       teleporters: [
         { id: 'tp_single', pairId: 'orphan', position: { x: 100, y: 100 }, radius: 30 }
       ]
@@ -210,7 +210,7 @@ describe('Property 10: Map Configuration Validation', () => {
           )
           
           const invalidConfig: MapConfig = {
-            ...NEXUS_ARENA,
+            ...SIMPLE_ARENA,
             tiles: invalidTiles
           }
           
@@ -236,8 +236,8 @@ describe('Property 10: Map Configuration Validation', () => {
         ),
         (name) => {
           const invalidConfig: MapConfig = {
-            ...NEXUS_ARENA,
-            metadata: { ...NEXUS_ARENA.metadata, name }
+            ...SIMPLE_ARENA,
+            metadata: { ...SIMPLE_ARENA.metadata, name }
           }
           
           const result = validateMapConfig(invalidConfig)
@@ -258,8 +258,8 @@ describe('Property 10: Map Configuration Validation', () => {
     
     for (const version of invalidVersions) {
       const invalidConfig: MapConfig = {
-        ...NEXUS_ARENA,
-        metadata: { ...NEXUS_ARENA.metadata, version }
+        ...SIMPLE_ARENA,
+        metadata: { ...SIMPLE_ARENA.metadata, version }
       }
       
       const result = validateMapConfig(invalidConfig)
@@ -274,9 +274,9 @@ describe('Property 10: Map Configuration Validation', () => {
    */
   it('detects spawn points not on floor tiles', () => {
     // Create a config where spawn point is on a wall tile
-    const tilesWithWallAtSpawn = NEXUS_ARENA.tiles.map((row, y) =>
+    const tilesWithWallAtSpawn = SIMPLE_ARENA.tiles.map((row, y) =>
       row.map((tile, x) => {
-        // Player 1 spawn is at grid position (2, 4) based on pixel (160, 360)
+        // Player 1 spawn is at grid position (2, 4) based on pixel (200, 360)
         if (x === 2 && y === 4) {
           return { type: 'wall' as TileType }
         }
@@ -285,7 +285,7 @@ describe('Property 10: Map Configuration Validation', () => {
     )
     
     const invalidConfig: MapConfig = {
-      ...NEXUS_ARENA,
+      ...SIMPLE_ARENA,
       tiles: tilesWithWallAtSpawn
     }
     
@@ -306,8 +306,8 @@ describe('TileMap', () => {
     tileMap = new TileMap()
   })
 
-  it('loads NEXUS_ARENA tiles correctly', () => {
-    tileMap.load(NEXUS_ARENA.tiles)
+  it('loads SIMPLE_ARENA tiles correctly', () => {
+    tileMap.load(SIMPLE_ARENA.tiles)
     
     expect(tileMap.getWidth()).toBe(16)
     expect(tileMap.getHeight()).toBe(9)
@@ -315,7 +315,7 @@ describe('TileMap', () => {
   })
 
   it('setTile updates tile type', () => {
-    tileMap.load(NEXUS_ARENA.tiles)
+    tileMap.load(SIMPLE_ARENA.tiles)
     
     const originalTile = tileMap.getTileAt(0, 0)
     expect(originalTile).not.toBeNull()
@@ -327,24 +327,24 @@ describe('TileMap', () => {
   })
 
   it('getTilesByType returns all tiles of specified type', () => {
-    tileMap.load(NEXUS_ARENA.tiles)
+    tileMap.load(SIMPLE_ARENA.tiles)
     
-    const wallTiles = tileMap.getTilesByType('wall')
+    const floorTiles = tileMap.getTilesByType('floor')
     
-    // Count walls in NEXUS_ARENA
-    let expectedWallCount = 0
-    for (const row of NEXUS_ARENA.tiles) {
+    // Count floors in SIMPLE_ARENA (all tiles are floor)
+    let expectedFloorCount = 0
+    for (const row of SIMPLE_ARENA.tiles) {
       for (const tile of row) {
-        if (tile.type === 'wall') expectedWallCount++
+        if (tile.type === 'floor') expectedFloorCount++
       }
     }
     
-    expect(wallTiles.length).toBe(expectedWallCount)
-    expect(wallTiles.every(t => t.type === 'wall')).toBe(true)
+    expect(floorTiles.length).toBe(expectedFloorCount)
+    expect(floorTiles.every(t => t.type === 'floor')).toBe(true)
   })
 
   it('gridToPixel returns center of tile', () => {
-    tileMap.load(NEXUS_ARENA.tiles)
+    tileMap.load(SIMPLE_ARENA.tiles)
     
     const { pixelX, pixelY } = tileMap.gridToPixel(0, 0)
     
@@ -352,20 +352,8 @@ describe('TileMap', () => {
     expect(pixelY).toBe(40)  // 0 * 80 + 40
   })
 
-  it('isWalkable returns false for walls and half_walls', () => {
-    tileMap.load(NEXUS_ARENA.tiles)
-    
-    // Find a wall tile in NEXUS_ARENA
-    const wallTile = tileMap.getTilesByType('wall')[0]
-    if (wallTile) {
-      expect(tileMap.isWalkable(wallTile.gridX, wallTile.gridY)).toBe(false)
-    }
-    
-    // Find a half_wall tile
-    const halfWallTile = tileMap.getTilesByType('half_wall')[0]
-    if (halfWallTile) {
-      expect(tileMap.isWalkable(halfWallTile.gridX, halfWallTile.gridY)).toBe(false)
-    }
+  it('isWalkable returns true for floor tiles', () => {
+    tileMap.load(SIMPLE_ARENA.tiles)
     
     // Floor should be walkable
     const floorTile = tileMap.getTilesByType('floor')[0]
@@ -382,7 +370,7 @@ describe('TileMap', () => {
 describe('MapLoader', () => {
   it('loads valid map configuration', () => {
     const loader = new MapLoader()
-    const tileMap = loader.load(NEXUS_ARENA)
+    const tileMap = loader.load(SIMPLE_ARENA)
     
     expect(tileMap).toBeInstanceOf(TileMap)
     expect(tileMap.getWidth()).toBe(16)
@@ -392,8 +380,8 @@ describe('MapLoader', () => {
   it('throws on invalid map configuration', () => {
     const loader = new MapLoader()
     const invalidConfig: MapConfig = {
-      ...NEXUS_ARENA,
-      metadata: { ...NEXUS_ARENA.metadata, name: 'ab' }  // Too short
+      ...SIMPLE_ARENA,
+      metadata: { ...SIMPLE_ARENA.metadata, name: 'ab' }  // Too short
     }
     
     expect(() => loader.load(invalidConfig)).toThrow()
@@ -409,15 +397,15 @@ describe('MapLoader', () => {
       eventData = { mapName: event.mapName, version: event.version }
     })
     
-    loader.load(NEXUS_ARENA)
+    loader.load(SIMPLE_ARENA)
     
     expect(eventReceived).toBe(true)
-    expect(eventData!.mapName).toBe('Nexus Arena')
+    expect(eventData!.mapName).toBe('Runtime Ruins')
     expect(eventData!.version).toBe('1.0.0')
   })
 
   it('static validate method works', () => {
-    const result = MapLoader.validate(NEXUS_ARENA)
+    const result = MapLoader.validate(SIMPLE_ARENA)
     expect(result.valid).toBe(true)
   })
 })

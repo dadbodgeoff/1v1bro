@@ -1,0 +1,334 @@
+r
+# Implementation Plan
+
+- [x] 1. Set up project structure and core types
+  - [x] 1.1 Create directory structure for arcade landing components
+    - Create `frontend/src/components/landing/arcade/` directory
+    - Create subdirectories: `CRTMonitor/`, `BootSequence/`, `CRTEffects/`, `DashboardUI/`, `hooks/`, `styles/`
+    - _Requirements: 9.1, 9.3_
+  - [x] 1.2 Create TypeScript types and constants
+    - Create `types.ts` with BootPhase, BootSequenceState, CRTEffectsConfig, FPSMonitorState, SVGFilterSupport interfaces
+    - Create `constants.ts` with BOOT_LINES, BOOT_TIMING, CRT_DEFAULTS, ARCADE_CONTENT, ARCADE_COLORS
+    - Add SVG_FILTER_SUPPORT detection and EFFECT_FALLBACK_CASCADE constants
+    - Add PERFORMANCE_THRESHOLDS and ANALYTICS_EVENTS constants
+    - _Requirements: 2.2, 2.7, 3.1, 6.7, 6.8, 11.1_
+  - [x] 1.3 Create arcade.css stylesheet
+    - Define CSS custom properties for CRT colors and effects
+    - Create base styles for scanlines, glow effects, and animations
+    - Add reduced-motion media query overrides
+    - Add horizontal scroll prevention (overflow-x: hidden, max-width: 100vw)
+    - Add safe-area-inset padding for notched devices
+    - _Requirements: 3.1, 3.5, 6.6, 6.9, 6.10_
+  - [ ] 1.4 Create ErrorBoundary and static fallback components
+    - Create `ArcadeLandingErrorBoundary.tsx` with error catching and logging
+    - Create `StaticLandingFallback.tsx` with static hero, headline, CTAs (no effects)
+    - _Requirements: 10.1, 10.3_
+
+- [x] 2. Implement CRT Monitor Frame
+  - [x] 2.1 Create CRTBezel SVG component
+    - Build detailed SVG bezel with rounded corners, cabinet details, vents
+    - Include brand area placeholder and screen cutout
+    - Support responsive modes (mobile/tablet/desktop)
+    - _Requirements: 1.1, 1.2, 1.3_
+  - [x]* 2.2 Write property test for aspect ratio preservation
+    - **Property 1: Aspect Ratio Preservation**
+    - **Validates: Requirements 1.4, 5.4**
+  - [x] 2.3 Create PowerIndicator component
+    - Animated LED with glow effect using brand orange
+    - Pulsing animation when powered on
+    - _Requirements: 1.5_
+  - [x] 2.4 Create CRTScreen container component
+    - Wrapper that positions content within the bezel cutout
+    - Maintains aspect ratio (16:9 or 4:3)
+    - Applies barrel distortion SVG filter
+    - _Requirements: 1.4, 3.4_
+  - [x] 2.5 Create CRTMonitor wrapper component
+    - Combines CRTBezel, CRTScreen, and PowerIndicator
+    - Handles responsive breakpoint detection
+    - _Requirements: 1.1, 5.1, 5.2, 5.3_
+
+- [x] 3. Implement Boot Sequence
+  - [x] 3.1 Create useBootSequence hook
+    - State machine managing boot phases (off → powering-on → booting → ready → complete)
+    - Timer-based progression through phases
+    - Skip functionality via callback (Space, Enter, Escape keys)
+    - 5000ms hard timeout with auto-complete
+    - _Requirements: 2.1, 2.5, 2.6, 2.7, 10.3_
+  - [x]* 3.2 Write property tests for boot sequence
+    - **Property 2: Boot Lines Sequential Display**
+    - **Property 3: Boot Progress Monotonic Increase**
+    - **Property 4: Skip Functionality**
+    - **Property 5: Boot Duration Limit**
+    - **Validates: Requirements 2.2, 2.4, 2.6, 2.7**
+  - [x] 3.3 Create BootText component
+    - Typewriter effect for displaying boot lines
+    - Sequential reveal with timing delays
+    - _Requirements: 2.2, 2.3_
+  - [x] 3.4 Create BootProgress component
+    - Animated progress bar filling over boot duration
+    - Styled with brand colors and glow
+    - _Requirements: 2.4_
+  - [x] 3.5 Create BootLogo component
+    - "1v1 BRO" logo reveal with phosphor glow effect
+    - Fade/scale animation on reveal
+    - _Requirements: 2.5_
+  - [x] 3.6 Create BootSequence orchestrator component
+    - Combines BootText, BootProgress, BootLogo
+    - Skip button with keyboard accessibility (Space, Enter)
+    - Calls onComplete when boot finishes
+    - _Requirements: 2.1, 2.5, 2.6, 6.4_
+
+- [ ] 4. Checkpoint - Ensure boot sequence tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 5. Implement CRT Visual Effects
+  - [x] 5.1 Create useSVGFilterSupport hook
+    - Detect feDisplacementMap and feGaussianBlur support
+    - Detect iOS Safari 18 for known bugs
+    - Return recommended fallback modes for each effect
+    - _Requirements: 6.7, 10.5_
+  - [x] 5.2 Create useFPSMonitor hook
+    - Track current and average FPS using requestAnimationFrame
+    - Detect performance degradation (<30fps for 2+ seconds)
+    - Provide degradeEffects callback for auto-degradation
+    - _Requirements: 6.8_
+  - [x] 5.3 Create useCRTEffects hook
+    - Manages effect configuration state
+    - Integrates with useSVGFilterSupport for fallback modes
+    - Integrates with useFPSMonitor for auto-degradation
+    - Detects reduced-motion preference
+    - Provides toggle functions for each effect
+    - _Requirements: 3.5, 6.6, 6.7, 6.8_
+  - [x]* 5.4 Write property tests for effects
+    - **Property 6: Reduced Motion Respect**
+    - **Property 13: Frame Rate Guarantee**
+    - **Property 14: SVG Filter Fallback**
+    - **Validates: Requirements 3.5, 6.6, 6.7, 6.8**
+  - [x] 5.5 Create Scanlines component
+    - CSS-based horizontal line overlay
+    - Configurable intensity via opacity
+    - _Requirements: 3.1_
+  - [x] 5.6 Create PhosphorGlow component
+    - SVG filter for bloom effect on bright elements (primary)
+    - CSS box-shadow fallback when SVG unsupported
+    - Applied via CSS filter property
+    - _Requirements: 3.2, 6.7_
+  - [x] 5.7 Create ScreenFlicker component
+    - Occasional opacity flicker animation
+    - Random timing (10-30 second intervals)
+    - Disabled when reduced-motion is preferred
+    - First effect disabled on performance degradation
+    - _Requirements: 3.3, 3.5, 6.8_
+  - [x] 5.8 Create BarrelDistortion SVG filter
+    - SVG feDisplacementMap for edge curvature (primary)
+    - CSS border-radius hack fallback for iOS Safari 18
+    - Subtle effect that doesn't distort content readability
+    - _Requirements: 3.4, 6.7, 10.5_
+  - [x] 5.9 Create CRTEffects wrapper component
+    - Combines all effect layers with proper z-index stacking
+    - Accepts config prop for enabling/disabling effects
+    - Integrates with useFPSMonitor for auto-degradation
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.6, 6.8_
+
+- [x] 6. Implement Dashboard UI
+  - [x] 6.1 Create ArcadeHeadline component
+    - "1v1 BRO" text with phosphor glow styling
+    - Responsive font sizing
+    - _Requirements: 4.2_
+  - [x] 6.2 Create ArcadeCTA component
+    - Retro-styled buttons with glow effects
+    - Primary (filled) and secondary (outline) variants
+    - Minimum 44px touch targets
+    - Keyboard focus states
+    - _Requirements: 4.4, 4.7, 6.3_
+  - [x]* 6.3 Write property tests for navigation and touch targets
+    - **Property 7: Auth-Based Primary CTA Navigation**
+    - **Property 8: Auth-Based Secondary CTA Navigation**
+    - **Property 9: Touch Target Minimum Size**
+    - **Validates: Requirements 4.5, 4.6, 4.7**
+  - [x] 6.4 Create DemoContainer component
+    - Wrapper for LiveDemo with CRT-appropriate styling
+    - Handles LiveDemo import and autoPlay configuration
+    - Implements fallback for LiveDemo failure (static screenshot)
+    - _Requirements: 4.1, 10.2_
+  - [x] 6.5 Create DashboardUI layout component
+    - Combines ArcadeHeadline, tagline, DemoContainer, and CTAs
+    - Responsive layout (stacked on mobile, side-by-side on desktop)
+    - Uses auth state reactively (updates if auth changes)
+    - Defaults to unauthenticated if auth undefined
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 10.4_
+
+- [ ] 7. Checkpoint - Ensure dashboard tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 8. Implement Accessibility Features
+  - [x] 8.1 Create useReducedMotion hook
+    - Detects prefers-reduced-motion media query
+    - Returns boolean for conditional rendering
+    - When true, skip boot sequence entirely
+    - _Requirements: 3.5, 6.6_
+  - [x]* 8.2 Write property test for ARIA labels
+    - **Property 10: ARIA Labels Present**
+    - **Validates: Requirements 6.2**
+  - [x] 8.3 Add ARIA labels to all interactive elements
+    - Skip button, CTAs, sound toggle (if implemented)
+    - Ensure screen reader announces boot progress
+    - Add aria-live region for boot status updates
+    - _Requirements: 6.2, 6.4_
+  - [x] 8.4 Implement keyboard navigation
+    - Tab order: Skip → Primary CTA → Secondary CTA → Sound Toggle
+    - Space/Enter to activate buttons
+    - Escape to skip boot sequence
+    - Focus moves to primary CTA after boot completes
+    - _Requirements: 2.6, 6.3, 6.4_
+
+- [ ] 9. Implement Sound Effects with Web Audio API
+  - [x] 9.1 Create useArcadeSound hook with Web Audio synthesis
+    - Initialize AudioContext lazily on first user interaction
+    - Manages muted state with localStorage persistence
+    - Provides play functions: playStartupChime, playHoverBlip, playClickBlip
+    - Use OscillatorNode with square/sine waves for retro 8-bit sound
+    - Use GainNode for volume control and fade-out envelopes
+    - Clean up oscillators after each sound completes
+    - _Requirements: 7.1, 7.5, 7.6, 7.7, 7.8_
+  - [x] 9.2 Write property test for sound preference persistence
+    - **Property 11: Sound Preference Persistence**
+    - **Validates: Requirements 7.5**
+  - [x] 9.3 Implement startup chime synthesis
+    - Generate ascending tone sequence (C4→E4→G4→C5) using square wave oscillators
+    - 150ms per note, ~800ms total duration
+    - Apply gain envelope for smooth fade-out
+    - _Requirements: 7.2, 7.7_
+  - [x] 9.4 Implement UI blip sounds synthesis
+    - Hover blip: 880Hz sine wave, 50ms duration, low gain (0.08)
+    - Click blip: 440Hz→660Hz square wave pitch bend, 80ms duration
+    - _Requirements: 7.3, 7.8_
+  - [x] 9.5 Create sound toggle UI
+    - Mute/unmute button on CRT frame
+    - Visual indicator of current state (speaker icon with/without slash)
+    - _Requirements: 7.4_
+  - [x] 9.6 Wire up sound triggers to components
+    - Boot startup chime plays when boot sequence starts (if unmuted)
+    - CTA hover/click events trigger respective blip sounds
+    - _Requirements: 7.2, 7.3_
+
+- [ ] 10. Create Main Page Component and Routing
+  - [x] 10.1 Create ArcadeLanding page component
+    - Orchestrates all sub-components
+    - Manages boot → dashboard transition
+    - Integrates with useAuthStore for auth state (reactive, non-blocking)
+    - Wrapped in ArcadeLandingErrorBoundary
+    - _Requirements: 9.2, 9.4, 10.1, 10.4_
+  - [x]* 10.2 Write property tests for analytics and error boundary
+    - **Property 12: Analytics Tracking**
+    - **Property 15: Error Boundary Isolation**
+    - **Validates: Requirements 9.5, 10.1, 11.1-11.6**
+  - [x] 10.3 Add comprehensive analytics tracking
+    - Track arcade_boot_start on mount
+    - Track arcade_boot_phase on each phase change
+    - Track arcade_boot_skip when user skips
+    - Track arcade_boot_complete with duration and skip status
+    - Track arcade_cta_visible when dashboard renders
+    - Track arcade_cta_click on CTA interactions
+    - Track arcade_performance_degraded when FPS drops
+    - Track arcade_error_boundary_triggered on errors
+    - _Requirements: 9.5, 11.1, 11.2, 11.3, 11.4, 11.5, 11.6_
+  - [x] 10.4 Add route to App.tsx
+    - Register /arcade route for ArcadeLanding
+    - Keep existing / route unchanged initially
+    - _Requirements: 9.4_
+  - [x] 10.5 Create index.ts exports
+    - Export all public components and hooks
+    - _Requirements: 9.1_
+
+- [x] 11. Implement Visual Polish and Delight Details
+  - [x] 11.1 Implement CRT power-on warm-up effect
+    - Screen glow expands from center outward over 600ms
+    - Use radial gradient animation with cubic-bezier easing
+    - _Requirements: 8.1_
+  - [x] 11.2 Add terminal cursor to boot text
+    - Blinking block cursor (█) at end of current line
+    - 530ms blink interval using CSS animation
+    - Brand orange color with glow
+    - _Requirements: 8.2_
+  - [x] 11.3 Implement multi-layer headline glow
+    - Multiple text-shadow layers for phosphor bloom effect
+    - Inner glow (10px), mid glow (40px), outer glow (80px)
+    - All in brand orange with decreasing opacity
+    - _Requirements: 8.3_
+  - [x] 11.4 Implement dashboard stagger animation
+    - Elements animate in sequence with 80ms delays
+    - Order: Demo → Headline → Tagline → Primary CTA → Secondary CTA
+    - Use framer-motion staggerChildren or CSS animation-delay
+    - _Requirements: 8.4_
+  - [x] 11.5 Implement CTA micro-interactions
+    - Hover: translateY(-2px), glow intensity +50%
+    - Press: scale(0.97) for tactile feedback
+    - 200ms hover transition, 100ms press transition
+    - _Requirements: 8.5, 8.6_
+  - [x] 11.6 Add "PRESS START" Easter egg
+    - Blinking text appears 3 seconds after dashboard loads
+    - Position: bottom-center of screen
+    - 800ms blink rate, 30% opacity
+    - Clicking navigates to primary CTA action
+    - _Requirements: 8.7_
+  - [x] 11.7 Add glass reflection overlay
+    - Diagonal gradient from top-left (8% white) to transparent
+    - pointer-events: none to not interfere with clicks
+    - _Requirements: 8.8_
+  - [x] 11.8 Add "LIVE" indicator to demo
+    - Pulsing green dot (6px) with "LIVE" text
+    - Position: top-right corner of demo container
+    - Success green (#10B981) with pulse animation
+    - _Requirements: 8.9_
+  - [x] 11.9 Add bezel details for desktop
+    - Ventilation slots (6 slots, 40x4px each)
+    - Brand badge ("1v1 BRO" in small text)
+    - Only visible on desktop breakpoint
+    - _Requirements: 8.10_
+
+- [ ] 12. Responsive Design Polish
+  - [x] 12.1 Implement mobile breakpoint styles
+    - Minimal bezel, full-width screen
+    - Stacked layout for dashboard content
+    - _Requirements: 5.1_
+  - [x] 12.2 Implement tablet breakpoint styles
+    - Moderate bezel, balanced layout
+    - _Requirements: 5.2_
+  - [x] 12.3 Implement desktop breakpoint styles
+    - Full cabinet details, maximum visual fidelity
+    - Side-by-side demo and content layout
+    - _Requirements: 5.3_
+  - [x] 12.4 Test and fix viewport resize behavior
+    - Ensure aspect ratio maintained on resize
+    - Smooth transitions between breakpoints
+    - _Requirements: 5.4_
+
+- [ ] 13. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [ ] 14. Enterprise Hardening (P0 Launch Requirements)
+  - [x] 14.1 Add static demo fallback image
+    - Create `/public/assets/landing/demo-fallback.webp` placeholder
+    - Screenshot of gameplay with "Live demo unavailable" badge
+    - _Requirements: 10.2_
+  - [x] 14.2 Add font preload hints
+    - Add `<link rel="preload">` for Inter and JetBrains Mono fonts
+    - Add to index.html or via React Helmet
+    - _Requirements: 6.1_
+  - [ ] 14.3 Verify iOS Safari 18 fallback
+    - Test barrel distortion CSS fallback on iOS Safari 18
+    - Verify no visual breakage
+    - _Requirements: 10.5_
+  - [ ] 14.4 Add CSP-safe inline styles
+    - Ensure SVG filters work with strict CSP
+    - Add nonce support if needed
+    - _Requirements: 6.5_
+  - [ ]* 14.5 Write E2E tests (Playwright)
+    - Test boot sequence completes within 5s
+    - Test skip button with keyboard
+    - Test reduced motion skips boot
+    - Test iOS Safari 18 CSS fallback
+    - Test error boundary catches errors
+    - Test CTAs navigate correctly based on auth
+    - _Requirements: All_

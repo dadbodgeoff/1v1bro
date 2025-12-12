@@ -84,12 +84,12 @@ export function FilterBar({
 
   return (
     <div className={cn('space-y-3', className)}>
-      {/* Type Filter Chips */}
-      <div className="flex flex-wrap gap-2">
+      {/* Type Filter Chips - horizontal scroll on mobile, wrap on desktop */}
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
         <button
           onClick={() => updateFilter('type', 'all')}
           className={cn(
-            'px-4 py-2 rounded-lg font-medium text-sm transition-colors',
+            'px-4 py-2.5 min-h-[44px] rounded-lg font-medium text-sm transition-colors flex-shrink-0 touch-manipulation',
             filters.type === 'all' ? filterChipStyles.active : filterChipStyles.inactive
           )}
         >
@@ -102,7 +102,7 @@ export function FilterBar({
               key={type}
               onClick={() => updateFilter('type', type)}
               className={cn(
-                'px-4 py-2 rounded-lg font-medium text-sm transition-colors',
+                'px-4 py-2.5 min-h-[44px] rounded-lg font-medium text-sm transition-colors flex-shrink-0 touch-manipulation',
                 filters.type === type ? filterChipStyles.active : filterChipStyles.inactive
               )}
             >
@@ -112,14 +112,14 @@ export function FilterBar({
         })}
       </div>
 
-      {/* Second Row: Rarity, Status, Sort */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Rarity Dropdown */}
+      {/* Second Row: Rarity, Status, Sort - stack on mobile, row on desktop */}
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
+        {/* Rarity Dropdown - 44px min height for touch */}
         <select
           value={filters.rarity}
           onChange={(e) => updateFilter('rarity', e.target.value as Rarity | 'all')}
           className={cn(
-            'px-3 py-2 rounded-lg text-sm font-medium',
+            'px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium touch-manipulation',
             'bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)]',
             'border border-[var(--color-border-subtle)]',
             'focus:outline-none focus:ring-2 focus:ring-[#6366f1]/50',
@@ -134,14 +134,14 @@ export function FilterBar({
           ))}
         </select>
 
-        {/* Status Toggle */}
+        {/* Status Toggle - 44px min height for touch */}
         <div className="flex rounded-lg overflow-hidden border border-[var(--color-border-subtle)]">
           {(['all', 'equipped', 'unequipped'] as const).map((status) => (
             <button
               key={status}
               onClick={() => updateFilter('status', status)}
               className={cn(
-                'px-3 py-2 text-sm font-medium transition-colors',
+                'px-3 py-2.5 min-h-[44px] text-sm font-medium transition-colors touch-manipulation',
                 filters.status === status
                   ? 'bg-[#6366f1] text-white'
                   : 'bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-card)]'
@@ -152,12 +152,12 @@ export function FilterBar({
           ))}
         </div>
 
-        {/* Sort Dropdown */}
+        {/* Sort Dropdown - 44px min height for touch */}
         <select
           value={filters.sort}
           onChange={(e) => updateFilter('sort', e.target.value as InventoryFilters['sort'])}
           className={cn(
-            'px-3 py-2 rounded-lg text-sm font-medium',
+            'px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium touch-manipulation',
             'bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)]',
             'border border-[var(--color-border-subtle)]',
             'focus:outline-none focus:ring-2 focus:ring-[#6366f1]/50'
@@ -170,11 +170,11 @@ export function FilterBar({
           ))}
         </select>
 
-        {/* Clear All Button */}
+        {/* Clear All Button - 44px min height for touch */}
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="px-3 py-2 rounded-lg text-sm font-medium text-[#ef4444] hover:bg-[#ef4444]/10 transition-colors"
+            className="px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium text-[#ef4444] hover:bg-[#ef4444]/10 transition-colors touch-manipulation"
           >
             Clear All
           </button>

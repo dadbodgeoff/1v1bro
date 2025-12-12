@@ -69,7 +69,7 @@ export function HeroSection({ reducedMotion, onCTAClick, isAuthenticated }: Hero
           >
             <button
               onClick={onCTAClick}
-              className="relative px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="relative px-10 py-4 bg-[#F97316] text-white text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:bg-[#FB923C] focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:ring-offset-2 focus:ring-offset-black"
               style={{
                 boxShadow: `0 0 ${isHovering ? 40 : 20}px rgba(99, 102, 241, ${isHovering ? 0.6 : 0.4})`,
               }}

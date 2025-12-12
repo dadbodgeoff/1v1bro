@@ -121,27 +121,37 @@ export function ControlsHint({ isMobileLandscape: _ }: ControlsHintProps) {
 }
 
 /**
- * Leave button - bottom right corner of canvas
+ * Leave button - bottom right corner on desktop/portrait, top right on mobile landscape
+ * Moved to top-right in landscape to avoid overlap with Fire button
  */
 export function LeaveButton({ isMobileLandscape, isFullscreen, onLeave }: LeaveButtonProps) {
+  // In mobile landscape, position at top-right to avoid Fire button overlap
+  const positionStyle = isMobileLandscape 
+    ? { 
+        top: 'max(8px, env(safe-area-inset-top, 8px))',
+        right: 'max(8px, env(safe-area-inset-right, 8px))',
+        bottom: 'auto'
+      }
+    : { bottom: '12px', right: '12px' }
+
   return (
     <div 
-      className="absolute bottom-3 right-3 z-10 safe-area-bottom" 
-      style={{ bottom: isMobileLandscape ? '140px' : '12px' }}
+      className={`absolute z-10 ${isMobileLandscape ? '' : 'safe-area-bottom'}`}
+      style={positionStyle}
     >
       <div className="flex gap-2">
         {/* Exit fullscreen button - only show when in fullscreen */}
         {isFullscreen && (
           <button
             onClick={() => document.exitFullscreen?.()}
-            className="px-2 py-1.5 text-[10px] text-neutral-500 hover:text-white bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px]"
+            className="px-2 py-1.5 text-[10px] text-neutral-500 hover:text-white bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] touch-manipulation"
           >
             Exit FS
           </button>
         )}
         <button
           onClick={onLeave}
-          className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px]"
+          className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded transition-colors min-h-[44px] min-w-[44px] touch-manipulation"
         >
           Leave
         </button>

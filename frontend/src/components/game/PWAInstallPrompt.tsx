@@ -81,7 +81,7 @@ export function PWAInstallPrompt() {
 
   // Small dismissible banner at top
   return (
-    <div className="fixed top-0 left-0 right-0 z-[200] bg-gradient-to-r from-indigo-600/95 to-purple-600/95 backdrop-blur-sm px-4 py-2.5 flex items-center justify-between gap-3 animate-in slide-in-from-top duration-300 shadow-lg">
+    <div className="fixed top-0 left-0 right-0 z-[200] bg-gradient-to-r from-indigo-600/95 to-indigo-500/95 backdrop-blur-sm px-4 py-2.5 flex items-center justify-between gap-3 animate-in slide-in-from-top duration-300 shadow-lg">
       <div className="flex items-center gap-3 min-w-0">
         <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
           <span className="text-sm font-bold text-white">1v1</span>

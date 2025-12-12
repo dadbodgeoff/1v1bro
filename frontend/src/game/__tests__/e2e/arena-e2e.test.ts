@@ -8,7 +8,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import * as fc from 'fast-check'
 
-import { NEXUS_ARENA } from '../../config/maps/nexus-arena'
+import { SIMPLE_ARENA } from '../../config/maps/simple-arena'
 import { validateMapConfig } from '../../config/maps/map-schema'
 
 import {
@@ -39,11 +39,11 @@ describe('Property 1: Arena Initialization Completeness', () => {
    * **Feature: arena-e2e-testing, Property 1: Arena Initialization Completeness**
    * For any valid map configuration, loading SHALL initialize all subsystems
    */
-  it('initializes all subsystems from valid NEXUS_ARENA config', () => {
+  it('initializes all subsystems from valid SIMPLE_ARENA config', () => {
     const arena = ArenaFactory.createDefault()
     
     expect(arena.getIsInitialized()).toBe(true)
-    expect(arena.getMapConfig()).toBe(NEXUS_ARENA)
+    expect(arena.getMapConfig()).toBe(SIMPLE_ARENA)
     expect(arena.getTileMap()).toBeDefined()
     expect(arena.getTileMap().getWidth()).toBe(16)
     expect(arena.getTileMap().getHeight()).toBe(9)

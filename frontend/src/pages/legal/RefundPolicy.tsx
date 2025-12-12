@@ -169,7 +169,7 @@ export function RefundPolicy() {
             </p>
             <div className="bg-[#111113] border border-white/[0.08] rounded-xl p-4">
               <p className="text-white font-medium mb-1">Email Support</p>
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-purple-400 hover:text-purple-300">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-blue-500 hover:text-blue-400">
                 {CONTACT_EMAIL}
               </a>
               <p className="text-[#737373] text-sm mt-3">

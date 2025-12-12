@@ -63,7 +63,7 @@ export function Results() {
   // Loading state
   if (!finalResult) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
       </div>
     )
@@ -85,7 +85,7 @@ export function Results() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 p-4 overflow-y-auto">
+    <div className="min-h-screen bg-[#0a0a0a] p-4 overflow-y-auto">
       <div className="max-w-4xl mx-auto space-y-6 pb-8">
         {/* Winner Announcement (Requirements: 6.2) */}
         <div className="text-center py-6">

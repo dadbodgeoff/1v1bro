@@ -57,23 +57,23 @@ export interface DynamicSpawnCallbacks {
 // ============================================================================
 
 const DEFAULT_HAZARD_SPAWN: SpawnConfig = {
-  initialDelayMin: 3,
-  initialDelayMax: 8,
-  lifetimeMin: 8,
-  lifetimeMax: 15,
-  respawnDelayMin: 5,
-  respawnDelayMax: 12,
-  maxConcurrent: 6
+  initialDelayMin: 2,
+  initialDelayMax: 4,
+  lifetimeMin: 10,
+  lifetimeMax: 18,
+  respawnDelayMin: 3,
+  respawnDelayMax: 6,
+  maxConcurrent: 4
 }
 
 const DEFAULT_TRAP_SPAWN: SpawnConfig = {
-  initialDelayMin: 5,
-  initialDelayMax: 10,
-  lifetimeMin: 10,
+  initialDelayMin: 3,
+  initialDelayMax: 5,
+  lifetimeMin: 12,
   lifetimeMax: 20,
-  respawnDelayMin: 8,
-  respawnDelayMax: 15,
-  maxConcurrent: 4
+  respawnDelayMin: 4,
+  respawnDelayMax: 8,
+  maxConcurrent: 3
 }
 
 // ============================================================================

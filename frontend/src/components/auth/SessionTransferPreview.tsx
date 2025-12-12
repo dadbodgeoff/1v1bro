@@ -53,15 +53,15 @@ export function SessionTransferPreview({
         animate={{ opacity: 1, y: 0 }}
         className={cn(
           'p-3 rounded-lg',
-          'bg-gradient-to-r from-purple-500/10 to-orange-500/10',
-          'border border-purple-500/20',
+          'bg-indigo-500/10',
+          'border border-indigo-500/20',
           className
         )}
       >
         <div className="flex items-center justify-between">
           <span className="text-neutral-400 text-sm">Your progress:</span>
           <div className="flex items-center gap-3 text-sm">
-            <span className="text-purple-400 font-semibold">{estimatedRewards.xp} XP</span>
+            <span className="text-indigo-400 font-semibold">{estimatedRewards.xp} XP</span>
             <span className="text-amber-400 font-semibold">{estimatedRewards.coins} coins</span>
           </div>
         </div>
@@ -75,8 +75,8 @@ export function SessionTransferPreview({
       animate={{ opacity: 1, y: 0 }}
       className={cn(
         'p-4 rounded-xl',
-        'bg-gradient-to-br from-purple-500/10 via-transparent to-orange-500/10',
-        'border border-purple-500/20',
+        'bg-indigo-500/10',
+        'border border-indigo-500/20',
         className
       )}
     >

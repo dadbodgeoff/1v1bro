@@ -1,0 +1,2718 @@
+/**
+ * CRT Arcade Landing Page Styles
+ * 
+ * Retro CRT monitor visual effects and animations.
+ * Uses CSS custom properties from tokens.css.
+ * 
+ * @module landing/arcade/styles
+ */
+
+/* ============================================
+ * CSS Custom Properties
+ * ============================================ */
+
+.arcade-landing {
+  /* CRT Colors */
+  --arcade-screen-bg: #09090B;
+  --arcade-bezel-dark: #111111;
+  --arcade-bezel-light: #1A1A1A;
+  --arcade-bezel-highlight: #2a2a2a;
+  --arcade-page-bg: #000000;
+  
+  /* Brand Orange */
+  --arcade-led-off: #331a00;
+  --arcade-led-on: #F97316;
+  --arcade-led-glow: rgba(249, 115, 22, 0.6);
+  --arcade-text-glow: rgba(249, 115, 22, 0.8);
+  --arcade-phosphor: rgba(249, 115, 22, 0.3);
+  
+  /* Scanlines */
+  --arcade-scanline-color: rgba(0, 0, 0, 0.15);
+  --arcade-scanline-height: 2px;
+  --arcade-scanline-gap: 2px;
+  
+  /* Animation Timings */
+  --arcade-power-on-duration: 600ms;
+  --arcade-cursor-blink: 530ms;
+  --arcade-flicker-duration: 150ms;
+  --arcade-stagger-delay: 80ms;
+}
+
+/* ============================================
+ * Base Layout - Immersive Arcade Room (No Gradients)
+ * ============================================ */
+
+.arcade-landing {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  max-width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  /* Solid dark background */
+  background: #000000;
+}
+
+/* ============================================
+ * Arcade Room Background Layers (Solid Colors + Shadows)
+ * ============================================ */
+
+/* Layer 1: Dark room base */
+.arcade-room-bg {
+  position: absolute;
+  inset: 0;
+  background: #050508;
+  z-index: 0;
+}
+
+/* Layer 2: Grid floor using borders instead of gradients */
+.arcade-floor {
+  position: absolute;
+  bottom: 0;
+  left: -50%;
+  right: -50%;
+  height: 45%;
+  /* Solid floor with subtle glow */
+  background: #020204;
+  transform: perspective(500px) rotateX(60deg);
+  transform-origin: center top;
+  z-index: 0;
+  opacity: 0.5;
+  box-shadow: inset 0 0 100px 50px rgba(249, 115, 22, 0.02);
+}
+
+/* Layer 3: Wall - solid color */
+.arcade-wall {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background: #030306;
+  z-index: 0;
+}
+
+/* Layer 4: Spotlight - using box-shadow instead of gradient */
+.arcade-spotlight {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 200px;
+  background: transparent;
+  box-shadow: 0 0 200px 100px rgba(249, 115, 22, 0.03);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+/* Layer 5: Ambient cabinet glow - using box-shadow */
+.arcade-landing::before {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 100px;
+  background: transparent;
+  box-shadow: 
+    0 0 150px 80px rgba(249, 115, 22, 0.08),
+    -200px 0 100px 50px rgba(59, 130, 246, 0.02),
+    200px 0 100px 50px rgba(16, 185, 129, 0.02);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 50%;
+}
+
+/* Layer 6: Floor reflection - box-shadow */
+.arcade-landing::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 50px;
+  background: transparent;
+  box-shadow: 0 0 100px 60px rgba(249, 115, 22, 0.04);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 50%;
+}
+
+.arcade-landing * {
+  box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll */
+.arcade-landing,
+.arcade-landing body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ============================================
+ * Floating Dust Particles
+ * ============================================ */
+
+.arcade-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.arcade-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: particle-float 20s linear infinite;
+}
+
+.arcade-particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 25s; }
+.arcade-particle:nth-child(2) { left: 20%; animation-delay: -5s; animation-duration: 20s; }
+.arcade-particle:nth-child(3) { left: 30%; animation-delay: -10s; animation-duration: 28s; }
+.arcade-particle:nth-child(4) { left: 40%; animation-delay: -3s; animation-duration: 22s; }
+.arcade-particle:nth-child(5) { left: 50%; animation-delay: -8s; animation-duration: 26s; }
+.arcade-particle:nth-child(6) { left: 60%; animation-delay: -12s; animation-duration: 24s; }
+.arcade-particle:nth-child(7) { left: 70%; animation-delay: -2s; animation-duration: 21s; }
+.arcade-particle:nth-child(8) { left: 80%; animation-delay: -7s; animation-duration: 27s; }
+.arcade-particle:nth-child(9) { left: 90%; animation-delay: -15s; animation-duration: 23s; }
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-20vh) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+ * Neon Accent Lights (Background)
+ * ============================================ */
+
+.arcade-neon-accents {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.neon-line {
+  position: absolute;
+  background: var(--neon-color);
+  opacity: 0.3;
+  animation: neon-flicker 4s ease-in-out infinite;
+}
+
+.neon-line--top {
+  --neon-color: #F97316;
+  top: 8%;
+  left: 5%;
+  right: 5%;
+  height: 2px;
+  animation-delay: 0s;
+  box-shadow: 0 0 20px var(--neon-color);
+}
+
+.neon-line--left {
+  --neon-color: #3B82F6;
+  top: 25%;
+  height: 30%;
+  left: 2%;
+  width: 2px;
+  animation-delay: -1s;
+  box-shadow: 0 0 15px var(--neon-color);
+}
+
+.neon-line--right {
+  --neon-color: #10B981;
+  top: 25%;
+  height: 30%;
+  right: 2%;
+  width: 2px;
+  animation-delay: -2s;
+  box-shadow: 0 0 15px var(--neon-color);
+}
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 0.2; }
+  48% { opacity: 0.25; }
+  50% { opacity: 0.08; }
+  52% { opacity: 0.22; }
+  54% { opacity: 0.18; }
+}
+
+/* ============================================
+ * Distant Arcade Cabinet Silhouettes
+ * ============================================ */
+
+.arcade-silhouettes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Left distant cabinet */
+.arcade-silhouette {
+  position: absolute;
+  bottom: 15%;
+  width: 60px;
+  height: 120px;
+  background: #070707;
+  border-radius: 4px 4px 0 0;
+  opacity: 0.4;
+  box-shadow: inset 0 -20px 30px rgba(0, 0, 0, 0.3);
+}
+
+.arcade-silhouette--left {
+  left: 8%;
+  transform: scale(0.7) perspective(200px) rotateY(15deg);
+}
+
+.arcade-silhouette--left::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  right: 8px;
+  height: 50px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.arcade-silhouette--right {
+  right: 8%;
+  transform: scale(0.6) perspective(200px) rotateY(-15deg);
+}
+
+.arcade-silhouette--right::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  right: 8px;
+  height: 50px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+/* ============================================
+ * Atmospheric Haze/Fog
+ * ============================================ */
+
+.arcade-haze {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: transparent;
+  box-shadow: inset 0 -100px 150px -50px rgba(249, 115, 22, 0.02);
+  animation: haze-drift 20s ease-in-out infinite;
+}
+
+@keyframes haze-drift {
+  0%, 100% { 
+    opacity: 0.5;
+    transform: translateY(0);
+  }
+  50% { 
+    opacity: 0.7;
+    transform: translateY(-10px);
+  }
+}
+
+/* ============================================
+ * Arcade Cabinet Frame
+ * ============================================ */
+
+.arcade-cabinet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: min(95vw, 1100px);
+  height: calc(100vh - 32px);
+  height: calc(100dvh - 32px);
+  max-height: 800px;
+  padding: 16px;
+  position: relative;
+  z-index: 10;
+  /* Subtle 3D transform for depth */
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+}
+
+/* Cabinet ambient glow on floor */
+.arcade-cabinet::before {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: 10%;
+  right: 10%;
+  height: 80px;
+  background: transparent;
+  box-shadow: 0 0 60px 30px rgba(249, 115, 22, 0.1);
+  border-radius: 50%;
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Cabinet shadow on floor */
+.arcade-cabinet::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 5%;
+  right: 5%;
+  height: 40px;
+  background: transparent;
+  box-shadow: 0 0 40px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  filter: blur(15px);
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Cabinet entrance animation */
+.arcade-cabinet {
+  animation: cabinet-entrance 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes cabinet-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.9) rotateX(10deg);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0);
+    filter: blur(0);
+  }
+}
+
+/* Marquee Header - The lit sign at top of arcade cabinets */
+.arcade-marquee {
+  position: relative;
+  width: 100%;
+  height: 70px;
+  background: #151515;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #333;
+  border-bottom: none;
+  box-shadow:
+    inset 0 4px 8px rgba(255, 255, 255, 0.08),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.5),
+    0 -8px 30px rgba(249, 115, 22, 0.25);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Marquee backlight effect */
+.arcade-marquee::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: rgba(249, 115, 22, 0.1);
+  border-radius: 12px;
+  box-shadow: inset 0 0 20px rgba(249, 115, 22, 0.1);
+  animation: marquee-flicker 4s ease-in-out infinite;
+}
+
+@keyframes marquee-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+  52% { opacity: 0.95; }
+}
+
+/* Marquee edge trim */
+.arcade-marquee::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 
+    inset 0 0 0 2px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.arcade-marquee-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: #F97316;
+  text-shadow:
+    0 0 5px #F97316,
+    0 0 15px rgba(249, 115, 22, 0.9),
+    0 0 35px rgba(249, 115, 22, 0.6),
+    0 0 70px rgba(249, 115, 22, 0.4),
+    0 2px 0 rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  z-index: 2;
+  position: relative;
+}
+
+.arcade-marquee-glow {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  box-shadow: inset 0 -30px 40px -20px rgba(249, 115, 22, 0.15);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.arcade-cabinet--mobile .arcade-marquee {
+  display: none;
+}
+
+.arcade-cabinet--tablet .arcade-marquee {
+  height: 48px;
+}
+
+.arcade-cabinet--tablet .arcade-marquee-text {
+  font-size: 22px;
+}
+
+/* ============================================
+ * CRT Monitor Frame (Screen Area)
+ * ============================================ */
+
+.crt-monitor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crt-bezel {
+  position: relative;
+  background: #181818;
+  border-radius: 8px;
+  padding: 28px;
+  box-shadow:
+    /* Outer frame depth */
+    inset 0 2px 4px rgba(255, 255, 255, 0.08),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.4),
+    inset 4px 0 8px rgba(0, 0, 0, 0.2),
+    inset -4px 0 8px rgba(0, 0, 0, 0.2),
+    /* Drop shadow */
+    0 25px 80px rgba(0, 0, 0, 0.6),
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    /* Subtle outer glow */
+    0 0 60px rgba(249, 115, 22, 0.05);
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid #333;
+}
+
+/* Bezel inner edge highlight */
+.crt-bezel::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 5px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Bezel screws/rivets decoration */
+.crt-bezel::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 6px;
+  height: 6px;
+  background: #2a2a2a;
+  border-radius: 50%;
+  box-shadow:
+    /* Top right */
+    calc(100% - 26px) 0 0 0 #222,
+    calc(100% - 26px) 0 0 1px #333,
+    /* Bottom left */
+    0 calc(100% - 26px) 0 0 #222,
+    0 calc(100% - 26px) 0 1px #333,
+    /* Bottom right */
+    calc(100% - 26px) calc(100% - 26px) 0 0 #222,
+    calc(100% - 26px) calc(100% - 26px) 0 1px #333,
+    /* Self border */
+    0 0 0 1px #333,
+    /* Highlight */
+    inset 1px 1px 2px rgba(255, 255, 255, 0.1);
+  z-index: 5;
+}
+
+/* Side panel accents - LED strip effect */
+.cabinet-side-panel {
+  position: absolute;
+  top: 15%;
+  bottom: 15%;
+  width: 6px;
+  background: rgba(249, 115, 22, 0.5);
+  border-radius: 3px;
+  box-shadow: 
+    0 0 20px rgba(249, 115, 22, 0.4),
+    0 0 40px rgba(249, 115, 22, 0.2),
+    inset 0 30px 20px -20px transparent,
+    inset 0 -30px 20px -20px transparent;
+  animation: side-panel-pulse 3s ease-in-out infinite;
+  /* Fade edges using mask */
+  mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+@keyframes side-panel-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.cabinet-side-panel--left {
+  left: -14px;
+}
+
+.cabinet-side-panel--right {
+  right: -14px;
+}
+
+.crt-bezel--mobile {
+  padding: 8px;
+  border-radius: 16px;
+}
+
+.crt-bezel--tablet {
+  padding: 16px;
+  border-radius: 20px;
+}
+
+/* ============================================
+ * Arcade Control Panel - Authentic Design
+ * ============================================ */
+
+.arcade-control-panel {
+  position: relative;
+  width: 100%;
+  height: 90px;
+  background: #181818;
+  border-radius: 0 0 12px 12px;
+  border: 3px solid #333;
+  border-top: 2px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 0 32px;
+  box-shadow:
+    /* Top edge highlight */
+    inset 0 2px 0 rgba(255, 255, 255, 0.05),
+    /* Depth shadows */
+    inset 0 -4px 12px rgba(0, 0, 0, 0.4),
+    /* Drop shadow */
+    0 15px 40px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+/* Control panel surface texture */
+.arcade-control-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* T-molding edge trim */
+.arcade-control-panel::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 20px;
+  right: 20px;
+  height: 4px;
+  background: #F97316;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+  /* Fade edges using mask */
+  mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.arcade-cabinet--mobile .arcade-control-panel {
+  display: none;
+}
+
+.arcade-cabinet--tablet .arcade-control-panel {
+  height: 70px;
+  gap: 30px;
+}
+
+/* Joystick - Realistic Sanwa-style */
+.control-panel-joystick {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+/* Joystick mounting plate */
+.joystick-base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 24px;
+  background: #2a2a2a;
+  border-radius: 50%;
+  border: 2px solid #555;
+  box-shadow:
+    inset 0 -4px 8px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Joystick shaft */
+.joystick-stick {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 40px;
+  background: #3a3a3a;
+  border-radius: 5px 5px 3px 3px;
+  box-shadow: 
+    inset 2px 0 3px rgba(255, 255, 255, 0.1),
+    inset -2px 0 3px rgba(0, 0, 0, 0.4);
+}
+
+/* Joystick ball top */
+.joystick-stick::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 20px;
+  background: #F97316;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px rgba(249, 115, 22, 0.5),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Arcade Buttons */
+.control-panel-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+/* Arcade Buttons - Sanwa/Seimitsu style */
+.arcade-button {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  box-shadow:
+    /* Button rim */
+    inset 0 0 0 3px rgba(0, 0, 0, 0.3),
+    /* Depth */
+    0 4px 0 #111,
+    0 6px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.05s, box-shadow 0.05s;
+}
+
+/* Button mounting ring */
+.arcade-button::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  z-index: -1;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+/* Button highlight */
+.arcade-button::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 20%;
+  right: 20%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.arcade-button--a {
+  background: #F97316;
+  box-shadow:
+    /* Internal button depth */
+    inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+    inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.2),
+    /* Physical button depth */
+    0 4px 0 #9A3412,
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    /* LED glow casting light on panel */
+    0 0 25px rgba(249, 115, 22, 0.6),
+    0 0 50px rgba(249, 115, 22, 0.3),
+    0 8px 30px rgba(249, 115, 22, 0.4);
+  animation: button-glow-orange 2s ease-in-out infinite;
+}
+
+@keyframes button-glow-orange {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+      inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+      inset 0 4px 8px rgba(255, 255, 255, 0.2),
+      0 4px 0 #9A3412,
+      0 6px 12px rgba(0, 0, 0, 0.4),
+      0 0 25px rgba(249, 115, 22, 0.6),
+      0 0 50px rgba(249, 115, 22, 0.3),
+      0 8px 30px rgba(249, 115, 22, 0.4);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+      inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+      inset 0 4px 8px rgba(255, 255, 255, 0.3),
+      0 4px 0 #9A3412,
+      0 6px 12px rgba(0, 0, 0, 0.4),
+      0 0 35px rgba(249, 115, 22, 0.8),
+      0 0 60px rgba(249, 115, 22, 0.4),
+      0 10px 40px rgba(249, 115, 22, 0.5);
+  }
+}
+
+.arcade-button--b {
+  background: #3B82F6;
+  box-shadow:
+    /* Internal button depth */
+    inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+    inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.2),
+    /* Physical button depth */
+    0 4px 0 #1E40AF,
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    /* LED glow casting light on panel */
+    0 0 25px rgba(59, 130, 246, 0.6),
+    0 0 50px rgba(59, 130, 246, 0.3),
+    0 8px 30px rgba(59, 130, 246, 0.4);
+  animation: button-glow-blue 2s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+@keyframes button-glow-blue {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+      inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+      inset 0 4px 8px rgba(255, 255, 255, 0.2),
+      0 4px 0 #1E40AF,
+      0 6px 12px rgba(0, 0, 0, 0.4),
+      0 0 25px rgba(59, 130, 246, 0.6),
+      0 0 50px rgba(59, 130, 246, 0.3),
+      0 8px 30px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+      inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+      inset 0 4px 8px rgba(255, 255, 255, 0.3),
+      0 4px 0 #1E40AF,
+      0 6px 12px rgba(0, 0, 0, 0.4),
+      0 0 35px rgba(59, 130, 246, 0.8),
+      0 0 60px rgba(59, 130, 246, 0.4),
+      0 10px 40px rgba(59, 130, 246, 0.5);
+  }
+}
+
+.arcade-button--c {
+  background: #10B981;
+  box-shadow:
+    /* Internal button depth */
+    inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+    inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+    inset 0 4px 8px rgba(255, 255, 255, 0.2),
+    /* Physical button depth */
+    0 4px 0 #065F46,
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    /* LED glow casting light on panel */
+    0 0 25px rgba(16, 185, 129, 0.6),
+    0 0 50px rgba(16, 185, 129, 0.3),
+    0 8px 30px rgba(16, 185, 129, 0.4);
+  animation: button-glow-green 2s ease-in-out infinite;
+  animation-delay: 0.6s;
+}
+
+@keyframes button-glow-green {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+      inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+      inset 0 4px 8px rgba(255, 255, 255, 0.2),
+      0 4px 0 #065F46,
+      0 6px 12px rgba(0, 0, 0, 0.4),
+      0 0 25px rgba(16, 185, 129, 0.6),
+      0 0 50px rgba(16, 185, 129, 0.3),
+      0 8px 30px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 3px rgba(0, 0, 0, 0.2),
+      inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+      inset 0 4px 8px rgba(255, 255, 255, 0.3),
+      0 4px 0 #065F46,
+      0 6px 12px rgba(0, 0, 0, 0.4),
+      0 0 35px rgba(16, 185, 129, 0.8),
+      0 0 60px rgba(16, 185, 129, 0.4),
+      0 10px 40px rgba(16, 185, 129, 0.5);
+  }
+}
+
+.arcade-cabinet--tablet .arcade-button {
+  width: 32px;
+  height: 32px;
+}
+
+/* Coin Slot - Authentic Design */
+.coin-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #151515;
+  border-radius: 8px;
+  border: 2px solid #333;
+}
+
+/* Coin slot chrome bezel */
+.coin-slot::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 14px;
+  background: #3a3a3a;
+  border-radius: 4px;
+  border: 1px solid #666;
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.1);
+}
+
+.coin-slot-opening {
+  position: relative;
+  width: 44px;
+  height: 8px;
+  background: #050505;
+  border-radius: 4px;
+  border: 2px solid #444;
+  box-shadow: 
+    inset 0 2px 6px rgba(0, 0, 0, 0.9),
+    0 1px 0 rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.coin-slot-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #F97316;
+  text-shadow: 0 0 5px rgba(249, 115, 22, 0.5);
+  animation: coin-text-blink 1.5s ease-in-out infinite;
+}
+
+@keyframes coin-text-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.crt-screen-container {
+  position: relative;
+  background: #0a0a0c;
+  border-radius: 12px / 8px; /* Slight barrel curve illusion */
+  border: 4px solid #050505;
+  box-shadow:
+    /* Deep inset for CRT depth */
+    inset 0 0 50px rgba(0, 0, 0, 0.9),
+    inset 0 0 100px rgba(0, 0, 0, 0.5),
+    /* Screen bezel edge */
+    inset 0 2px 4px rgba(255, 255, 255, 0.02),
+    /* Outer shadow */
+    0 0 0 2px #1a1a1a,
+    0 4px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+
+/* CRT glass curvature highlight */
+.crt-screen-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  /* Top-left reflection using box-shadow */
+  box-shadow: 
+    inset 60px 40px 80px -60px rgba(255, 255, 255, 0.03),
+    inset -40px -30px 60px -40px rgba(255, 255, 255, 0.01);
+  pointer-events: none;
+  z-index: 70;
+  border-radius: inherit;
+}
+
+/* CRT Glass Glare/Reflection - Curved glass illusion */
+.crt-screen-reflection {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(
+    ellipse at top right,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.03) 30%,
+    transparent 60%
+  );
+  border-top-right-radius: 12px;
+  pointer-events: none;
+  z-index: 75;
+  /* Subtle animation for "live" feel */
+  animation: glare-shimmer 8s ease-in-out infinite;
+}
+
+@keyframes glare-shimmer {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Secondary glare streak */
+.crt-screen-reflection::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 15%;
+  width: 40%;
+  height: 30%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 70%
+  );
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+/* Phosphor grid pattern (subtle) - removed gradients */
+.crt-screen-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 55;
+  border-radius: inherit;
+}
+
+/* ============================================
+ * Power LED
+ * ============================================ */
+
+.power-led {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--arcade-led-off);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.power-led--on {
+  background: var(--arcade-led-on);
+  box-shadow: 0 0 12px var(--arcade-led-glow);
+  animation: led-pulse 2s ease-in-out infinite;
+}
+
+@keyframes led-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ============================================
+ * Bezel Details (Desktop Only)
+ * ============================================ */
+
+.bezel-vents {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bezel-vent {
+  width: 40px;
+  height: 4px;
+  background: #0a0a0a;
+  border-radius: 2px;
+}
+
+.bezel-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 20px;
+  background: var(--arcade-bezel-light);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #4a4a4a;
+  text-transform: uppercase;
+}
+
+/* ============================================
+ * CRT Effects - Authentic Retro Display
+ * ============================================ */
+
+/* Scanlines - Interlaced display effect using SVG pattern */
+.crt-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  /* Using SVG data URI for scanline pattern instead of gradient */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='2'%3E%3Crect width='1' height='1' y='1' fill='rgba(0,0,0,0.15)'/%3E%3C/svg%3E");
+  background-size: 1px 2px;
+}
+
+.crt-scanlines--light {
+  opacity: 0.4;
+}
+
+/* RGB Subpixel Pattern (subtle) - removed gradient, using opacity overlay */
+.crt-rgb-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 48;
+  background: transparent;
+  opacity: 0.5;
+}
+
+/* Glass Reflection - using box-shadow instead of gradients */
+.crt-glass-reflection {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  background: transparent;
+  /* Diagonal reflection using positioned box-shadow */
+  box-shadow: 
+    inset 80px 60px 100px -80px rgba(255, 255, 255, 0.04),
+    inset -60px -40px 80px -60px rgba(255, 255, 255, 0.015);
+  border-radius: inherit;
+}
+
+/* Vignette - CRT edge darkening using box-shadow */
+.crt-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  background: transparent;
+  box-shadow: 
+    inset 0 0 80px 40px rgba(0, 0, 0, 0.3),
+    inset 0 0 150px 80px rgba(0, 0, 0, 0.2);
+  border-radius: inherit;
+}
+
+/* Screen Flicker - Random interference */
+.crt-flicker {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.crt-flicker--active {
+  animation: screen-flicker var(--arcade-flicker-duration) ease-out;
+}
+
+@keyframes screen-flicker {
+  0% { opacity: 0; transform: translateY(0); }
+  25% { opacity: 0.1; transform: translateY(-2px); }
+  50% { opacity: 0.15; transform: translateY(1px); }
+  75% { opacity: 0.05; transform: translateY(-1px); }
+  100% { opacity: 0; transform: translateY(0); }
+}
+
+/* Barrel Distortion CSS Fallback */
+.crt-barrel-distortion {
+  border-radius: 50% 50% / 3% 3%;
+}
+
+/* Phosphor Persistence (ghosting effect) */
+.crt-phosphor-persistence {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  mix-blend-mode: screen;
+  opacity: 0.02;
+  filter: blur(2px);
+}
+
+/* Screen Edge Glow */
+.crt-edge-glow {
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  z-index: 35;
+  border-radius: inherit;
+  box-shadow: 
+    inset 0 0 30px rgba(249, 115, 22, 0.03),
+    inset 0 0 60px rgba(249, 115, 22, 0.02);
+}
+
+/* ============================================
+ * Boot Sequence - Enhanced with WOW factor
+ * ============================================ */
+
+.boot-sequence {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  grid-template-areas:
+    "text"
+    "progress"
+    "skip";
+  justify-items: center;
+  align-content: center;
+  gap: 16px;
+  padding: 20px;
+  z-index: 200;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* Digital rain / matrix effect background */
+.boot-sequence-rain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.15;
+}
+
+.rain-column {
+  position: absolute;
+  top: -100%;
+  width: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #F97316;
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.8);
+  writing-mode: vertical-rl;
+  animation: rain-fall 4s linear infinite;
+  opacity: 0;
+}
+
+.rain-column:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 3.5s; }
+.rain-column:nth-child(2) { left: 15%; animation-delay: -0.5s; animation-duration: 4s; }
+.rain-column:nth-child(3) { left: 25%; animation-delay: -1s; animation-duration: 3.2s; }
+.rain-column:nth-child(4) { left: 35%; animation-delay: -1.5s; animation-duration: 4.5s; }
+.rain-column:nth-child(5) { left: 45%; animation-delay: -2s; animation-duration: 3.8s; }
+.rain-column:nth-child(6) { left: 55%; animation-delay: -0.3s; animation-duration: 4.2s; }
+.rain-column:nth-child(7) { left: 65%; animation-delay: -1.2s; animation-duration: 3.6s; }
+.rain-column:nth-child(8) { left: 75%; animation-delay: -2.5s; animation-duration: 4.8s; }
+.rain-column:nth-child(9) { left: 85%; animation-delay: -0.8s; animation-duration: 3.4s; }
+.rain-column:nth-child(10) { left: 95%; animation-delay: -1.8s; animation-duration: 4.1s; }
+
+@keyframes rain-fall {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(250%);
+    opacity: 0;
+  }
+}
+
+/* Scan line effect during boot */
+.boot-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #F97316;
+  box-shadow: 
+    0 0 20px rgba(249, 115, 22, 0.8),
+    0 0 40px rgba(249, 115, 22, 0.5),
+    0 -10px 30px rgba(249, 115, 22, 0.3),
+    0 10px 30px rgba(249, 115, 22, 0.3);
+  z-index: 5;
+  animation: scan-sweep 2s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+@keyframes scan-sweep {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+/* Hexagonal grid overlay */
+.boot-hex-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23F97316' fill-opacity='1'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  animation: hex-pulse 3s ease-in-out infinite;
+}
+
+@keyframes hex-pulse {
+  0%, 100% { opacity: 0.02; }
+  50% { opacity: 0.05; }
+}
+
+/* CRT Power-On Warm-Up Effect - using box-shadow instead of gradient */
+.boot-sequence::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  box-shadow: inset 0 0 100px 60px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: -1;
+  animation: crt-warmup 1.2s ease-out forwards;
+}
+
+@keyframes crt-warmup {
+  0% {
+    box-shadow: inset 0 0 0 50vmax rgba(0, 0, 0, 1);
+  }
+  30% {
+    box-shadow: inset 0 0 150px 100px rgba(0, 0, 0, 0.95);
+  }
+  100% {
+    box-shadow: inset 0 0 80px 40px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Static/Noise overlay during boot */
+.boot-sequence::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+  animation: static-flicker 0.15s steps(3) infinite;
+}
+
+@keyframes static-flicker {
+  0%, 100% { opacity: 0.02; transform: translate(0, 0); }
+  33% { opacity: 0.04; transform: translate(-1px, 1px); }
+  66% { opacity: 0.03; transform: translate(1px, -1px); }
+}
+
+.boot-text-container {
+  grid-area: text;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: clamp(11px, 2.5vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  color: var(--arcade-led-on, #F97316);
+  text-shadow: 
+    0 0 10px var(--arcade-led-glow, rgba(249, 115, 22, 0.6)),
+    0 0 20px rgba(249, 115, 22, 0.3);
+  text-align: left;
+  width: 100%;
+  max-width: min(90%, 400px);
+  align-self: end;
+  z-index: 10;
+  position: relative;
+}
+
+/* Terminal frame around boot text */
+.boot-text-container::before {
+  content: '┌─ SYSTEM BOOT ─────────────────────┐';
+  display: block;
+  margin-bottom: 8px;
+  opacity: 0.5;
+  font-size: 0.85em;
+  color: rgba(249, 115, 22, 0.6);
+}
+
+.boot-text-container::after {
+  content: '└──────────────────────────────────┘';
+  display: block;
+  margin-top: 8px;
+  opacity: 0.5;
+  font-size: 0.85em;
+  color: rgba(249, 115, 22, 0.6);
+}
+
+.boot-line {
+  opacity: 0;
+  transform: translateX(-10px);
+  animation: boot-line-appear 0.3s ease-out forwards;
+  position: relative;
+}
+
+/* Typing indicator before each line */
+.boot-line::before {
+  content: '▸';
+  margin-right: 6px;
+  opacity: 0.6;
+}
+
+@keyframes boot-line-appear {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scaleX(0.8);
+    filter: blur(4px);
+  }
+  40% {
+    opacity: 0.6;
+    transform: translateX(5px) scaleX(1.02);
+    filter: blur(1px);
+  }
+  70% {
+    opacity: 0.9;
+    transform: translateX(-2px) scaleX(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scaleX(1);
+    filter: blur(0);
+  }
+}
+
+/* Glitch effect on boot lines */
+.boot-line:nth-child(odd) {
+  animation: boot-line-appear 0.3s ease-out forwards, boot-glitch 0.15s ease-out 0.2s;
+}
+
+.boot-line:nth-child(even) {
+  animation: boot-line-appear 0.3s ease-out forwards, boot-glitch-alt 0.12s ease-out 0.25s;
+}
+
+@keyframes boot-glitch {
+  0%, 100% { transform: translateX(0); clip-path: inset(0 0 0 0); }
+  20% { transform: translateX(3px) skewX(-2deg); clip-path: inset(10% 0 80% 0); }
+  40% { transform: translateX(-3px) skewX(2deg); clip-path: inset(40% 0 40% 0); }
+  60% { transform: translateX(2px) skewX(-1deg); clip-path: inset(70% 0 10% 0); }
+  80% { transform: translateX(-1px); clip-path: inset(0 0 0 0); }
+}
+
+@keyframes boot-glitch-alt {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px) translateY(1px); }
+  50% { transform: translateX(2px) translateY(-1px); }
+  75% { transform: translateX(-1px); }
+}
+
+/* Status indicators */
+.boot-line--success::after {
+  content: ' ✓';
+  color: #10B981;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+  animation: status-pop 0.3s ease-out;
+}
+
+.boot-line--loading::after {
+  content: ' ◌';
+  animation: loading-spin 0.8s linear infinite;
+}
+
+@keyframes status-pop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes loading-spin {
+  0% { content: ' ◐'; }
+  25% { content: ' ◓'; }
+  50% { content: ' ◑'; }
+  75% { content: ' ◒'; }
+}
+
+/* Terminal Cursor - Enhanced */
+.boot-cursor {
+  display: inline-block;
+  color: var(--arcade-led-on);
+  text-shadow: 
+    0 0 8px var(--arcade-led-glow),
+    0 0 16px rgba(249, 115, 22, 0.4);
+  animation: cursor-blink var(--arcade-cursor-blink) step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Screen shake on certain events */
+.boot-shake {
+  animation: screen-shake 0.15s ease-out;
+}
+
+@keyframes screen-shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+}
+
+/* "OK" status highlight */
+.boot-line-ok {
+  color: #10B981;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+}
+
+/* Ready state emphasis */
+.boot-line-ready {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  animation: ready-pulse 1s ease-in-out infinite;
+}
+
+@keyframes ready-pulse {
+  0%, 100% { 
+    text-shadow: 0 0 10px var(--arcade-led-glow);
+    opacity: 1;
+  }
+  50% { 
+    text-shadow: 0 0 20px var(--arcade-led-glow), 0 0 40px rgba(249, 115, 22, 0.4);
+    opacity: 0.9;
+  }
+}
+
+/* Boot Progress Bar - Enhanced */
+.boot-progress {
+  grid-area: progress;
+  position: relative;
+  width: 100%;
+  max-width: min(80%, 280px);
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: visible;
+  z-index: 10;
+}
+
+/* Progress bar track glow */
+.boot-progress::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 5px;
+  background: transparent;
+  border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.boot-progress-fill {
+  height: 100%;
+  background: #F97316;
+  border-radius: 3px;
+  transition: width 0.15s ease-out;
+  position: relative;
+  overflow: visible;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Animated glow on progress fill */
+.boot-progress-fill::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  bottom: -4px;
+  width: 20px;
+  background: transparent;
+  box-shadow: 0 0 15px 8px rgba(249, 115, 22, 0.6);
+  border-radius: 50%;
+  filter: blur(4px);
+  animation: progress-glow-pulse 0.8s ease-in-out infinite;
+}
+
+/* Scanline effect on progress - removed gradient */
+.boot-progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}
+
+@keyframes progress-glow-pulse {
+  0%, 100% { opacity: 0.6; transform: scaleX(1); }
+  50% { opacity: 1; transform: scaleX(1.5); }
+}
+
+@keyframes progress-scan {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(4px); }
+}
+
+/* Boot Logo - EPIC Reveal with maximum wow factor */
+.boot-logo {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(42px, 12vw, 72px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: white;
+  text-shadow: 
+    0 0 10px rgba(249, 115, 22, 1),
+    0 0 30px rgba(249, 115, 22, 0.8),
+    0 0 60px rgba(249, 115, 22, 0.5),
+    0 0 100px rgba(249, 115, 22, 0.3),
+    0 0 150px rgba(249, 115, 22, 0.2);
+  opacity: 0;
+  transform: scale(0.1) rotateX(90deg) rotateZ(-10deg);
+  animation: logo-reveal-epic 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  position: relative;
+  z-index: 20;
+}
+
+/* Logo container for particle effects */
+.boot-logo-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Subtitle under logo */
+.boot-logo-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(10px, 2vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: #F97316;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: subtitle-reveal 0.6s ease-out 0.8s forwards;
+}
+
+@keyframes subtitle-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    letter-spacing: 0.5em;
+  }
+  100% {
+    opacity: 0.8;
+    transform: translateY(0);
+    letter-spacing: 0.3em;
+  }
+}
+
+/* Logo chromatic aberration effect - more intense */
+.boot-logo::before,
+.boot-logo::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.boot-logo::before {
+  color: #ff3300;
+  animation: logo-chromatic-r 1.2s ease-out 0.2s forwards;
+  mix-blend-mode: screen;
+}
+
+.boot-logo::after {
+  color: #3B82F6;
+  animation: logo-chromatic-b 1.2s ease-out 0.2s forwards;
+  mix-blend-mode: screen;
+}
+
+@keyframes logo-reveal-epic {
+  0% {
+    opacity: 0;
+    transform: scale(0.1) rotateX(90deg) rotateZ(-10deg);
+    filter: blur(40px) brightness(4);
+  }
+  15% {
+    opacity: 0.5;
+    transform: scale(0.5) rotateX(60deg) rotateZ(-5deg);
+    filter: blur(20px) brightness(3);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.3) rotateX(-15deg) rotateZ(2deg);
+    filter: blur(5px) brightness(2);
+  }
+  50% {
+    transform: scale(0.9) rotateX(8deg) rotateZ(-1deg);
+    filter: blur(2px) brightness(1.5);
+  }
+  65% {
+    transform: scale(1.05) rotateX(-4deg) rotateZ(0.5deg);
+    filter: blur(0) brightness(1.3);
+  }
+  80% {
+    transform: scale(0.98) rotateX(2deg) rotateZ(0);
+    filter: blur(0) brightness(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateX(0) rotateZ(0);
+    filter: blur(0) brightness(1);
+  }
+}
+
+@keyframes logo-chromatic-r {
+  0% { opacity: 0; transform: translateX(0) translateY(0); }
+  20% { opacity: 0.7; transform: translateX(-8px) translateY(-2px); }
+  40% { opacity: 0.5; transform: translateX(-4px) translateY(1px); }
+  60% { opacity: 0.3; transform: translateX(-2px) translateY(0); }
+  100% { opacity: 0; transform: translateX(0) translateY(0); }
+}
+
+@keyframes logo-chromatic-b {
+  0% { opacity: 0; transform: translateX(0) translateY(0); }
+  20% { opacity: 0.7; transform: translateX(8px) translateY(2px); }
+  40% { opacity: 0.5; transform: translateX(4px) translateY(-1px); }
+  60% { opacity: 0.3; transform: translateX(2px) translateY(0); }
+  100% { opacity: 0; transform: translateX(0) translateY(0); }
+}
+
+/* Screen flash on logo reveal - more dramatic */
+.boot-logo-flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  animation: logo-flash 0.8s ease-out forwards;
+  z-index: 15;
+}
+
+@keyframes logo-flash {
+  0% { opacity: 0; }
+  5% { opacity: 0.6; }
+  15% { opacity: 0.2; }
+  25% { opacity: 0.4; }
+  40% { opacity: 0.1; }
+  100% { opacity: 0; }
+}
+
+/* Particle burst effect on logo reveal */
+.boot-logo-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.boot-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #F97316;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.8);
+  opacity: 0;
+}
+
+.boot-particle:nth-child(1) { animation: particle-burst 1s ease-out 0.3s forwards; --angle: 0deg; --distance: 80px; }
+.boot-particle:nth-child(2) { animation: particle-burst 1s ease-out 0.32s forwards; --angle: 45deg; --distance: 100px; }
+.boot-particle:nth-child(3) { animation: particle-burst 1s ease-out 0.34s forwards; --angle: 90deg; --distance: 70px; }
+.boot-particle:nth-child(4) { animation: particle-burst 1s ease-out 0.36s forwards; --angle: 135deg; --distance: 90px; }
+.boot-particle:nth-child(5) { animation: particle-burst 1s ease-out 0.38s forwards; --angle: 180deg; --distance: 85px; }
+.boot-particle:nth-child(6) { animation: particle-burst 1s ease-out 0.4s forwards; --angle: 225deg; --distance: 95px; }
+.boot-particle:nth-child(7) { animation: particle-burst 1s ease-out 0.42s forwards; --angle: 270deg; --distance: 75px; }
+.boot-particle:nth-child(8) { animation: particle-burst 1s ease-out 0.44s forwards; --angle: 315deg; --distance: 88px; }
+
+@keyframes particle-burst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance));
+  }
+}
+
+/* Energy ring pulse on logo */
+.boot-energy-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  border: 2px solid #F97316;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  animation: energy-ring-pulse 1s ease-out 0.25s forwards;
+  box-shadow: 
+    0 0 20px rgba(249, 115, 22, 0.5),
+    inset 0 0 20px rgba(249, 115, 22, 0.3);
+}
+
+.boot-energy-ring:nth-child(2) {
+  animation-delay: 0.35s;
+}
+
+.boot-energy-ring:nth-child(3) {
+  animation-delay: 0.45s;
+}
+
+@keyframes energy-ring-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+/* Skip Button */
+.boot-skip-button {
+  grid-area: skip;
+  justify-self: end;
+  align-self: end;
+  padding: 8px 16px;
+  min-height: var(--touch-target-min, 44px);
+  min-width: var(--touch-target-min, 44px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm, 4px);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--transition-fast, 100ms), background var(--transition-fast, 100ms);
+  z-index: 210;
+}
+
+.boot-skip-button:hover,
+.boot-skip-button:focus-visible {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.boot-skip-button:focus-visible {
+  outline: 2px solid var(--color-accent-primary, #6366F1);
+  outline-offset: 2px;
+}
+
+/* ============================================
+ * Power On Animation - CRT Tube Warm-Up
+ * ============================================ */
+
+.power-on-effect {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Horizontal line expanding to full screen - classic CRT power on */
+.power-on-effect::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: white;
+  transform: translateY(-50%) scaleX(0);
+  animation: crt-line-expand 0.4s ease-out forwards;
+  box-shadow: 
+    0 0 20px rgba(249, 115, 22, 0.8),
+    0 0 40px rgba(249, 115, 22, 0.5),
+    0 0 60px rgba(249, 115, 22, 0.3);
+  /* Fade edges using mask */
+  mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
+}
+
+/* Vertical expansion after horizontal */
+.power-on-effect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  box-shadow: inset 0 0 60px 30px rgba(249, 115, 22, 0.1);
+  opacity: 0;
+  animation: crt-vertical-expand 0.6s ease-out 0.3s forwards;
+}
+
+@keyframes crt-line-expand {
+  0% {
+    transform: translateY(-50%) scaleX(0);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-50%) scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50%) scaleX(1);
+    opacity: 0;
+  }
+}
+
+@keyframes crt-vertical-expand {
+  0% {
+    box-shadow: inset 0 0 10px 5px rgba(249, 115, 22, 0.3);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: inset 0 0 40px 20px rgba(249, 115, 22, 0.15);
+    opacity: 1;
+  }
+  100% {
+    box-shadow: inset 0 0 80px 40px rgba(249, 115, 22, 0.05);
+    opacity: 0;
+  }
+}
+
+/* Initial screen flicker */
+.power-on-flicker {
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  animation: power-flicker 0.3s ease-out forwards;
+  z-index: 100;
+}
+
+@keyframes power-flicker {
+  0% { opacity: 0; }
+  5% { opacity: 0.3; }
+  10% { opacity: 0; }
+  15% { opacity: 0.15; }
+  20% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* ============================================
+ * Dashboard UI - Enterprise Grid Layout
+ * Uses CSS Grid for explicit region allocation
+ * ============================================ */
+
+.dashboard-ui {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  z-index: 200; /* Above CRT effects (max 100) */
+  overflow: hidden;
+  
+  /* Mobile: Single column, stacked layout */
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(120px, 1fr) auto auto;
+  grid-template-areas:
+    "demo"
+    "content"
+    "cta";
+  gap: 12px;
+  padding: 16px;
+  align-items: center;
+  justify-items: center;
+}
+
+.dashboard-ui--desktop {
+  /* Desktop: Two column layout - demo fills full left side */
+  grid-template-columns: 1.4fr 1fr;
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "demo content"
+    "demo cta";
+  gap: 32px;
+  padding: 24px;
+  align-items: center;
+}
+
+/* Content area - holds headline, tagline */
+.dashboard-content-area {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  text-align: left;
+  padding-right: 16px;
+}
+
+/* CTA container grid placement */
+.arcade-cta-container {
+  grid-area: cta;
+}
+
+/* Headline - Enterprise Typography */
+.arcade-headline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  letter-spacing: var(--letter-spacing-tight, -0.03em);
+  line-height: 1;
+  color: var(--color-text-primary, white);
+  /* 3-layer phosphor glow effect */
+  text-shadow:
+    0 0 10px rgba(249, 115, 22, 0.9),
+    0 0 40px rgba(249, 115, 22, 0.6),
+    0 0 80px rgba(249, 115, 22, 0.3);
+  text-align: left;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  margin: 0;
+}
+
+/* Responsive headline sizes - BIGGER for impact */
+.arcade-headline--mobile { font-size: clamp(28px, 8vw, 40px); }
+.arcade-headline--tablet { font-size: clamp(40px, 7vw, 56px); }
+.arcade-headline--desktop { font-size: clamp(48px, 5vw, 72px); }
+
+/* Tagline - Clear hierarchy below headline */
+.arcade-tagline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: var(--arcade-led-on, #F97316);
+  text-shadow: 0 0 20px var(--arcade-phosphor, rgba(249, 115, 22, 0.3));
+  text-align: left;
+  max-width: 100%;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* Responsive tagline sizes */
+.arcade-tagline--mobile { font-size: clamp(11px, 2.5vw, 14px); }
+.arcade-tagline--tablet { font-size: clamp(13px, 2vw, 16px); }
+.arcade-tagline--desktop { font-size: clamp(14px, 1.2vw, 18px); }
+
+/* Feature list under tagline */
+.arcade-features {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.arcade-feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.01em;
+}
+
+.arcade-feature::before {
+  content: '▸';
+  color: #F97316;
+  font-size: 10px;
+}
+
+/* Divider line */
+.arcade-divider {
+  width: 60px;
+  height: 2px;
+  background: #F97316;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+  margin: 4px 0;
+}
+
+/* ============================================
+ * CTA Buttons - Enterprise Touch Targets
+ * ============================================ */
+
+.arcade-cta-container {
+  grid-area: cta;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.arcade-cta-container--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  max-width: none;
+  width: auto;
+  gap: 16px;
+}
+
+.arcade-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-recommended, 48px);
+  min-width: var(--touch-target-min, 44px);
+  padding: 12px 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-wide, 0.02em);
+  text-transform: uppercase;
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  transition: transform var(--transition-fast, 100ms), box-shadow var(--transition-normal, 200ms), background var(--transition-fast, 100ms);
+  white-space: nowrap;
+}
+
+.arcade-cta:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.arcade-cta:active {
+  transform: scale(0.97);
+}
+
+/* Primary CTA */
+.arcade-cta--primary {
+  background: var(--arcade-led-on);
+  color: white;
+  border: none;
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+}
+
+.arcade-cta--primary:hover {
+  background: #FB923C;
+  transform: translateY(-2px);
+  /* 50% glow increase: 0.4 * 1.5 = 0.6 */
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.6), 0 0 50px rgba(249, 115, 22, 0.3);
+}
+
+/* Secondary CTA */
+.arcade-cta--secondary {
+  background: transparent;
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.arcade-cta--secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+  /* 50% glow increase on hover */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 0 25px rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================
+ * Demo Container - Grid Area Placement
+ * Fills the full left side of the layout
+ * ============================================ */
+
+.demo-container {
+  grid-area: demo;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--arcade-screen-bg);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.06));
+  /* Ensure content scales properly */
+  container-type: inline-size;
+}
+
+/* Scale the LiveDemo content to fit */
+.demo-container > * {
+  transform-origin: top left;
+}
+
+/* Force the demo to scale down on small screens */
+.demo-container :global(.relative) {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Desktop: demo fills full left column height */
+.dashboard-ui--desktop .demo-container {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  min-height: 200px;
+}
+
+/* Mobile: constrain demo height */
+@media (max-width: 767px) {
+  .demo-container {
+    max-height: 180px;
+    min-height: 120px;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* Tablet: slightly larger demo */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .demo-container {
+    max-height: none;
+    min-height: 180px;
+  }
+}
+
+.demo-live-indicator {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #10B981;
+  text-transform: uppercase;
+  z-index: 20;
+}
+
+.demo-live-dot {
+  width: 6px;
+  height: 6px;
+  background: #10B981;
+  border-radius: 50%;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.demo-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--arcade-screen-bg);
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+/* ============================================
+ * Press Start Easter Egg
+ * ============================================ */
+
+.press-start {
+  position: absolute;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  animation: press-start-blink 0.8s step-end infinite;
+  cursor: pointer;
+}
+
+@keyframes press-start-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ============================================
+ * Sound Toggle
+ * ============================================ */
+
+.sound-toggle {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  z-index: 70;
+}
+
+.sound-toggle:hover,
+.sound-toggle:focus-visible {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.sound-toggle:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* ============================================
+ * Stagger Animations
+ * ============================================ */
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.stagger-item--visible {
+  animation: stagger-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.stagger-item--delay-1 { animation-delay: calc(var(--arcade-stagger-delay) * 1); }
+.stagger-item--delay-2 { animation-delay: calc(var(--arcade-stagger-delay) * 2); }
+.stagger-item--delay-3 { animation-delay: calc(var(--arcade-stagger-delay) * 3); }
+.stagger-item--delay-4 { animation-delay: calc(var(--arcade-stagger-delay) * 4); }
+.stagger-item--delay-5 { animation-delay: calc(var(--arcade-stagger-delay) * 5); }
+
+@keyframes stagger-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+ * Static Fallback
+ * ============================================ */
+
+.static-fallback {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--arcade-screen-bg);
+  padding: var(--space-6);
+  gap: var(--space-4);
+}
+
+/* ============================================
+ * Reduced Motion
+ * ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .arcade-landing *,
+  .arcade-landing *::before,
+  .arcade-landing *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .crt-flicker,
+  .power-on-effect {
+    display: none;
+  }
+  
+  .boot-line,
+  .boot-logo,
+  .stagger-item {
+    opacity: 1;
+    transform: none;
+  }
+  
+  .power-led--on {
+    animation: none;
+  }
+  
+  .demo-live-dot {
+    animation: none;
+  }
+  
+  .press-start {
+    animation: none;
+    opacity: 0.3;
+  }
+  
+  /* Disable button glow animations for reduced motion */
+  .arcade-button--a,
+  .arcade-button--b,
+  .arcade-button--c {
+    animation: none !important;
+  }
+}
+
+/* ============================================
+ * SVG Filters (defined inline in components)
+ * ============================================ */
+
+.crt-phosphor-glow {
+  filter: url(#phosphor-glow);
+}
+
+.crt-barrel-distortion-svg {
+  filter: url(#barrel-distortion);
+}
+
+/* CSS Fallback for phosphor glow */
+.crt-phosphor-glow-css {
+  text-shadow:
+    0 0 10px var(--arcade-text-glow),
+    0 0 20px var(--arcade-phosphor),
+    0 0 40px rgba(249, 115, 22, 0.2);
+}
+
+/* ============================================
+ * Color Fringing Effect (RGB offset)
+ * ============================================ */
+
+.crt-color-fringing {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Red channel shifted left, blue shifted right - using box-shadow */
+.crt-color-fringing::before,
+.crt-color-fringing::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  mix-blend-mode: screen;
+  opacity: 0.03;
+}
+
+.crt-color-fringing::before {
+  /* Red channel - shifted left */
+  box-shadow: inset 1px 0 0 rgba(255, 0, 0, 0.3);
+  transform: translateX(-0.5px);
+  background: transparent;
+}
+
+.crt-color-fringing::after {
+  /* Blue channel - shifted right */
+  box-shadow: inset -1px 0 0 rgba(0, 0, 255, 0.3);
+  transform: translateX(0.5px);
+  background: transparent;
+}
+
+/* ============================================
+ * Responsive Media Queries - Enterprise Breakpoints
+ * ============================================ */
+
+/* Mobile: < 768px */
+@media (max-width: 767px) {
+  .arcade-cabinet {
+    padding: 8px;
+    height: calc(100vh - 16px);
+    height: calc(100dvh - 16px);
+    max-height: none;
+  }
+  
+  .crt-bezel {
+    padding: 8px;
+    border-radius: 12px;
+  }
+  
+  .crt-screen-container {
+    border-radius: 4px;
+  }
+  
+  /* Mobile grid: compact stacked layout */
+  .dashboard-ui {
+    grid-template-rows: minmax(100px, 0.8fr) auto auto;
+    gap: 10px;
+    padding: 12px;
+  }
+  
+  .demo-container {
+    max-height: 160px;
+  }
+  
+  .boot-sequence {
+    padding: 12px;
+  }
+  
+  .boot-text-container {
+    font-size: 11px;
+    max-width: 100%;
+  }
+  
+  .boot-progress {
+    max-width: 180px;
+  }
+  
+  .arcade-cta {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-height: 44px;
+  }
+  
+  .arcade-cta-container {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .arcade-headline--mobile {
+    font-size: clamp(22px, 6vw, 32px);
+  }
+  
+  .arcade-tagline--mobile {
+    font-size: clamp(12px, 3.5vw, 16px);
+  }
+  
+  .dashboard-content-area {
+    gap: 4px;
+  }
+}
+
+/* Small mobile: < 400px */
+@media (max-width: 399px) {
+  .dashboard-ui {
+    grid-template-rows: minmax(80px, 0.6fr) auto auto;
+    gap: 8px;
+    padding: 8px;
+  }
+  
+  .demo-container {
+    max-height: 120px;
+  }
+  
+  .arcade-headline--mobile {
+    font-size: 20px;
+  }
+  
+  .arcade-tagline--mobile {
+    font-size: 11px;
+  }
+  
+  .boot-text-container {
+    font-size: 9px;
+  }
+  
+  .arcade-cta {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Tablet: 768px - 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .arcade-cabinet {
+    padding: 12px;
+    max-height: 700px;
+  }
+  
+  .crt-bezel {
+    padding: 16px;
+    border-radius: 20px;
+  }
+  
+  /* Tablet: horizontal layout like desktop but smaller */
+  .dashboard-ui {
+    grid-template-columns: 1.2fr 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "demo content"
+      "demo cta";
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .demo-container {
+    max-height: 240px;
+  }
+  
+  .arcade-marquee {
+    height: 48px;
+  }
+  
+  .arcade-control-panel {
+    height: 60px;
+  }
+  
+  .arcade-headline--tablet {
+    font-size: clamp(32px, 5vw, 48px);
+  }
+  
+  .arcade-tagline--tablet {
+    font-size: clamp(14px, 2.5vw, 18px);
+  }
+}
+
+/* Desktop: >= 1024px */
+@media (min-width: 1024px) {
+  .arcade-cabinet {
+    padding: 20px;
+    max-height: 800px;
+  }
+  
+  .crt-bezel {
+    padding: 24px;
+    border-radius: 24px;
+  }
+  
+  .dashboard-ui--desktop {
+    gap: 32px;
+    padding: 32px;
+  }
+  
+  .dashboard-ui--desktop .demo-container {
+    max-height: 280px;
+  }
+  
+  .arcade-headline--desktop {
+    font-size: clamp(40px, 4vw, 56px);
+  }
+  
+  .arcade-tagline--desktop {
+    font-size: clamp(16px, 1.8vw, 22px);
+  }
+}
+
+/* Large Desktop: >= 1440px */
+@media (min-width: 1440px) {
+  .arcade-cabinet {
+    max-height: 900px;
+  }
+  
+  .arcade-marquee {
+    height: 70px;
+  }
+  
+  .arcade-marquee-text {
+    font-size: 32px;
+  }
+  
+  .arcade-control-panel {
+    height: 90px;
+  }
+  
+  .arcade-button {
+    width: 42px;
+    height: 42px;
+  }
+  
+  .arcade-headline--desktop {
+    font-size: 64px;
+  }
+  
+  .dashboard-ui--desktop .demo-container {
+    max-height: 360px;
+  }
+}

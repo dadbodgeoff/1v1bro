@@ -147,11 +147,23 @@ interface ToastContainerProps {
   onDismiss: (id: string) => void
 }
 
+/**
+ * ToastContainer - Accessible notification container
+ * 
+ * **Feature: ui-polish-8-of-10**
+ * **Validates: Requirements 3.5**
+ * 
+ * Uses aria-live="polite" region to announce toast notifications
+ * to screen readers without interrupting current speech.
+ */
 export function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
   return (
     <div
-      className="fixed top-4 right-4 z-[var(--z-toast)] flex flex-col gap-2 pointer-events-none"
+      className="fixed top-4 right-4 z-[var(--z-toast)] flex flex-col gap-2 pointer-events-none safe-area-top safe-area-right"
+      role="region"
       aria-label="Notifications"
+      aria-live="polite"
+      aria-atomic="false"
     >
       {toasts.map((toast) => (
         <div key={toast.id} className="pointer-events-auto">

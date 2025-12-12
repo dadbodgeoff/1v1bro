@@ -26,6 +26,9 @@ from app.api.v1.questions import router as questions_router
 from app.api.v1.storage import router as storage_router
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.practice import router as practice_router
+from app.api.v1.notifications import router as notifications_router
+from app.api.v1.achievements import router as achievements_router
+from app.api.v1.users import router as users_router
 
 
 router = APIRouter()
@@ -66,3 +69,12 @@ router.include_router(analytics_router)
 
 # Practice mode routes
 router.include_router(practice_router)
+
+# Notification routes
+router.include_router(notifications_router)
+
+# Achievement routes
+router.include_router(achievements_router)
+
+# User routes (guest session transfer)
+router.include_router(users_router)

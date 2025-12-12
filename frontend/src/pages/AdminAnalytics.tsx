@@ -680,7 +680,7 @@ export function AdminAnalytics() {
                 {geoData?.timezones.map((tz) => (
                   <div key={tz.name} className="flex items-center justify-between py-2 px-3 bg-white/5 rounded-lg">
                     <span className="text-xs text-neutral-400 truncate mr-2">{tz.name}</span>
-                    <span className="text-sm font-medium text-cyan-400">{tz.count}</span>
+                    <span className="text-sm font-medium text-blue-400">{tz.count}</span>
                   </div>
                 ))}
                 {(!geoData?.timezones || geoData.timezones.length === 0) && <p className="text-neutral-500 text-sm col-span-4">No data</p>}
@@ -840,7 +840,7 @@ export function AdminAnalytics() {
                       <td className="py-2 pr-3">
                         <span className={`px-2 py-0.5 rounded text-xs ${
                           session.device_type === 'mobile' ? 'bg-green-500/20 text-green-400' :
-                          session.device_type === 'tablet' ? 'bg-purple-500/20 text-purple-400' :
+                          session.device_type === 'tablet' ? 'bg-indigo-500/20 text-indigo-400' :
                           'bg-blue-500/20 text-blue-400'
                         }`}>
                           {session.device_type}
@@ -926,7 +926,7 @@ export function AdminAnalytics() {
                   <div className="text-neutral-500">Events</div>
                 </div>
                 <div className="bg-white/5 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-purple-400">
+                  <div className="text-2xl font-bold text-indigo-400">
                     {sessions.filter(s => s.converted_to_signup).length}
                   </div>
                   <div className="text-neutral-500">Conversions</div>
@@ -949,10 +949,10 @@ function StatCard({ label, value, color }: { label: string; value: number | stri
   const colorClasses: Record<string, string> = {
     orange: 'text-orange-400',
     blue: 'text-blue-400',
-    purple: 'text-purple-400',
+    purple: 'text-indigo-400',
     green: 'text-green-400',
-    cyan: 'text-cyan-400',
-    pink: 'text-pink-400',
+    cyan: 'text-blue-400',
+    pink: 'text-rose-400',
   }
 
   return (
@@ -968,9 +968,9 @@ function BreakdownBar({ label, count, total, color }: { label: string; count: nu
   const colorClasses: Record<string, string> = {
     blue: 'bg-blue-500',
     green: 'bg-green-500',
-    purple: 'bg-purple-500',
+    purple: 'bg-indigo-500',
     orange: 'bg-orange-500',
-    cyan: 'bg-cyan-500',
+    cyan: 'bg-blue-500',
   }
 
   return (

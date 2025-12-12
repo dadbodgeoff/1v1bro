@@ -61,17 +61,17 @@ export class AtmosphereLayer implements BackdropLayer {
   private renderEdgeGlow(ctx: CanvasRenderingContext2D): void {
     const { width, height } = this.config
 
-    // Top edge - cyan glow
+    // Top edge - blue glow (enterprise)
     const topGradient = ctx.createLinearGradient(0, 0, 0, 60)
-    topGradient.addColorStop(0, 'rgba(0, 255, 255, 0.1)')
-    topGradient.addColorStop(1, 'rgba(0, 255, 255, 0)')
+    topGradient.addColorStop(0, 'rgba(59, 130, 246, 0.1)')
+    topGradient.addColorStop(1, 'rgba(59, 130, 246, 0)')
     ctx.fillStyle = topGradient
     ctx.fillRect(0, 0, width, 60)
 
-    // Bottom edge - magenta glow
+    // Bottom edge - indigo glow (enterprise)
     const bottomGradient = ctx.createLinearGradient(0, height - 60, 0, height)
-    bottomGradient.addColorStop(0, 'rgba(255, 0, 255, 0)')
-    bottomGradient.addColorStop(1, 'rgba(255, 0, 255, 0.1)')
+    bottomGradient.addColorStop(0, 'rgba(99, 102, 241, 0)')
+    bottomGradient.addColorStop(1, 'rgba(99, 102, 241, 0.1)')
     ctx.fillStyle = bottomGradient
     ctx.fillRect(0, height - 60, width, 60)
   }

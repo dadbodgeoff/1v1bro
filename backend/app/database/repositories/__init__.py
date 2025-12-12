@@ -5,6 +5,7 @@ from app.database.repositories.lobby_repo import LobbyRepository
 from app.database.repositories.game_repo import GameRepository
 from app.database.repositories.stats_repo import StatsRepository
 from app.database.repositories.leaderboard_repo import LeaderboardRepository
+from app.database.repositories.achievement_repo import AchievementRepository
 
 __all__ = [
     "BaseRepository",
@@ -13,4 +14,5 @@ __all__ = [
     "GameRepository",
     "StatsRepository",
     "LeaderboardRepository",
+    "AchievementRepository",
 ]

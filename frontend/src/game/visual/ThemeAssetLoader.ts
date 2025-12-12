@@ -112,7 +112,7 @@ export class ThemeAssetLoader {
     for (let y = 0; y < 80; y += squareSize) {
       for (let x = 0; x < 80; x += squareSize) {
         const isEven = ((x + y) / squareSize) % 2 === 0
-        ctx.fillStyle = isEven ? '#ff00ff' : '#000000'
+        ctx.fillStyle = isEven ? '#F43F5E' : '#000000'
         ctx.fillRect(x, y, squareSize, squareSize)
       }
     }

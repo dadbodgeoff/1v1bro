@@ -78,7 +78,7 @@ class LobbyRepository(BaseRepository):
         code: str,
         host_id: str,
         game_mode: str = "fortnite",
-        map_slug: str = "nexus-arena",
+        map_slug: str = "simple-arena",
     ) -> dict:
         """
         Create a new lobby.
@@ -87,7 +87,7 @@ class LobbyRepository(BaseRepository):
             code: Unique 6-character code
             host_id: Host user ID
             game_mode: Game mode/category
-            map_slug: Arena map slug (nexus-arena, vortex-arena)
+            map_slug: Arena map slug (simple-arena, vortex-arena)
             
         Returns:
             Created lobby dict

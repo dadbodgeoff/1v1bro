@@ -10,10 +10,11 @@ import { ArenaScoreboard } from '@/components/game/ArenaScoreboard'
 import { ArenaQuizPanel } from '@/components/game/ArenaQuizPanel'
 import { RoundResultOverlay } from '@/components/game/RoundResultOverlay'
 import { useBotGame } from '@/hooks/useBotGame'
-import { VORTEX_ARENA, type MapConfig } from '@/game/config/maps'
+import { SIMPLE_ARENA, type MapConfig } from '@/game/config/maps'
 import { AVAILABLE_MAPS as MAP_INFO } from '@/game/config/maps/map-loader'
 import { getMapConfig } from '@/game/config/maps/map-loader'
-import type { FireEvent, HitEvent, DeathEvent, PowerUpState } from '@/game'
+import { BREAKPOINTS } from '@/utils/breakpoints'
+import type { FireEvent, HitEvent, DeathEvent } from '@/game'
 
 // Use the centralized AVAILABLE_MAPS from map-loader (respects feature flags)
 const AVAILABLE_MAPS = MAP_INFO.map(info => ({
@@ -26,8 +27,7 @@ const AVAILABLE_MAPS = MAP_INFO.map(info => ({
 export function BotGame() {
   const navigate = useNavigate()
   const [isMobileLandscape, setIsMobileLandscape] = useState(false)
-  const [mapConfig, setMapConfig] = useState<MapConfig>(VORTEX_ARENA)
-  const [powerUps] = useState<PowerUpState[]>([])
+  const [mapConfig, setMapConfig] = useState<MapConfig>(SIMPLE_ARENA)
 
   const {
     userId, isGuest, status, localScore, opponentScore, gameStarted, waitingForBot,
@@ -35,11 +35,20 @@ export function BotGame() {
     categories, categoriesLoading, botPosition, playerKills, botKills,
     localHealth, opponentHealth, startGame, handleAnswer, handlePositionUpdate,
     handleCombatHit, handleLeave, handlePlayAgain,
+    setServerProjectilesCallback,
     setServerHealthCallback,
+    handleLocalHazardDamage,
+    handleLocalTrapTriggered,
+    inventoryEmotes, equippedEmoteId,
+    powerUps, handlePowerUpCollect,
   } = useBotGame()
 
   useEffect(() => {
-    const check = () => setIsMobileLandscape(window.innerWidth < 1024 && window.innerWidth > window.innerHeight)
+    const check = () => {
+      const isMobile = window.innerWidth < BREAKPOINTS.tablet
+      const isLandscape = window.innerWidth > window.innerHeight
+      setIsMobileLandscape(isMobile && isLandscape)
+    }
     check()
     window.addEventListener('resize', check)
     window.addEventListener('orientationchange', check)
@@ -80,10 +89,15 @@ export function BotGame() {
       <div className="flex-1 relative min-h-0">
         <div className="h-full relative">
           <GameArena playerId={userId} isPlayer1 opponentId="bot" opponentPosition={botPosition}
-            powerUps={powerUps} onPositionUpdate={handlePositionUpdate} onPowerUpCollect={() => {}}
+            powerUps={powerUps} onPositionUpdate={handlePositionUpdate} onPowerUpCollect={handlePowerUpCollect}
             mapConfig={mapConfig} combatEnabled onCombatFire={onCombatFire} onCombatHit={onCombatHit}
             onCombatDeath={onCombatDeath}
-            setServerHealthCallback={setServerHealthCallback} />
+            setServerProjectilesCallback={setServerProjectilesCallback}
+            setServerHealthCallback={setServerHealthCallback}
+            onLocalHazardDamage={handleLocalHazardDamage}
+            onLocalTrapTriggered={handleLocalTrapTriggered}
+            inventoryEmotes={inventoryEmotes}
+            equippedEmoteId={equippedEmoteId} />
           {waitingForBot && <BotThinkingIndicator />}
           <RoundResultOverlay visible={showRoundResult} />
           <ControlsHint />
@@ -125,9 +139,9 @@ function SetupScreen({ categories, categoriesLoading, selectedCategory, setSelec
               const has = cat.question_count > 0
               return (
                 <button key={cat.slug} onClick={() => has && setSelectedCategory(cat.slug)} disabled={!has}
-                  className={`p-4 min-h-[44px] rounded-xl border transition-all text-left ${!has ? 'opacity-50 cursor-not-allowed' : selectedCategory === cat.slug ? 'bg-purple-500/20 border-purple-500/40' : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'}`}>
+                  className={`p-4 min-h-[44px] rounded-xl border transition-all text-left ${!has ? 'opacity-50 cursor-not-allowed' : selectedCategory === cat.slug ? 'bg-indigo-500/20 border-indigo-500/40' : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'}`}>
                   <div className="flex items-center gap-2 mb-1">
-                    <div className={`w-2 h-2 rounded-full ${selectedCategory === cat.slug ? 'bg-purple-400' : 'bg-neutral-600'}`} />
+                    <div className={`w-2 h-2 rounded-full ${selectedCategory === cat.slug ? 'bg-indigo-400' : 'bg-neutral-600'}`} />
                     <span className="text-sm font-medium text-white">{cat.name}</span>
                   </div>
                   <p className="text-xs text-neutral-500">{has ? `${cat.question_count} questions` : 'No questions'}</p>
@@ -163,7 +177,7 @@ function SetupScreen({ categories, categoriesLoading, selectedCategory, setSelec
         </button>
         <button onClick={onBack} className="px-6 py-2.5 min-h-[44px] bg-white/[0.06] text-neutral-300 text-sm rounded-lg border border-white/[0.1]">Back</button>
       </div>
-      {isGuest && <p className="text-xs text-neutral-500 mt-4">Playing as guest · <button onClick={() => navigate('/register')} className="text-purple-400">Sign up</button></p>}
+      {isGuest && <p className="text-xs text-neutral-500 mt-4">Playing as guest · <button onClick={() => navigate('/register')} className="text-blue-500 hover:text-blue-400">Sign up</button></p>}
     </div>
   )
 }
@@ -188,10 +202,10 @@ function ResultsScreen({ localScore, opponentScore, playerKills, botKills, isGue
         <div className="text-center"><div className="text-2xl font-bold text-amber-400">{kd}</div><div className="text-neutral-500">K/D</div></div>
       </div>
       {isGuest && (
-        <div className="bg-gradient-to-r from-purple-500/20 to-orange-500/20 border border-purple-500/30 rounded-xl p-4 mb-6 max-w-sm text-center">
+        <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4 mb-6 max-w-sm text-center">
           <p className="text-white font-medium mb-1">Ready to compete?</p>
           <p className="text-neutral-400 text-sm mb-3">Sign up to play real players.</p>
-          <button onClick={() => navigate('/register')} className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-orange-500 text-white text-sm rounded-lg w-full">Create Account</button>
+          <button onClick={() => navigate('/register')} className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded-lg w-full transition-colors">Create Account</button>
         </div>
       )}
       <div className="flex gap-3">
@@ -223,16 +237,30 @@ function ControlsHint() {
   return (
     <div className="absolute bottom-2 lg:bottom-3 left-2 lg:left-3 hidden lg:block z-10">
       <div className="px-2 py-1.5 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded">
-        <p className="text-[9px] text-neutral-500 font-mono">WASD move · Click shoot · 1-4 answer</p>
+        <p className="text-[9px] text-neutral-500 font-mono">WASD move · Click shoot · E emote · 1-4 answer</p>
       </div>
     </div>
   )
 }
 
 function LeaveButton({ onClick, isMobileLandscape }: { onClick: () => void; isMobileLandscape: boolean }) {
+  // In mobile landscape, position at top-right to avoid Fire button overlap
+  const positionStyle = isMobileLandscape
+    ? {
+        top: 'max(8px, env(safe-area-inset-top, 8px))',
+        right: 'max(8px, env(safe-area-inset-right, 8px))',
+        bottom: 'auto',
+      }
+    : { bottom: '12px', right: '12px' }
+
   return (
-    <div className="absolute bottom-3 right-3 z-10" style={{ bottom: isMobileLandscape ? '140px' : '12px' }}>
-      <button onClick={onClick} className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded min-h-[44px] min-w-[44px]">Leave</button>
+    <div className={`absolute z-10 ${isMobileLandscape ? '' : 'safe-area-bottom'}`} style={positionStyle}>
+      <button
+        onClick={onClick}
+        className="px-2 py-1.5 text-[10px] text-neutral-600 hover:text-red-400 bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded min-h-[44px] min-w-[44px] touch-manipulation"
+      >
+        Leave
+      </button>
     </div>
   )
 }
