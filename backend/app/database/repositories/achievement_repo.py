@@ -34,14 +34,20 @@ class AchievementRepository(BaseRepository):
         Returns:
             List of active achievement definitions
         """
-        query = self._table().select("*").eq("is_active", True)
-        
-        if category:
-            query = query.eq("category", category)
-        
-        query = query.order("sort_order").range(offset, offset + limit - 1)
-        result = query.execute()
-        return result.data
+        try:
+            query = self._table().select("*").eq("is_active", True)
+            
+            if category:
+                query = query.eq("category", category)
+            
+            query = query.order("sort_order").range(offset, offset + limit - 1)
+            result = query.execute()
+            return result.data or []
+        except Exception as e:
+            # Table might not exist yet - return empty list
+            import logging
+            logging.getLogger(__name__).warning(f"Failed to fetch achievements: {e}")
+            return []
 
     async def get_user_earned_achievement_ids(self, user_id: str) -> Set[str]:
         """
@@ -53,13 +59,16 @@ class AchievementRepository(BaseRepository):
         Returns:
             Set of earned achievement IDs
         """
-        result = (
-            self.client.table(self.user_achievements_table)
-            .select("achievement_id")
-            .eq("user_id", user_id)
-            .execute()
-        )
-        return {row["achievement_id"] for row in result.data}
+        try:
+            result = (
+                self.client.table(self.user_achievements_table)
+                .select("achievement_id")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            return {row["achievement_id"] for row in (result.data or [])}
+        except Exception:
+            return set()
 
     async def award_achievement(
         self,
@@ -113,15 +122,18 @@ class AchievementRepository(BaseRepository):
         Returns:
             List of user achievements with full achievement details
         """
-        result = (
-            self.client.table(self.user_achievements_table)
-            .select("*, achievements(*)")
-            .eq("user_id", user_id)
-            .order("earned_at", desc=True)
-            .range(offset, offset + limit - 1)
-            .execute()
-        )
-        return result.data
+        try:
+            result = (
+                self.client.table(self.user_achievements_table)
+                .select("*, achievements(*)")
+                .eq("user_id", user_id)
+                .order("earned_at", desc=True)
+                .range(offset, offset + limit - 1)
+                .execute()
+            )
+            return result.data or []
+        except Exception:
+            return []
 
     async def get_achievement_by_id(self, achievement_id: str) -> Optional[dict]:
         """
@@ -166,11 +178,14 @@ class AchievementRepository(BaseRepository):
         Returns:
             Total achievement count
         """
-        query = self._table().select("*", count="exact")
-        if active_only:
-            query = query.eq("is_active", True)
-        result = query.execute()
-        return result.count or 0
+        try:
+            query = self._table().select("*", count="exact")
+            if active_only:
+                query = query.eq("is_active", True)
+            result = query.execute()
+            return result.count or 0
+        except Exception:
+            return 0
 
     async def get_user_achievement_count(self, user_id: str) -> int:
         """
@@ -182,13 +197,16 @@ class AchievementRepository(BaseRepository):
         Returns:
             Count of earned achievements
         """
-        result = (
-            self.client.table(self.user_achievements_table)
-            .select("*", count="exact")
-            .eq("user_id", user_id)
-            .execute()
-        )
-        return result.count or 0
+        try:
+            result = (
+                self.client.table(self.user_achievements_table)
+                .select("*", count="exact")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            return result.count or 0
+        except Exception:
+            return 0
 
     async def get_user_achievements_by_rarity(self, user_id: str) -> dict:
         """
@@ -200,13 +218,6 @@ class AchievementRepository(BaseRepository):
         Returns:
             Dict with rarity counts
         """
-        result = (
-            self.client.table(self.user_achievements_table)
-            .select("achievements(rarity)")
-            .eq("user_id", user_id)
-            .execute()
-        )
-        
         counts = {
             "common": 0,
             "uncommon": 0,
@@ -215,11 +226,21 @@ class AchievementRepository(BaseRepository):
             "legendary": 0
         }
         
-        for row in result.data:
-            if row.get("achievements") and row["achievements"].get("rarity"):
-                rarity = row["achievements"]["rarity"]
-                if rarity in counts:
-                    counts[rarity] += 1
+        try:
+            result = (
+                self.client.table(self.user_achievements_table)
+                .select("achievements(rarity)")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            
+            for row in (result.data or []):
+                if row.get("achievements") and row["achievements"].get("rarity"):
+                    rarity = row["achievements"]["rarity"]
+                    if rarity in counts:
+                        counts[rarity] += 1
+        except Exception:
+            pass
         
         return counts
 
@@ -238,15 +259,18 @@ class AchievementRepository(BaseRepository):
         Returns:
             List of recent achievements with details
         """
-        result = (
-            self.client.table(self.user_achievements_table)
-            .select("*, achievements(*)")
-            .eq("user_id", user_id)
-            .order("earned_at", desc=True)
-            .limit(limit)
-            .execute()
-        )
-        return result.data
+        try:
+            result = (
+                self.client.table(self.user_achievements_table)
+                .select("*, achievements(*)")
+                .eq("user_id", user_id)
+                .order("earned_at", desc=True)
+                .limit(limit)
+                .execute()
+            )
+            return result.data or []
+        except Exception:
+            return []
 
     async def check_user_has_achievement(
         self,

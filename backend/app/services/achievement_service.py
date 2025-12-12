@@ -246,46 +246,56 @@ class AchievementService(BaseService):
 
     async def _get_user_stats(self, user_id: str) -> Dict[str, Any]:
         """Get user statistics from user_profiles and related tables."""
-        # Get user profile stats
-        result = (
-            self.service_client.table("user_profiles")
-            .select("games_played, games_won, best_streak, total_kills, shots_fired, shots_hit")
-            .eq("id", user_id)
-            .execute()
-        )
-        
-        if not result.data:
-            return {
-                "games_played": 0,
-                "games_won": 0,
-                "best_streak": 0,
-                "total_kills": 0,
-                "accuracy": 0,
-                "friends_count": 0,
-            }
-        
-        profile = result.data[0]
-        
-        # Calculate accuracy
-        shots_fired = profile.get("shots_fired", 0) or 0
-        shots_hit = profile.get("shots_hit", 0) or 0
-        accuracy = int((shots_hit / shots_fired * 100)) if shots_fired > 0 else 0
-        
-        # Get friends count
-        friends_result = self.service_client.rpc(
-            "get_friend_count",
-            {"p_user_id": user_id}
-        ).execute()
-        friends_count = friends_result.data if friends_result.data else 0
-        
-        return {
-            "games_played": profile.get("games_played", 0) or 0,
-            "games_won": profile.get("games_won", 0) or 0,
-            "best_streak": profile.get("best_streak", 0) or 0,
-            "total_kills": profile.get("total_kills", 0) or 0,
-            "accuracy": accuracy,
-            "friends_count": friends_count,
+        default_stats = {
+            "games_played": 0,
+            "games_won": 0,
+            "best_streak": 0,
+            "total_kills": 0,
+            "accuracy": 0,
+            "friends_count": 0,
         }
+        
+        try:
+            # Get user profile stats
+            result = (
+                self.service_client.table("user_profiles")
+                .select("games_played, games_won, best_streak, total_kills, shots_fired, shots_hit")
+                .eq("id", user_id)
+                .execute()
+            )
+            
+            if not result.data:
+                return default_stats
+            
+            profile = result.data[0]
+            
+            # Calculate accuracy
+            shots_fired = profile.get("shots_fired", 0) or 0
+            shots_hit = profile.get("shots_hit", 0) or 0
+            accuracy = int((shots_hit / shots_fired * 100)) if shots_fired > 0 else 0
+            
+            # Get friends count (may fail if function doesn't exist)
+            friends_count = 0
+            try:
+                friends_result = self.service_client.rpc(
+                    "get_friend_count",
+                    {"p_user_id": user_id}
+                ).execute()
+                friends_count = friends_result.data if friends_result.data else 0
+            except Exception:
+                pass
+            
+            return {
+                "games_played": profile.get("games_played", 0) or 0,
+                "games_won": profile.get("games_won", 0) or 0,
+                "best_streak": profile.get("best_streak", 0) or 0,
+                "total_kills": profile.get("total_kills", 0) or 0,
+                "accuracy": accuracy,
+                "friends_count": friends_count,
+            }
+        except Exception as e:
+            logger.warning(f"Failed to get user stats for {user_id}: {e}")
+            return default_stats
 
     def _check_criteria(self, achievement: Dict[str, Any], user_stats: Dict[str, Any]) -> bool:
         """Check if user stats meet achievement criteria."""
