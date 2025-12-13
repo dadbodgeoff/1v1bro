@@ -116,11 +116,36 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
     initSession()
   }, [isEnabled, sessionId, visitorId])
 
+  // Track page duration
+  const pageStartTime = useRef(Date.now())
+  const lastPage = useRef(location.pathname)
+
   // Track page views on route change
   useEffect(() => {
     if (!isEnabled) return
 
     const page = location.pathname
+    const now = Date.now()
+    
+    // Track duration for previous page before switching
+    if (lastPage.current !== page && lastPage.current) {
+      const duration = now - pageStartTime.current
+      
+      // Send duration update for previous page
+      fetch(`${API_BASE}/analytics/pageview/duration`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          page: lastPage.current,
+          duration_ms: duration,
+        }),
+      }).catch(() => {})
+    }
+    
+    // Reset for new page
+    pageStartTime.current = now
+    lastPage.current = page
     
     // Track in basic analytics
     fetch(`${API_BASE}/analytics/pageview`, {
@@ -137,6 +162,27 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
     // Track in enterprise analytics
     trackPageView(page)
   }, [location.pathname, isEnabled, sessionId, trackPageView])
+
+  // Track duration on page unload
+  useEffect(() => {
+    if (!isEnabled) return
+
+    const handleBeforeUnload = () => {
+      const duration = Date.now() - pageStartTime.current
+      
+      // Use sendBeacon for reliable delivery on page unload
+      const data = JSON.stringify({
+        session_id: sessionId,
+        page: lastPage.current,
+        duration_ms: duration,
+      })
+      
+      navigator.sendBeacon?.(`${API_BASE}/analytics/pageview/duration`, data)
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [isEnabled, sessionId])
 
   // Track custom event
   const trackEvent = (name: string, properties?: Record<string, unknown>) => {

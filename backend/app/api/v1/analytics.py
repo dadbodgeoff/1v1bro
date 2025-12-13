@@ -166,6 +166,44 @@ async def update_page_metrics(data: PageUpdateData):
         return APIResponse.ok({"tracked": False})
 
 
+class PageDurationData(BaseModel):
+    session_id: str
+    page: str
+    duration_ms: int
+
+
+@router.post("/pageview/duration")
+async def track_page_duration(data: PageDurationData):
+    """
+    Update page view duration when user navigates away.
+    Called on route change or page unload.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        # Convert ms to seconds for the existing time_on_page column
+        duration_seconds = data.duration_ms // 1000
+        
+        # Find the most recent page view for this session/page
+        result = supabase.table("analytics_page_views").select("id, time_on_page").eq(
+            "session_id", data.session_id
+        ).eq("page", data.page).order(
+            "viewed_at", desc=True
+        ).limit(1).execute()
+        
+        if result.data:
+            # Only update if new duration is longer (in case of multiple calls)
+            existing_duration = result.data[0].get("time_on_page") or 0
+            if duration_seconds > existing_duration:
+                supabase.table("analytics_page_views").update({
+                    "time_on_page": duration_seconds,
+                }).eq("id", result.data[0]["id"]).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception:
+        return APIResponse.ok({"tracked": False})
+
+
 @router.post("/event")
 async def track_event(data: EventData):
     """

@@ -1111,3 +1111,537 @@ async def record_conversion(data: ExperimentConversionRequest):
         return APIResponse.ok({"recorded": True})
     except Exception:
         return APIResponse.ok({"recorded": False})
+
+
+# ============================================
+# COMPREHENSIVE USER/VISITOR REPORTS
+# ============================================
+
+@router.get("/dashboard/visitor/{visitor_id}/report")
+async def get_visitor_report(visitor_id: str, _admin=Depends(require_admin)):
+    """
+    Get comprehensive analytics report for a specific visitor.
+    Aggregates all data: journeys, pages, events, game stats, questions, time spent.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        # 1. Get all journeys for this visitor
+        journeys = supabase.table("analytics_user_journeys").select("*").eq(
+            "visitor_id", visitor_id
+        ).order("journey_start", desc=True).execute()
+        
+        # 2. Get all sessions from basic analytics
+        sessions = supabase.table("analytics_sessions").select("*").eq(
+            "visitor_id", visitor_id
+        ).order("created_at", desc=True).execute()
+        
+        # 3. Get all page views
+        pageviews = supabase.table("analytics_pageviews").select("*").eq(
+            "session_id", visitor_id
+        ).execute()
+        
+        # Also try to get pageviews by visitor_id from sessions
+        session_ids = [s["session_id"] for s in sessions.data or []]
+        if session_ids:
+            more_pageviews = supabase.table("analytics_pageviews").select("*").in_(
+                "session_id", session_ids
+            ).execute()
+            pageviews_data = (pageviews.data or []) + (more_pageviews.data or [])
+        else:
+            pageviews_data = pageviews.data or []
+        
+        # 4. Get all events
+        events = supabase.table("analytics_events").select("*").in_(
+            "session_id", session_ids if session_ids else [visitor_id]
+        ).execute()
+        
+        # 5. Aggregate page time spent
+        page_time = {}
+        for pv in pageviews_data:
+            page = pv.get("page", "/")
+            duration = pv.get("duration_ms") or pv.get("load_time_ms") or 0
+            if page not in page_time:
+                page_time[page] = {"views": 0, "total_time_ms": 0}
+            page_time[page]["views"] += 1
+            page_time[page]["total_time_ms"] += duration
+        
+        # Calculate avg time per page
+        for page, stats in page_time.items():
+            stats["avg_time_ms"] = stats["total_time_ms"] // stats["views"] if stats["views"] else 0
+            stats["avg_time_formatted"] = format_duration(stats["avg_time_ms"])
+        
+        # 6. Extract game-related events
+        game_events = [e for e in (events.data or []) if e.get("event_name", "").startswith("game_")]
+        
+        # Aggregate game stats
+        game_stats = {
+            "sessions_started": 0,
+            "sessions_completed": 0,
+            "sessions_abandoned": 0,
+            "total_play_time_seconds": 0,
+            "total_kills": 0,
+            "total_deaths": 0,
+            "questions_answered": 0,
+            "questions_correct": 0,
+            "wins": 0,
+            "losses": 0,
+            "draws": 0,
+            "rounds_played": 0,
+            "categories_played": set(),
+            "maps_played": set(),
+        }
+        
+        for event in game_events:
+            name = event.get("event_name", "")
+            meta = event.get("metadata") or {}
+            
+            if name == "game_session_start":
+                game_stats["sessions_started"] += 1
+                if meta.get("category"):
+                    game_stats["categories_played"].add(meta["category"])
+                if meta.get("map_id"):
+                    game_stats["maps_played"].add(meta["map_id"])
+            elif name == "game_session_complete":
+                game_stats["sessions_completed"] += 1
+                game_stats["total_play_time_seconds"] += meta.get("duration_seconds", 0)
+                game_stats["total_kills"] += meta.get("kills", 0)
+                game_stats["total_deaths"] += meta.get("deaths", 0)
+                game_stats["questions_answered"] += meta.get("questions_answered", 0)
+                game_stats["questions_correct"] += meta.get("questions_correct", 0)
+                game_stats["rounds_played"] += meta.get("rounds_played", 0)
+                outcome = meta.get("outcome")
+                if outcome == "win":
+                    game_stats["wins"] += 1
+                elif outcome == "loss":
+                    game_stats["losses"] += 1
+                elif outcome == "draw":
+                    game_stats["draws"] += 1
+            elif name == "game_session_abandon":
+                game_stats["sessions_abandoned"] += 1
+                game_stats["total_play_time_seconds"] += meta.get("duration_seconds", 0)
+            elif name == "game_question_answered":
+                # Individual question tracking
+                pass
+            elif name == "game_kill":
+                game_stats["total_kills"] += 1
+            elif name == "game_death":
+                game_stats["total_deaths"] += 1
+        
+        # Convert sets to lists
+        game_stats["categories_played"] = list(game_stats["categories_played"])
+        game_stats["maps_played"] = list(game_stats["maps_played"])
+        
+        # Calculate derived stats
+        if game_stats["questions_answered"] > 0:
+            game_stats["accuracy_percent"] = round(
+                game_stats["questions_correct"] / game_stats["questions_answered"] * 100, 1
+            )
+        else:
+            game_stats["accuracy_percent"] = 0
+        
+        if game_stats["total_deaths"] > 0:
+            game_stats["kd_ratio"] = round(game_stats["total_kills"] / game_stats["total_deaths"], 2)
+        else:
+            game_stats["kd_ratio"] = game_stats["total_kills"]
+        
+        game_stats["total_play_time_formatted"] = format_duration(game_stats["total_play_time_seconds"] * 1000)
+        
+        # 7. Get scroll depth data
+        scroll_data = supabase.table("analytics_scroll_depth").select("*").in_(
+            "session_id", session_ids if session_ids else [visitor_id]
+        ).execute()
+        
+        scroll_by_page = {}
+        for s in scroll_data.data or []:
+            page = s.get("page", "/")
+            if page not in scroll_by_page:
+                scroll_by_page[page] = {"max_scroll": 0, "count": 0}
+            scroll_by_page[page]["max_scroll"] = max(scroll_by_page[page]["max_scroll"], s.get("max_scroll_percent", 0))
+            scroll_by_page[page]["count"] += 1
+        
+        # 8. Get click data summary
+        clicks = supabase.table("analytics_clicks").select("page, element_tag, element_id, is_rage_click").in_(
+            "session_id", session_ids if session_ids else [visitor_id]
+        ).execute()
+        
+        click_summary = {
+            "total_clicks": len(clicks.data or []),
+            "rage_clicks": sum(1 for c in (clicks.data or []) if c.get("is_rage_click")),
+            "clicks_by_page": {},
+        }
+        for c in clicks.data or []:
+            page = c.get("page", "/")
+            click_summary["clicks_by_page"][page] = click_summary["clicks_by_page"].get(page, 0) + 1
+        
+        # 9. Get performance data
+        perf = supabase.table("analytics_performance").select("*").in_(
+            "session_id", session_ids if session_ids else [visitor_id]
+        ).execute()
+        
+        perf_summary = None
+        if perf.data:
+            lcp_vals = [p["lcp_ms"] for p in perf.data if p.get("lcp_ms")]
+            fcp_vals = [p["fcp_ms"] for p in perf.data if p.get("fcp_ms")]
+            load_vals = [p["load_time_ms"] for p in perf.data if p.get("load_time_ms")]
+            
+            perf_summary = {
+                "avg_lcp_ms": round(sum(lcp_vals) / len(lcp_vals)) if lcp_vals else None,
+                "avg_fcp_ms": round(sum(fcp_vals) / len(fcp_vals)) if fcp_vals else None,
+                "avg_load_time_ms": round(sum(load_vals) / len(load_vals)) if load_vals else None,
+            }
+        
+        # 10. Calculate total time on site
+        total_time_ms = sum(stats["total_time_ms"] for stats in page_time.values())
+        
+        # 11. First and last seen
+        first_seen = None
+        last_seen = None
+        if sessions.data:
+            dates = [s.get("created_at") for s in sessions.data if s.get("created_at")]
+            if dates:
+                first_seen = min(dates)
+                last_seen = max(dates)
+        
+        # Build report
+        report = {
+            "visitor_id": visitor_id,
+            "first_seen": first_seen,
+            "last_seen": last_seen,
+            "total_sessions": len(sessions.data or []),
+            "total_journeys": len(journeys.data or []),
+            "total_page_views": len(pageviews_data),
+            "total_events": len(events.data or []),
+            "total_time_on_site_ms": total_time_ms,
+            "total_time_on_site_formatted": format_duration(total_time_ms),
+            
+            "pages": [
+                {
+                    "page": page,
+                    "views": stats["views"],
+                    "total_time_ms": stats["total_time_ms"],
+                    "avg_time_ms": stats["avg_time_ms"],
+                    "avg_time_formatted": stats["avg_time_formatted"],
+                    "scroll_depth": scroll_by_page.get(page, {}).get("max_scroll", 0),
+                    "clicks": click_summary["clicks_by_page"].get(page, 0),
+                }
+                for page, stats in sorted(page_time.items(), key=lambda x: x[1]["views"], reverse=True)
+            ],
+            
+            "game_stats": game_stats,
+            "click_summary": click_summary,
+            "performance": perf_summary,
+            
+            "journeys": journeys.data[:10] if journeys.data else [],  # Last 10 journeys
+            "recent_events": (events.data or [])[:50],  # Last 50 events
+        }
+        
+        return APIResponse.ok({"report": report})
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/reports/summary")
+async def get_analytics_summary(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    _admin=Depends(require_admin)
+):
+    """
+    Get high-level analytics summary with all key metrics.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        if not end_date:
+            end_date = datetime.utcnow().date().isoformat()
+        if not start_date:
+            start_date = (datetime.utcnow().date() - timedelta(days=7)).isoformat()
+        
+        end_inclusive = (datetime.fromisoformat(end_date) + timedelta(days=1)).isoformat()[:10]
+        
+        # 1. Session stats
+        sessions = supabase.table("analytics_sessions").select(
+            "id", count="exact"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        
+        # 2. Unique visitors
+        visitors = supabase.table("analytics_sessions").select(
+            "visitor_id"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        unique_visitors = len(set(v["visitor_id"] for v in visitors.data or [] if v.get("visitor_id")))
+        
+        # 3. Page views
+        pageviews = supabase.table("analytics_pageviews").select(
+            "id", count="exact"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        
+        # 4. Events
+        events = supabase.table("analytics_events").select(
+            "id", count="exact"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        
+        # 5. Game events summary
+        game_events = supabase.table("analytics_events").select(
+            "event_name, metadata"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).ilike(
+            "event_name", "game_%"
+        ).execute()
+        
+        game_summary = {
+            "games_started": 0,
+            "games_completed": 0,
+            "games_abandoned": 0,
+            "total_questions_answered": 0,
+            "total_questions_correct": 0,
+            "total_play_time_seconds": 0,
+        }
+        
+        for e in game_events.data or []:
+            name = e.get("event_name", "")
+            meta = e.get("metadata") or {}
+            
+            if name == "game_session_start":
+                game_summary["games_started"] += 1
+            elif name == "game_session_complete":
+                game_summary["games_completed"] += 1
+                game_summary["total_questions_answered"] += meta.get("questions_answered", 0)
+                game_summary["total_questions_correct"] += meta.get("questions_correct", 0)
+                game_summary["total_play_time_seconds"] += meta.get("duration_seconds", 0)
+            elif name == "game_session_abandon":
+                game_summary["games_abandoned"] += 1
+        
+        if game_summary["total_questions_answered"] > 0:
+            game_summary["overall_accuracy"] = round(
+                game_summary["total_questions_correct"] / game_summary["total_questions_answered"] * 100, 1
+            )
+        else:
+            game_summary["overall_accuracy"] = 0
+        
+        game_summary["total_play_time_formatted"] = format_duration(game_summary["total_play_time_seconds"] * 1000)
+        
+        # 6. Top pages by views
+        top_pages = supabase.table("analytics_pageviews").select(
+            "page"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        
+        page_counts = {}
+        for p in top_pages.data or []:
+            page = p.get("page", "/")
+            page_counts[page] = page_counts.get(page, 0) + 1
+        
+        top_pages_list = sorted(page_counts.items(), key=lambda x: x[1], reverse=True)[:15]
+        
+        # 7. Conversions
+        conversions = supabase.table("analytics_conversions").select(
+            "id", count="exact"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        
+        # 8. Errors
+        errors = supabase.table("analytics_errors").select(
+            "id", count="exact"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).eq("resolved", False).execute()
+        
+        return APIResponse.ok({
+            "period": {"start": start_date, "end": end_date},
+            "overview": {
+                "total_sessions": sessions.count or 0,
+                "unique_visitors": unique_visitors,
+                "total_page_views": pageviews.count or 0,
+                "total_events": events.count or 0,
+                "total_conversions": conversions.count or 0,
+                "unresolved_errors": errors.count or 0,
+            },
+            "game_stats": game_summary,
+            "top_pages": [{"page": p, "views": c} for p, c in top_pages_list],
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/reports/questions")
+async def get_questions_report(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    _admin=Depends(require_admin)
+):
+    """
+    Get detailed report on trivia questions answered.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        if not end_date:
+            end_date = datetime.utcnow().date().isoformat()
+        if not start_date:
+            start_date = (datetime.utcnow().date() - timedelta(days=7)).isoformat()
+        
+        end_inclusive = (datetime.fromisoformat(end_date) + timedelta(days=1)).isoformat()[:10]
+        
+        # Get all question answered events
+        events = supabase.table("analytics_events").select(
+            "metadata, created_at"
+        ).eq("event_name", "game_question_answered").gte(
+            "created_at", start_date
+        ).lt("created_at", end_inclusive).execute()
+        
+        total_answered = len(events.data or [])
+        total_correct = 0
+        total_time_ms = 0
+        time_count = 0
+        
+        # Daily breakdown
+        daily_stats = {}
+        
+        for e in events.data or []:
+            meta = e.get("metadata") or {}
+            created = e.get("created_at", "")[:10]
+            
+            if meta.get("correct"):
+                total_correct += 1
+            
+            time_to_answer = meta.get("time_to_answer_ms")
+            if time_to_answer:
+                total_time_ms += time_to_answer
+                time_count += 1
+            
+            if created not in daily_stats:
+                daily_stats[created] = {"answered": 0, "correct": 0}
+            daily_stats[created]["answered"] += 1
+            if meta.get("correct"):
+                daily_stats[created]["correct"] += 1
+        
+        # Calculate averages
+        accuracy = round(total_correct / total_answered * 100, 1) if total_answered else 0
+        avg_time_ms = round(total_time_ms / time_count) if time_count else 0
+        
+        # Format daily stats
+        daily_list = [
+            {
+                "date": date,
+                "answered": stats["answered"],
+                "correct": stats["correct"],
+                "accuracy": round(stats["correct"] / stats["answered"] * 100, 1) if stats["answered"] else 0,
+            }
+            for date, stats in sorted(daily_stats.items())
+        ]
+        
+        return APIResponse.ok({
+            "period": {"start": start_date, "end": end_date},
+            "totals": {
+                "questions_answered": total_answered,
+                "questions_correct": total_correct,
+                "accuracy_percent": accuracy,
+                "avg_time_to_answer_ms": avg_time_ms,
+                "avg_time_to_answer_formatted": format_duration(avg_time_ms),
+            },
+            "daily": daily_list,
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/reports/time-on-page")
+async def get_time_on_page_report(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    _admin=Depends(require_admin)
+):
+    """
+    Get detailed time spent on each page/section.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        if not end_date:
+            end_date = datetime.utcnow().date().isoformat()
+        if not start_date:
+            start_date = (datetime.utcnow().date() - timedelta(days=7)).isoformat()
+        
+        end_inclusive = (datetime.fromisoformat(end_date) + timedelta(days=1)).isoformat()[:10]
+        
+        # Get pageviews with duration
+        pageviews = supabase.table("analytics_pageviews").select(
+            "page, duration_ms, load_time_ms"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        
+        # Aggregate by page
+        page_stats = {}
+        for pv in pageviews.data or []:
+            page = pv.get("page", "/")
+            duration = pv.get("duration_ms") or 0
+            
+            if page not in page_stats:
+                page_stats[page] = {
+                    "views": 0,
+                    "total_time_ms": 0,
+                    "durations": [],
+                }
+            page_stats[page]["views"] += 1
+            page_stats[page]["total_time_ms"] += duration
+            if duration > 0:
+                page_stats[page]["durations"].append(duration)
+        
+        # Calculate stats
+        pages = []
+        for page, stats in page_stats.items():
+            durations = stats["durations"]
+            avg_time = round(sum(durations) / len(durations)) if durations else 0
+            median_time = sorted(durations)[len(durations) // 2] if durations else 0
+            
+            pages.append({
+                "page": page,
+                "views": stats["views"],
+                "total_time_ms": stats["total_time_ms"],
+                "avg_time_ms": avg_time,
+                "median_time_ms": median_time,
+                "avg_time_formatted": format_duration(avg_time),
+                "total_time_formatted": format_duration(stats["total_time_ms"]),
+            })
+        
+        # Sort by views
+        pages.sort(key=lambda x: x["views"], reverse=True)
+        
+        # Get scroll depth for context
+        scroll = supabase.table("analytics_scroll_depth").select(
+            "page, max_scroll_percent"
+        ).gte("created_at", start_date).lt("created_at", end_inclusive).execute()
+        
+        scroll_by_page = {}
+        for s in scroll.data or []:
+            page = s.get("page", "/")
+            if page not in scroll_by_page:
+                scroll_by_page[page] = []
+            scroll_by_page[page].append(s.get("max_scroll_percent", 0))
+        
+        # Add scroll depth to pages
+        for p in pages:
+            scrolls = scroll_by_page.get(p["page"], [])
+            p["avg_scroll_depth"] = round(sum(scrolls) / len(scrolls), 1) if scrolls else 0
+        
+        return APIResponse.ok({
+            "period": {"start": start_date, "end": end_date},
+            "pages": pages[:30],  # Top 30 pages
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+def format_duration(ms: int) -> str:
+    """Format milliseconds to human readable duration."""
+    if ms < 1000:
+        return f"{ms}ms"
+    
+    seconds = ms // 1000
+    if seconds < 60:
+        return f"{seconds}s"
+    
+    minutes = seconds // 60
+    remaining_seconds = seconds % 60
+    
+    if minutes < 60:
+        return f"{minutes}m {remaining_seconds}s"
+    
+    hours = minutes // 60
+    remaining_minutes = minutes % 60
+    return f"{hours}h {remaining_minutes}m"
