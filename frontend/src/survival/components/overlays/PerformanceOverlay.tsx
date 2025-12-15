@@ -3,7 +3,7 @@
  * Minimal on mobile, detailed on desktop
  */
 
-import React, { memo } from 'react'
+import { memo } from 'react'
 import type { PerformanceMetrics } from '@/survival/engine/PerformanceMonitor'
 import type { MemoryStats } from '@/survival/debug/MemoryMonitor'
 
@@ -63,11 +63,11 @@ export const PerformanceOverlay = memo(({
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-gray-500">Textures:</span>
-                <span className="text-gray-300">{memoryStats.textureCount}</span>
+                <span className="text-gray-300">{memoryStats.textures}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-gray-500">Geometries:</span>
-                <span className="text-gray-300">{memoryStats.geometryCount}</span>
+                <span className="text-gray-300">{memoryStats.geometries}</span>
               </div>
             </>
           )}
