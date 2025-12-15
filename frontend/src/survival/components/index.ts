@@ -36,3 +36,6 @@ export {
 // Animation utilities
 export * from './HUDAnimations'
 export * from './useAnimatedValue'
+
+// Overlay Components
+export * from './overlays'
