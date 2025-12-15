@@ -434,13 +434,56 @@ class QualityManager {
 
     // Apply device-specific adjustments
     if (caps.isIOS && caps.isSafari) {
-      // iOS Safari has WebGL limitations
+      // iOS Safari has strict WebGL limitations:
+      // - ~256MB VRAM on older devices
+      // - Slower shader compilation
+      // - Thermal throttling on sustained load
+      // - No reliable garbage collection for WebGL resources
       profile = {
         ...profile,
         renderer: {
           ...profile.renderer,
-          pixelRatio: Math.min(profile.renderer.pixelRatio, 2),
+          pixelRatio: Math.min(profile.renderer.pixelRatio, 1.5), // Aggressive cap
+          antialias: false, // Disable MSAA (expensive on iOS)
           postProcessing: false,
+          shadows: false, // Shadows are expensive
+          shadowMapSize: 512,
+          maxLights: Math.min(profile.renderer.maxLights, 3),
+        },
+        particles: {
+          ...profile.particles,
+          maxParticles: Math.floor(profile.particles.maxParticles * 0.4), // 40% particle budget
+          trailsEnabled: false,
+          engineTrailEnabled: false,
+          dustEnabled: false,
+        },
+        space: {
+          ...profile.space,
+          starCount: Math.floor(profile.space.starCount * 0.3), // 30% stars
+          nebulaEnabled: false, // Nebula shader is expensive
+          shootingStarsEnabled: false,
+          celestialCount: Math.min(profile.space.celestialCount, 2),
+          spaceParticlesEnabled: false,
+          cosmicDustCount: 0,
+          auroraCount: 0,
+        },
+        animation: {
+          ...profile.animation,
+          speedLines: false,
+          cameraShake: false,
+        },
+        // Reduce memory budgets for iOS
+        textureMemoryBudget: Math.min(profile.textureMemoryBudget, 64),
+        geometryMemoryBudget: Math.min(profile.geometryMemoryBudget, 32),
+        totalMemoryBudget: Math.min(profile.totalMemoryBudget, 128),
+      }
+    } else if (caps.isSafari) {
+      // Desktop Safari also has some WebGL quirks
+      profile = {
+        ...profile,
+        renderer: {
+          ...profile.renderer,
+          postProcessing: false, // Safari shader compilation can be slow
         },
       }
     }

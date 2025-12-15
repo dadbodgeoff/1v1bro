@@ -79,19 +79,30 @@ export class SurvivalRenderer {
     this.camera.lookAt(0, 0, -50)
 
     // Renderer with quality-adaptive settings
+    // Safari/iOS specific: use low-power to prevent thermal throttling
     const rendererQuality = this.qualityProfile.renderer
+    const isSafariMobile = caps.isSafari && caps.isMobile
     this.renderer = new THREE.WebGLRenderer({
-      antialias: rendererQuality.antialias,
-      powerPreference: caps.isMobile ? 'default' : 'high-performance',
+      antialias: isSafariMobile ? false : rendererQuality.antialias, // Disable AA on Safari mobile
+      powerPreference: isSafariMobile ? 'low-power' : (caps.isMobile ? 'default' : 'high-performance'),
       stencil: false,
       depth: true,
-      // Use alpha for potential transparency effects
       alpha: false,
+      // Safari/iOS: avoid preserveDrawingBuffer (major perf hit)
+      preserveDrawingBuffer: false,
+      // Safari/iOS: prefer failIfMajorPerformanceCaveat to avoid software rendering
+      failIfMajorPerformanceCaveat: isSafariMobile,
     })
     this.renderer.setSize(container.clientWidth, container.clientHeight)
     
     // Use quality-based pixel ratio
-    const maxPixelRatio = rendererQuality.pixelRatio
+    // Safari/iOS: cap at 2x max to prevent VRAM exhaustion (Retina can be 3x)
+    let maxPixelRatio = rendererQuality.pixelRatio
+    if (isSafariMobile) {
+      maxPixelRatio = Math.min(maxPixelRatio, 1.5) // Aggressive cap for Safari mobile
+    } else if (caps.isIOS) {
+      maxPixelRatio = Math.min(maxPixelRatio, 2) // Cap iOS at 2x
+    }
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio))
     
     // Enable better color output (if quality allows)

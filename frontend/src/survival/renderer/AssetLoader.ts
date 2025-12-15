@@ -7,6 +7,7 @@ import * as THREE from 'three'
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { SURVIVAL_ASSETS } from '../config/constants'
+import { getDeviceCapabilities } from '../config/device'
 
 export interface LoadedAssets {
   track: {
@@ -62,8 +63,15 @@ export class AssetLoader {
   private dracoLoader: DRACOLoader
   private cache: Map<string, THREE.Group> = new Map()
   private onProgress?: (progress: LoadProgress) => void
+  private isSafariMobile: boolean = false
+  private maxTextureSize: number = 2048
 
   constructor(onProgress?: (progress: LoadProgress) => void) {
+    // Detect Safari/iOS for texture optimization
+    const caps = getDeviceCapabilities()
+    this.isSafariMobile = caps.isSafari && caps.isMobile
+    // Limit texture size on Safari mobile to prevent VRAM exhaustion
+    this.maxTextureSize = this.isSafariMobile ? 512 : (caps.isIOS ? 1024 : 2048)
     // Setup Draco decoder for compressed GLB files
     this.dracoLoader = new DRACOLoader()
     this.dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
@@ -90,6 +98,11 @@ export class AssetLoader {
         (gltf: GLTF) => {
           const model = gltf.scene
           
+          // Safari/iOS optimization: reduce texture sizes to prevent VRAM exhaustion
+          if (this.isSafariMobile || this.maxTextureSize < 2048) {
+            this.optimizeModelForMobile(model)
+          }
+          
           // Log dimensions for debugging
           new THREE.Box3().setFromObject(model)
           
@@ -112,6 +125,57 @@ export class AssetLoader {
           reject(new Error(`Failed to load ${name}`))
         }
       )
+    })
+  }
+
+  /**
+   * Safari/iOS optimization: reduce texture sizes and simplify materials
+   * This helps prevent VRAM exhaustion and improves performance
+   */
+  private optimizeModelForMobile(model: THREE.Group): void {
+    model.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const materials = Array.isArray(child.material) ? child.material : [child.material]
+        
+        for (const material of materials) {
+          if (material instanceof THREE.MeshStandardMaterial || 
+              material instanceof THREE.MeshPhysicalMaterial) {
+            // Reduce texture sizes
+            const textures = [
+              material.map,
+              material.normalMap,
+              material.roughnessMap,
+              material.metalnessMap,
+              material.aoMap,
+              material.emissiveMap,
+            ]
+            
+            for (const texture of textures) {
+              if (texture && texture.image) {
+                // Set minFilter to avoid mipmaps on Safari (saves VRAM)
+                texture.minFilter = THREE.LinearFilter
+                texture.generateMipmaps = false
+              }
+            }
+            
+            // Disable expensive features on Safari mobile
+            if (this.isSafariMobile) {
+              material.normalMap = null // Normal maps are expensive
+              material.aoMap = null // AO maps add overhead
+              material.envMapIntensity = 0 // Disable environment reflections
+            }
+          }
+        }
+        
+        // Reduce geometry complexity if possible
+        if (this.isSafariMobile && child.geometry) {
+          // Dispose of unused attributes to save memory
+          const geometry = child.geometry
+          if (geometry.attributes.uv2) {
+            geometry.deleteAttribute('uv2')
+          }
+        }
+      }
     })
   }
 

@@ -168,6 +168,15 @@ function createHologramMaterial(): THREE.ShaderMaterial {
 }
 
 /**
+ * Detect if running on mobile device
+ */
+function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    (window.innerWidth <= 768)
+}
+
+/**
  * Calculate required billboard dimensions based on content
  * Returns exact size needed with minimal padding
  */
@@ -175,8 +184,9 @@ function calculateBillboardSize(question: TriviaQuestion): { width: number; heig
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')!
   
-  // Start with a reasonable max width for readability
-  const maxContentWidth = 500 // pixels
+  // Adjust max width for mobile - smaller billboards
+  const isMobile = isMobileDevice()
+  const maxContentWidth = isMobile ? 380 : 500 // pixels - smaller on mobile
   const contentPadding = SPACING.padding * 2
   
   // Measure question
@@ -237,9 +247,11 @@ function calculateBillboardSize(question: TriviaQuestion): { width: number; heig
   const totalHeight = SPACING.padding + questionHeight + SPACING.questionBottom + totalOptionHeight + hintHeight + SPACING.padding
   
   // Convert to world units (64 pixels per unit)
+  // Mobile gets smaller billboards for better visibility (isMobile already declared above)
   const pixelsPerUnit = 64
-  const widthUnits = Math.max(6, totalWidth / pixelsPerUnit)
-  const heightUnits = Math.max(4, totalHeight / pixelsPerUnit)
+  const mobileScale = isMobile ? 0.75 : 1.0 // 25% smaller on mobile
+  const widthUnits = Math.max(isMobile ? 5 : 6, (totalWidth / pixelsPerUnit) * mobileScale)
+  const heightUnits = Math.max(isMobile ? 3.5 : 4, (totalHeight / pixelsPerUnit) * mobileScale)
   
   return {
     width: widthUnits,
@@ -485,13 +497,24 @@ export class TriviaBillboard {
     this.mesh.geometry.dispose()
     this.mesh.geometry = new THREE.PlaneGeometry(width, height)
     
-    // Position
-    this.group.position.copy(position)
+    // Position - adjust for mobile (bring closer to center for visibility)
+    const isMobile = isMobileDevice()
+    const adjustedPosition = position.clone()
+    if (isMobile) {
+      // Move billboard closer to center on mobile
+      const centerOffset = side === 'left' ? 1.5 : -1.5
+      adjustedPosition.x += centerOffset
+      // Also lower it slightly for better mobile viewport
+      adjustedPosition.y -= 0.5
+    }
+    this.group.position.copy(adjustedPosition)
     
     // Rotate to face track - reduced angle for better readability
     // Left side: slight angle inward (~12 degrees instead of 45)
     // This makes the billboard more straight-on while still angled
-    const angle = side === 'left' ? Math.PI * 0.07 : -Math.PI * 0.07
+    // On mobile, make it even more straight-on
+    const angleMultiplier = isMobile ? 0.04 : 0.07
+    const angle = side === 'left' ? Math.PI * angleMultiplier : -Math.PI * angleMultiplier
     this.group.rotation.y = angle
     this.targetRotationY = angle
     
