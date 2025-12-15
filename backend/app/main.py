@@ -94,10 +94,26 @@ app.add_exception_handler(AppException, app_exception_handler)
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Log validation errors for debugging."""
-    logger.error(f"Validation error on {request.method} {request.url.path}: {exc.errors()}")
+    # Convert errors to JSON-safe format (bytes -> str)
+    errors = []
+    for error in exc.errors():
+        safe_error = {}
+        for key, value in error.items():
+            if isinstance(value, bytes):
+                safe_error[key] = value.decode('utf-8', errors='replace')
+            elif isinstance(value, (list, tuple)):
+                safe_error[key] = [
+                    v.decode('utf-8', errors='replace') if isinstance(v, bytes) else v
+                    for v in value
+                ]
+            else:
+                safe_error[key] = value
+        errors.append(safe_error)
+    
+    logger.error(f"Validation error on {request.method} {request.url.path}: {errors}")
     return JSONResponse(
         status_code=422,
-        content={"detail": exc.errors()},
+        content={"detail": errors},
     )
 
 

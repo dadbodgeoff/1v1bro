@@ -68,9 +68,16 @@ export class SurvivalErrorBoundary extends Component<Props, State> {
               Something went wrong
             </h2>
             
-            <p className="text-gray-400 text-sm mb-6">
+            <p className="text-gray-400 text-sm mb-4">
               {this.state.error?.message || 'An unexpected error occurred in Survival Mode.'}
             </p>
+            
+            {/* Show error name for debugging on production */}
+            {this.state.error?.name && (
+              <p className="text-red-400/60 text-xs mb-6 font-mono">
+                {this.state.error.name}: {this.state.error.message?.slice(0, 100)}
+              </p>
+            )}
 
             <div className="flex gap-3 justify-center">
               <button

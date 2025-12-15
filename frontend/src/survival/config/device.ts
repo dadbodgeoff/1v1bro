@@ -388,9 +388,15 @@ class DeviceDetector {
   }
 
   private detectInputMode(touchSupported: boolean, isMobile: boolean): InputMode {
-    // Check for gamepad
-    const gamepads = navigator.getGamepads?.() || []
-    const hasGamepad = Array.from(gamepads).some(gp => gp !== null)
+    // Check for gamepad (Safari can throw errors here)
+    let hasGamepad = false
+    try {
+      const gamepads = navigator.getGamepads?.() || []
+      hasGamepad = Array.from(gamepads).some(gp => gp !== null)
+    } catch {
+      // Safari may throw on getGamepads()
+      hasGamepad = false
+    }
     
     if (hasGamepad) return 'gamepad'
     if (isMobile && touchSupported) return 'touch'

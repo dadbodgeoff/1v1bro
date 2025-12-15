@@ -195,14 +195,22 @@ export class InputController {
   }
 
   private handleGamepadConnected = (e: GamepadEvent): void => {
-    this.gamepadIndex = e.gamepad.index
-    this.startGamepadPolling()
+    try {
+      this.gamepadIndex = e.gamepad.index
+      this.startGamepadPolling()
+    } catch {
+      // Safari may have issues with gamepad API
+    }
   }
 
   private handleGamepadDisconnected = (e: GamepadEvent): void => {
-    if (this.gamepadIndex === e.gamepad.index) {
-      this.gamepadIndex = null
-      this.stopGamepadPolling()
+    try {
+      if (this.gamepadIndex === e.gamepad.index) {
+        this.gamepadIndex = null
+        this.stopGamepadPolling()
+      }
+    } catch {
+      // Safari may have issues with gamepad API
     }
   }
 
@@ -215,7 +223,13 @@ export class InputController {
     this.gamepadPollInterval = window.setInterval(() => {
       if (this.gamepadIndex === null || !this.enabled) return
       
-      const gamepads = navigator.getGamepads()
+      // Safari can throw on getGamepads()
+      let gamepads: (Gamepad | null)[]
+      try {
+        gamepads = navigator.getGamepads()
+      } catch {
+        return
+      }
       const gamepad = gamepads[this.gamepadIndex]
       if (!gamepad) return
       
