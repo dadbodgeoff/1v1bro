@@ -7,10 +7,12 @@
  * - Navigation breadcrumb
  * - Refresh timer for daily rotation
  * - Enterprise typography hierarchy
+ * - Animated balance counter (Enterprise Polish 2025)
  */
 
 import { cn } from '@/utils/helpers'
 import { useCountdown } from '@/hooks/useCountdown'
+import { AnimatedNumber } from '@/components/ui/animations'
 
 interface ShopHeaderProps {
   balance: number
@@ -108,7 +110,11 @@ export function ShopHeader({
           </div>
           <div className="flex flex-col items-start">
             <span className="text-[11px] uppercase tracking-wider text-[var(--color-text-muted)] font-medium">Balance</span>
-            <span className="text-xl font-bold text-white tabular-nums">{balance.toLocaleString()}</span>
+            <AnimatedNumber 
+              value={balance} 
+              duration={800}
+              className="text-xl font-bold text-white"
+            />
           </div>
           <PlusIcon className="w-5 h-5 text-[#10b981] opacity-0 group-hover:opacity-100 transition-opacity" />
         </button>

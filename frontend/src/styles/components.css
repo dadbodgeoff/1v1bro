@@ -539,3 +539,162 @@
     min-height: var(--touch-target-min);
   }
 }
+
+
+/* ============================================
+ * ENTERPRISE POLISH ANIMATIONS (2025)
+ * ============================================ */
+
+/* Legendary shimmer effect */
+.legendary-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(245, 158, 11, 0.3) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 3s linear infinite;
+}
+
+@keyframes shimmer-sweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Pulse glow for claimable items */
+.animate-pulse-glow-success {
+  animation: pulse-glow-success 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow-success {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+  }
+}
+
+.animate-pulse-glow-premium {
+  animation: pulse-glow-premium 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow-premium {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+  }
+}
+
+/* Focus ring utility */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Stagger fade-in animation */
+@keyframes stagger-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stagger-in {
+  animation: stagger-fade-in 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Stagger delay utilities */
+.stagger-delay-1 { animation-delay: 0.05s; }
+.stagger-delay-2 { animation-delay: 0.1s; }
+.stagger-delay-3 { animation-delay: 0.15s; }
+.stagger-delay-4 { animation-delay: 0.2s; }
+.stagger-delay-5 { animation-delay: 0.25s; }
+.stagger-delay-6 { animation-delay: 0.3s; }
+.stagger-delay-7 { animation-delay: 0.35s; }
+.stagger-delay-8 { animation-delay: 0.4s; }
+
+/* Number flip animation */
+@keyframes number-flip-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes number-flip-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+/* Value change flash */
+@keyframes value-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-value-flash {
+  animation: value-flash 0.3s ease-out;
+}
+
+/* Floating particle animation */
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.4);
+  }
+}
+
+/* Elastic bounce for hover */
+@keyframes elastic-bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.05); }
+  50% { transform: scale(0.98); }
+  70% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.hover-elastic:hover {
+  animation: elastic-bounce 0.4s ease-out;
+}
+
+/* Reduced motion: disable all custom animations */
+@media (prefers-reduced-motion: reduce) {
+  .legendary-shimmer,
+  .animate-pulse-glow-success,
+  .animate-pulse-glow-premium,
+  .animate-stagger-in,
+  .animate-value-flash,
+  .hover-elastic:hover {
+    animation: none;
+  }
+  
+  .animate-stagger-in {
+    opacity: 1;
+  }
+}

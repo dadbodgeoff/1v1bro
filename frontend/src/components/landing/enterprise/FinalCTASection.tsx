@@ -12,6 +12,7 @@ import { cn } from '@/utils/helpers'
 import { useAuthStore } from '@/stores/authStore'
 import { CTAButton } from './CTAButton'
 import { analytics } from '@/services/analytics'
+import { useSectionViewTracking } from '@/hooks/useSectionViewTracking'
 
 export interface FinalCTASectionProps {
   /** Additional CSS classes */
@@ -28,6 +29,7 @@ const FINAL_CTA_CONTENT = {
 export function FinalCTASection({ className }: FinalCTASectionProps) {
   const navigate = useNavigate()
   const { isAuthenticated } = useAuthStore()
+  const sectionRef = useSectionViewTracking('final_cta')
 
   const handlePrimaryCTA = () => {
     analytics.trackEvent('final_cta_play_click', { authenticated: isAuthenticated })
@@ -41,6 +43,7 @@ export function FinalCTASection({ className }: FinalCTASectionProps) {
 
   return (
     <section
+      ref={sectionRef as React.RefObject<HTMLElement>}
       className={cn(
         'relative py-[100px] md:py-[160px] bg-[#111113] overflow-hidden',
         className

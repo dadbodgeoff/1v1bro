@@ -38,6 +38,7 @@ class CosmeticsService:
         CosmeticType.EFFECT: "effect_equipped",
         CosmeticType.TRAIL: "trail_equipped",
         CosmeticType.PLAYERCARD: "playercard_equipped",
+        CosmeticType.RUNNER: "runner_equipped",
     }
     
     def __init__(
@@ -285,6 +286,8 @@ class CosmeticsService:
                 if loadout_data.get("trail_equipped_data") else None,
             playercard_equipped=Cosmetic(**loadout_data["playercard_equipped_data"]) 
                 if loadout_data.get("playercard_equipped_data") else None,
+            runner_equipped=Cosmetic(**loadout_data["runner_equipped_data"]) 
+                if loadout_data.get("runner_equipped_data") else None,
             updated_at=loadout_data.get("updated_at"),
         )
     

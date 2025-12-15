@@ -52,7 +52,7 @@ export function useCategories(): UseCategoriesResult {
 
     try {
       const token = useAuthStore.getState().token;
-      const response = await fetch(`${API_BASE}/api/v1/questions/categories`, {
+      const response = await fetch(`${API_BASE}/questions/categories`, {
         headers: {
           'Content-Type': 'application/json',
           ...(token && { Authorization: `Bearer ${token}` }),

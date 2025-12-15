@@ -6,8 +6,7 @@
 import { useCallback, useEffect } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useBalanceStore } from '../stores/balanceStore';
-
-const API_BASE = import.meta.env.VITE_API_URL || '';
+import { API_BASE } from '../utils/constants';
 
 // Cache duration in milliseconds (30 seconds)
 const CACHE_DURATION = 30000;
@@ -63,7 +62,7 @@ export function useBalance(): UseBalanceReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE}/api/v1/coins/balance`, {
+      const response = await fetch(`${API_BASE}/coins/balance`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       });
@@ -95,7 +94,7 @@ export function useBalance(): UseBalanceReturn {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE}/api/v1/coins/balance`, {
+      const response = await fetch(`${API_BASE}/coins/balance`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       });

@@ -9,6 +9,7 @@
  * - Card background with subtle border
  * - Hover lift effect (translateY -2px, shadow enhancement)
  * - Optional icon display
+ * - Animated number counting (Enterprise Polish 2025)
  * 
  * Props:
  * - value: The statistic value to display
@@ -22,6 +23,7 @@
 
 import type { ReactNode } from 'react'
 import { cn } from '@/utils/helpers'
+import { AnimatedNumber } from '@/components/ui/animations'
 
 interface StatsCardProps {
   value: string | number
@@ -90,12 +92,16 @@ export function StatsCard({
         </div>
       )}
 
-      {/* Value - Fluid typography */}
+      {/* Value - Fluid typography with animation for numbers */}
       <div className={cn(
         'text-xl sm:text-2xl md:text-3xl font-bold tabular-nums leading-tight',
         colorCodeStyles[colorCode]
       )}>
-        {value}
+        {typeof value === 'number' ? (
+          <AnimatedNumber value={value} duration={800} />
+        ) : (
+          value
+        )}
       </div>
 
       {/* Label - Readable on mobile */}

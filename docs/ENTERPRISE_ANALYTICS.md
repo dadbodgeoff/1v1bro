@@ -204,3 +204,144 @@ Admin access is restricted to emails in `ADMIN_EMAILS` list.
 -- Run migration 036
 \i backend/app/database/migrations/036_enterprise_analytics.sql
 ```
+
+---
+
+# Survival Mode Analytics
+
+Enterprise-grade analytics specifically for the Survival Mode game.
+
+## Features
+
+### 1. Session Analytics
+- Session lifecycle tracking (start, end, duration)
+- Device and browser context
+- Performance grading (A-F based on FPS)
+- Session-level bests (distance, score, combo)
+
+### 2. Run Analytics
+- Complete run metrics (distance, score, duration)
+- Skill metrics (obstacles cleared, near misses, perfect dodges)
+- Death analysis (obstacle type, position, context)
+- Performance context (FPS, frame drops, input latency)
+
+### 3. Input Analytics (Game Feel Tuning)
+- Input breakdown (jumps, slides, lane changes)
+- Reaction time analysis
+- Advanced input detection (coyote jumps, buffered inputs)
+- Spam and double-tap detection
+
+### 4. Combo Analytics
+- Combo distribution analysis
+- End reason tracking (death, timeout, hit)
+- Score contribution analysis
+
+### 5. Difficulty Curve Analysis
+- Survival rate by distance bucket
+- Speed and difficulty correlation
+- Death hotspot identification
+
+### 6. Obstacle Analysis
+- Per-obstacle death rates
+- Encounter context (distance, speed)
+- Pattern vs standalone deaths
+
+### 7. Funnel Analysis
+- Page visit → Game load → First run → Milestones
+- Conversion rates between steps
+- Drop-off identification
+
+## Frontend Integration
+
+```tsx
+import { useSurvivalGameWithAnalytics } from '@/survival'
+
+function SurvivalGame() {
+  const {
+    containerRef,
+    gameState,
+    start,
+    reset,
+    analytics,
+  } = useSurvivalGameWithAnalytics({
+    analyticsEnabled: true,
+    onGameOver: (score, distance) => {
+      console.log('Game over!', score, distance)
+    },
+  })
+
+  // Analytics are automatically tracked for:
+  // - Session start/end
+  // - Run start/end with full metrics
+  // - Combo tracking
+  // - Distance milestones
+  // - FPS monitoring
+
+  // Manual input tracking (optional, for detailed analysis)
+  const handleJump = () => {
+    analytics.trackJump({ isBuffered: false, isCoyote: false })
+  }
+
+  return <div ref={containerRef} />
+}
+```
+
+### Direct Analytics Hook
+
+```tsx
+import { useSurvivalAnalytics } from '@/survival'
+
+function CustomComponent() {
+  const analytics = useSurvivalAnalytics({ enabled: true })
+
+  // Track custom funnel events
+  analytics.trackFunnelEvent('viewed_leaderboard')
+
+  // Get session stats
+  const stats = analytics.getSessionStats()
+  console.log('Runs:', stats.runCount, 'Best:', stats.longestDistance)
+}
+```
+
+## API Endpoints
+
+### Tracking (No Auth Required)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/analytics/survival/track/session-start` | POST | Track session start |
+| `/analytics/survival/track/session-end` | POST | Track session end |
+| `/analytics/survival/track/run` | POST | Track completed run |
+| `/analytics/survival/track/inputs` | POST | Track input analytics |
+| `/analytics/survival/track/combo` | POST | Track significant combo |
+| `/analytics/survival/track/funnel` | POST | Track funnel event |
+
+### Dashboard (Admin Auth Required)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/analytics/survival/dashboard/overview` | GET | Daily aggregates |
+| `/analytics/survival/dashboard/difficulty-curve` | GET | Survival rate by distance |
+| `/analytics/survival/dashboard/obstacle-analysis` | GET | Per-obstacle death rates |
+| `/analytics/survival/dashboard/funnel` | GET | Conversion funnel |
+| `/analytics/survival/dashboard/input-analysis` | GET | Input pattern analysis |
+| `/analytics/survival/dashboard/combo-analysis` | GET | Combo distribution |
+| `/analytics/survival/dashboard/refresh` | POST | Refresh materialized views |
+
+## Database Tables
+
+- `survival_analytics_sessions` - Session records
+- `survival_analytics_runs` - Run-level metrics
+- `survival_analytics_inputs` - Input pattern data
+- `survival_analytics_combos` - Combo records
+- `survival_analytics_obstacles` - Obstacle death rates
+- `survival_analytics_difficulty` - Difficulty curve data
+- `survival_analytics_funnels` - Daily funnel counts
+- `survival_analytics_daily` - Materialized daily aggregates
+
+## Running the Migration
+
+```sql
+-- Run migration 037
+\i backend/app/database/migrations/037_survival_analytics.sql
+```

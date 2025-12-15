@@ -9,10 +9,12 @@ import { useAuthStore } from '@/stores/authStore'
 import { getSessionTransferFlow, GuestSessionManager, type SessionTransferData } from '@/game/guest'
 import { SessionTransferPreview } from '@/components/auth/SessionTransferPreview'
 import { trackSignupFormStart, trackSignupFormComplete, trackSignupFormError } from '@/services/analytics'
+import { useAuthAnalytics } from '@/hooks/useAuthAnalytics'
 
 export function Register() {
   const navigate = useNavigate()
   const setUser = useAuthStore((s) => s.setUser)
+  const authAnalytics = useAuthAnalytics()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -30,12 +32,13 @@ export function Register() {
   // Check for guest session on mount and track form start
   useEffect(() => {
     trackSignupFormStart()
+    authAnalytics.trackSignupStart('email')
     const transferFlow = getSessionTransferFlow()
     if (transferFlow.hasTransferableSession()) {
       setHasGuestSession(true)
       setTransferData(transferFlow.getTransferPreview())
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -78,11 +81,13 @@ export function Register() {
       }
       
       trackSignupFormComplete()
+      authAnalytics.trackSignupComplete('email', response.user.id)
       setUser(response.user, response.access_token, true) // true = new user for analytics
       navigate('/dashboard')
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Registration failed'
       trackSignupFormError(errorMsg)
+      authAnalytics.trackSignupError(errorMsg, 'email')
       setError(errorMsg)
     } finally {
       setIsLoading(false)

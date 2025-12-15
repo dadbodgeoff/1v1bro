@@ -10,6 +10,7 @@
 import { cn } from '@/utils/helpers'
 import { SectionHeader } from './SectionHeader'
 import { UseCaseCard } from './UseCaseCard'
+import { useSectionViewTracking } from '@/hooks/useSectionViewTracking'
 import { FriendsIcon, CommunityIcon, EventIcon } from './icons'
 
 export interface UseCasesSectionProps {
@@ -39,8 +40,11 @@ const USE_CASES = [
 ]
 
 export function UseCasesSection({ className }: UseCasesSectionProps) {
+  const sectionRef = useSectionViewTracking('use_cases')
+  
   return (
     <section
+      ref={sectionRef as React.RefObject<HTMLElement>}
       className={cn(
         'relative py-20 md:py-[120px] bg-[#09090B]',
         className

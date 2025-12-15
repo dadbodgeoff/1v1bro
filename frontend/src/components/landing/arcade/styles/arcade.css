@@ -689,6 +689,36 @@
   gap: 30px;
 }
 
+/* Clickable control panel - navigates to login */
+.arcade-control-panel--clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.arcade-control-panel--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.4),
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(249, 115, 22, 0.3);
+}
+
+.arcade-control-panel--clickable:hover .coin-slot-text {
+  animation: coin-text-pulse 0.5s ease-in-out infinite;
+  color: #FB923C;
+  text-shadow: 0 0 10px rgba(249, 115, 22, 0.8);
+}
+
+@keyframes coin-text-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.arcade-control-panel--clickable:active {
+  transform: translateY(1px);
+}
+
 /* Joystick - Realistic Sanwa-style */
 .control-panel-joystick {
   position: relative;
@@ -2010,58 +2040,87 @@
   z-index: 200; /* Above CRT effects (max 100) */
   overflow: hidden;
   
-  /* Mobile: Single column, stacked layout - give demo more space */
+  /* Vertical layout: header -> demos -> footer (compact) */
   grid-template-columns: 1fr;
-  grid-template-rows: minmax(180px, 1.5fr) auto auto auto;
+  grid-template-rows: auto 1fr auto;
   grid-template-areas:
+    "header"
     "demo"
-    "content"
-    "press"
-    "cta";
-  gap: 8px;
-  padding: 12px;
-  align-items: center;
-  justify-items: center;
+    "footer";
+  gap: 6px;
+  padding: 8px;
+  align-items: stretch;
+  justify-items: stretch;
 }
 
 .dashboard-ui--desktop {
-  /* Desktop: Two column layout - demo fills full left side */
-  grid-template-columns: 1.4fr 1fr;
-  grid-template-rows: 1fr auto;
+  /* Same vertical layout, compact footer */
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
   grid-template-areas:
-    "demo content"
-    "demo cta";
-  gap: 32px;
-  padding: 24px;
+    "header"
+    "demo"
+    "footer";
+  gap: 8px;
+  padding: 12px;
+}
+
+/* Header area - headline and tagline (compact) */
+.dashboard-header-area {
+  grid-area: header;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0;
+  flex-shrink: 0;
+  padding: 4px 0;
 }
 
-/* On desktop, press-start-container is absolutely positioned at bottom center */
-.dashboard-ui--desktop .press-start-container {
-  position: absolute;
-  bottom: var(--space-6);
-  left: 50%;
-  transform: translateX(-50%);
-  grid-area: unset;
+/* Footer area - CTAs and press start - compact, below demos */
+.dashboard-footer-area {
+  grid-area: footer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-/* Content area - holds headline, tagline */
+/* Content area - holds headline, tagline (legacy - kept for compatibility) */
 .dashboard-content-area {
   grid-area: content;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 8px;
   min-width: 0;
   max-width: 100%;
-  text-align: left;
-  padding-right: 16px;
+  text-align: center;
 }
 
 /* CTA container grid placement */
 .arcade-cta-container {
   grid-area: cta;
+}
+
+/* Headline wrapper - centered layout */
+.arcade-headline-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 4px;
 }
 
 /* Headline - Enterprise Typography */
@@ -2076,16 +2135,16 @@
     0 0 10px rgba(249, 115, 22, 0.9),
     0 0 40px rgba(249, 115, 22, 0.6),
     0 0 80px rgba(249, 115, 22, 0.3);
-  text-align: left;
+  text-align: center;
   max-width: 100%;
   overflow-wrap: break-word;
   margin: 0;
 }
 
-/* Responsive headline sizes - BIGGER for impact */
-.arcade-headline--mobile { font-size: clamp(28px, 8vw, 40px); }
-.arcade-headline--tablet { font-size: clamp(40px, 7vw, 56px); }
-.arcade-headline--desktop { font-size: clamp(48px, 5vw, 72px); }
+/* Responsive headline sizes - compact for more demo space */
+.arcade-headline--mobile { font-size: clamp(20px, 5vw, 28px); }
+.arcade-headline--tablet { font-size: clamp(24px, 4vw, 34px); }
+.arcade-headline--desktop { font-size: clamp(28px, 3vw, 40px); }
 
 /* Tagline - Clear hierarchy below headline */
 .arcade-tagline {
@@ -2095,16 +2154,16 @@
   line-height: 1.4;
   color: var(--arcade-led-on, #F97316);
   text-shadow: 0 0 20px var(--arcade-phosphor, rgba(249, 115, 22, 0.3));
-  text-align: left;
+  text-align: center;
   max-width: 100%;
   margin: 0;
   text-transform: uppercase;
 }
 
 /* Responsive tagline sizes */
-.arcade-tagline--mobile { font-size: clamp(11px, 2.5vw, 14px); }
-.arcade-tagline--tablet { font-size: clamp(13px, 2vw, 16px); }
-.arcade-tagline--desktop { font-size: clamp(14px, 1.2vw, 18px); }
+.arcade-tagline--mobile { font-size: clamp(9px, 1.8vw, 11px); }
+.arcade-tagline--tablet { font-size: clamp(10px, 1.3vw, 12px); }
+.arcade-tagline--desktop { font-size: clamp(11px, 0.9vw, 14px); }
 
 /* Feature list under tagline */
 .arcade-features {
@@ -2168,15 +2227,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--touch-target-recommended, 48px);
-  min-width: var(--touch-target-min, 44px);
-  padding: 12px 24px;
+  min-height: 32px;
+  min-width: 44px;
+  padding: 6px 16px;
   font-family: 'Inter', sans-serif;
-  font-size: clamp(14px, 2vw, 16px);
+  font-size: clamp(11px, 1.2vw, 13px);
   font-weight: 700;
   letter-spacing: var(--letter-spacing-wide, 0.02em);
   text-transform: uppercase;
-  border-radius: var(--radius-md, 8px);
+  border-radius: var(--radius-md, 6px);
   cursor: pointer;
   transition: transform var(--transition-fast, 100ms), box-shadow var(--transition-normal, 200ms), background var(--transition-fast, 100ms);
   white-space: nowrap;
@@ -2232,6 +2291,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 0; /* Allow shrinking in grid */
   background: var(--arcade-screen-bg);
   border-radius: var(--radius-md, 8px);
   overflow: hidden;
@@ -2243,6 +2303,80 @@
 /* Scale the LiveDemo content to fit */
 .demo-container > * {
   transform-origin: top left;
+}
+
+/* ============================================
+ * Demo Grid - Side by Side Layout
+ * ============================================ */
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  min-height: 0; /* Allow shrinking */
+}
+
+.demo-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 0; /* Allow shrinking */
+}
+
+.demo-panel > :last-child {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.demo-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  padding: 4px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.demo-badge--trivia {
+  background: rgba(59, 130, 246, 0.8);
+  color: white;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+}
+
+.demo-badge--survival {
+  background: rgba(249, 115, 22, 0.8);
+  color: white;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.5);
+}
+
+/* Mobile: stack demos vertically */
+@media (max-width: 767px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* Tablet: smaller gap */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .demo-grid {
+    gap: 12px;
+  }
 }
 
 /* Force the demo to scale down on small screens */
@@ -2322,6 +2456,71 @@
 }
 
 /* ============================================
+ * Demo Play Now CTAs
+ * ============================================ */
+
+.demo-play-cta {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  padding: 6px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: white;
+  background: rgba(59, 130, 246, 0.9);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 
+    0 2px 8px rgba(59, 130, 246, 0.4),
+    0 0 20px rgba(59, 130, 246, 0.2);
+  min-height: 32px;
+  min-width: 80px;
+}
+
+.demo-play-cta:hover {
+  background: rgba(59, 130, 246, 1);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 
+    0 4px 12px rgba(59, 130, 246, 0.5),
+    0 0 30px rgba(59, 130, 246, 0.3);
+}
+
+.demo-play-cta:active {
+  transform: translateX(-50%) translateY(0);
+}
+
+.demo-play-cta--survival {
+  background: rgba(249, 115, 22, 0.9);
+  box-shadow: 
+    0 2px 8px rgba(249, 115, 22, 0.4),
+    0 0 20px rgba(249, 115, 22, 0.2);
+}
+
+.demo-play-cta--survival:hover {
+  background: rgba(249, 115, 22, 1);
+  box-shadow: 
+    0 4px 12px rgba(249, 115, 22, 0.5),
+    0 0 30px rgba(249, 115, 22, 0.3);
+}
+
+/* Mobile: smaller CTAs */
+@media (max-width: 767px) {
+  .demo-play-cta {
+    padding: 5px 12px;
+    font-size: 10px;
+    min-height: 28px;
+    min-width: 70px;
+  }
+}
+
+/* ============================================
  * Press Start Easter Egg
  * ============================================ */
 
@@ -2347,14 +2546,10 @@
   padding: 4px 8px;
 }
 
-/* Desktop: Position press-start at bottom center absolutely */
-@media (min-width: 768px) {
-  .press-start-container {
-    position: absolute;
-    bottom: var(--space-6);
-    left: 50%;
-    transform: translateX(-50%);
-  }
+/* Inline press-start for footer layout */
+.press-start--inline {
+  font-size: 10px;
+  padding: 2px 6px;
 }
 
 @keyframes press-start-blink {
@@ -2562,21 +2757,27 @@
     border-radius: 4px;
   }
   
-  /* Mobile grid: give demo more space for trivia questions */
+  /* Mobile grid: header -> demos -> footer */
   .dashboard-ui {
-    grid-template-rows: minmax(160px, 1fr) auto auto auto;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
+      "header"
       "demo"
-      "content"
-      "press"
-      "cta";
-    gap: 6px;
+      "footer";
+    gap: 8px;
     padding: 10px;
   }
   
   .demo-container {
     max-height: none;
-    min-height: 160px;
+    min-height: 0;
+  }
+  
+  /* Stack demos vertically on mobile */
+  .demo-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
   }
   
   .boot-sequence {
@@ -2651,19 +2852,18 @@
 /* Small mobile: < 400px */
 @media (max-width: 399px) {
   .dashboard-ui {
-    grid-template-rows: minmax(120px, 1fr) auto auto auto;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
+      "header"
       "demo"
-      "content"
-      "press"
-      "cta";
+      "footer";
     gap: 4px;
     padding: 8px;
   }
   
   .demo-container {
     max-height: none;
-    min-height: 110px;
+    min-height: 0;
   }
   
   .arcade-headline--mobile {
@@ -2699,14 +2899,15 @@
     border-radius: 20px;
   }
   
-  /* Tablet: horizontal layout like desktop but smaller */
+  /* Tablet: same vertical layout as desktop */
   .dashboard-ui {
-    grid-template-columns: 1.2fr 1fr;
-    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
-      "demo content"
-      "demo cta";
-    gap: 20px;
+      "header"
+      "demo"
+      "footer";
+    gap: 12px;
     padding: 20px;
   }
   

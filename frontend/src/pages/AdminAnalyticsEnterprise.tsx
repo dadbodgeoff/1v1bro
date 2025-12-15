@@ -385,6 +385,9 @@ export function AdminAnalyticsEnterprise() {
               <button onClick={() => navigate('/admin/analytics')} className="text-sm text-neutral-400 hover:text-white">
                 Basic View
               </button>
+              <button onClick={() => navigate('/admin/analytics/survival')} className="text-sm text-orange-400 hover:text-orange-300">
+                🎮 Survival
+              </button>
             </div>
           </div>
         </div>

@@ -12,21 +12,21 @@ interface MapSelectorProps {
   disabled?: boolean
 }
 
-// Theme-based styling
+// Theme-based styling - all use brand orange for consistency
 const themeStyles: Record<string, { gradient: string; accent: string; icon: string }> = {
   space: {
-    gradient: 'from-indigo-500/20 to-indigo-600/20',
-    accent: 'border-indigo-500',
+    gradient: 'from-orange-500/20 to-amber-500/20',
+    accent: 'border-[var(--color-brand)]',
     icon: '🌌',
   },
   volcanic: {
-    gradient: 'from-orange-500/20 to-red-500/20',
-    accent: 'border-orange-500',
+    gradient: 'from-orange-500/20 to-amber-500/20',
+    accent: 'border-[var(--color-brand)]',
     icon: '🌋',
   },
   industrial: {
-    gradient: 'from-neutral-500/20 to-stone-500/20',
-    accent: 'border-neutral-500',
+    gradient: 'from-orange-500/20 to-amber-500/20',
+    accent: 'border-[var(--color-brand)]',
     icon: '🏭',
   },
 }
@@ -65,7 +65,7 @@ export function MapSelector({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-1.5 right-1.5 w-4 h-4 bg-[var(--color-accent-primary)] rounded-full flex items-center justify-center"
+                  className="absolute top-1.5 right-1.5 w-4 h-4 bg-[var(--color-brand)] rounded-full flex items-center justify-center"
                 >
                   <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />

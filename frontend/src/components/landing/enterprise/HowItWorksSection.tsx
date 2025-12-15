@@ -11,6 +11,7 @@
 import { cn } from '@/utils/helpers'
 import { SectionHeader } from './SectionHeader'
 import { StepCard } from './StepCard'
+import { useSectionViewTracking } from '@/hooks/useSectionViewTracking'
 import type { AnimatedIconType } from './AnimatedIcon'
 
 export interface HowItWorksSectionProps {
@@ -62,8 +63,11 @@ export function allStepsHaveAnimatedIcons(): boolean {
 }
 
 export function HowItWorksSection({ className }: HowItWorksSectionProps) {
+  const sectionRef = useSectionViewTracking('how_it_works')
+  
   return (
     <section
+      ref={sectionRef as React.RefObject<HTMLElement>}
       className={cn(
         'relative py-20 md:py-[120px] bg-[#09090B]',
         className

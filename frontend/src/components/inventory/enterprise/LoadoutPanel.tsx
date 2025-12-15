@@ -33,7 +33,7 @@ interface LoadoutPanelProps {
   className?: string
 }
 
-const SLOTS: CosmeticType[] = ['skin', 'emote', 'banner', 'playercard', 'nameplate', 'effect', 'trail']
+const SLOTS: CosmeticType[] = ['skin', 'runner', 'emote', 'banner', 'playercard', 'nameplate', 'effect', 'trail']
 
 export const SLOT_ICONS: Record<CosmeticType, string> = {
   skin: '👤',
@@ -43,6 +43,7 @@ export const SLOT_ICONS: Record<CosmeticType, string> = {
   effect: '✨',
   trail: '🌟',
   playercard: '🎴',
+  runner: '🏃',
 }
 
 export function LoadoutPanel({
@@ -60,8 +61,8 @@ export function LoadoutPanel({
 
   return (
     <div className={cn('space-y-4', className)}>
-      {/* Responsive Grid: 4 cols on mobile, 7 on desktop */}
-      <div className="grid grid-cols-4 md:grid-cols-7 gap-3">
+      {/* Responsive Grid: 4 cols on mobile, 8 on desktop */}
+      <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
         {SLOTS.map((type) => {
           const equippedItem = getEquippedItem(type)
           const rarity = equippedItem?.cosmetic?.rarity
@@ -95,6 +96,7 @@ export function LoadoutPanel({
                 )}
                 {equippedItem ? (
                   // Use SkinPreview for skins to show single frame, DynamicImage for others
+                  // Runner cosmetics use image_url for preview (3D model is used in-game)
                   equippedItem.cosmetic.type === 'skin' ? (
                     <SkinPreview
                       spriteSheetUrl={equippedItem.cosmetic.sprite_sheet_url}

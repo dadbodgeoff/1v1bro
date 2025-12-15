@@ -21,6 +21,8 @@ export default defineConfig({
     minify: 'esbuild',
     // Target modern browsers for smaller bundles
     target: 'es2020',
+    // Increase chunk size warning limit for Three.js
+    chunkSizeWarningLimit: 600,
     // Rollup options for production optimization
     rollupOptions: {
       output: {
@@ -29,14 +31,16 @@ export default defineConfig({
           vendor: ['react', 'react-dom', 'react-router-dom'],
           ui: ['framer-motion', 'clsx'],
           state: ['zustand'],
+          // Separate Three.js into its own chunk for better caching
+          three: ['three'],
         },
       },
     },
   },
-  // Drop console.log in production
-  esbuild: {
-    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
-  },
+  // Drop console.log in production - TEMPORARILY DISABLED FOR DEBUGGING
+  // esbuild: {
+  //   drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+  // },
   server: {
     proxy: {
       '/api': {

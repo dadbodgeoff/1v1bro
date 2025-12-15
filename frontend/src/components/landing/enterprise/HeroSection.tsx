@@ -16,8 +16,10 @@ import { useAuthStore } from '@/stores/authStore'
 import { BackgroundScene } from './BackgroundScene'
 import { CTAButton } from './CTAButton'
 import { LiveDemo } from './LiveDemo'
+import { SurvivalDemo } from './survival-demo'
 import { ChevronDownIcon } from './icons'
 import { trackSignupClick, trackDemoPlay } from '@/services/analytics'
+import { useSectionViewTracking } from '@/hooks/useSectionViewTracking'
 import { getInstantPlayManager } from '@/game/guest'
 
 export interface HeroSectionProps {
@@ -27,7 +29,7 @@ export interface HeroSectionProps {
 
 const HERO_CONTENT = {
   headline: '1v1 Bro',
-  tagline: 'Trivia Duels With Real-Time Combat',
+  tagline: 'Trivia • Survival Runner • 2D Shooter',
   subheadline: 'Outplay your friends in a live 1v1 arena where every question, dodge, and shot can swing the match.',
   primaryCTA: 'Try It Now',
   primaryCTALoggedIn: 'Play Now',
@@ -41,6 +43,7 @@ export function HeroSection({ className }: HeroSectionProps) {
   const { isAuthenticated } = useAuthStore()
   const [scrollY, setScrollY] = useState(0)
   const [showScrollIndicator, setShowScrollIndicator] = useState(true)
+  const sectionRef = useSectionViewTracking('hero')
 
   // Track scroll for parallax and fade
   useEffect(() => {
@@ -93,6 +96,7 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   return (
     <section
+      ref={sectionRef as React.RefObject<HTMLElement>}
       className={cn(
         'relative min-h-screen flex items-center pt-20 md:pt-24',
         className
@@ -101,7 +105,7 @@ export function HeroSection({ className }: HeroSectionProps) {
       {/* Background */}
       <BackgroundScene />
 
-      {/* Two-column layout */}
+      {/* Content + Demos layout */}
       <div
         className="relative z-50 w-full max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12"
         style={{
@@ -109,123 +113,150 @@ export function HeroSection({ className }: HeroSectionProps) {
           transform: contentTransform,
         }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left column - Content */}
-          <div className="order-2 lg:order-1">
-            {/* Headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <h1 className="text-[40px] md:text-[56px] lg:text-[64px] leading-[1.1] font-extrabold tracking-[-0.03em] text-white">
-                {HERO_CONTENT.headline}
-              </h1>
-              <p className="text-[20px] md:text-[24px] lg:text-[28px] leading-[1.3] font-semibold tracking-[-0.02em] text-[#F97316] mt-2">
-                {HERO_CONTENT.tagline}
-              </p>
-            </motion.div>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-[15px] md:text-[17px] leading-[1.6] text-[#B4B4B4] mt-5 max-w-[480px]"
-            >
-              {HERO_CONTENT.subheadline}
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8"
-            >
-              <CTAButton
-                variant="primary"
-                size="large"
-                onClick={handlePrimaryCTA}
-                onMouseEnter={handlePrimaryHover}
-              >
-                {isAuthenticated ? HERO_CONTENT.primaryCTALoggedIn : HERO_CONTENT.primaryCTA}
-              </CTAButton>
-              <CTAButton
-                variant="secondary"
-                size="default"
-                onClick={handleSecondaryCTA}
-              >
-                {isAuthenticated ? HERO_CONTENT.secondaryCTALoggedIn : HERO_CONTENT.secondaryCTA}
-              </CTAButton>
-            </motion.div>
-
-            {/* Trust Line */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-[13px] leading-[1.5] tracking-[0.02em] font-medium text-[#737373] mt-4"
-            >
-              {HERO_CONTENT.trustLine}
-            </motion.p>
-
-            {/* Quick stats */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex gap-6 mt-8 pt-6 border-t border-white/10"
-            >
-              {[
-                { value: '60 FPS', label: 'Real-time' },
-                { value: '30 sec', label: 'Matches' },
-                { value: '1v1', label: 'Battles' },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-lg md:text-xl font-bold text-[#F97316]">{stat.value}</div>
-                  <div className="text-xs text-white/50">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Right column - LiveDemo */}
+        {/* Top section - Headline, tagline, CTAs */}
+        <div className="text-center mb-8 lg:mb-10">
+          {/* Headline */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="order-1 lg:order-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
-            {/* Demo container with glow effect */}
-            <div className="relative">
-              {/* Outer glow - brand orange only */}
-              <div 
-                className="absolute -inset-3 md:-inset-4 rounded-2xl opacity-40 blur-xl"
-                style={{
-                  background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
-                }}
-                aria-hidden="true"
-              />
-              
-              {/* Demo component */}
-              <div className="relative">
-                <LiveDemo 
-                  autoPlay={true}
-                  showHUD={true}
-                  className="shadow-2xl rounded-xl"
-                />
-              </div>
+            <h1 className="text-[40px] md:text-[56px] lg:text-[72px] leading-[1.1] font-extrabold tracking-[-0.03em] text-white">
+              {HERO_CONTENT.headline}
+            </h1>
+            <p className="text-[20px] md:text-[26px] lg:text-[32px] leading-[1.3] font-semibold tracking-[-0.02em] text-[#F97316] mt-2">
+              {HERO_CONTENT.tagline}
+            </p>
+          </motion.div>
 
-              {/* "Live Demo" badge */}
-              <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 z-20">
-                <div className="bg-[#F97316] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-                  LIVE DEMO
-                </div>
+          {/* Subheadline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-[15px] md:text-[17px] leading-[1.6] text-[#B4B4B4] mt-4 max-w-[600px] mx-auto"
+          >
+            {HERO_CONTENT.subheadline}
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 justify-center"
+          >
+            <CTAButton
+              variant="primary"
+              size="large"
+              onClick={handlePrimaryCTA}
+              onMouseEnter={handlePrimaryHover}
+            >
+              {isAuthenticated ? HERO_CONTENT.primaryCTALoggedIn : HERO_CONTENT.primaryCTA}
+            </CTAButton>
+            <CTAButton
+              variant="secondary"
+              size="default"
+              onClick={handleSecondaryCTA}
+            >
+              {isAuthenticated ? HERO_CONTENT.secondaryCTALoggedIn : HERO_CONTENT.secondaryCTA}
+            </CTAButton>
+          </motion.div>
+
+          {/* Trust Line */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-[13px] leading-[1.5] tracking-[0.02em] font-medium text-[#737373] mt-3"
+          >
+            {HERO_CONTENT.trustLine}
+          </motion.p>
+        </div>
+
+        {/* Side-by-side demos */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"
+        >
+          {/* Trivia Demo */}
+          <div className="relative">
+            {/* Outer glow - brand orange */}
+            <div 
+              className="absolute -inset-2 md:-inset-3 rounded-2xl opacity-40 blur-xl"
+              style={{
+                background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+              }}
+              aria-hidden="true"
+            />
+            
+            {/* Demo component */}
+            <div className="relative">
+              <LiveDemo 
+                autoPlay={true}
+                showHUD={true}
+                className="shadow-2xl rounded-xl"
+              />
+            </div>
+
+            {/* Badge */}
+            <div className="absolute -top-2 -right-2 md:-top-3 md:-right-3 z-20">
+              <div className="bg-[#F97316] text-white text-[10px] md:text-xs font-bold px-2 md:px-3 py-1 md:py-1.5 rounded-full shadow-lg">
+                TRIVIA DUEL
               </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+
+          {/* Survival Demo */}
+          <div className="relative">
+            {/* Outer glow - purple accent */}
+            <div 
+              className="absolute -inset-2 md:-inset-3 rounded-2xl opacity-30 blur-xl"
+              style={{
+                background: 'linear-gradient(135deg, #A855F7 0%, #7C3AED 100%)',
+              }}
+              aria-hidden="true"
+            />
+            
+            {/* Demo component */}
+            <div className="relative">
+              <SurvivalDemo 
+                autoPlay={true}
+                showHUD={true}
+                className="shadow-2xl rounded-xl"
+              />
+            </div>
+
+            {/* Badge */}
+            <div className="absolute -top-2 -right-2 md:-top-3 md:-right-3 z-20">
+              <div className="bg-[#A855F7] text-white text-[10px] md:text-xs font-bold px-2 md:px-3 py-1 md:py-1.5 rounded-full shadow-lg">
+                SURVIVAL MODE
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Quick stats below demos */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="flex justify-center gap-8 md:gap-12 mt-6 pt-6 border-t border-white/10"
+        >
+          {[
+            { value: '60 FPS', label: 'Real-time' },
+            { value: '2 Modes', label: 'Game Types' },
+            { value: '1v1', label: 'Battles' },
+            { value: 'Endless', label: 'Survival' },
+          ].map((stat) => (
+            <div key={stat.label} className="text-center">
+              <div className="text-lg md:text-xl font-bold text-[#F97316]">{stat.value}</div>
+              <div className="text-xs text-white/50">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
       </div>
 
       {/* Scroll Indicator */}

@@ -6,8 +6,7 @@
  */
 
 import type { LandingStats, RecentMatch } from '@/components/landing/types'
-
-const API_BASE = import.meta.env.VITE_API_URL || '/api/v1'
+import { API_BASE } from '@/utils/constants'
 
 /**
  * Fetch landing page statistics

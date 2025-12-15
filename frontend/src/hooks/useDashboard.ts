@@ -10,8 +10,7 @@ import type { PlayerBattlePass, Season } from '../types/battlepass'
 import type { RecentMatch } from '../types/matchHistory'
 import type { Friend } from '../types/friend'
 import { getRankTier, type RankTier } from '../types/leaderboard'
-
-const API_BASE = import.meta.env.VITE_API_URL || ''
+import { API_BASE } from '../utils/constants'
 
 interface DashboardLoading {
   profile: boolean
@@ -101,7 +100,7 @@ export function useDashboard(): UseDashboardReturn {
     setLoading((prev) => ({ ...prev, profile: true }))
     setErrors((prev) => ({ ...prev, profile: null }))
     try {
-      const response = await fetch(`${API_BASE}/api/v1/profiles/me`, {
+      const response = await fetch(`${API_BASE}/profiles/me`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       })
@@ -127,7 +126,7 @@ export function useDashboard(): UseDashboardReturn {
     setErrors((prev) => ({ ...prev, rating: null }))
     try {
       // Use the ELO-specific endpoint /leaderboards/elo/me (NOT /elo/rank/me)
-      const response = await fetch(`${API_BASE}/api/v1/leaderboards/elo/me`, {
+      const response = await fetch(`${API_BASE}/leaderboards/elo/me`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       })
@@ -161,7 +160,7 @@ export function useDashboard(): UseDashboardReturn {
     setErrors((prev) => ({ ...prev, battlePass: null }))
     try {
       // Fetch season info (404 is expected if no active season)
-      const seasonResponse = await fetch(`${API_BASE}/api/v1/battlepass/current`, {
+      const seasonResponse = await fetch(`${API_BASE}/battlepass/current`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       })
@@ -174,7 +173,7 @@ export function useDashboard(): UseDashboardReturn {
       }
 
       // Fetch progress (404 is expected if no active season)
-      const progressResponse = await fetch(`${API_BASE}/api/v1/battlepass/me`, {
+      const progressResponse = await fetch(`${API_BASE}/battlepass/me`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       })
@@ -201,7 +200,7 @@ export function useDashboard(): UseDashboardReturn {
     setLoading((prev) => ({ ...prev, matches: true }))
     setErrors((prev) => ({ ...prev, matches: null }))
     try {
-      const response = await fetch(`${API_BASE}/api/v1/games/history?limit=5`, {
+      const response = await fetch(`${API_BASE}/games/history?limit=5`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       })
@@ -229,7 +228,7 @@ export function useDashboard(): UseDashboardReturn {
     setLoading((prev) => ({ ...prev, friends: true }))
     setErrors((prev) => ({ ...prev, friends: null }))
     try {
-      const response = await fetch(`${API_BASE}/api/v1/friends`, {
+      const response = await fetch(`${API_BASE}/friends`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       })

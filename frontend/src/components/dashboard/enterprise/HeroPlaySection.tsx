@@ -153,7 +153,7 @@ export function HeroPlaySection({ className }: HeroPlaySectionProps) {
         <button
           onClick={handleFindMatch}
           disabled={isButtonDisabled}
-          className="w-full h-14 bg-indigo-500 text-white font-semibold rounded-xl hover:bg-indigo-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+          className="w-full h-14 bg-[var(--color-brand)] text-white font-semibold rounded-xl hover:bg-[var(--color-brand-light)] transition-all disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30"
         >
           {cooldownSeconds !== null ? (
             <span className="flex items-center justify-center gap-2">
@@ -210,12 +210,12 @@ export function HeroPlaySection({ className }: HeroPlaySectionProps) {
               onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               maxLength={6}
               autoFocus
-              className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-center text-sm font-mono tracking-[0.2em] text-white placeholder:text-neutral-600 focus:outline-none focus:border-indigo-500/50 transition-colors min-h-[44px]"
+              className="w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-xl text-center text-sm font-mono tracking-[0.2em] text-white placeholder:text-neutral-600 focus:outline-none focus:border-[var(--color-brand)]/50 transition-colors min-h-[44px]"
             />
             <button
               type="submit"
               disabled={!joinCode.trim() || isJoining}
-              className="w-full py-3 bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 text-sm font-medium rounded-xl hover:bg-indigo-500/30 hover:text-indigo-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed min-h-[44px]"
+              className="w-full py-3 bg-[var(--color-brand)]/20 border border-[var(--color-brand)]/30 text-[var(--color-brand)] text-sm font-medium rounded-xl hover:bg-[var(--color-brand)]/30 hover:text-[var(--color-brand-light)] transition-all disabled:opacity-30 disabled:cursor-not-allowed min-h-[44px]"
             >
               {isJoining ? 'Joining...' : 'Join'}
             </button>

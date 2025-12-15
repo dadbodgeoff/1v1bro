@@ -6,9 +6,11 @@
  * - Animated effects for high-urgency states
  * - Loading and disabled states
  * - Pulse animation for limited items
+ * - Sound feedback on hover/click (Enterprise Polish 2025)
  */
 
 import { cn } from '@/utils/helpers'
+import { useUISound } from '@/hooks/useUISound'
 
 interface UrgencyCTAProps {
   variant?: 'default' | 'limited' | 'lastChance' | 'bundle' | 'owned'
@@ -67,10 +69,19 @@ export function UrgencyCTA({
 }: UrgencyCTAProps) {
   const styles = variantStyles[variant]
   const isOwned = variant === 'owned'
+  const { playHover, playClick } = useUISound()
+
+  const handleClick = () => {
+    if (!disabled && !loading && !isOwned) {
+      playClick()
+      onClick()
+    }
+  }
 
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
+      onMouseEnter={playHover}
       disabled={disabled || loading || isOwned}
       aria-label={label || styles.label}
       aria-busy={loading}

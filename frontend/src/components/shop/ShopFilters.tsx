@@ -33,6 +33,7 @@ interface ShopFiltersProps {
 const typeOptions: { value: CosmeticType | null; label: string }[] = [
   { value: null, label: 'All' },
   { value: 'skin', label: 'Skins' },
+  { value: 'runner', label: 'Runners' },
   { value: 'emote', label: 'Emotes' },
   { value: 'banner', label: 'Banners' },
   { value: 'nameplate', label: 'Nameplates' },

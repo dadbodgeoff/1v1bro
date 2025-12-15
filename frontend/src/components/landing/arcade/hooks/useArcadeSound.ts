@@ -1,16 +1,16 @@
 /**
- * useArcadeSound - Web Audio API sound synthesis hook
+ * useArcadeSound - Arcade sound hook using shared SynthSoundManager
  * 
- * Generates retro 8-bit sounds programmatically using oscillators.
- * Manages mute state with localStorage persistence.
+ * Integrates with the survival mode's audio system for consistent
+ * sound handling and proper browser autoplay policy management.
  * 
  * @module landing/arcade/hooks/useArcadeSound
  * Requirements: 7.1, 7.5, 7.6, 7.7, 7.8
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { getSoundManager } from '@/survival/audio/SynthSoundManager';
 import type { ArcadeSoundHook } from '../types';
-import { SOUND_CONFIG } from '../constants';
 
 const STORAGE_KEY = 'arcade-sound-muted';
 
@@ -21,110 +21,57 @@ export function useArcadeSound(): ArcadeSoundHook {
     return stored === null ? true : stored === 'true'; // Default muted
   });
 
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const isInitializedRef = useRef(false);
+  const soundManager = getSoundManager();
 
-  // Initialize AudioContext lazily on first user interaction
-  const initAudioContext = useCallback(() => {
-    if (isInitializedRef.current || typeof window === 'undefined') return;
-    
-    try {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      isInitializedRef.current = true;
-    } catch (e) {
-      console.warn('Web Audio API not supported');
-    }
-  }, []);
+  // Sync mute state with sound manager
+  useEffect(() => {
+    soundManager.setMuted(isMuted);
+  }, [isMuted, soundManager]);
 
   // Persist mute preference
   const setMuted = useCallback((muted: boolean) => {
     setIsMutedState(muted);
+    soundManager.setMuted(muted);
     if (typeof window !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, String(muted));
     }
-  }, []);
+  }, [soundManager]);
 
-  // Play a tone with optional pitch bend
-  const playTone = useCallback((
-    frequency: number,
-    duration: number,
-    gain: number,
-    type: OscillatorType = 'square',
-    frequencyEnd?: number
-  ) => {
-    if (isMuted || !audioContextRef.current) return;
-
-    const ctx = audioContextRef.current;
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-
-    oscillator.type = type;
-    oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
-
-    // Pitch bend if specified
-    if (frequencyEnd) {
-      oscillator.frequency.linearRampToValueAtTime(frequencyEnd, ctx.currentTime + duration / 1000);
-    }
-
-    // Gain envelope
-    gainNode.gain.setValueAtTime(gain, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
-
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
-
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + duration / 1000);
-  }, [isMuted]);
-
-  // Play startup chime (ascending tone sequence)
+  // Play startup chime (power on + ascending notes)
   const playStartupChime = useCallback(() => {
-    initAudioContext();
-    if (isMuted || !audioContextRef.current) return;
-
-    const { notes, noteDuration, gain, type } = SOUND_CONFIG.startupChime;
-    
-    notes?.forEach((note, index) => {
-      setTimeout(() => {
-        playTone(note, noteDuration!, gain, type);
-      }, index * noteDuration!);
-    });
-  }, [isMuted, initAudioContext, playTone]);
+    if (isMuted) return;
+    soundManager.play({ event: 'arcade-power-on', intensity: 1 });
+  }, [isMuted, soundManager]);
 
   // Play hover blip
   const playHoverBlip = useCallback(() => {
-    initAudioContext();
     if (isMuted) return;
-
-    const { frequency, duration, gain, type } = SOUND_CONFIG.hoverBlip;
-    playTone(frequency!, duration, gain, type);
-  }, [isMuted, initAudioContext, playTone]);
+    soundManager.play({ event: 'arcade-hover', intensity: 1 });
+  }, [isMuted, soundManager]);
 
   // Play click blip
   const playClickBlip = useCallback(() => {
-    initAudioContext();
     if (isMuted) return;
+    soundManager.play({ event: 'arcade-click', intensity: 1 });
+  }, [isMuted, soundManager]);
 
-    const { frequency, frequencyEnd, duration, gain, type } = SOUND_CONFIG.clickBlip;
-    playTone(frequency!, duration, gain, type, frequencyEnd);
-  }, [isMuted, initAudioContext, playTone]);
+  // Play boot text blip (for typing effect)
+  const playBootBlip = useCallback(() => {
+    if (isMuted) return;
+    soundManager.play({ event: 'arcade-boot-blip', intensity: 1 });
+  }, [isMuted, soundManager]);
 
-  // Initialize on first interaction
-  useEffect(() => {
-    const handleInteraction = () => {
-      initAudioContext();
-      window.removeEventListener('click', handleInteraction);
-      window.removeEventListener('keydown', handleInteraction);
-    };
+  // Play boot line complete
+  const playBootLine = useCallback(() => {
+    if (isMuted) return;
+    soundManager.play({ event: 'arcade-boot-line', intensity: 1 });
+  }, [isMuted, soundManager]);
 
-    window.addEventListener('click', handleInteraction);
-    window.addEventListener('keydown', handleInteraction);
-
-    return () => {
-      window.removeEventListener('click', handleInteraction);
-      window.removeEventListener('keydown', handleInteraction);
-    };
-  }, [initAudioContext]);
+  // Play ready fanfare
+  const playReadyFanfare = useCallback(() => {
+    if (isMuted) return;
+    soundManager.play({ event: 'arcade-ready', intensity: 1 });
+  }, [isMuted, soundManager]);
 
   return {
     isMuted,
@@ -132,6 +79,10 @@ export function useArcadeSound(): ArcadeSoundHook {
     playStartupChime,
     playHoverBlip,
     playClickBlip,
+    // Extended methods for boot sequence
+    playBootBlip,
+    playBootLine,
+    playReadyFanfare,
   };
 }
 

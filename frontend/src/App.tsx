@@ -6,21 +6,30 @@ import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/stores/authStore'
 import { warmCache } from '@/game/assets'
 import { AnalyticsProvider } from '@/providers/AnalyticsProvider'
+import { PolishProvider } from '@/providers/PolishProvider'
 import { AnalyticsDebugger } from '@/components/analytics'
 import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
 import { Achievements } from '@/pages/Achievements'
 import { InstantPlay } from '@/pages/InstantPlay'
 import { AdminAnalytics } from '@/pages/AdminAnalytics'
 import { AdminAnalyticsEnterprise } from '@/pages/AdminAnalyticsEnterprise'
+import { AdminSurvivalAnalytics } from '@/pages/AdminSurvivalAnalytics'
 import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
 import { VolcanicLanding } from '@/pages/VolcanicLanding'
 import { ArcadeLanding } from '@/pages/ArcadeLanding'
 import { MatchHistory } from '@/pages/MatchHistory'
 import { SimpleArenaTest } from '@/pages/SimpleArenaTest'
 import { CornfieldMapBuilder } from '@/pages/CornfieldMapBuilder'
+import SurvivalTest from '@/pages/SurvivalTest'
+import SurvivalDemoTest from '@/pages/SurvivalDemoTest'
+import SurvivalLeaderboard from '@/pages/SurvivalLeaderboard'
+import SurvivalGame from '@/pages/SurvivalGame'
+import SurvivalInstantPlay from '@/pages/SurvivalInstantPlay'
+import { ThumbnailGenerator } from '@/components/admin/ThumbnailGenerator'
 import { CoinShop } from '@/pages/CoinShop'
 import { CoinSuccess } from '@/pages/CoinSuccess'
 import { ProgressionProvider } from '@/components/progression'
+import { PageTransition } from '@/components/transitions'
 
 // Root route - shows CRT Arcade Landing for guests, redirects to dashboard for authenticated users
 function RootRoute() {
@@ -55,8 +64,10 @@ function App() {
 
   return (
     <BrowserRouter>
+      <PolishProvider>
       <AnalyticsProvider enabled={true}>
       <ProgressionProvider>
+      <PageTransition>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -239,6 +250,10 @@ function App() {
         <Route path="/simple-arena-test" element={<SimpleArenaTest />} />
         {/* Cornfield Map Builder - map building/preview tool */}
         <Route path="/cornfield-builder" element={<CornfieldMapBuilder />} />
+        {/* Survival Mode 3D Test - asset loading prototype */}
+        <Route path="/survival-test" element={<SurvivalTest />} />
+        {/* Survival Demo Test - lightweight canvas demo for landing page */}
+        <Route path="/survival-demo-test" element={<SurvivalDemoTest />} />
         {/* Admin Analytics Dashboard */}
         <Route
           path="/admin/analytics"
@@ -257,11 +272,37 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* Survival Analytics Dashboard */}
+        <Route
+          path="/admin/analytics/survival"
+          element={
+            <ProtectedRoute>
+              <AdminSurvivalAnalytics />
+            </ProtectedRoute>
+          }
+        />
+        {/* Survival Mode - Authenticated */}
+        <Route
+          path="/survival"
+          element={
+            <ProtectedRoute>
+              <SurvivalGame />
+            </ProtectedRoute>
+          }
+        />
+        {/* Survival Leaderboard - Public */}
+        <Route path="/survival/leaderboard" element={<SurvivalLeaderboard />} />
+        {/* Survival Instant Play - Guest experience */}
+        <Route path="/survival/instant" element={<SurvivalInstantPlay />} />
+        {/* Admin: 3D Thumbnail Generator - no auth for dev convenience */}
+        <Route path="/admin/thumbnail-generator" element={<ThumbnailGenerator />} />
       </Routes>
+      </PageTransition>
       </ProgressionProvider>
       {/* Analytics debugger - only visible in development */}
       <AnalyticsDebugger />
       </AnalyticsProvider>
+      </PolishProvider>
     </BrowserRouter>
   )
 }

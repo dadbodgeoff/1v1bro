@@ -10,8 +10,9 @@
  * - All core logic preserved from original
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useShopAnalytics } from '@/hooks/useShopAnalytics'
 import { useCosmetics } from '@/hooks/useCosmetics'
 import { useConfetti } from '@/hooks/useConfetti'
 import { useToast } from '@/hooks/useToast'
@@ -48,7 +49,7 @@ export function Shop() {
   const [selectedType, setSelectedType] = useState<CosmeticType | null>(null)
   const [selectedRarity, setSelectedRarity] = useState<Rarity | null>(null)
   const [selectedSort, setSelectedSort] = useState<SortOption>('featured')
-  const [activeSection, setActiveSection] = useState<'all' | 'skins' | 'banners'>('all')
+  const [activeSection, setActiveSection] = useState<'all' | 'skins' | 'banners' | 'runners'>('all')
 
   // Purchase modal state
   const [purchaseItem, setPurchaseItem] = useState<Cosmetic | null>(null)
@@ -57,6 +58,9 @@ export function Shop() {
   // Confetti and toast
   const confetti = useConfetti()
   const toast = useToast()
+  
+  // Analytics
+  const shopAnalytics = useShopAnalytics()
 
   // Real user balance from balance hook (Requirements: 5.5)
   const { coins: userBalance, refreshBalance } = useBalance()
@@ -73,7 +77,9 @@ export function Shop() {
   useEffect(() => {
     fetchShop()
     fetchInventory()
-  }, [fetchShop, fetchInventory])
+    // Track shop view
+    shopAnalytics.trackShopView()
+  }, [fetchShop, fetchInventory, shopAnalytics])
 
   // Create set of owned cosmetic IDs
   const ownedIds = useMemo(() => {
@@ -90,9 +96,10 @@ export function Shop() {
   }, [shopItems, selectedType, selectedRarity, selectedSort])
 
   // Categorize items for sections
-  const { featuredItems, dailyItems, skinItems, bannerItems } = useMemo(() => {
+  const { featuredItems, dailyItems, skinItems, bannerItems, runnerItems } = useMemo(() => {
     const skins = shopItems.filter(item => item.type === 'skin')
     const banners = shopItems.filter(item => item.type === 'banner')
+    const runners = shopItems.filter(item => item.type === 'runner')
     
     // Build featured items list: prioritize is_featured, then legendary, then epic, then by sort_order
     // Always try to fill 5 slots for the 1 XL + 4 SM grid layout
@@ -144,6 +151,7 @@ export function Shop() {
       dailyItems: daily,
       skinItems: skins,
       bannerItems: banners,
+      runnerItems: runners,
     }
   }, [shopItems])
 
@@ -154,16 +162,25 @@ export function Shop() {
         return filterAndSortItems(skinItems, { type: selectedType, rarity: selectedRarity, sort: selectedSort })
       case 'banners':
         return filterAndSortItems(bannerItems, { type: selectedType, rarity: selectedRarity, sort: selectedSort })
+      case 'runners':
+        return filterAndSortItems(runnerItems, { type: selectedType, rarity: selectedRarity, sort: selectedSort })
       default:
         return filteredItems
     }
-  }, [activeSection, skinItems, bannerItems, filteredItems, selectedType, selectedRarity, selectedSort])
+  }, [activeSection, skinItems, bannerItems, runnerItems, filteredItems, selectedType, selectedRarity, selectedSort])
 
   const handlePurchase = async () => {
     if (!purchaseItem) return
     clearError()
+    
+    // Track purchase start
+    shopAnalytics.trackPurchaseStart(purchaseItem.id, purchaseItem.price_coins, 'coins')
+    
     const success = await purchaseCosmetic(purchaseItem.id)
     if (success) {
+      // Track purchase complete
+      shopAnalytics.trackPurchaseComplete(purchaseItem.id, purchaseItem.price_coins, 'coins')
+      
       // Refresh balance after successful purchase
       refreshBalance()
       confetti.fire({
@@ -175,15 +192,21 @@ export function Shop() {
       setIsPurchaseModalOpen(false)
       setPurchaseItem(null)
     } else if (error?.includes('Insufficient')) {
-      // Handle insufficient funds error
+      // Track purchase failed
+      shopAnalytics.trackPurchaseFailed(purchaseItem.id, 'insufficient_funds')
       toast.error('Insufficient Coins', 'Get more coins to purchase this item')
+    } else {
+      // Track other failures
+      shopAnalytics.trackPurchaseFailed(purchaseItem.id, error || 'unknown_error')
     }
   }
 
-  const openPurchaseModal = (item: Cosmetic) => {
+  const openPurchaseModal = useCallback((item: Cosmetic) => {
+    // Track item view when opening purchase modal
+    shopAnalytics.trackItemView(item.id, item.type, item.price_coins, item.rarity)
     setPurchaseItem(item)
     setIsPurchaseModalOpen(true)
-  }
+  }, [shopAnalytics])
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-base)] py-8 px-4 sm:px-6">
@@ -296,7 +319,7 @@ export function Shop() {
 
             {/* Category Tabs - pill style navigation */}
             <div className="flex items-center gap-1 mb-6 p-1 bg-[var(--color-bg-elevated)] rounded-xl w-fit border border-white/5">
-              {(['all', 'skins', 'banners'] as const).map((section) => (
+              {(['all', 'skins', 'banners', 'runners'] as const).map((section) => (
                 <button
                   key={section}
                   onClick={() => setActiveSection(section)}

@@ -41,6 +41,7 @@ export function CRTMonitor({
   ledColor = ARCADE_COLORS.ledOn,
   mode: propMode,
   isPoweredOn = true,
+  onControlPanelClick,
 }: CRTMonitorProps) {
   const [responsiveMode, setResponsiveMode] = useState<ResponsiveMode>('desktop');
   const [barrelDistortionMode] = useState<BarrelDistortionMode>('css-border-radius-hack');
@@ -68,7 +69,7 @@ export function CRTMonitor({
           - Screen bezel with side panels
           - Control panel with joystick/buttons (desktop/tablet)
       */}
-      <CRTBezel mode={responsiveMode}>
+      <CRTBezel mode={responsiveMode} onControlPanelClick={onControlPanelClick}>
         {/* CRTScreen contains the actual screen content with effects */}
         <CRTScreen
           barrelDistortion={true}

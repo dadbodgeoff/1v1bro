@@ -31,6 +31,10 @@ export { LoadoutPreviewWidget, getSlotDisplayState, getSlotDisplayStateFromCosme
 export { MatchHistoryWidget, formatEloChange, getEloChangeColorClass, formatRelativeTime, getMatchResultDisplay } from './MatchHistoryWidget'
 export { FriendsWidget, filterOnlineFriends } from './FriendsWidget'
 
+// Game Mode Cards
+export { ArenaShooterCard } from './ArenaShooterCard'
+export { SurvivalRunnerCard } from './SurvivalRunnerCard'
+
 // Re-export from parent dashboard folder for convenience
 export { NotificationDropdown } from '../NotificationDropdown'
 export type { Notification, NotificationGroup, NotificationDropdownProps } from '../NotificationDropdown'

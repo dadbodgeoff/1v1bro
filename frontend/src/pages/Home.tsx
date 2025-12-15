@@ -1,19 +1,17 @@
 /**
- * Home - Enterprise Dashboard page with widget-based layout.
+ * Home - Enterprise Dashboard with Game Mode Selection
  * 
- * Central hub for all platform features with enterprise-grade components.
+ * Central hub with two primary game modes:
+ * 1. 2D Arena Shooter (Trivia Duel) - Quick matchmaking
+ * 2. Survival Runner - Endless trivia runner
  * 
  * Features:
- * - HeroPlaySection for quick matchmaking
- * - BattlePassWidget for progression tracking
- * - ShopPreviewWidget for featured items
- * - LoadoutPreviewWidget for equipped cosmetics
- * - StatsSummaryWidget for key performance metrics
- * - MatchHistoryWidget for recent matches
- * - FriendsWidget for online friends
- * - Responsive 3-column desktop, 2-column tablet, 1-column mobile layout
- * - First-time user onboarding modal
- * - Error boundaries for widget isolation (Requirements 2.1, 2.4)
+ * - Clean game mode cards with queue functionality
+ * - Battle Pass progression widget
+ * - Featured shop items
+ * - Loadout preview
+ * - Match history
+ * - Responsive 3-column desktop, 2-column tablet, 1-column mobile
  * 
  * Requirements: 1.1-1.5, 2.1, 2.4, 10.1-10.4
  */
@@ -23,15 +21,14 @@ import { useFriends } from '@/hooks/useFriends'
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout'
 import {
   WidgetErrorBoundary,
-  HeroPlaySection,
   BattlePassWidget,
   ShopPreviewWidget,
   LoadoutPreviewWidget,
-  StatsSummaryWidget,
   MatchHistoryWidget,
-  FriendsWidget,
 } from '@/components/dashboard/enterprise'
 import { OnboardingModal, useOnboarding } from '@/components/onboarding'
+import { ArenaShooterCard } from '@/components/dashboard/enterprise/ArenaShooterCard'
+import { SurvivalRunnerCard } from '@/components/dashboard/enterprise/SurvivalRunnerCard'
 
 export function Home() {
   const { fetchFriends } = useFriends()
@@ -46,14 +43,28 @@ export function Home() {
       {/* First-time user onboarding */}
       {showOnboarding && <OnboardingModal onClose={closeOnboarding} />}
 
-      {/* Dashboard Grid - Requirements 10.1, 10.2, 10.3 */}
+      {/* Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Hero Play Section and Match History */}
+        {/* Left Column - Game Modes */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Hero Play Section - Primary action area (Critical widget) */}
-          <WidgetErrorBoundary widgetName="Quick Play" isCritical>
-            <HeroPlaySection />
-          </WidgetErrorBoundary>
+          {/* Game Mode Selection Header */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-white tracking-tight">Play</h1>
+            <span className="text-xs text-neutral-500">Choose your game mode</span>
+          </div>
+
+          {/* Game Mode Cards - Side by Side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 2D Arena Shooter Card */}
+            <WidgetErrorBoundary widgetName="Arena Shooter" isCritical>
+              <ArenaShooterCard />
+            </WidgetErrorBoundary>
+
+            {/* Survival Runner Card */}
+            <WidgetErrorBoundary widgetName="Survival Runner" isCritical>
+              <SurvivalRunnerCard />
+            </WidgetErrorBoundary>
+          </div>
 
           {/* Match History Widget */}
           <WidgetErrorBoundary widgetName="Match History">
@@ -76,16 +87,6 @@ export function Home() {
           {/* Loadout Preview Widget */}
           <WidgetErrorBoundary widgetName="Your Loadout">
             <LoadoutPreviewWidget />
-          </WidgetErrorBoundary>
-
-          {/* Stats Summary Widget */}
-          <WidgetErrorBoundary widgetName="Your Stats">
-            <StatsSummaryWidget />
-          </WidgetErrorBoundary>
-
-          {/* Friends Widget */}
-          <WidgetErrorBoundary widgetName="Friends Online">
-            <FriendsWidget maxItems={5} />
           </WidgetErrorBoundary>
         </div>
       </div>

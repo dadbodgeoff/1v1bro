@@ -12,6 +12,7 @@ import { cn } from '@/utils/helpers'
 import { SectionHeader } from './SectionHeader'
 import { FeatureCard } from './FeatureCard'
 import { getEnabledFeatures, DEFAULT_FEATURES, type FeatureConfig } from '@/config/features'
+import { useSectionViewTracking } from '@/hooks/useSectionViewTracking'
 import {
   ArenaIcon,
   TriviaIcon,
@@ -48,9 +49,11 @@ export const FEATURES = DEFAULT_FEATURES
 export function FeaturesSection({ className, features }: FeaturesSectionProps) {
   // Get enabled features from config
   const enabledFeatures = useMemo(() => getEnabledFeatures(features || DEFAULT_FEATURES), [features])
+  const sectionRef = useSectionViewTracking('features')
   
   return (
     <section
+      ref={sectionRef as React.RefObject<HTMLElement>}
       className={cn(
         'relative py-20 md:py-[120px] bg-[var(--color-bg-card)]',
         className

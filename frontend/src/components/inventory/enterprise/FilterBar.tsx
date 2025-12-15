@@ -35,7 +35,7 @@ interface FilterBarProps {
   className?: string
 }
 
-const COSMETIC_TYPES: CosmeticType[] = ['skin', 'emote', 'banner', 'playercard', 'nameplate', 'effect', 'trail']
+const COSMETIC_TYPES: CosmeticType[] = ['skin', 'runner', 'emote', 'banner', 'playercard', 'nameplate', 'effect', 'trail']
 const RARITIES: Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary']
 
 export const filterChipStyles = {

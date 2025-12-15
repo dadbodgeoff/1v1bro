@@ -2,6 +2,7 @@
  * DashboardUI - Main dashboard content layout
  * 
  * Combines headline, tagline, demo, and CTAs with responsive layout.
+ * Layout: Header/Tagline at top -> Live Demo -> Two CTAs (Play Now + Create Account)
  * 
  * @module landing/arcade/DashboardUI/DashboardUI
  * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 10.4
@@ -31,7 +32,7 @@ function getResponsiveMode(width: number): ResponsiveMode {
 
 export interface DashboardUIComponentProps extends DashboardUIProps {
   /** Hover sound handler */
-  onHoverSound?: () => void;
+  onHoverSound?: (e?: React.MouseEvent) => void;
 }
 
 export function DashboardUI({
@@ -90,47 +91,49 @@ export function DashboardUI({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showPressStart, onPrimaryCTA, isAuthenticated]);
 
+  // Primary CTA: "Play Now" for instant play (no account needed)
   const primaryText = isAuthenticated
     ? ARCADE_CONTENT.primaryCTAAuth
     : ARCADE_CONTENT.primaryCTA;
 
+  // Secondary CTA: "Create Account" for registration
   const secondaryText = isAuthenticated
     ? ARCADE_CONTENT.secondaryCTAAuth
     : ARCADE_CONTENT.secondaryCTA;
 
   const isDesktop = mode === 'desktop';
-  const ctaLayout = mode === 'mobile' ? 'stacked' : 'row';
 
   return (
     <div
       className={cn('dashboard-ui', (isDesktop || mode === 'tablet') && 'dashboard-ui--desktop')}
       role="main"
     >
-      {/* Demo area - grid-area: demo */}
-      <DemoContainer />
-
-      {/* Content area - grid-area: content */}
-      <div className="dashboard-content-area">
+      {/* Header area at top - grid-area: header */}
+      <div className="dashboard-header-area">
         <ArcadeHeadline animate={animate} mode={mode} />
       </div>
 
-      {/* CTAs - grid-area: cta */}
+      {/* Demo area - grid-area: demo */}
+      <DemoContainer />
+
+      {/* Footer area with CTAs - grid-area: footer */}
       <div
         className={cn(
-          'arcade-cta-container',
-          ctaLayout === 'row' && 'arcade-cta-container--row',
+          'dashboard-footer-area',
           animate && 'stagger-item stagger-item--visible stagger-item--delay-4'
         )}
       >
+        {/* Play Now - instant play, no account required */}
         <ArcadeCTA
           variant="primary"
           onClick={onPrimaryCTA}
           onMouseEnter={onHoverSound}
-          ariaLabel={isAuthenticated ? 'Enter Arena' : 'Play Now'}
+          ariaLabel={isAuthenticated ? 'Enter Arena' : 'Play Now - No account needed'}
         >
           {primaryText}
         </ArcadeCTA>
 
+        {/* Create Account CTA */}
         <ArcadeCTA
           variant="secondary"
           onClick={onSecondaryCTA}
@@ -139,16 +142,13 @@ export function DashboardUI({
         >
           {secondaryText}
         </ArcadeCTA>
-      </div>
 
-      {/* Press Start Easter Egg - wrapped for grid placement on mobile */}
-      <div className="press-start-container" style={{ gridArea: 'press' }}>
+        {/* Press Start Easter Egg - inline */}
         {showPressStart && (
           <button
-            className="press-start"
+            className="press-start press-start--inline"
             onClick={onPrimaryCTA}
             aria-label="Press to start playing"
-            style={{ fontSize: DELIGHT_DETAILS.pressStart.fontSize }}
           >
             {ARCADE_CONTENT.pressStart}
           </button>

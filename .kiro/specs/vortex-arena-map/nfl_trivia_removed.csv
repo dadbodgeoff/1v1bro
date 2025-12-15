@@ -1,0 +1,396 @@
+reason,source,ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,4,Recent Playoffs & Super Bowls,How many times did the Eagles sack Patrick Mahomes in Super Bowl LIX?,6,5,7,8,6
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,9,Recent Playoffs & Super Bowls,How many consecutive Super Bowls did the Kansas City Chiefs win before losing to the Eagles?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,20,2024 NFL Season Awards,Lamar Jackson has won the MVP award how many times?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,29,Saquon Barkley Records,How many touchdowns did Barkley have in his debut Eagles game against the Packers?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,33,Quarterbacks 2024,"Was Lamar Jackson the first QB to throw for 4,000+ yards and rush for 800+ yards?",Yes,No,He was tied with another QB,Not yet in 2024,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,36,Quarterbacks 2024,How many interceptions did Jalen Hurts throw in the 2024 regular season?,5,7,6,8,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,47,2024 NFL Draft,How many QB's were selected in the first round of the 2024 draft?,5,4,6,3,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,66,Receiving Leaders 2024,How many receiving touchdowns did CeeDee Lamb have in 2024?,6,8,10,5,6
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,81,NFL Records & History,How many Super Bowls has Tom Brady won?,7,6,5,8,7
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,83,NFL Records & History,How many Super Bowl MVP awards does Tom Brady have?,5,4,6,3,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,102,Super Bowl Winners,How many Super Bowls have the New England Patriots won?,6,5,7,4,6
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,103,Super Bowl Winners,How many Super Bowls have the Pittsburgh Steelers won?,6,5,7,4,6
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,104,Super Bowl Winners,How many Super Bowls have the Kansas City Chiefs won?,4,3,2,5,4
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,105,Super Bowl Winners,How many Super Bowls have the Philadelphia Eagles won?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,106,Super Bowl Winners,How many Super Bowls have the Dallas Cowboys won?,5,4,6,3,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,107,Super Bowl Winners,How many Super Bowls have the San Francisco 49ers won?,5,4,6,3,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,108,Super Bowl Winners,How many Super Bowls have the Green Bay Packers won?,4,3,2,5,4
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,113,Hall of Fame Quarterbacks,How many MVP awards does Peyton Manning have?,5,4,6,3,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,114,Hall of Fame Quarterbacks,How many MVP awards does Aaron Rodgers have?,4,3,5,2,4
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,115,Hall of Fame Quarterbacks,How many MVP awards does Tom Brady have?,3,2,4,5,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,127,2024 Season Leaders,Did Brock Bowers set an NFL rookie record for receptions?,Yes,No,Tied,Almost,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,129,2024 Season Leaders,What was Travis Kelce's receiving touchdowns in 2024?,9,8,10,7,9
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,131,Defensive Players 2024,How many interceptions did Patrick Surtain II have in 2024?,4,3,5,6,4
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,138,Defensive Players 2024,Did Jared Verse finish in the top 5 for defensive rookie of the year voting?,Yes,No,He won it,Close,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,142,Recent Trades & Signings,How many years was Saquon Barkley's contract with the Eagles?,3,4,2,5,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,146,Recent Trades & Signings,How many years was Nate Hobbs' Green Bay Packers contract?,4,3,2,5,4
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,149,Recent Trades & Signings,How many years was Hollywood Brown's contract with the Chiefs?,1,2,3,4,1
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,159,Team Records & Standings,Did all playoff teams in 2024 win at least 10 games?,Yes,No,Some,One didn't,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,177,Rookie Standouts 2024,How many receiving touchdowns did Brock Bowers have in 2024?,8,10,6,12,8
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,181,Team Achievements 2024,How many consecutive wins did the Philadelphia Eagles have?,8,7,9,6,8
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,183,Team Achievements 2024,Did the Los Angeles Rams and Chargers both qualify for the 2024 playoffs?,Yes,No,One did,Barely,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,185,Team Achievements 2024,Did the Detroit Lions make the playoffs in 2024?,Yes,No,Wild card,As 4 seed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,186,Team Achievements 2024,Did the Detroit Lions win their first playoff game since 1991?,Yes,No,In 2023,Close but no,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,187,Team Achievements 2024,Did the #7 seed Packers beat the #2 seed Cowboys in the 2023 playoffs?,Yes,No,Lost in other round,In Super Bowl,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,188,Team Achievements 2024,Was this the first time a #7 seed won a playoff game since 2020?,Yes,No,No seeds then,2020 was first,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,189,Team Achievements 2024,How many consecutive Super Bowl appearances did the Kansas City Chiefs make?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,194,Historical Comparisons,How many Super Bowl interceptions did Tom Brady throw?,6,5,7,4,6
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,196,Historical Comparisons,How many Super Bowl interceptions does Patrick Mahomes have?,7,6,8,5,7
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,197,Historical Comparisons,How many Super Bowl appearances does Patrick Mahomes have?,5,4,6,3,5
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,198,Historical Comparisons,Is Patrick Mahomes currently active in the NFL?,Yes,No,Recently retired,Considering,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,199,Historical Comparisons,Did Mahomes lose Super Bowl LIX?,Yes,No,Won,Didn't play,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,201,Team Histories,How many Super Bowls have the Denver Broncos won?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,202,Team Histories,How many Super Bowls have the Miami Dolphins won?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,203,Team Histories,How many Super Bowls have the Baltimore Ravens won?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,204,Team Histories,How many Super Bowls have the Indianapolis Colts won?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,205,Team Histories,How many Super Bowls have the New York Giants won?,4,3,5,2,4
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,206,Team Histories,How many Super Bowls have the Oakland/Las Vegas Raiders won?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,207,Team Histories,How many Super Bowls have the Washington Commanders won?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,208,Team Histories,How many Super Bowls have the New York Jets won?,1,2,0,3,1
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,209,Team Histories,How many Super Bowls have the Chicago Bears won?,1,2,0,3,1
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,210,Team Histories,How many Super Bowls have the Seattle Seahawks won?,1,2,0,3,1
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,213,Quarterbacks Head to Head,How many times have Josh Allen and Patrick Mahomes met in the playoffs?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,220,Quarterbacks Head to Head,How many interceptions did Josh Allen throw in 2024?,6,5,7,8,6
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,221,Recent Player Transactions,Did Davante Adams get traded in 2024?,Yes,No,Pending,Rumored,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,224,Recent Player Transactions,Did the Eagles acquire any cornerbacks in the 2024 draft?,Yes,No,Two,Traded for,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,225,Recent Player Transactions,Did Xavier Worthy perform well in his rookie season with the Chiefs?,Yes,No,Decent,Struggled,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,226,Recent Player Transactions,How many receiving touchdowns did Xavier Worthy have in 2024?,6,5,7,4,6
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,227,Recent Player Transactions,Did Braden Fiske have a strong rookie season in 2024?,Yes,No,Decent,Struggled,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,229,Recent Player Transactions,Did any cornerbacks from the Eagles 2024 draft class perform well?,Yes,No,One did,Too early,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,233,Season Performance Metrics,How many interceptions did Patrick Mahomes throw in 2024?,8,7,9,6,8
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,238,Season Performance Metrics,How many interceptions did Lamar Jackson throw in 2024?,4,3,5,6,4
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,240,Season Performance Metrics,How many rushing touchdowns did Lamar Jackson have in 2024?,4,3,5,6,4
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,246,Advanced Statistics,How many MVP awards did Aaron Rodgers win?,4,3,5,2,4
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,249,Advanced Statistics,Did Jayden Daniels rank in the top 6 for Turnovers Worthy Play rate?,Yes,No,Tied,Just missed,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,254,Game Statistics,How many rushing attempts did the Chiefs have in the first half?,3,5,7,10,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,255,Game Statistics,How many rushing yards did the Chiefs have in the first half?,3,10,20,5,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,256,Game Statistics,How many playoff games did the Eagles win in 2024-25?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,258,Game Statistics,Did Milton Williams cause a fumble in Super Bowl LIX?,Yes,No,Strip sack,Safety,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,259,Game Statistics,Did the Eagles defense blitz at all in Super Bowl LIX?,No,Yes,Once,Multiple times,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,261,Team Victories & Streaks,Did the Eagles have the longest win streak in 2024?,Yes,No,Tied,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,264,Team Victories & Streaks,Did the Kansas City Chiefs have a long winning streak in 2024?,Yes,No,Moderate,Brief,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,266,Team Victories & Streaks,Did all division winners have at least 10 wins in 2024?,Yes,No,Most did,None,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,267,Team Victories & Streaks,Did the 2024 NFL season have more upsets than normal?,No,Yes,About average,Fewer,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,269,Team Victories & Streaks,Did the Vikings have a strong 2024 season?,Yes,No,Decent,Poor,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,270,Team Victories & Streaks,Did the Detroit Lions' #1 seed help them in playoffs?,No,Yes,Didn't matter,Too early,No
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,272,Player Contracts & Deals,How many years was Trey Smith's deal with the Chiefs before franchise tag?,1,2,3,4,1
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,274,Player Contracts & Deals,How many years was Aaron Banks' Green Bay contract?,4,3,5,6,4
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,276,Player Contracts & Deals,Did D.J. Reed sign a big contract in 2025?,Yes,No,Moderate,Franchise,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,277,Player Contracts & Deals,How many years was D.J. Reed's contract?,3,2,4,5,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,279,Player Contracts & Deals,Did Mekhi Becton sign with any AFC team in 2025?,Yes,No,Jets,Free,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,280,Player Contracts & Deals,How many years was Mekhi Becton's contract?,2,1,3,4,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,281,Notable Performances,Did Derrick Henry have a good first season with his new team?,Yes,No,Average,Injured,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,282,Notable Performances,Did Marvin Harrison Jr. have a strong rookie season?,Yes,No,Decent,Injured,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,284,Notable Performances,How many receiving touchdowns did Marvin Harrison Jr. have in 2024?,8,10,6,12,8
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,285,Notable Performances,Did Brian Thomas Jr. have a strong rookie season?,Yes,No,Decent,Injured,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,289,Notable Performances,Was Shedeur Sanders drafted in the first round in 2025?,No,Yes,Pending,Undrafted,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,290,Notable Performances,Did the 49ers have any rookie WR perform well in 2024?,Yes,No,Injured,Average,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,292,Coaching Performance,How many Super Bowls has Andy Reid won with the Chiefs?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,293,Coaching Performance,Did Sean Payton coach the Eagles in 2024?,No,Yes,Retired,Interim,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,295,Coaching Performance,Did the Lions have a new head coach in 2024?,No,Yes,Interim,Recently,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,297,Coaching Performance,Did Dan Campbell take a new job in 2025?,No,Yes,Interim,Recently,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,298,Coaching Performance,Did the Ravens have issues with playoff success in 2024?,Yes,No,Mixed,New coach,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,301,Offensive Weapons,Does Josh Allen have adequate receiving weapons?,Yes,No,Some,Getting better,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,303,Offensive Weapons,How many All-Pro selections does Stefon Diggs have?,4,3,5,2,4
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,304,Offensive Weapons,Did the Bills have good offensive coaching in 2024?,Yes,No,Average,Poor,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,305,Offensive Weapons,Does Patrick Mahomes have great receiving weapons?,Yes,No,Some,Lost some,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,307,Offensive Weapons,Does Lamar Jackson have great receiving options?,Yes,No,Some,Limited,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,309,Offensive Weapons,Does Jalen Hurts have elite receiving weapons?,Yes,No,Some,Recently added,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,313,Defensive Excellence,Did the Eagles defense blitz in Super Bowl LIX?,No,Yes,Limited,Few times,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,315,Defensive Excellence,Did the Eagles force turnovers in Super Bowl LIX?,Yes,No,One,None,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,316,Defensive Excellence,How many interceptions did the Eagles have in Super Bowl LIX?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,317,Defensive Excellence,How many fumbles did Mahomes have in Super Bowl LIX?,1,0,2,3,1
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,320,Defensive Excellence,Did the Eagles' secondary perform well in 2024?,Yes,No,Average,Mixed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,321,Individual Records & Milestones,Did Saquon Barkley break any team records in 2024?,Yes,No,Multiple,Franchise,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,322,Individual Records & Milestones,Did Saquon Barkley come close to the NFL single-season rushing record?,Yes,No,100 yards away,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,325,Individual Records & Milestones,Did Brock Bowers set the all-time rookie receptions record?,Yes,No,Tied,Almost,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,328,Individual Records & Milestones,Did Jayden Daniels have a historic rookie season?,Yes,No,Good,Average,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,330,Individual Records & Milestones,Is Jayden Daniels a future Hall of Famer?,Possible,No,Too early,Likely,Possible
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,331,Fan Favorites & Highlights,Did Cooper DeJean have a memorable moment in Super Bowl LIX?,Yes,No,Fumble recovery,Sack,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,333,Fan Favorites & Highlights,Was it Cooper DeJean's 22nd birthday?,Yes,No,21st,23rd,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,335,Fan Favorites & Highlights,Did DeVonta Smith score in Super Bowl LIX?,Yes,No,Multiple,One,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,338,Fan Favorites & Highlights,Did DeVonta Smith have a good 2024 season?,Yes,No,Average,Injured,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,339,Fan Favorites & Highlights,Did A.J. Brown have a great 2024 season?,Yes,No,Average,Injured,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,340,Fan Favorites & Highlights,Did the Eagles have a dominant passing game in 2024?,Yes,No,Average,Mixed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,351,2025 Offseason Moves,Did the Eagles hire a new head coach in 2025?,No,Yes,Promoted interim,From outside,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,352,2025 Offseason Moves,Did the Chiefs make major roster changes in 2025?,No,Yes,Some,Minor,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,353,2025 Offseason Moves,Did the Bills make significant trades in 2025?,No,Yes,Some,Pending,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,354,2025 Offseason Moves,Did the Ravens make significant roster changes?,Yes,No,Some,Pending,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,355,2025 Offseason Moves,Did the Lions make any significant acquisitions?,No,Yes,Some,Pending,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,356,2025 Offseason Moves,Did the Vikings make any significant roster moves?,No,Yes,Some,Pending,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,357,2025 Offseason Moves,Did the Chargers hire Jim Harbaugh in 2024?,Yes,No,2023,Pending,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,359,2025 Offseason Moves,How many Super Bowls have the Chiefs won recently?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,363,Player Achievements,"How many consecutive 1,000-yard seasons did Barry Sanders have?",5,6,4,7,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,372,Conference Standings,How many of the top 4 seeds were in the NFC?,2,3,4,1,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,375,Conference Standings,Did any division have all teams above .500?,No,Yes,Some,One,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,377,Conference Standings,Did the AFC South have a weak 2024 season?,Yes,No,Average,Mixed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,379,Conference Standings,Did the NFC South have any dominant teams?,No,Yes,One,Emerging,No
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,380,Conference Standings,How many playoff teams were in the NFC South?,1,2,3,0,1
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,381,Special Teams & Other Stats,Did Saquon Barkley set the combined regular season + postseason rushing record?,Close,Yes,No,Almost,Close
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,385,Special Teams & Other Stats,Did the Eagles rest starters in their final regular season game?,Yes,No,Some,Partial,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,387,Special Teams & Other Stats,Did Eric Dickerson break his record recently?,No,Yes,1984,Still stands,No
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,391,Trivia & Fun Facts,How many times has Joe Namath won a Super Bowl?,1,2,0,3,1
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,392,Trivia & Fun Facts,How many times has Joe Montana won a Super Bowl?,4,3,5,2,4
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,393,Trivia & Fun Facts,Did Joe Namath and Joe Montana both win Super Bowls?,Yes,No,One did,Different eras,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,395,Trivia & Fun Facts,Did Jalen Hurts become only the 3rd starting QB to win both a championship and Super Bowl?,Yes,No,Almost,2nd,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,397,Trivia & Fun Facts,Did Jalen Hurts play in college?,Yes,No,Briefly,High school only,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,399,Trivia & Fun Facts,Did Jalen Hurts win a national championship in college?,No,Yes,Made final four,Close,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,403,Notable Draft Picks,Did Caleb Williams win the Heisman Trophy?,Yes,No,Multiple times,Finalist,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,406,Notable Draft Picks,Did Drake Maye attend UNC?,Yes,No,Harvard,Yale,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,407,Notable Draft Picks,Was Drake Maye a successful Patriots draft pick?,Developing,No,Yes,Too early,Developing
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,409,Notable Draft Picks,Did Michael Penix Jr. sign with the Falcons?,Yes,Cardinals,Colts,Jaguars,Colts
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,410,Notable Draft Picks,How many quarterbacks were selected in the first round of 2024?,5,4,6,3,5
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,416,Statistical Leaders Continued,Did any defensive back win MVP in recent years?,No,Yes,Not since 1980s,Pending,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,417,Statistical Leaders Continued,Did any linebacker win MVP in recent years?,No,Yes,Not since 2000s,Pending,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,421,Playoff Seeding Analysis,Did the #1 seed in the AFC have an easy path to the Super Bowl?,No,Yes,Average,Moderate,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,422,Playoff Seeding Analysis,Did the #1 seed in the NFC make it to the Super Bowl?,No,Yes,Lost earlier,Barely,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,424,Playoff Seeding Analysis,Was the Lions' loss a major upset?,No,Yes,Unexpected,Surprising,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,425,Playoff Seeding Analysis,Did the Chiefs make the Super Bowl as the #1 seed?,Yes,No,From wild card,From 3 seed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,426,Playoff Seeding Analysis,Did the Eagles make the Super Bowl as the #2 seed?,Yes,No,From wild card,From 5 seed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,427,Playoff Seeding Analysis,Has a #2 seed ever made the Super Bowl?,Yes,No,Rarely,Once,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,428,Playoff Seeding Analysis,Did the Bills have a favorable playoff path?,No,Yes,Average,Tough,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,431,Injury & Health Updates,Were there any major injuries during Super Bowl LIX?,No,Yes,Minor,Some,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,432,Injury & Health Updates,Did Patrick Mahomes have any injuries in 2024?,Yes,No,Minor,Recovery,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,433,Injury & Health Updates,Did Josh Allen have any injuries in 2024?,No,Yes,Minor,Shoulder,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,434,Injury & Health Updates,Did Lamar Jackson have any injuries in 2024?,No,Yes,Minor,Knee,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,435,Injury & Health Updates,Did Jalen Hurts have any injuries in 2024?,No,Yes,Minor,Shoulder,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,436,Injury & Health Updates,Did Saquon Barkley have any injuries in 2024?,No,Yes,Minor,Ankle,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,437,Injury & Health Updates,Did the Eagles have a healthy roster in 2024?,Yes,No,Mostly,Some issues,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,438,Injury & Health Updates,Did the Chiefs have health issues in 2024?,Yes,No,Minor,Some,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,439,Injury & Health Updates,Did the Lions have major injuries in 2024?,Yes,No,Some,Minor,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,441,Fan Voting & Selections,Did Josh Allen win the Pro Bowl vote in 2024?,Yes,No,Tied,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,442,Fan Voting & Selections,Did Patrick Mahomes make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,443,Fan Voting & Selections,Did Lamar Jackson make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,444,Fan Voting & Selections,Did Saquon Barkley make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,445,Fan Voting & Selections,Did Travis Kelce make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,446,Fan Voting & Selections,Did Tyreek Hill make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,447,Fan Voting & Selections,Did CeeDee Lamb make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,448,Fan Voting & Selections,Did Patrick Surtain II make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,449,Fan Voting & Selections,Did Trey Hendrickson make the Pro Bowl in 2024?,Yes,No,Alternate,Did not vote,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,450,Fan Voting & Selections,Did the Eagles have multiple Pro Bowlers?,Yes,No,Some,Few,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,451,Franchise Records & Milestones,Did the Eagles win their second Super Bowl in franchise history?,Yes,No,First,Third,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,452,Franchise Records & Milestones,How many Super Bowls have the Eagles won total?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,454,Franchise Records & Milestones,How many championships do the Eagles have (including pre-Super Bowl era)?,5,4,3,2,5
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,455,Franchise Records & Milestones,Did the Eagles make the Super Bowl in 2017?,Yes,No,Lost earlier,Alternate,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,460,Franchise Records & Milestones,Have the Eagles had success in recent years?,Yes,No,Mixed,Inconsistent,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,461,Competitive Balance,How many different conference winners were there across different divisions?,8,7,6,9,8
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,462,Competitive Balance,Did any division have two teams with 12+ wins?,Yes,No,One division,Multiple,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,463,Competitive Balance,Did any division have all playoff-quality teams?,No,Yes,One did,NFC North,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,464,Competitive Balance,Was 2024 a competitive NFL season?,Yes,No,Somewhat,Very much,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,465,Competitive Balance,Did the playoff bracket have major surprises?,No,Yes,Some,Few,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,466,Competitive Balance,Was the Super Bowl matchup expected?,Yes,No,Somewhat,Partially,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,467,Competitive Balance,Did any playoff team exceed expectations?,Yes,No,Few,One,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,468,Competitive Balance,Did any playoff team underperform?,Yes,No,Few,One,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,469,Competitive Balance,Was there competitive parity in 2024?,Yes,No,Some,Limited,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,474,Media & Broadcasting,Does ESPN have exclusive Monday Night Football?,Yes,No,Shares,Partial,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,476,Media & Broadcasting,Do streaming services carry NFL games?,Yes,No,Some,Limited,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,478,Media & Broadcasting,Did the 2024 NFL season have strong viewership?,Yes,No,Average,Declining,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,479,Media & Broadcasting,Are Super Bowls always the most-watched sporting event in the US?,Usually,No,Sometimes,Always,Usually
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,480,Media & Broadcasting,Will the Eagles-Chiefs Super Bowl have lasting impact?,Yes,No,Some,Minimal,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,481,Rule Changes & Officiating,Were there any major rule changes in 2024?,No,Yes,Some minor,Pending,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,483,Rule Changes & Officiating,Is pass interference still a reviewable call?,Limited,Yes,No,Rarely,Limited
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,484,Rule Changes & Officiating,Can defensive pass interference be challenged?,No,Yes,Limited,On offense,Limited
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,485,Rule Changes & Officiating,Are there kickoff rule changes?,Yes,No,Recently changed,Under review,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,488,Rule Changes & Officiating,How many officials are on the field?,7,6,8,5,7
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,489,Rule Changes & Officiating,Is the NFL considering playoff expansion?,No,Yes,Under review,Pending,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,491,Youth & Rookie Development,Did any 2024 rookie win major awards besides Daniels?,Yes,No,Verse did,Bowers near,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,494,Youth & Rookie Development,Did any 2024 QB recruit become an immediate starter?,Yes,No,Some,All,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions.csv,499,Youth & Rookie Development,Do rookies have more impact now than historically?,Yes,No,Same,Less,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,503,Super Bowl LIV 2020,How many passing touchdowns did Patrick Mahomes have in Super Bowl LIV?,2,1,3,4,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,504,Super Bowl LIV 2020,How many rushing touchdowns did Patrick Mahomes have in Super Bowl LIV?,1,2,0,3,1
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,505,Super Bowl LIV 2020,Did the Chiefs overcome a deficit in Super Bowl LIV?,Yes,No,Led entire game,Never trailed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,510,Super Bowl LIV 2020,Did Patrick Mahomes become the youngest to win both MVP and Super Bowl?,Yes,No,Tied record,Close,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,514,Super Bowl LV 2021,How many Super Bowl wins does Tom Brady have total?,7,6,5,8,7
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,516,Super Bowl LV 2021,How many interceptions did Patrick Mahomes throw in Super Bowl LV?,2,1,3,0,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,517,Super Bowl LV 2021,How many interceptions did the Buccaneers get in Super Bowl LV?,2,3,1,4,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,518,Super Bowl LV 2021,Did Tom Brady play for the Buccaneers in 2020?,Yes,No,Starting 2021,Mid-season,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,519,Super Bowl LV 2021,How many touchdowns did Tom Brady throw in Super Bowl LV?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,520,Super Bowl LV 2021,Was this the first time a team won at home?,No,Yes,Second time,Rare,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,525,Super Bowl LVI 2022,Did the Rams win at their home stadium?,Yes,No,Neutral site,In Cincinnati,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,527,Super Bowl LVI 2022,How many Super Bowls have the Rams won?,2,1,3,0,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,529,Super Bowl LVI 2022,Did Matthew Stafford get his first Super Bowl win?,Yes,No,Second,Third,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,536,Super Bowl LVII 2023,Did the Chiefs win back-to-back Super Bowls?,Yes,No,2 straight wins,3 straight wins,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,537,Super Bowl LVII 2023,How many passing touchdowns did Patrick Mahomes have in Super Bowl LVII?,2,3,1,4,2
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,538,Super Bowl LVII 2023,How many passing touchdowns did Jalen Hurts have in Super Bowl LVII?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,540,Super Bowl LVII 2023,How many consecutive Super Bowls has Patrick Mahomes been in?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,542,Super Bowl LVIII 2024,Did Super Bowl LVIII go to overtime?,Yes,No,Double OT,Triple OT,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,545,Super Bowl LVIII 2024,How many Super Bowl wins does Patrick Mahomes have?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,546,Super Bowl LVIII 2024,Did this make the Chiefs the first back-to-back since 2004?,Yes,No,Third in a row,First ever,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,548,Super Bowl LVIII 2024,How many Super Bowl championships does the Kansas City Chiefs franchise have?,4,3,5,2,4
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,549,Super Bowl LVIII 2024,Did Christian McCaffrey score in Super Bowl LVIII?,Yes,No,Multiple,One TD,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,553,2020 NFL Season,How many interceptions did Aaron Rodgers throw in 2020?,5,7,3,10,5
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,558,2020 NFL Season,Is 121.5 the second-highest passer rating in NFL history?,Yes,No,Tied,Not even top 5,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,560,2020 NFL Season,Did the Packers win the NFC North in 2020?,Yes,No,Wild card,Missed playoffs,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,561,2021 NFL Season,Did Tom Brady win the MVP in 2021?,No,Yes,Shared,Runner-up,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,564,2021 NFL Season,Did Tom Brady throw for 40+ touchdowns in 2021?,Yes,No,Exactly 40,39,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,567,2021 NFL Season,Did Tom Brady play in his first Super Bowl with Tampa Bay?,Yes,No,Not yet,Already won,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,568,2021 NFL Season,Did Tom Brady break any records in 2021?,Yes,No,Several,One or two,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,576,2022 NFL Season,Was 2022 Patrick Mahomes' second MVP?,Yes,No,Third,First,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,577,2022 NFL Season,Did Patrick Mahomes win a Super Bowl MVP in 2022?,Yes,No,Not yet,Later won,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,578,2022 NFL Season,How many Super Bowl titles did the Chiefs win through 2022?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,580,2022 NFL Season,Did the Chiefs make it to Super Bowl LVI after 2022?,No,Yes,Lost earlier,Missed playoffs,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,587,2023 NFL Season MVP,Was 2023 Lamar Jackson's first unanimous MVP?,No,Yes,Nearly unanimous,Second unanimous,No
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,588,2023 NFL Season MVP,How many MVP awards does Lamar Jackson have?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,589,2023 NFL Season MVP,Did Lamar Jackson win unanimously in 2019?,Yes,No,Close,Tied,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,595,2023 Season Awards,Did Christian McCaffrey have 17 consecutive games with a touchdown?,Yes,No,19 games,15 games,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,597,2023 Season Awards,How many Heisman Trophy winners have won multiple MVPs?,2,1,3,4,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,599,2023 Season Awards,Did Christian McCaffrey finish in top 5 MVP voting?,Yes,No,Third place,Second place,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,606,Tom Brady Career Stats,Did Tom Brady unretire?,Yes,No,Partially,Briefly,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,608,Tom Brady Career Stats,How many consecutive Super Bowls did Brady play in?,9,8,10,7,9
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,611,Patrick Mahomes Career,How many Pro Bowls has Patrick Mahomes made through 2024?,6,5,7,4,6
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,612,Patrick Mahomes Career,How many MVP awards does Patrick Mahomes have?,3,2,4,1,3
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,613,Patrick Mahomes Career,How many Super Bowl MVP awards does Patrick Mahomes have?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,617,Patrick Mahomes Career,Did Patrick Mahomes play baseball in college?,Yes,No,Minor league,Briefly,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,620,Patrick Mahomes Career,Is Patrick Mahomes a first-team All-Pro?,Yes,No,Multiple times,Once,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,624,Lamar Jackson Career,Did Lamar Jackson win the Heisman Trophy?,Yes,No,Runner-up,Not eligible,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,627,Lamar Jackson Career,How many rushing touchdowns did Lamar Jackson have in 2023?,5,3,7,4,5
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,628,Lamar Jackson Career,Is Lamar Jackson known as a dual-threat QB?,Yes,No,Mostly passer,Mostly rusher,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,629,Lamar Jackson Career,How many Pro Bowls has Lamar Jackson made?,5,4,6,3,5
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,630,Lamar Jackson Career,How many All-Pro selections does Lamar Jackson have?,4,3,5,2,4
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,634,Christian McCaffrey Career,Did Christian McCaffrey get traded?,Yes,No,Multiple times,Almost,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,637,Christian McCaffrey Career,Did Christian McCaffrey play at Stanford?,Yes,No,Transferred,Graduate school,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,639,Christian McCaffrey Career,Is Christian McCaffrey in the Pro Bowl?,Yes,No,Multiple times,Once,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,644,Tyreek Hill Career,Did Tyreek Hill get traded?,Yes,No,Multiple times,Almost,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,648,Tyreek Hill Career,Is Tyreek Hill known for his speed?,Yes,No,Somewhat,Not really,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,649,Tyreek Hill Career,How many Pro Bowls has Tyreek Hill made?,7,6,8,5,7
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,650,Tyreek Hill Career,How many All-Pro selections does Tyreek Hill have?,5,4,6,3,5
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,653,Aaron Rodgers Career Continued,Is 122.5 the highest passer rating ever?,Yes,No,Tied,Not even top 5,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,654,Aaron Rodgers Career Continued,How many Super Bowls has Aaron Rodgers won?,1,2,3,0,1
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,659,Aaron Rodgers Career Continued,How many Pro Bowls has Aaron Rodgers made?,9,8,10,7,9
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,660,Aaron Rodgers Career Continued,How many All-Pro selections does Aaron Rodgers have?,9,8,10,7,9
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,664,2020-2023 Draft Highlights,Did Bryce Young go 1st overall in 2023?,No,Yes,Second pick,Third pick,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,666,2020-2023 Draft Highlights,Did C.J. Stroud go in the top 5 in 2023?,Yes,No,Exactly 5th,6th,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,668,2020-2023 Draft Highlights,Did Anthony Richardson go in the top 5 in 2023?,Yes,No,4th overall,6th,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,670,2020-2023 Draft Highlights,Did Will Anderson Jr. play defensive end?,Yes,No,Linebacker,Safety,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,680,2020-2023 Season Records,Did any team go undefeated in 2020-2023?,No,Yes,Close to it,Almost,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,685,Defensive Standouts 2020-2023,Did T.J. Watt tie the single-season sacks record?,Yes,No,Broke it,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,699,Receiving Leaders 2020-2023,Did Cooper Kupp win the receiving title in 2021?,No,Yes,Close,Second place,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,701,Notable Playoff Moments 2020-2023,Did the Tampa Bay Buccaneers face the Green Bay Packers in 2020?,Yes,No,Lost earlier,In Super Bowl,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,704,Notable Playoff Moments 2020-2023,Did the Kansas City Chiefs lose in the 2021 playoffs?,Yes,No,Made Super Bowl,Lost Super Bowl,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,705,Notable Playoff Moments 2020-2023,Did the Green Bay Packers win in 2021 playoffs?,No,Yes,Made Super Bowl,Won Super Bowl,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,706,Notable Playoff Moments 2020-2023,Did the San Francisco 49ers make it to Super Bowl LVI?,No,Yes,Lost earlier,Wild card,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,707,Notable Playoff Moments 2020-2023,Did the Kansas City Chiefs make the playoffs in 2022?,Yes,No,Wild card,1st seed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,708,Notable Playoff Moments 2020-2023,Did the Buffalo Bills make the playoffs in 2023?,Yes,No,Wild card,1st seed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,709,Notable Playoff Moments 2020-2023,Did the Dallas Cowboys make the playoffs in 2023?,Yes,No,Wild card,2nd seed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,710,Notable Playoff Moments 2020-2023,Did the Detroit Lions make the playoffs in 2023?,Yes,No,Wild card,1st seed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,713,Individual Milestone Records,Did any other player reach 600 career TDs through 2023?,No,Yes,One did,Two did,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,717,Individual Milestone Records,Did Tom Brady break Peyton Manning's record?,Yes,No,Tied,Almost,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,719,Individual Milestone Records,Did Aaron Rodgers set a completion percentage record?,Yes,No,Tied,Second place,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,731,Free Agency & Trades 2020-2023,Did Tom Brady sign with Tampa Bay in free agency?,Yes,No,Traded,Mid-season,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,733,Free Agency & Trades 2020-2023,Did Rob Gronkowski also sign with Tampa Bay?,Yes,No,Later joined,Different team,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,734,Free Agency & Trades 2020-2023,Did Matthew Stafford get traded?,Yes,No,Free agent,Released,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,737,Free Agency & Trades 2020-2023,Did Odell Beckham Jr. sign with the Rams?,Yes,No,Later joined,Different team,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,738,Free Agency & Trades 2020-2023,Did Christian McCaffrey get traded to the 49ers mid-season?,Yes,No,In offseason,Free agent,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,740,Free Agency & Trades 2020-2023,Did Tyreek Hill sign with Miami as a free agent?,Yes,No,Traded,Different team,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,741,Hall of Fame & Awards 2020-2023,Did Peyton Manning get inducted into the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,744,Hall of Fame & Awards 2020-2023,How many Super Bowls did Peyton Manning win?,2,1,3,0,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,745,Hall of Fame & Awards 2020-2023,Did John Elway get inducted into the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,747,Hall of Fame & Awards 2020-2023,How many Super Bowls did John Elway win?,2,1,3,0,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,748,Hall of Fame & Awards 2020-2023,Did Dan Marino ever win a Super Bowl?,No,Yes,Once,Twice,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,749,Hall of Fame & Awards 2020-2023,Is Dan Marino in the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,751,Offensive Legends 2020-2023,How many times did Davante Adams lead the league in receiving yards?,2,1,3,4,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,752,Offensive Legends 2020-2023,Did Robert Woods have a strong 2020 season?,Yes,No,Injured,Traded,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,755,Offensive Legends 2020-2023,Did Mike Evans lead the league in receiving yards in 2020?,No,Yes,Second place,Close,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,757,Offensive Legends 2020-2023,Did Rob Gronkowski catch passes in 2020?,Yes,No,Injured,Retired,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,758,Offensive Legends 2020-2023,Did Rob Gronkowski return to play with Tampa Bay?,Yes,No,2021,2022,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,767,Running Backs 2020-2023,Did Rashaad White have a good 2023 season?,Yes,No,Injured,Traded,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,768,Running Backs 2020-2023,Did D'Andre Swift lead the league in rushing yards in 2023?,No,Yes,Second place,Top 5,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,769,Running Backs 2020-2023,Did Derrick Henry play for any other team besides Tennessee?,Yes,No,Later,Different leagues,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,771,Defensive Backs 2020-2023,Did Jalen Ramsey play for the Rams in 2020?,Yes,No,Traded,Released,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,772,Defensive Backs 2020-2023,How many interceptions did Jalen Ramsey have in 2020?,3,2,4,1,3
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,773,Defensive Backs 2020-2023,Did Sauce Gardner have a strong rookie year?,Yes,No,Decent,Injured,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,776,Defensive Backs 2020-2023,Did Stephon Gilmore win DPOY in 2023?,No,Yes,Runner-up,Not eligible,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,777,Defensive Backs 2020-2023,Did Xavien Howard have a good 2023 season?,Yes,No,Injured,Below average,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,778,Defensive Backs 2020-2023,How many interceptions did Xavien Howard have in 2023?,8,6,10,5,8
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,779,Defensive Backs 2020-2023,Did Darrelle Revis get inducted into the Hall of Fame?,Yes,No,Eligible,Not yet,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,781,Defensive Line 2020-2023,Did Aaron Donald play in 2023?,No,Yes,Retired,Released,No
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,784,Defensive Line 2020-2023,How many Pro Bowls did Aaron Donald make?,8,7,9,6,8
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,785,Defensive Line 2020-2023,How many All-Pro selections did Aaron Donald have?,8,7,9,6,8
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,786,Defensive Line 2020-2023,Did Chris Jones win DPOY?,No,Yes,Runner-up,Not eligible,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,788,Defensive Line 2020-2023,Did J.J. Watt play in 2023?,No,Yes,Limited,Injured,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,791,Linebackers 2020-2023,Did Micah Parsons have a strong rookie season?,Yes,No,Decent,Injured,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,793,Linebackers 2020-2023,Did Bobby Wagner lead the league in tackles?,Yes,No,Close,Multiple years,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,795,Linebackers 2020-2023,Did Fred Warner have a good 2023 season?,Yes,No,Injured,Below average,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,797,Linebackers 2020-2023,Did Lavonte David win any awards in 2020-2023?,No,Yes,Pro Bowl,All-Pro,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,798,Linebackers 2020-2023,Did Ryan Kerrigan play in 2020-2023?,Yes,No,Limited,Retired,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,799,Linebackers 2020-2023,Did Ryan Kerrigan retire after 2023?,Yes,No,2024,Still playing,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,801,Special Teams & Kickers 2020-2023,Did Harrison Butker win any awards in 2021-2023?,No,Yes,Pro Bowl,All-Pro,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,803,Special Teams & Kickers 2020-2023,Did Justin Tucker retire recently?,Yes,No,2022,2024,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,806,Special Teams & Kickers 2020-2023,Is Justin Tucker in the Hall of Fame?,No,Yes,Eligible,Retired,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,807,Special Teams & Kickers 2020-2023,Did Matt Gay have a good 2022 season?,Yes,No,Average,Below average,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,809,Special Teams & Kickers 2020-2023,Did Greg Joseph win any awards?,No,Yes,Pro Bowl,All-Pro,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,811,Coaching Changes 2020-2023,Did Bruce Arians coach the Buccaneers in 2020-2021?,Yes,No,Partial,Not entire,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,812,Coaching Changes 2020-2023,Did Bruce Arians retire?,Yes,No,Take break,Changed teams,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,814,Coaching Changes 2020-2023,Did Todd Bowles win a Super Bowl?,Yes,No,Later won,Made it,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,815,Coaching Changes 2020-2023,Did Sean Payton coach the Broncos?,Yes,No,Later,Not yet,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,817,Coaching Changes 2020-2023,Did Jeff Saturday coach the Colts?,Yes,No,Interim,Briefly,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,818,Coaching Changes 2020-2023,Did the Colts have success under Jeff Saturday?,No,Yes,Minor,Some games,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,819,Coaching Changes 2020-2023,Did Jim Harbaugh coach the Chargers?,Yes,No,Later,Almost,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,821,Team Turnarounds,Did the Houston Texans have a turnaround in 2023?,Yes,No,Minor,Slight,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,823,Team Turnarounds,Did the Carolina Panthers have a turnaround?,No,Yes,2022,2021,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,824,Team Turnarounds,Did the Jacksonville Jaguars have a turnaround in 2023?,Yes,No,Minor,Slight,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,825,Team Turnarounds,Did Doug Pederson coach the Jaguars?,Yes,No,Later,Almost,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,826,Team Turnarounds,Did the Jaguars make the playoffs in 2023?,Yes,No,Wild card,Division,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,827,Team Turnarounds,Did the Indianapolis Colts improve in 2023?,No,Yes,Minor,Slightly,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,828,Team Turnarounds,Did the Tennessee Titans decline in 2023?,Yes,No,Slightly,Somewhat,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,829,Team Turnarounds,Did Mike Vrabel coach the Titans?,Yes,No,Previously,Will coach,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,830,Team Turnarounds,Did the Titans make the playoffs in 2023?,No,Yes,Wild card,Close,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,831,Comebacks & Close Games,Did the Chiefs have a comeback in Super Bowl LIV?,Yes,No,Led entire,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,833,Comebacks & Close Games,Did the Buccaneers dominate in Super Bowl LV?,Yes,No,Close game,Tied,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,834,Comebacks & Close Games,Was Super Bowl LVI close?,Yes,No,Very close,Blowout,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,835,Comebacks & Close Games,Did the Rams win Super Bowl LVI at home?,Yes,No,Neutral,Enemy territory,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,836,Comebacks & Close Games,Was Super Bowl LVII close?,Yes,No,Very close,Blowout,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,837,Comebacks & Close Games,Did the Eagles lead in Super Bowl LVII?,Yes,No,Tied,Not for long,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,838,Comebacks & Close Games,Was Super Bowl LVIII close?,Yes,No,Very close,Blowout,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,839,Comebacks & Close Games,Did the 49ers lead in the 4th quarter of Super Bowl LVIII?,Yes,No,Early 4th,Late 4th,Yes
+Problematic answer,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,840,Comebacks & Close Games,How many field goals did the game go to in Super Bowl LVIII?,2,1,3,None,2
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,841,Record Breaking Performances,Did Aaron Rodgers break a TD-to-INT record in 2020?,Yes,No,Tied,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,843,Record Breaking Performances,Did Tom Brady break a passing yards record in 2021?,Yes,No,Tied,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,844,Record Breaking Performances,Did Christian McCaffrey break a receiving record for RBs?,Yes,No,Tied,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,846,Record Breaking Performances,Did Tyreek Hill break any records with Miami?,Yes,No,Tied,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,847,Record Breaking Performances,"Did Davante Adams have back-to-back 1,500+ yard seasons?",Yes,No,One year,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,848,Record Breaking Performances,Did Cooper Kupp have a historic season in 2021?,Yes,No,Decent,Average,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,849,Record Breaking Performances,Did Jonathan Taylor break any rushing records in 2021?,Yes,No,Tied,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,850,Record Breaking Performances,"Did Derrick Henry have 1,500+ rushing yards in 2020?",Yes,No,"1,450","1,400",Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,851,Playoff History 2020-2023,Did the Buccaneers win the NFC South in 2020?,Yes,No,Wild card,Missed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,852,Playoff History 2020-2023,Did the Buccaneers play as a wild card in 2020?,No,Yes,Division winner,1 seed,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,854,Playoff History 2020-2023,Did the Ravens win the AFC North in 2021?,No,Yes,Wild card,Missed,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,855,Playoff History 2020-2023,Did the Steelers win the AFC North in 2021?,Yes,No,Wild card,Missed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,856,Playoff History 2020-2023,Did the Cowboys win the NFC East in 2022?,No,Yes,Wild card,Missed,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,857,Playoff History 2020-2023,Did the Eagles win the NFC East in 2022?,Yes,No,Wild card,Missed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,858,Playoff History 2020-2023,Did the 49ers win the NFC West in 2023?,Yes,No,Wild card,Missed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,859,Playoff History 2020-2023,Did the Lions win the NFC North in 2023?,Yes,No,Wild card,Missed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,860,Playoff History 2020-2023,Did the Ravens make the playoffs in 2023?,Yes,No,Wild card,Missed,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,862,Performance Metrics 2020-2023,Did the Pittsburgh Steelers have the top defense in 2020?,Yes,No,Second,Top 3,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,870,Performance Metrics 2020-2023,Did any team have both top offense and defense?,Yes,No,Once,Multiple times,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,871,Unanimous Picks & MVPs,Was Lamar Jackson a unanimous MVP in 2019?,Yes,No,Nearly,Close,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,872,Unanimous Picks & MVPs,Was Aaron Rodgers unanimous MVP in 2020?,No,Yes,Nearly,Close,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,873,Unanimous Picks & MVPs,Was Tom Brady unanimous MVP in 2021?,No,Yes,Nearly,Close,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,874,Unanimous Picks & MVPs,Was Patrick Mahomes unanimous MVP in 2022?,No,Yes,Nearly,Close,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,875,Unanimous Picks & MVPs,Was Lamar Jackson nearly unanimous in 2023?,Yes,No,One vote,Tied,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,877,Unanimous Picks & MVPs,Did Josh Allen ever win MVP?,No,Yes,2019,2023,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,878,Unanimous Picks & MVPs,Did Jalen Hurts ever win MVP?,No,Yes,2022,Close,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,879,Unanimous Picks & MVPs,Has any QB won back-to-back MVPs recently?,No,Yes,Different positions,Rare,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,880,Unanimous Picks & MVPs,Did Lamar Jackson win back-to-back MVPs?,No,Yes,2019 & 2024,Different years,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,881,Injury-Impacted Seasons,Did Chris Carson miss significant time?,Yes,No,One game,Minor,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,882,Injury-Impacted Seasons,Did Raheem Mostert have injury issues?,Yes,No,Missed one game,Minor,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,883,Injury-Impacted Seasons,Did Elijah Mitchell have injury problems?,Yes,No,One year,Minor,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,884,Injury-Impacted Seasons,Did Alvin Kamara stay healthy?,No,Yes,Missed games,Mostly,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,885,Injury-Impacted Seasons,Did Chris Godwin return from injury?,Yes,No,Partially,Late season,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,886,Injury-Impacted Seasons,Did Rob Gronkowski recover from injury?,Yes,No,Partially,Not completely,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,887,Injury-Impacted Seasons,Did Deshaun Watson miss games?,Yes,No,Started late,Suspended,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,888,Injury-Impacted Seasons,Did Tua Tagovailoa have injury issues?,Yes,No,One game,Minor,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,889,Injury-Impacted Seasons,Did Josh Allen stay healthy?,Yes,No,Minor issues,Some games,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,890,Injury-Impacted Seasons,Did Patrick Mahomes play most games?,Yes,No,Missed few,Minor issues,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,893,Notable Transactions & Signings,Did Antonio Brown play for Tampa Bay?,Yes,No,Briefly,Didn't sign,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,894,Notable Transactions & Signings,Did Antonio Brown finish the 2020 season?,No,Yes,Mid-game quit,Released,No
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,895,Notable Transactions & Signings,Did Leonard Fournette sign with the Buccaneers?,Yes,No,Traded,Drafted,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,896,Notable Transactions & Signings,Did Leonard Fournette score in the Super Bowl?,Yes,No,Multiple,One TD,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,897,Notable Transactions & Signings,Did Jarrett Stidham play for the Patriots?,Yes,No,Briefly,Didn't sign,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,898,Notable Transactions & Signings,Did Trey Lance get traded?,Yes,No,Multiple times,Once,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,899,Notable Transactions & Signings,Did the 49ers acquire Elijah Mitchell?,Yes,No,Traded for,Draft,Yes
+Contains Yes/No options,.kiro/specs/vortex-arena-map/nfl_trivia_500_questions_part2.csv,900,Notable Transactions & Signings,Did the Eagles add aggressive trades in 2023?,No,Yes,One trade,Minor,No
+Problematic answer,rewritten,159,Team Records & Standings,Who won at least 10 games?,all,Dak Prescott,Patrick Surtain II,Joe Burrow,all
+Problematic answer,rewritten,183,Team Achievements 2024,Which team qualified for the 2024 playoffs?,Los Angeles Rams and Chargers both,Indianapolis Colts,New York Giants,Buffalo Bills,Los Angeles Rams and Chargers both
+Problematic answer,rewritten,393,Trivia & Fun Facts,Who won Super Bowls?,Joe Namath and Joe Montana both,Dak Prescott,Patrick Surtain II,Joe Burrow,Joe Namath and Joe Montana both

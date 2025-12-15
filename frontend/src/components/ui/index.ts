@@ -48,3 +48,27 @@ export type { SwipeCarouselProps } from './SwipeCarousel'
 
 // Legacy Components
 export { ServerBusyModal } from './ServerBusyModal'
+
+// Sound-enabled Components
+export { SoundButton } from './SoundButton'
+export type { SoundButtonProps } from './SoundButton'
+
+// Animation Utilities (Enterprise Polish)
+export {
+  AnimatedNumber,
+  AnimatedCard,
+  RarityGlow,
+  StaggerReveal,
+  StaggerItem,
+  ValueFlip,
+  useMousePosition,
+  useTiltEffect,
+  useSpringAnimation,
+} from './animations'
+export type {
+  AnimatedNumberProps,
+  AnimatedCardProps,
+  RarityGlowProps,
+  StaggerRevealProps,
+  TiltConfig,
+} from './animations'

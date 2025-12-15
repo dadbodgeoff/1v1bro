@@ -28,7 +28,7 @@ from app.schemas.cosmetic import (
 # ============================================
 
 valid_cosmetic_types = st.sampled_from([
-    "skin", "emote", "banner", "nameplate", "effect", "trail"
+    "skin", "emote", "banner", "nameplate", "effect", "trail", "runner"
 ])
 
 valid_rarities = st.sampled_from([
@@ -36,7 +36,7 @@ valid_rarities = st.sampled_from([
 ])
 
 invalid_cosmetic_types = st.text(min_size=1, max_size=20).filter(
-    lambda x: x.lower() not in ["skin", "emote", "banner", "nameplate", "effect", "trail"]
+    lambda x: x.lower() not in ["skin", "emote", "banner", "nameplate", "effect", "trail", "runner"]
 )
 
 invalid_rarities = st.text(min_size=1, max_size=20).filter(

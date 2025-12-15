@@ -32,6 +32,7 @@ import {
   ProfileErrorBoundary,
   SectionErrorBoundary,
 } from '../components/profile/enterprise'
+import { EasterEggSecretsSection } from '../components/easter-eggs'
 import type { ProfileUpdate } from '../types/profile'
 
 type ViewMode = 'view' | 'edit'
@@ -242,6 +243,17 @@ export const Profile: React.FC = () => {
                 </ProfileSection>
               </SectionErrorBoundary>
             )}
+
+            {/* Easter Eggs / Secrets Section */}
+            <SectionErrorBoundary>
+              <ProfileSection
+                title="Secrets"
+                subtitle="Hidden discoveries"
+                icon={<span className="text-xl">🥚</span>}
+              >
+                <EasterEggSecretsSection />
+              </ProfileSection>
+            </SectionErrorBoundary>
 
             {/* Social Links Section */}
             {profile.social_links && Object.values(profile.social_links).some(Boolean) && (

@@ -6,8 +6,7 @@
 import { useState, useCallback } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import type { Season, BattlePassTier, PlayerBattlePass } from '../types/battlepass';
-
-const API_BASE = import.meta.env.VITE_API_URL || '';
+import { API_BASE } from '../utils/constants';
 
 interface UseBattlePassReturn {
   season: Season | null;
@@ -44,7 +43,7 @@ export function useBattlePass(): UseBattlePassReturn {
     setError(null);
     try {
       // Use public endpoint - no auth required for viewing season info
-      const response = await fetch(`${API_BASE}/api/v1/battlepass/public/current`, {
+      const response = await fetch(`${API_BASE}/battlepass/public/current`, {
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -72,7 +71,7 @@ export function useBattlePass(): UseBattlePassReturn {
     setError(null);
     try {
       // Fixed: endpoint path was /api/v1/me/battlepass, backend router is /api/v1/battlepass/me
-      const response = await fetch(`${API_BASE}/api/v1/battlepass/me`, {
+      const response = await fetch(`${API_BASE}/battlepass/me`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       });
@@ -99,7 +98,7 @@ export function useBattlePass(): UseBattlePassReturn {
         return;
       }
       // Use public endpoint - no auth required for viewing tier rewards
-      const response = await fetch(`${API_BASE}/api/v1/battlepass/public/tiers/${id}`, {
+      const response = await fetch(`${API_BASE}/battlepass/public/tiers/${id}`, {
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -126,7 +125,7 @@ export function useBattlePass(): UseBattlePassReturn {
     setError(null);
     try {
       // Fixed: endpoint is /battlepass/me/claim-reward not /me/battlepass/claim-reward
-      const response = await fetch(`${API_BASE}/api/v1/battlepass/me/claim-reward`, {
+      const response = await fetch(`${API_BASE}/battlepass/me/claim-reward`, {
         method: 'POST',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -151,7 +150,7 @@ export function useBattlePass(): UseBattlePassReturn {
     setError(null);
     try {
       // Fixed: endpoint is /battlepass/me/purchase-premium not /me/battlepass/purchase-premium
-      const response = await fetch(`${API_BASE}/api/v1/battlepass/me/purchase-premium`, {
+      const response = await fetch(`${API_BASE}/battlepass/me/purchase-premium`, {
         method: 'POST',
         headers: getAuthHeaders(),
         credentials: 'include',

@@ -6,7 +6,7 @@
 /**
  * Types of cosmetic items.
  */
-export type CosmeticType = 'skin' | 'emote' | 'banner' | 'nameplate' | 'effect' | 'trail' | 'playercard';
+export type CosmeticType = 'skin' | 'emote' | 'banner' | 'nameplate' | 'effect' | 'trail' | 'playercard' | 'runner';
 
 /**
  * Rarity levels for cosmetics.
@@ -48,6 +48,7 @@ export interface Cosmetic {
   image_url: string;
   shop_preview_url?: string;  // Custom shop preview image (takes priority over image_url)
   preview_video_url?: string;
+  model_url?: string;  // 3D GLB model URL for interactive preview
   is_limited: boolean;
   event?: string;
   release_date?: string;
@@ -83,6 +84,7 @@ export interface Loadout {
   effect?: string;
   trail?: string;
   playercard?: string;
+  runner?: string;
 }
 
 /**
@@ -107,6 +109,7 @@ export function getCosmeticTypeName(type: CosmeticType): string {
     effect: 'Effect',
     trail: 'Trail',
     playercard: 'Player Card',
+    runner: 'Runner',
   };
   return names[type];
 }

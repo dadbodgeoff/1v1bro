@@ -115,7 +115,7 @@ export const CRT_DEGRADED: Partial<CRTEffectsConfig> = {
 
 export const ARCADE_CONTENT = {
   headline: 'ENTER THE ARENA',
-  tagline: 'Trivia Duels With Real-Time Combat',
+  tagline: 'Trivia • Survival Runner • 2D Shooter',
   primaryCTA: 'PLAY NOW',
   primaryCTAAuth: 'ENTER ARENA',
   secondaryCTA: 'CREATE ACCOUNT',
@@ -124,6 +124,10 @@ export const ARCADE_CONTENT = {
   skipButton: 'SKIP →',
   liveIndicator: 'LIVE',
   demoUnavailable: 'Live demo unavailable',
+  // Demo-specific CTAs
+  demoPlayNow: 'PLAY NOW',
+  demoTriviaDuel: 'TRIVIA DUEL',
+  demoSurvivalMode: 'SURVIVAL MODE',
 };
 
 // ============================================
@@ -322,7 +326,7 @@ export const RESPONSIVE_BEHAVIORS = {
 };
 
 // ============================================
-// Sound Configuration
+// Sound Configuration (legacy - sounds now in SynthSoundManager)
 // ============================================
 
 export const SOUND_CONFIG = {

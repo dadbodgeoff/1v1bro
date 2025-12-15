@@ -267,7 +267,7 @@ class CosmeticsRepository:
         # Fetch cosmetic details for each equipped slot
         equipped_ids = []
         for slot in ["skin_equipped", "emote_equipped", "banner_equipped", 
-                     "nameplate_equipped", "effect_equipped", "trail_equipped", "playercard_equipped"]:
+                     "nameplate_equipped", "effect_equipped", "trail_equipped", "playercard_equipped", "runner_equipped"]:
             if loadout.get(slot):
                 equipped_ids.append(loadout[slot])
         
@@ -282,7 +282,7 @@ class CosmeticsRepository:
             
             # Replace IDs with full cosmetic objects
             for slot in ["skin_equipped", "emote_equipped", "banner_equipped",
-                         "nameplate_equipped", "effect_equipped", "trail_equipped", "playercard_equipped"]:
+                         "nameplate_equipped", "effect_equipped", "trail_equipped", "playercard_equipped", "runner_equipped"]:
                 if loadout.get(slot) and loadout[slot] in cosmetics_map:
                     loadout[f"{slot}_data"] = cosmetics_map[loadout[slot]]
         

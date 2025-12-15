@@ -34,6 +34,7 @@ from app.services.rotation_service import ShopRotationService
 from app.services.asset_service import AssetManagementService
 from app.services.achievement_service import AchievementService
 from app.services.balance_service import BalanceService
+from app.cache.cache_manager import CacheManager
 
 
 # Settings dependency
@@ -181,3 +182,18 @@ def get_balance_service() -> BalanceService:
 
 AchievementServiceDep = Annotated[AchievementService, Depends(get_achievement_service)]
 BalanceServiceDep = Annotated[BalanceService, Depends(get_balance_service)]
+
+
+def get_cache_manager() -> CacheManager | None:
+    """Get CacheManager instance.
+    
+    Returns None if Redis is not configured, allowing graceful degradation.
+    The survival service handles None cache gracefully.
+    """
+    try:
+        return CacheManager()
+    except Exception:
+        return None
+
+
+CacheManagerDep = Annotated[CacheManager | None, Depends(get_cache_manager)]

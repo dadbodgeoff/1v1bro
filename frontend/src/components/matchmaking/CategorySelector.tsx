@@ -1,6 +1,8 @@
 /**
  * CategorySelector - Category selection for matchmaking.
  * Requirements: 8.1, 8.2, 8.3
+ * 
+ * Uses brand orange (#F97316) for selected state to maintain color consistency.
  */
 
 import { motion } from 'framer-motion';
@@ -61,7 +63,7 @@ export function CategorySelector({
               className={`
                 relative p-3 min-h-[44px] rounded-lg border transition-all duration-200 text-left
                 ${isSelected
-                  ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10'
+                  ? 'border-[var(--color-brand)] bg-[var(--color-brand)]/10'
                   : 'border-white/[0.08] bg-white/[0.04] hover:border-white/[0.15]'
                 }
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -72,7 +74,7 @@ export function CategorySelector({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-1.5 right-1.5 w-4 h-4 bg-[var(--color-accent-primary)] rounded-full flex items-center justify-center"
+                  className="absolute top-1.5 right-1.5 w-4 h-4 bg-[var(--color-brand)] rounded-full flex items-center justify-center"
                 >
                   <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -83,7 +85,7 @@ export function CategorySelector({
               <div className="flex items-center gap-2">
                 <span className="text-xl">{icon}</span>
                 <div>
-                  <h5 className={`text-sm font-medium ${isSelected ? 'text-[var(--color-accent-primary)]' : 'text-white'}`}>
+                  <h5 className={`text-sm font-medium ${isSelected ? 'text-[var(--color-brand)]' : 'text-white'}`}>
                     {category.name}
                   </h5>
                   <p className="text-[10px] text-neutral-500">

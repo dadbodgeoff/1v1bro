@@ -23,6 +23,8 @@ export interface UseBootSequenceOptions {
   onComplete?: () => void;
   /** Callback when phase changes */
   onPhaseChange?: (phase: BootPhase) => void;
+  /** Callback when a boot line completes */
+  onLineComplete?: (lineIndex: number) => void;
   /** Track analytics events */
   trackEvent?: (event: string, payload?: Record<string, unknown>) => void;
 }
@@ -42,6 +44,7 @@ export function useBootSequence({
   duration = BOOT_TIMING.totalDuration,
   onComplete,
   onPhaseChange,
+  onLineComplete,
   trackEvent,
 }: UseBootSequenceOptions = {}): UseBootSequenceReturn {
   // Start in 'powering-on' phase immediately (not 'off') for better UX
@@ -140,6 +143,9 @@ export function useBootSequence({
             currentLine: lineIndex,
             progress,
           }));
+
+          // Play line complete sound
+          onLineComplete?.(lineIndex);
 
           if (lineIndex >= bootLines.length) {
             clearInterval(intervalRef.current!);

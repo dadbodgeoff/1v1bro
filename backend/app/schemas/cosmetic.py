@@ -25,6 +25,7 @@ class CosmeticType(str, Enum):
     EFFECT = "effect"
     TRAIL = "trail"
     PLAYERCARD = "playercard"  # Full-art player cards for lobby display
+    RUNNER = "runner"  # Survival mode character skins
 
 
 class Rarity(str, Enum):
@@ -61,6 +62,7 @@ class Cosmetic(BaseSchema):
     sprite_sheet_url: Optional[str] = Field(None, description="Sprite sheet URL for skins")
     sprite_meta_url: Optional[str] = Field(None, description="Sprite metadata URL")
     skin_id: Optional[str] = Field(None, description="Static bundled skin ID")
+    model_url: Optional[str] = Field(None, description="3D GLB model URL for interactive shop preview")
 
 
 class CosmeticCreate(BaseSchema):
@@ -116,6 +118,7 @@ class Loadout(BaseSchema):
     effect_equipped: Optional[Cosmetic] = Field(None, description="Equipped effect")
     trail_equipped: Optional[Cosmetic] = Field(None, description="Equipped trail")
     playercard_equipped: Optional[Cosmetic] = Field(None, description="Equipped playercard for lobby display")
+    runner_equipped: Optional[Cosmetic] = Field(None, description="Equipped runner for survival mode")
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
 
@@ -130,6 +133,7 @@ class LoadoutSimple(BaseSchema):
     effect_equipped: Optional[str] = None
     trail_equipped: Optional[str] = None
     playercard_equipped: Optional[str] = None
+    runner_equipped: Optional[str] = None
 
 
 # ============================================

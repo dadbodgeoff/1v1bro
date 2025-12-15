@@ -58,6 +58,7 @@ export function getSlotDisplayStateFromCosmetic(
     nameplate: 'Nameplate',
     effect: 'Effect',
     trail: 'Trail',
+    runner: 'Runner',
   }
 
   if (!cosmetic) {
@@ -97,6 +98,7 @@ export function getSlotDisplayState(
     nameplate: 'Nameplate',
     effect: 'Effect',
     trail: 'Trail',
+    runner: 'Runner',
   }
 
   if (!loadoutId) {

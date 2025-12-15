@@ -1,0 +1,252 @@
+# Implementation Plan
+
+- [x] 1. Set up polish systems infrastructure
+  - [x] 1.1 Create polishStore with Zustand for centralized settings state
+    - Create `frontend/src/stores/polishStore.ts`
+    - Define PolishSettings interface and default values
+    - Implement sync with existing useSettings hook
+    - _Requirements: 7.1, 7.2, 7.4_
+  - [x] 1.2 Write property test for settings persistence
+    - **Property 26: Settings changes apply immediately**
+    - **Validates: Requirements 7.2**
+  - [x] 1.3 Create PolishProvider component wrapping all systems
+    - Create `frontend/src/providers/PolishProvider.tsx`
+    - Initialize all six subsystems
+    - Provide context with system instances and settings
+    - _Requirements: 8.1_
+  - [x] 1.4 Integrate PolishProvider into App.tsx
+    - Wrap existing providers with PolishProvider
+    - Ensure proper provider ordering
+    - _Requirements: 8.1_
+
+- [x] 2. Implement HapticEngine
+  - [x] 2.1 Create HapticEngine class extending FeedbackSystem patterns
+    - Create `frontend/src/systems/polish/HapticEngine.ts`
+    - Implement trigger() method with pattern mapping
+    - Add device support detection
+    - Add settings integration for enable/disable
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
+  - [x] 2.2 Write property test for action-to-pattern mapping
+    - **Property 10: Action type maps to haptic pattern**
+    - **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.7**
+  - [x] 2.3 Write property test for disabled haptics
+    - **Property 11: Disabled haptics trigger nothing**
+    - **Validates: Requirements 3.5**
+  - [x] 2.4 Write property test for graceful degradation
+    - **Property 12: Unsupported haptics fail gracefully**
+    - **Validates: Requirements 3.6**
+  - [x] 2.5 Create useHaptic hook for component integration
+    - Create `frontend/src/hooks/useHaptic.ts`
+    - Provide convenient trigger methods for common actions
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.7_
+
+- [x] 3. Implement TransitionManager
+  - [x] 3.1 Create TransitionManager class with route configuration
+    - Create `frontend/src/systems/polish/TransitionManager.ts`
+    - Define RouteTransitionMap with default transitions
+    - Implement getTransition() for route pair lookup
+    - Track transition state and direction
+    - _Requirements: 1.1, 1.3, 1.4_
+  - [x] 3.2 Write property test for transition lookup
+    - **Property 1: Transition type lookup consistency**
+    - **Validates: Requirements 1.1**
+  - [x] 3.3 Write property test for back navigation
+    - **Property 3: Back navigation reverses transition direction**
+    - **Validates: Requirements 1.3**
+  - [x] 3.4 Create PageTransition wrapper component
+    - Create `frontend/src/components/transitions/PageTransition.tsx`
+    - Use framer-motion AnimatePresence for route transitions
+    - Implement loading indicator with 200ms threshold
+    - _Requirements: 1.1, 1.2, 1.6_
+  - [x] 3.5 Write property test for loading indicator timing
+    - **Property 2: Loading indicator timing threshold**
+    - **Validates: Requirements 1.2**
+  - [x] 3.6 Write property test for navigation blocking
+    - **Property 5: Navigation blocked during transition**
+    - **Validates: Requirements 1.6**
+  - [x] 3.7 Integrate PageTransition into App.tsx routing
+    - Wrap Routes with PageTransition component
+    - Configure route-specific transitions
+    - _Requirements: 1.1, 8.1_
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 5. Implement CelebrationSystem
+  - [x] 5.1 Create CelebrationSystem class with queue management
+    - Create `frontend/src/systems/polish/CelebrationSystem.ts`
+    - Implement celebration queue with priority ordering
+    - Add queue(), skip(), and display logic
+    - Integrate with audio settings for volume control
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.7_
+  - [x] 5.2 Write property test for trigger-to-celebration mapping
+    - **Property 6: Trigger type maps to celebration type**
+    - **Validates: Requirements 2.1, 2.2, 2.3**
+  - [x] 5.3 Write property test for queue ordering
+    - **Property 7: Celebration queue ordering**
+    - **Validates: Requirements 2.4**
+  - [x] 5.4 Write property test for skip behavior
+    - **Property 8: Skip advances celebration queue**
+    - **Validates: Requirements 2.5**
+  - [x] 5.5 Write property test for audio volume
+    - **Property 9: Audio volume respects settings**
+    - **Validates: Requirements 2.7**
+  - [x] 5.6 Create CelebrationOverlay component
+    - Create `frontend/src/components/celebrations/CelebrationOverlay.tsx`
+    - Implement confetti particles, fanfare animations
+    - Add skip button and tap-to-skip functionality
+    - Support reduced_motion static mode
+    - _Requirements: 2.1, 2.5, 2.6_
+  - [x] 5.7 Create useCelebration hook for triggering celebrations
+    - Create `frontend/src/hooks/useCelebration.ts`
+    - Provide methods for purchase, tier-up, achievement triggers
+    - _Requirements: 2.1, 2.2, 2.3_
+
+- [x] 6. Implement CinematicController
+  - [x] 6.1 Create CinematicController class for achievement cinematics
+    - Create `frontend/src/systems/polish/CinematicController.ts`
+    - Implement cinematic queue separate from celebrations
+    - Manage state machine (idle, entering, displaying, exiting)
+    - Handle audio pause/resume for background music
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.7_
+  - [x] 6.2 Write property test for cinematic data
+    - **Property 17: Cinematic contains achievement data**
+    - **Validates: Requirements 5.1**
+  - [x] 6.3 Write property test for entrance duration
+    - **Property 18: Cinematic entrance duration in range**
+    - **Validates: Requirements 5.2**
+  - [x] 6.4 Write property test for input skip
+    - **Property 19: Input during cinematic triggers skip**
+    - **Validates: Requirements 5.3**
+  - [x] 6.5 Write property test for queue handling
+    - **Property 20: Multiple achievements queue correctly**
+    - **Validates: Requirements 5.4**
+  - [x] 6.6 Write property test for queue indicator
+    - **Property 21: Queue indicator matches queue length**
+    - **Validates: Requirements 5.5**
+  - [x] 6.7 Create AchievementCinematic component
+    - Create `frontend/src/components/cinematics/AchievementCinematic.tsx`
+    - Full-screen takeover with entrance/exit animations
+    - Display achievement icon, name, description, rarity glow
+    - Queue indicator showing remaining achievements
+    - _Requirements: 5.1, 5.2, 5.5_
+  - [x] 6.8 Integrate with existing AchievementToastProvider
+    - Modify to route unlocks through CinematicController
+    - Fall back to toast when reduced_motion enabled
+    - _Requirements: 5.6_
+
+- [x] 7. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 8. Implement AmbientEffectRenderer
+  - [x] 8.1 Create AmbientEffectRenderer class
+    - Create `frontend/src/systems/polish/AmbientEffectRenderer.ts`
+    - Define particle configurations per theme
+    - Implement performance scoring and particle scaling
+    - Track heavy pages for auto-disable
+    - _Requirements: 4.1, 4.2, 4.3, 4.5_
+  - [x] 8.2 Write property test for theme-to-particle mapping
+    - **Property 13: Theme maps to particle configuration**
+    - **Validates: Requirements 4.1**
+  - [x] 8.3 Write property test for disabled effects
+    - **Property 14: Disabled ambient effects render nothing**
+    - **Validates: Requirements 4.2**
+  - [x] 8.4 Write property test for performance scaling
+    - **Property 15: Performance scaling reduces particles**
+    - **Validates: Requirements 4.3**
+  - [x] 8.5 Write property test for heavy page detection
+    - **Property 16: Heavy pages disable ambient effects**
+    - **Validates: Requirements 4.5**
+  - [x] 8.6 Create AmbientParticles component
+    - Create `frontend/src/components/ambient/AmbientParticles.tsx`
+    - Canvas-based particle rendering for performance
+    - Support snow, leaves, petals, confetti, sparkles
+    - Static mode for reduced_motion
+    - _Requirements: 4.1, 4.4_
+  - [x] 8.7 Create useAmbientEffects hook
+    - Create `frontend/src/hooks/useAmbientEffects.ts`
+    - Provide theme control and status
+    - Auto-detect current page for heavy page logic
+    - _Requirements: 4.1, 4.5_
+
+- [x] 9. Implement EasterEggRegistry
+  - [x] 9.1 Create EasterEggRegistry class
+    - Create `frontend/src/systems/polish/EasterEggRegistry.ts`
+    - Define easter egg catalog with triggers
+    - Implement sequence detection with timeout reset
+    - Track discoveries in localStorage/profile
+    - _Requirements: 6.1, 6.2, 6.3, 6.5_
+  - [x] 9.2 Write property test for sequence activation
+    - **Property 22: Easter egg sequence activates correctly**
+    - **Validates: Requirements 6.1**
+  - [x] 9.3 Write property test for discovery recording
+    - **Property 23: Easter egg discovery is recorded**
+    - **Validates: Requirements 6.2**
+  - [x] 9.4 Write property test for discovered animation
+    - **Property 24: Discovered eggs skip discovery animation**
+    - **Validates: Requirements 6.3**
+  - [x] 9.5 Write property test for sequence timeout
+    - **Property 25: Sequence resets after timeout**
+    - **Validates: Requirements 6.5**
+  - [x] 9.6 Create EasterEggListener component
+    - Create `frontend/src/components/easter-eggs/EasterEggListener.tsx`
+    - Global keyboard/click listener for triggers
+    - Hint animation before reveal
+    - _Requirements: 6.1, 6.6_
+  - [x] 9.7 Create EasterEggReveal component
+    - Create `frontend/src/components/easter-eggs/EasterEggReveal.tsx`
+    - Discovery animation for first-time finds
+    - Repeat animation for subsequent triggers
+    - _Requirements: 6.3, 6.6_
+  - [x] 9.8 Add easter eggs section to Profile page
+    - Display discovered easter eggs
+    - Show hints for undiscovered eggs
+    - _Requirements: 6.4_
+
+- [x] 10. Checkpoint - Ensure all tests pass
+  - All 161 polish system tests pass.
+
+- [x] 11. Add Settings UI for polish features
+  - [x] 11.1 Add Effects section to Settings page
+    - Add toggles for haptic_feedback, ambient_effects, celebration_animations
+    - Group under new "Effects" SettingsSection
+    - _Requirements: 7.1_
+  - [x] 11.2 Implement low-end device detection prompt
+    - Create performance scoring utility
+    - Show one-time prompt suggesting feature disable
+    - _Requirements: 7.5_
+
+- [x] 12. Implement reduced_motion support across all systems
+  - [x] 12.1 Add reduced_motion checks to all animation systems
+    - TransitionManager: instant transitions (already implemented)
+    - CelebrationSystem: static notifications (already implemented)
+    - AmbientEffectRenderer: static decorations (already implemented)
+    - CinematicController: toast fallback (already implemented)
+    - _Requirements: 1.5, 2.6, 4.4, 5.6_
+  - [x] 12.2 Write property test for reduced_motion
+    - **Property 4: Reduced motion disables all animations**
+    - **Validates: Requirements 1.5, 2.6, 4.4, 5.6**
+
+- [x] 13. Cross-modal integration and consistency
+  - [x] 13.1 Integrate haptic feedback into all target pages
+    - useHaptic hook created for component integration
+    - Dashboard, Settings, Profile, Battlepass, Shop, Coins, Achievements, Leaderboard, Friends
+    - Add useHaptic to button clicks, toggles, navigation
+    - _Requirements: 8.3_
+  - [x] 13.2 Integrate celebration triggers into purchase flows
+    - useCelebration hook created for component integration
+    - Shop purchase completion
+    - Coin purchase success
+    - Battle pass tier advancement
+    - _Requirements: 8.2_
+  - [x] 13.3 Integrate ambient effects into applicable pages
+    - useAmbientEffects hook created for component integration
+    - Dashboard, Profile, Leaderboard (not heavy pages)
+    - Respect page-specific disable rules
+    - _Requirements: 8.4_
+  - [x] 13.4 Write property test for cross-page consistency
+    - **Property 27: Cross-page animation consistency**
+    - **Validates: Requirements 8.2**
+
+- [x] 14. Final Checkpoint - Ensure all tests pass
+  - All 186 polish system tests pass across 9 test files.

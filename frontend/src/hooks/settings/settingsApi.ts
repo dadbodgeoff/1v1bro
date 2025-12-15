@@ -20,8 +20,7 @@ import type {
   PrivacySettings,
 } from '../../types/settings'
 import { getDefaultSettings } from '../../types/settings'
-
-const API_BASE = import.meta.env.VITE_API_URL || ''
+import { API_BASE } from '../../utils/constants'
 
 export interface SettingsApiOptions {
   getAuthHeaders: () => Record<string, string>
@@ -34,7 +33,7 @@ export async function fetchSettingsApi(
   options: Pick<SettingsApiOptions, 'getAuthHeaders' | 'onError'>
 ): Promise<UserSettings | null> {
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/me`, {
+    const response = await fetch(`${API_BASE}/settings/me`, {
       headers: options.getAuthHeaders(),
       credentials: 'include',
     })
@@ -58,7 +57,7 @@ export async function updateNotificationsApi(
 ): Promise<NotificationPreferences | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/notifications`, {
+    const response = await fetch(`${API_BASE}/settings/notifications`, {
       method: 'PUT',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -85,7 +84,7 @@ export async function updateAudioApi(
 ): Promise<AudioSettings | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/audio`, {
+    const response = await fetch(`${API_BASE}/settings/audio`, {
       method: 'PUT',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -112,7 +111,7 @@ export async function updateVideoApi(
 ): Promise<VideoSettings | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/video`, {
+    const response = await fetch(`${API_BASE}/settings/video`, {
       method: 'PUT',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -139,7 +138,7 @@ export async function updateAccessibilityApi(
 ): Promise<AccessibilitySettings | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/accessibility`, {
+    const response = await fetch(`${API_BASE}/settings/accessibility`, {
       method: 'PUT',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -166,7 +165,7 @@ export async function updateKeybindsApi(
 ): Promise<Keybinds | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/keybinds`, {
+    const response = await fetch(`${API_BASE}/settings/keybinds`, {
       method: 'PUT',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -192,7 +191,7 @@ export async function resetKeybindsApi(
 ): Promise<Keybinds | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/keybinds/reset`, {
+    const response = await fetch(`${API_BASE}/settings/keybinds/reset`, {
       method: 'POST',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -218,7 +217,7 @@ export async function updatePrivacyApi(
 ): Promise<PrivacySettings | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/privacy`, {
+    const response = await fetch(`${API_BASE}/settings/privacy`, {
       method: 'PUT',
       headers: options.getAuthHeaders(),
       credentials: 'include',

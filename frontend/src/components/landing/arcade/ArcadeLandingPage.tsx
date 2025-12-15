@@ -347,7 +347,7 @@ export function ArcadeLandingPage({
             zIndex: 10,
           }}
         >
-          <CRTMonitor isPoweredOn={bootStatus === 'complete'}>
+          <CRTMonitor isPoweredOn={bootStatus === 'complete'} onControlPanelClick={() => { sound.playClickBlip(); navigate('/login'); }}>
             <DashboardUI
               isAuthenticated={isAuthenticated}
               onPrimaryCTA={handlePrimaryCTA}

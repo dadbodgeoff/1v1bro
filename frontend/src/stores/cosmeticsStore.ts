@@ -6,8 +6,7 @@
 
 import { create } from 'zustand'
 import type { Cosmetic, InventoryItem, Loadout } from '@/types/cosmetic'
-
-const API_BASE = import.meta.env.VITE_API_URL || ''
+import { API_BASE } from '@/utils/constants'
 
 /**
  * Raw loadout with full cosmetic objects (as returned by backend)
@@ -21,6 +20,7 @@ export interface LoadoutWithDetails {
   effect_equipped: Cosmetic | null
   trail_equipped: Cosmetic | null
   playercard_equipped: Cosmetic | null
+  runner_equipped: Cosmetic | null
 }
 
 interface CosmeticsState {
@@ -85,7 +85,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
 
     set({ shopLoading: true, error: null })
     try {
-      const response = await fetch(`${API_BASE}/api/v1/cosmetics/shop`, {
+      const response = await fetch(`${API_BASE}/cosmetics/shop`, {
         headers: getAuthHeaders(token),
         credentials: 'include',
       })
@@ -117,7 +117,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
 
     set({ inventoryLoading: true, error: null })
     try {
-      const response = await fetch(`${API_BASE}/api/v1/cosmetics/me/inventory`, {
+      const response = await fetch(`${API_BASE}/cosmetics/me/inventory`, {
         headers: getAuthHeaders(token),
         credentials: 'include',
       })
@@ -142,7 +142,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
   fetchLoadout: async (token, _force = false) => {
     set({ loadoutLoading: true, error: null })
     try {
-      const response = await fetch(`${API_BASE}/api/v1/cosmetics/me/equipped`, {
+      const response = await fetch(`${API_BASE}/cosmetics/me/equipped`, {
         headers: getAuthHeaders(token),
         credentials: 'include',
       })
@@ -161,6 +161,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
         effect_equipped: rawLoadout.effect_equipped || null,
         trail_equipped: rawLoadout.trail_equipped || null,
         playercard_equipped: rawLoadout.playercard_equipped || null,
+        runner_equipped: rawLoadout.runner_equipped || null,
       }
 
       const transformedLoadout: Loadout = {
@@ -171,6 +172,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
         effect: rawLoadout.effect_equipped?.id ?? rawLoadout.effect_equipped ?? undefined,
         trail: rawLoadout.trail_equipped?.id ?? rawLoadout.trail_equipped ?? undefined,
         playercard: rawLoadout.playercard_equipped?.id ?? rawLoadout.playercard_equipped ?? undefined,
+        runner: rawLoadout.runner_equipped?.id ?? rawLoadout.runner_equipped ?? undefined,
       }
 
       set({
@@ -189,7 +191,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
   purchaseCosmetic: async (token, cosmeticId) => {
     set({ error: null })
     try {
-      const response = await fetch(`${API_BASE}/api/v1/cosmetics/${cosmeticId}/purchase`, {
+      const response = await fetch(`${API_BASE}/cosmetics/${cosmeticId}/purchase`, {
         method: 'POST',
         headers: getAuthHeaders(token),
         credentials: 'include',
@@ -220,7 +222,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
   equipCosmetic: async (token, cosmeticId) => {
     set({ error: null })
     try {
-      const response = await fetch(`${API_BASE}/api/v1/cosmetics/${cosmeticId}/equip`, {
+      const response = await fetch(`${API_BASE}/cosmetics/${cosmeticId}/equip`, {
         method: 'POST',
         headers: getAuthHeaders(token),
         credentials: 'include',
@@ -245,7 +247,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
         throw new Error('Cosmetic not found in inventory')
       }
 
-      const response = await fetch(`${API_BASE}/api/v1/cosmetics/me/unequip`, {
+      const response = await fetch(`${API_BASE}/cosmetics/me/unequip`, {
         method: 'POST',
         headers: getAuthHeaders(token),
         credentials: 'include',

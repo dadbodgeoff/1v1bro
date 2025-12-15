@@ -34,6 +34,7 @@ class CosmeticCreateRequest(BaseSchema):
     available_from: Optional[datetime] = None
     available_until: Optional[datetime] = None
     skin_id: Optional[str] = Field(None, max_length=50)
+    model_url: Optional[str] = Field(None, description="3D GLB model URL for interactive shop preview")
     rotation_group: Optional[str] = Field(None, max_length=50)
     sort_order: int = Field(default=0)
     
@@ -68,6 +69,7 @@ class CosmeticUpdateRequest(BaseSchema):
     available_from: Optional[datetime] = None
     available_until: Optional[datetime] = None
     skin_id: Optional[str] = Field(None, max_length=50)
+    model_url: Optional[str] = Field(None, description="3D GLB model URL for interactive shop preview")
     rotation_group: Optional[str] = Field(None, max_length=50)
     sort_order: Optional[int] = None
 
@@ -108,6 +110,7 @@ class AdminCosmeticResponse(BaseSchema):
     available_from: Optional[datetime] = None
     available_until: Optional[datetime] = None
     skin_id: Optional[str] = None
+    model_url: Optional[str] = None
     rotation_group: Optional[str] = None
     sort_order: int = 0
     owned_by_count: int = 0

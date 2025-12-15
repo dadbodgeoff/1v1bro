@@ -11,8 +11,8 @@
 import { useState, useCallback, useRef } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import type { Profile, ProfileUpdate, PrivacySettingsUpdate, SignedUploadUrl } from '../types/profile';
+import { API_BASE } from '../utils/constants';
 
-const API_BASE = import.meta.env.VITE_API_URL || '';
 const MAX_RETRIES = 3;
 const BASE_DELAY_MS = 1000;
 
@@ -88,8 +88,8 @@ export function useProfile(): UseProfileReturn {
 
     try {
       const endpoint = userId 
-        ? `${API_BASE}/api/v1/profiles/${userId}`
-        : `${API_BASE}/api/v1/profiles/me`;
+        ? `${API_BASE}/profiles/${userId}`
+        : `${API_BASE}/profiles/me`;
       
       const response = await fetchWithRetry(endpoint);
 
@@ -117,7 +117,7 @@ export function useProfile(): UseProfileReturn {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE}/api/v1/profiles/me`, {
+      const response = await fetch(`${API_BASE}/profiles/me`, {
         method: 'PUT',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -144,7 +144,7 @@ export function useProfile(): UseProfileReturn {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE}/api/v1/profiles/me/privacy`, {
+      const response = await fetch(`${API_BASE}/profiles/me/privacy`, {
         method: 'PUT',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -170,7 +170,7 @@ export function useProfile(): UseProfileReturn {
     setError(null);
     try {
       // 1. Get signed upload URL
-      const urlResponse = await fetch(`${API_BASE}/api/v1/profiles/me/avatar/upload-url?content_type=${encodeURIComponent(file.type)}`, {
+      const urlResponse = await fetch(`${API_BASE}/profiles/me/avatar/upload-url?content_type=${encodeURIComponent(file.type)}`, {
         method: 'POST',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -196,7 +196,7 @@ export function useProfile(): UseProfileReturn {
       }
 
       // 3. Confirm upload
-      const confirmResponse = await fetch(`${API_BASE}/api/v1/profiles/me/avatar/confirm`, {
+      const confirmResponse = await fetch(`${API_BASE}/profiles/me/avatar/confirm`, {
         method: 'POST',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -222,7 +222,7 @@ export function useProfile(): UseProfileReturn {
     setError(null);
     try {
       // 1. Get signed upload URL
-      const urlResponse = await fetch(`${API_BASE}/api/v1/profiles/me/banner/upload-url?content_type=${encodeURIComponent(file.type)}`, {
+      const urlResponse = await fetch(`${API_BASE}/profiles/me/banner/upload-url?content_type=${encodeURIComponent(file.type)}`, {
         method: 'POST',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -248,7 +248,7 @@ export function useProfile(): UseProfileReturn {
       }
 
       // 3. Confirm upload
-      const confirmResponse = await fetch(`${API_BASE}/api/v1/profiles/me/banner/confirm`, {
+      const confirmResponse = await fetch(`${API_BASE}/profiles/me/banner/confirm`, {
         method: 'POST',
         headers: getAuthHeaders(),
         credentials: 'include',

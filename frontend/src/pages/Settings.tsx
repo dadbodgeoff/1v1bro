@@ -16,6 +16,7 @@ import {
   TwoFactorSetup,
   AccountDangerZone,
 } from '../components/settings/enterprise';
+import { usePolishStore } from '../stores/polishStore';
 import type { PrivacySettingsUpdate } from '../types/profile';
 import type { Keybinds, VideoQuality, ColorblindMode, FPSLimit } from '../types/settings';
 import { DEFAULT_KEYBINDS } from '../types/settings';
@@ -55,6 +56,10 @@ export const Settings: React.FC = () => {
 
   // Local keybinds state for conflict detection
   const [localKeybinds, setLocalKeybinds] = useState<Keybinds>(DEFAULT_KEYBINDS);
+
+  // Polish settings
+  const polishSettings = usePolishStore((s) => s.settings);
+  const updatePolishSettings = usePolishStore((s) => s.updateSettings);
 
   useEffect(() => {
     fetchProfile();
@@ -152,6 +157,42 @@ export const Settings: React.FC = () => {
             <SettingsSlider id="music_volume" label="Music Volume" value={settings?.audio.music ?? 70} min={0} max={100} defaultValue={70} onChange={(v) => updateAudioDebounced({ music: v })} showReset />
             <SettingsSlider id="sfx_volume" label="Sound Effects" value={settings?.audio.sfx ?? 80} min={0} max={100} defaultValue={80} onChange={(v) => updateAudioDebounced({ sfx: v })} showReset />
             <SettingsSlider id="voice_volume" label="Voice/Announcer" value={settings?.audio.voice ?? 100} min={0} max={100} defaultValue={100} onChange={(v) => updateAudioDebounced({ voice: v })} showReset />
+          </SettingsSection>
+
+          {/* Effects Section */}
+          <SettingsSection id="effects" icon="✨" title="Effects" description="Visual and haptic feedback settings" loading={loading}>
+            <SettingsToggle
+              id="haptic_feedback"
+              label="Haptic Feedback"
+              description="Vibration feedback on mobile devices"
+              checked={polishSettings.hapticFeedback}
+              onChange={(v) => updatePolishSettings({ hapticFeedback: v })}
+              loading={saving}
+            />
+            <SettingsToggle
+              id="ambient_effects"
+              label="Ambient Effects"
+              description="Seasonal particle effects in the background"
+              checked={polishSettings.ambientEffects}
+              onChange={(v) => updatePolishSettings({ ambientEffects: v })}
+              loading={saving}
+            />
+            <SettingsToggle
+              id="celebration_animations"
+              label="Celebration Animations"
+              description="Reward and achievement animations"
+              checked={polishSettings.celebrationAnimations}
+              onChange={(v) => updatePolishSettings({ celebrationAnimations: v })}
+              loading={saving}
+            />
+            <SettingsToggle
+              id="page_transitions"
+              label="Page Transitions"
+              description="Animated transitions between pages"
+              checked={polishSettings.pageTransitions}
+              onChange={(v) => updatePolishSettings({ pageTransitions: v })}
+              loading={saving}
+            />
           </SettingsSection>
 
           {/* Video Section */}

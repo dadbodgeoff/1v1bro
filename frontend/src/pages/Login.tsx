@@ -2,19 +2,26 @@
  * Login - Clean authentication page
  */
 
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { authAPI } from '@/services/api'
 import { useAuthStore } from '@/stores/authStore'
+import { useAuthAnalytics } from '@/hooks/useAuthAnalytics'
 
 export function Login() {
   const navigate = useNavigate()
   const setUser = useAuthStore((s) => s.setUser)
+  const authAnalytics = useAuthAnalytics()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  // Track page view on mount
+  useEffect(() => {
+    authAnalytics.trackLoginSuccess('page_view') // Track login page view
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -23,10 +30,13 @@ export function Login() {
 
     try {
       const response = await authAPI.login({ email, password })
+      authAnalytics.trackLoginSuccess('email')
       setUser(response.user, response.access_token)
       navigate('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed')
+      const errorMsg = err instanceof Error ? err.message : 'Login failed'
+      authAnalytics.trackLoginFailure(errorMsg, 'email')
+      setError(errorMsg)
     } finally {
       setIsLoading(false)
     }

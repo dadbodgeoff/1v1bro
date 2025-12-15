@@ -1,0 +1,211 @@
+# Implementation Plan
+
+- [x] 1. Set up testing infrastructure and core interfaces
+  - [x] 1.1 Add fast-check dependency to frontend and configure test runner
+    - Install fast-check for property-based testing
+    - Configure vitest to run property tests
+    - _Requirements: Testing Strategy_
+  - [x] 1.2 Create shared type definitions for combo and death systems
+    - Define ComboState, ComboEvent, DeathContext interfaces
+    - Export from survival/types/survival.ts
+    - _Requirements: 2.1, 2.2, 7.1_
+
+- [x] 2. Implement ComboSystem
+  - [x] 2.1 Create ComboSystem class with proximity detection
+    - Implement checkProximity() with near-miss (0.5u) and perfect dodge (0.2u) thresholds
+    - Implement combo increment logic (+1 for near-miss, +3 for perfect dodge)
+    - Implement onCollision() to reset combo
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [x] 2.2 Write property test for near-miss combo increment
+    - **Property 3: Near-miss combo increment**
+    - **Validates: Requirements 2.1**
+  - [x] 2.3 Write property test for perfect dodge combo increment
+    - **Property 4: Perfect dodge combo increment**
+    - **Validates: Requirements 2.2**
+  - [x] 2.4 Write property test for collision resets combo
+    - **Property 5: Collision resets combo**
+    - **Validates: Requirements 2.3**
+  - [x] 2.5 Implement combo decay logic
+    - Add update() method with 3-second decay timer
+    - Decay combo by 1 per second after timer expires
+    - _Requirements: 2.4_
+  - [x] 2.6 Write property test for combo decay timing
+    - **Property 6: Combo decay timing**
+    - **Validates: Requirements 2.4**
+  - [x] 2.7 Implement score multiplier calculation
+    - Add getMultiplier() returning (1 + combo * 0.1)
+    - Emit ComboEvent on changes with multiplier value
+    - _Requirements: 2.5, 2.6_
+  - [x] 2.8 Write property test for score multiplier calculation
+    - **Property 7: Score multiplier calculation**
+    - **Validates: Requirements 2.6**
+  - [x] 2.9 Write property test for combo milestone events
+    - **Property 9: Combo milestone events**
+    - **Validates: Requirements 3.4**
+
+- [x] 3. Implement DeathManager with slow-mo
+  - [x] 3.1 Create DeathManager class with slow-mo state machine
+    - Implement triggerDeath() to capture context and start slow-mo
+    - Set time scale to 0.2 for 1.5 seconds
+    - Track slow-mo progress and restore time scale
+    - _Requirements: 1.1, 1.3_
+  - [x] 3.2 Write property test for slow-mo time scale on death
+    - **Property 1: Slow-mo time scale on death**
+    - **Validates: Requirements 1.1**
+  - [x] 3.3 Write property test for slow-mo restoration
+    - **Property 2: Slow-mo restoration**
+    - **Validates: Requirements 1.3**
+  - [x] 3.4 Integrate DeathManager with GameLoop
+    - Connect to collision detection in SurvivalEngine
+    - Apply time scale to GameLoop
+    - Trigger camera zoom toward collision point
+    - _Requirements: 1.2, 1.4_
+  - [x] 3.5 Implement hitstop trigger on perfect dodge
+    - Call GameLoop.triggerHitstop(3) on perfect dodge events
+    - _Requirements: 3.3_
+  - [x] 3.6 Write property test for hitstop on perfect dodge
+    - **Property 8: Hitstop on perfect dodge**
+    - **Validates: Requirements 3.3**
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 5. Implement InputRecorder
+  - [x] 5.1 Create InputRecorder class with event capture
+    - Implement start(seed) to begin recording with seed
+    - Implement recordInput() to store type, timestamp, position
+    - Use compact numeric encoding for input types
+    - _Requirements: 4.1, 4.2, 8.1_
+  - [x] 5.2 Write property test for input recording contains required fields
+    - **Property 10: Input recording contains required fields**
+    - **Validates: Requirements 4.2**
+  - [x] 5.3 Implement serialization with compression
+    - Implement serialize() to produce compressed JSON
+    - Use delta encoding for timestamps
+    - Implement static deserialize() to reconstruct recording
+    - _Requirements: 4.3, 4.5_
+  - [x] 5.4 Write property test for input recording round-trip
+    - **Property 11: Input recording round-trip**
+    - **Validates: Requirements 4.3, 4.5**
+  - [x] 5.5 Write property test for recording size constraint
+    - **Property 12: Recording size constraint**
+    - **Validates: Requirements 4.4**
+
+- [x] 6. Implement GhostReplay
+  - [x] 6.1 Create GhostReplay class with playback logic
+    - Implement load() to parse recording
+    - Implement update() to advance through events by game time
+    - Implement getNextInput() to return inputs at correct timestamps
+    - _Requirements: 5.1, 5.2_
+  - [x] 6.2 Write property test for ghost input timing accuracy
+    - **Property 13: Ghost input timing accuracy**
+    - **Validates: Requirements 5.2**
+  - [x] 6.3 Implement ghost rendering integration
+    - Create ghost mesh with 50% opacity and cyan tint
+    - Apply recorded inputs to ghost position
+    - Implement fade-out and despawn at recording end
+    - _Requirements: 5.3, 5.5_
+  - [x] 6.4 Implement deterministic obstacle generation
+    - Ensure SeededRandom is used for all obstacle placement
+    - Store seed in InputRecording
+    - Regenerate identical obstacles on replay
+    - _Requirements: 8.2, 8.3_
+  - [x] 6.5 Write property test for seed determinism for obstacles
+    - **Property 20: Seed determinism for obstacles**
+    - **Validates: Requirements 8.2**
+  - [x] 6.6 Write property test for replay position determinism
+    - **Property 21: Replay position determinism**
+    - **Validates: Requirements 8.4**
+
+- [x] 7. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 8. Implement Backend Survival API
+  - [x] 8.1 Create Pydantic schemas for survival endpoints
+    - Define SurvivalRunCreate, SurvivalRunResponse
+    - Define DeathEventCreate, TelemetryAggregate
+    - Define LeaderboardEntry, LeaderboardResponse
+    - _Requirements: 6.2, 7.1_
+  - [x] 8.2 Implement SurvivalRunService
+    - Implement create_run() to save run data
+    - Implement get_personal_best() to fetch PB with ghost
+    - Implement get_ghost_data() for ghost replay
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 8.3 Write property test for run data completeness
+    - **Property 15: Run data completeness**
+    - **Validates: Requirements 6.2**
+  - [x] 8.4 Write property test for personal best update condition
+    - **Property 14: Personal best update condition**
+    - **Validates: Requirements 5.4, 6.3**
+  - [x] 8.5 Implement SurvivalTelemetryService
+    - Implement record_death() to store death events
+    - Implement get_aggregated_telemetry() for analytics
+    - Implement get_death_heatmap() for visualization
+    - _Requirements: 7.2, 7.3, 7.4_
+  - [x] 8.6 Write property test for death telemetry completeness
+    - **Property 18: Death telemetry completeness**
+    - **Validates: Requirements 7.1**
+  - [x] 8.7 Write property test for telemetry aggregation accuracy
+    - **Property 19: Telemetry aggregation accuracy**
+    - **Validates: Requirements 7.3**
+  - [x] 8.8 Implement SurvivalLeaderboardService
+    - Implement get_leaderboard() with top 100 limit
+    - Implement get_player_rank() for rank outside top 100
+    - Implement refresh_leaderboard() to update materialized view
+    - _Requirements: 6.4, 6.5_
+  - [x] 8.9 Write property test for leaderboard ordering
+    - **Property 16: Leaderboard ordering**
+    - **Validates: Requirements 6.4**
+  - [x] 8.10 Write property test for player rank inclusion
+    - **Property 17: Player rank inclusion**
+    - **Validates: Requirements 6.5**
+
+- [x] 9. Create API Routes
+  - [x] 9.1 Create survival router with run endpoints
+    - POST /survival/runs - Submit completed run
+    - GET /survival/runs/personal-best - Get PB with ghost data
+    - GET /survival/ghost/{user_id} - Get ghost data for user
+    - _Requirements: 6.1, 5.1_
+  - [x] 9.2 Create leaderboard endpoints
+    - GET /survival/leaderboard - Get top 100 with player rank
+    - _Requirements: 6.4, 6.5_
+  - [x] 9.3 Create telemetry endpoints
+    - GET /survival/telemetry - Get aggregated analytics (admin only)
+    - GET /survival/telemetry/heatmap - Get death heatmap data
+    - _Requirements: 7.4_
+
+- [x] 10. Integrate Frontend with Backend
+  - [x] 10.1 Create SurvivalApiService
+    - Implement submitRun() to POST run data
+    - Implement getPersonalBest() to fetch PB
+    - Implement getLeaderboard() to fetch rankings
+    - _Requirements: 6.1_
+  - [x] 10.2 Wire up run submission on game over
+    - Collect run data from SurvivalEngine
+    - Include ghost data from InputRecorder
+    - Submit to backend after slow-mo death completes
+    - _Requirements: 6.1, 7.5_
+  - [x] 10.3 Wire up ghost loading on game start
+    - Fetch personal best ghost data
+    - Initialize GhostReplay if data exists
+    - Spawn ghost character
+    - _Requirements: 5.1_
+  - [x] 10.4 Implement personal best update flow
+    - Compare run distance to current PB
+    - Update local PB if exceeded
+    - Show "New Personal Best!" notification
+    - _Requirements: 5.4_
+
+- [x] 11. Implement Visual Feedback System
+  - [x] 11.1 Create feedback indicators for combo events
+    - "Close!" indicator for near-miss
+    - "Perfect!" indicator with particle burst for perfect dodge
+    - Combo milestone notifications (5x, 10x, etc.)
+    - _Requirements: 3.1, 3.2, 3.4_
+  - [x] 11.2 Position indicators in screen space
+    - Convert world position to screen coordinates
+    - Animate indicators with fade-out
+    - _Requirements: 3.5_
+
+- [x] 12. Final Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.

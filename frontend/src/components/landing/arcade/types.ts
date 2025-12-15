@@ -91,6 +91,8 @@ export interface CRTMonitorProps {
   mode?: 'mobile' | 'tablet' | 'desktop';
   /** Whether the monitor is powered on */
   isPoweredOn?: boolean;
+  /** Callback when control panel / insert coin is clicked */
+  onControlPanelClick?: () => void;
 }
 
 /** CRT Screen container props */
@@ -255,6 +257,10 @@ export interface ArcadeSoundHook {
   playStartupChime: () => void;
   playHoverBlip: () => void;
   playClickBlip: () => void;
+  // Extended boot sequence sounds
+  playBootBlip?: () => void;
+  playBootLine?: () => void;
+  playReadyFanfare?: () => void;
 }
 
 // ============================================

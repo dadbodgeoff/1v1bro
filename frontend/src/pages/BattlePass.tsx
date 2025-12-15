@@ -17,6 +17,7 @@ import { useBattlePass } from '@/hooks/useBattlePass'
 import { useToast } from '@/hooks/useToast'
 import { useConfetti } from '@/hooks/useConfetti'
 import { useBalance } from '@/hooks/useBalance'
+import { useBattlePassAnalytics } from '@/hooks/useBattlePassAnalytics'
 import {
   BattlePassHeader,
   ProgressSection,
@@ -34,6 +35,7 @@ export function BattlePass() {
   const confetti = useConfetti()
   const { refreshBalance } = useBalance()
   const { showWelcome, closeWelcome } = useBattlePassWelcome()
+  const bpAnalytics = useBattlePassAnalytics()
 
   const {
     season,
@@ -53,6 +55,13 @@ export function BattlePass() {
     fetchProgress()
   }, [fetchSeason, fetchProgress])
 
+  // Track battle pass view when progress loads
+  useEffect(() => {
+    if (progress) {
+      bpAnalytics.trackBattlePassView(progress.current_tier, progress.current_xp)
+    }
+  }, [progress?.current_tier]) // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (season?.id) {
       fetchTiers(season.id)
@@ -64,6 +73,7 @@ export function BattlePass() {
     if (success) {
       confetti.fire({ rarity: isPremium ? 'epic' : 'uncommon' })
       toast.success('Reward Claimed!', `Tier ${tier} reward unlocked`)
+      bpAnalytics.trackRewardClaim(tier, isPremium ? 'premium' : 'free', `tier_${tier}`)
     }
     return success
   }
@@ -75,6 +85,7 @@ export function BattlePass() {
       refreshBalance()
       confetti.fire({ rarity: 'legendary' })
       toast.success('Premium Unlocked!', 'Enjoy your exclusive rewards')
+      bpAnalytics.trackPremiumPurchase(650, 'coins')
     } else if (error?.includes('Insufficient')) {
       // Handle insufficient funds - redirect to coin shop
       toast.error('Insufficient Coins', 'Get more coins to unlock premium')

@@ -6,9 +6,11 @@
  * - Discount percentage badge
  * - Bundle pricing support
  * - Animated coin icon
+ * - Animated number counting (Enterprise Polish 2025)
  */
 
 import { cn } from '@/utils/helpers'
+import { AnimatedNumber } from '@/components/ui/animations'
 
 interface PriceTagProps {
   price: number
@@ -91,13 +93,15 @@ export function PriceTag({
       {/* Current Price */}
       <div className="flex items-center gap-1.5">
         {showCoin && <CoinIcon className={cn('text-[#f59e0b]', styles.coin)} />}
-        <span className={cn(
-          'font-bold text-white',
-          styles.price,
-          hasDiscount && 'text-[#10b981]'
-        )}>
-          {price.toLocaleString()}
-        </span>
+        <AnimatedNumber
+          value={price}
+          duration={600}
+          className={cn(
+            'font-bold text-white',
+            styles.price,
+            hasDiscount && 'text-[#10b981]'
+          )}
+        />
       </div>
     </div>
   )

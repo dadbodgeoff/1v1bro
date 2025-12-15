@@ -5,8 +5,7 @@
  */
 
 import type { SettingsApiOptions } from './settingsApi'
-
-const API_BASE = import.meta.env.VITE_API_URL || ''
+import { API_BASE } from '../../utils/constants'
 
 export interface TwoFactorSetupResponse {
   secret: string
@@ -24,7 +23,7 @@ export async function enable2FAApi(
 ): Promise<TwoFactorSetupResponse | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/auth/2fa/enable`, {
+    const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
       method: 'POST',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -50,7 +49,7 @@ export async function verify2FAApi(
 ): Promise<boolean> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/auth/2fa/verify`, {
+    const response = await fetch(`${API_BASE}/auth/2fa/verify`, {
       method: 'POST',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -76,7 +75,7 @@ export async function disable2FAApi(
 ): Promise<boolean> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/auth/2fa/disable`, {
+    const response = await fetch(`${API_BASE}/auth/2fa/disable`, {
       method: 'DELETE',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -101,7 +100,7 @@ export async function exportDataApi(
 ): Promise<DataExportResponse | null> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/account/export`, {
+    const response = await fetch(`${API_BASE}/settings/account/export`, {
       method: 'POST',
       headers: options.getAuthHeaders(),
       credentials: 'include',
@@ -128,7 +127,7 @@ export async function deleteAccountApi(
 ): Promise<boolean> {
   options.onSavingStart()
   try {
-    const response = await fetch(`${API_BASE}/api/v1/settings/account`, {
+    const response = await fetch(`${API_BASE}/settings/account`, {
       method: 'DELETE',
       headers: options.getAuthHeaders(),
       credentials: 'include',

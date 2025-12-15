@@ -28,7 +28,7 @@ from app.schemas.admin_cosmetic import (
 # Strategies for generating test data
 # =============================================================================
 
-cosmetic_types = st.sampled_from(["skin", "emote", "banner", "nameplate", "effect", "trail"])
+cosmetic_types = st.sampled_from(["skin", "emote", "banner", "nameplate", "effect", "trail", "runner"])
 rarities = st.sampled_from(["common", "uncommon", "rare", "epic", "legendary"])
 valid_content_types = st.sampled_from(["image/png", "image/webp", "application/json"])
 invalid_content_types = st.sampled_from(["image/jpeg", "video/mp4", "text/plain", "application/pdf"])

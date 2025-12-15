@@ -11,6 +11,7 @@
 import { useState, useCallback, useRef } from 'react'
 import { useAuthStore } from '../stores/authStore'
 import type { MatchResult } from '../components/profile/enterprise'
+import { API_BASE } from '../utils/constants'
 
 // API response type from /games/history
 interface GameHistoryItem {
@@ -37,8 +38,6 @@ interface UseMatchHistoryReturn {
   loadMore: () => Promise<void>
   retry: () => Promise<void>
 }
-
-const API_BASE = import.meta.env.VITE_API_URL || ''
 const MAX_RETRIES = 3
 const BASE_DELAY_MS = 1000
 
@@ -90,7 +89,7 @@ export function useMatchHistory(): UseMatchHistoryReturn {
   ): Promise<GameHistoryItem[]> => {
     // Use the same endpoint as dashboard for consistency
     const response = await fetch(
-      `${API_BASE}/api/v1/games/history?limit=${limit}`,
+      `${API_BASE}/games/history?limit=${limit}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

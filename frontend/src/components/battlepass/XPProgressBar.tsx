@@ -52,13 +52,15 @@ export function XPProgressBar({
           </div>
         </div>
 
-        {/* XP Text */}
+        {/* XP Text - with animated numbers */}
         <div className="flex items-center gap-2">
           <XPIcon className="w-4 h-4 text-[#6366f1]" />
           <span className="text-sm text-[var(--color-text-secondary)]">
-            <span className="font-semibold text-white">{currentXP.toLocaleString()}</span>
+            <span className="font-semibold text-white tabular-nums">
+              {currentXP.toLocaleString()}
+            </span>
             {' / '}
-            <span>{xpToNextTier.toLocaleString()} XP</span>
+            <span className="tabular-nums">{xpToNextTier.toLocaleString()} XP</span>
           </span>
         </div>
       </div>

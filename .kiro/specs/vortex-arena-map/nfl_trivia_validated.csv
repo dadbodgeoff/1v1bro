@@ -1,0 +1,569 @@
+ID,Category,Question,Option A,Option B,Option C,Option D,Correct Answer
+1,Recent Playoffs & Super Bowls,What was the final score of Super Bowl LIX?,"Philadelphia Eagles 40, Kansas City Chiefs 22","Philadelphia Eagles 35, Kansas City Chiefs 20","Philadelphia Eagles 42, Kansas City Chiefs 24","Philadelphia Eagles 38, Kansas City Chiefs 25","Philadelphia Eagles 40, Kansas City Chiefs 22"
+2,Recent Playoffs & Super Bowls,Who was named Super Bowl LIX MVP?,Jalen Hurts,DeVonta Smith,Saquon Barkley,A.J. Brown,Jalen Hurts
+3,Recent Playoffs & Super Bowls,In what city was Super Bowl LIX played?,New Orleans,Miami,Las Vegas,Tampa,New Orleans
+4,Recent Playoffs & Super Bowls,How many times did the Eagles sack Patrick Mahomes in Super Bowl LIX?,6,5,7,8,6
+5,Recent Playoffs & Super Bowls,What was the halftime score in Super Bowl LIX?,"Eagles 24, Chiefs 0","Eagles 21, Chiefs 3","Eagles 20, Chiefs 7","Eagles 17, Chiefs 10","Eagles 24, Chiefs 0"
+6,Recent Playoffs & Super Bowls,Which team won Super Bowl LVIII (2023 season)?,Kansas City Chiefs,San Francisco 49ers,Philadelphia Eagles,Detroit Lions,Kansas City Chiefs
+7,Recent Playoffs & Super Bowls,Who threw the game-winning touchdown in Super Bowl LVIII?,Patrick Mahomes,Joe Burrow,Josh Allen,Jalen Hurts,Patrick Mahomes
+8,Recent Playoffs & Super Bowls,Which Eagles cornerback returned an interception for a touchdown in Super Bowl LIX?,Cooper DeJean,Quinyon Mitchell,James Bradberry,Darius Slay,Cooper DeJean
+9,Recent Playoffs & Super Bowls,How many consecutive Super Bowls did the Kansas City Chiefs win before losing to the Eagles?,2,1,3,0,2
+10,Recent Playoffs & Super Bowls,Who was the Philadelphia Eagles head coach that won Super Bowl LIX?,Jonathan Gannon,Nick Sirianni,Doug Pederson,Chip Kelly,Jonathan Gannon
+11,2024 NFL Season Awards,Who won the 2024 NFL MVP award?,Josh Allen,Lamar Jackson,Patrick Mahomes,Jalen Hurts,Josh Allen
+12,2024 NFL Season Awards,Who won the 2024 Offensive Player of the Year award?,Saquon Barkley,Lamar Jackson,Derrick Henry,Travis Kelce,Saquon Barkley
+13,2024 NFL Season Awards,Who won the 2024 Defensive Player of the Year award?,Patrick Surtain II,Myles Garrett,Trey Hendrickson,T.J. Watt,Patrick Surtain II
+14,2024 NFL Season Awards,Which team did Patrick Surtain II play for in 2024?,Denver Broncos,Dallas Cowboys,Pittsburgh Steelers,Kansas City Chiefs,Denver Broncos
+15,2024 NFL Season Awards,Who won the 2024 Offensive Rookie of the Year award?,Jayden Daniels,Brock Bowers,Xavier Worthy,Marvin Harrison Jr.,Jayden Daniels
+16,2024 NFL Season Awards,Who won the 2024 Defensive Rookie of the Year award?,Jared Verse,Quinyon Mitchell,Braden Fiske,Chop Robinson,Jared Verse
+17,2024 NFL Season Awards,How many rushing yards did Saquon Barkley have in the 2024 regular season?,"2,005","1,905","2,105","1,850","2,005"
+18,2024 NFL Season Awards,In which city was the 2025 NFL Honors ceremony held?,New Orleans,Las Vegas,Phoenix,Tampa,New Orleans
+19,2024 NFL Season Awards,Who was the host of the 2025 NFL Honors ceremony?,Snoop Dogg,Ice-T,LL Cool J,Common,Snoop Dogg
+20,2024 NFL Season Awards,Lamar Jackson has won the MVP award how many times?,3,2,4,1,3
+21,Saquon Barkley Records,How many rushing yards did Saquon Barkley have in Week 12 against the Los Angeles Rams?,255,205,245,225,255
+22,Saquon Barkley Records,Which Eagles player's single-season rushing record did Saquon Barkley break?,LeSean McCoy,Brian Westbrook,Duce Staley,Wilbert Montgomery,LeSean McCoy
+23,Saquon Barkley Records,In what year did LeSean McCoy set the previous Eagles rushing record?,2013,2012,2014,2011,2013
+24,Saquon Barkley Records,"How many yards were Saquon Barkley's 255 rushing yards in Week 12, the __-most in NFL history?",9th,8th,10th,7th,9th
+25,Saquon Barkley Records,Against which team did Barkley rush for 205 yards in the 2024 divisional playoff game?,Los Angeles Rams,Green Bay Packers,Detroit Lions,San Francisco 49ers,Los Angeles Rams
+26,Saquon Barkley Records,"In Week 13, against which team did Barkley break the Eagles single-season rushing record?",Baltimore Ravens,Pittsburgh Steelers,Dallas Cowboys,New York Giants,Baltimore Ravens
+27,Saquon Barkley Records,How many total yards did Barkley have when he rushed for 255 yards against the Rams in Week 12?,302,280,310,295,302
+28,Saquon Barkley Records,"In the Wild Card playoff game, how many rushing yards did Barkley have against the Packers?",119,125,110,135,119
+29,Saquon Barkley Records,How many touchdowns did Barkley have in his debut Eagles game against the Packers?,3,2,4,1,3
+30,Saquon Barkley Records,How many rushing yards did Barkley accumulate in his first Eagles game?,109,99,120,115,109
+31,Quarterbacks 2024,How many passing yards did Lamar Jackson throw for in the 2024 season?,"4,172","4,000","4,200","3,950","4,172"
+32,Quarterbacks 2024,How many rushing yards did Lamar Jackson have in the 2024 season?,915,850,900,950,915
+34,Quarterbacks 2024,How many passing touchdowns did Jalen Hurts throw in the 2024 regular season?,18,20,16,22,18
+35,Quarterbacks 2024,What was Jalen Hurts' passer rating in the 2024 season?,103.7,101.5,105.0,102.3,103.7
+36,Quarterbacks 2024,How many interceptions did Jalen Hurts throw in the 2024 regular season?,5,7,6,8,5
+37,Quarterbacks 2024,How many passing yards did Jalen Hurts have in Super Bowl LIX?,221,240,200,210,221
+38,Quarterbacks 2024,How many rushing yards did Jalen Hurts have in Super Bowl LIX?,72,60,85,50,72
+39,Quarterbacks 2024,How many games did Jalen Hurts play in the 2024 regular season?,15,16,14,17,15
+40,Quarterbacks 2024,What was the completion percentage for Jalen Hurts in 2024?,68.7%,70.5%,66.2%,72.1%,68.7%
+41,2024 NFL Draft,Which team selected Cam Ward with the 1st overall pick in the 2025 NFL Draft?,Tennessee Titans,Jacksonville Jaguars,Las Vegas Raiders,Cleveland Browns,Tennessee Titans
+42,2024 NFL Draft,What college did Cam Ward attend?,Miami,Oklahoma,Texas,Florida State,Miami
+43,2024 NFL Draft,Which team traded up to the 2nd pick to select Travis Hunter?,Jacksonville Jaguars,Cleveland Browns,Las Vegas Raiders,Arizona Cardinals,Jacksonville Jaguars
+44,2024 NFL Draft,What position did Travis Hunter play?,Cornerback,Safety,Wide Receiver,Linebacker,Cornerback
+45,2024 NFL Draft,Which college did Travis Hunter attend?,Colorado,Alabama,Georgia,LSU,Colorado
+46,2024 NFL Draft,Who won the 2024 draft in the first round?,Chicago Bears,Los Angeles Rams,Dallas Cowboys,Kansas City Chiefs,Chicago Bears
+47,2024 NFL Draft,How many QB's were selected in the first round of the 2024 draft?,5,4,6,3,5
+48,2024 NFL Draft,Which QB was selected first overall in the 2024 draft by the Chicago Bears?,Caleb Williams,Jayden Daniels,Drake Maye,Michael Penix Jr.,Caleb Williams
+49,2024 NFL Draft,Who was the Defensive Rookie of the Year?,Jared Verse,Quinyon Mitchell,Braden Fiske,Chop Robinson,Jared Verse
+50,2024 NFL Draft,How many pressures did Jared Verse record in his rookie season?,77,70,85,65,77
+52,2024 Regular Season,What was the Kansas City Chiefs' record in the 2024 regular season?,15-1,14-2,13-3,14-3,15-1
+53,2024 Regular Season,Which team won the NFC North in 2024?,Minnesota Vikings,Detroit Lions,Chicago Bears,Green Bay Packers,Minnesota Vikings
+54,2024 Regular Season,What was the Minnesota Vikings' record in 2024?,14-2,13-3,15-1,12-4,14-2
+55,2024 Regular Season,Which team won the NFC East in 2024?,Philadelphia Eagles,Dallas Cowboys,Washington Commanders,New York Giants,Philadelphia Eagles
+56,2024 Regular Season,What was the Philadelphia Eagles' record in the 2024 regular season?,13-3,14-2,12-4,11-5,13-3
+57,2024 Regular Season,Which division had the most wins in 2024?,NFC North,AFC West,AFC North,NFC East,NFC North
+58,2024 Regular Season,How many total wins did the NFC North have in 2024?,45,43,40,48,45
+59,2024 Regular Season,Which team won the AFC South in 2024?,Houston Texans,Jacksonville Jaguars,Indianapolis Colts,Tennessee Titans,Houston Texans
+60,2024 Regular Season,Which team won the NFC West in 2024?,Los Angeles Rams,San Francisco 49ers,Seattle Seahawks,Arizona Cardinals,Los Angeles Rams
+61,Receiving Leaders 2024,How many receiving yards did Tyreek Hill have in 2024?,"1,799","1,650","1,900","1,750","1,799"
+62,Receiving Leaders 2024,For which team did Tyreek Hill play in 2024?,Miami Dolphins,Kansas City Chiefs,Buffalo Bills,Los Angeles Chargers,Miami Dolphins
+63,Receiving Leaders 2024,How many catches did Travis Kelce have in 2024?,97,85,105,110,97
+64,Receiving Leaders 2024,How many receiving yards did Travis Kelce have in 2024?,823,900,950,750,823
+65,Receiving Leaders 2024,What was CeeDee Lamb's receiving yardage in 2024?,"1,194","1,100","1,300","1,050","1,194"
+66,Receiving Leaders 2024,How many receiving touchdowns did CeeDee Lamb have in 2024?,6,8,10,5,6
+67,Receiving Leaders 2024,How many games did CeeDee Lamb play in 2024?,15,16,14,17,15
+68,Receiving Leaders 2024,How many catches did Wan'Dale Robinson have in 2024?,93,85,105,110,93
+69,Receiving Leaders 2024,How many receiving yards did Wan'Dale Robinson have in 2024?,699,650,750,800,699
+70,Receiving Leaders 2024,What is CeeDee Lamb's current career receiving yardage through 2024?,"7,204","7,000","7,500","6,800","7,204"
+71,Head Coaching Changes 2025,Who became the new head coach of the Dallas Cowboys in 2025?,Brian Schottenheimer,Pete Carroll,Aaron Glenn,Mike Vrabel,Brian Schottenheimer
+72,Head Coaching Changes 2025,Who became the new head coach of the Las Vegas Raiders in 2025?,Pete Carroll,Brian Schottenheimer,Liam Coen,Aaron Glenn,Pete Carroll
+73,Head Coaching Changes 2025,What is Pete Carroll's age?,73,71,75,69,73
+74,Head Coaching Changes 2025,Who became the new head coach of the Jacksonville Jaguars in 2025?,Liam Coen,Aaron Glenn,Ben Johnson,Mike Vrabel,Liam Coen
+75,Head Coaching Changes 2025,Who became the new head coach of the New York Jets in 2025?,Aaron Glenn,Ben Johnson,Mike Vrabel,Brian Schottenheimer,Aaron Glenn
+76,Head Coaching Changes 2025,Who became the new head coach of the New England Patriots in 2025?,Mike Vrabel,Ben Johnson,Aaron Glenn,Liam Coen,Mike Vrabel
+77,Head Coaching Changes 2025,Who became the new head coach of the Chicago Bears in 2025?,Ben Johnson,Mike Vrabel,Aaron Glenn,Liam Coen,Ben Johnson
+78,Head Coaching Changes 2025,Who became the new head coach of the New Orleans Saints in 2025?,Kellen Moore,Brian Schottenheimer,Pete Carroll,Aaron Glenn,Kellen Moore
+79,Head Coaching Changes 2025,When was Kellen Moore hired as Saints head coach?,"February 11, 2025","February 9, 2025","February 15, 2025","February 1, 2025","February 11, 2025"
+80,Head Coaching Changes 2025,What was Kellen Moore's position before becoming Saints head coach?,Eagles offensive coordinator,49ers offensive coordinator,Chiefs offensive coordinator,Cowboys offensive coordinator,Eagles offensive coordinator
+81,NFL Records & History,How many Super Bowls has Tom Brady won?,7,6,5,8,7
+82,NFL Records & History,How many Super Bowls did Tom Brady appear in?,10,9,11,8,10
+83,NFL Records & History,How many Super Bowl MVP awards does Tom Brady have?,5,4,6,3,5
+84,NFL Records & History,What is the all-time career passing yards record holder?,Tom Brady,Peyton Manning,Brett Favre,Dan Marino,Tom Brady
+85,NFL Records & History,How many career passing yards does Peyton Manning have (most for a Hall of Famer)?,"71,940","71,000","72,500","70,500","71,940"
+86,NFL Records & History,How many career passing yards does Brett Favre have?,"71,838","71,000","72,000","70,500","71,838"
+87,NFL Records & History,Who holds the all-time career rushing yards record?,Barry Sanders,Walter Payton,Emmitt Smith,Jim Brown,Barry Sanders
+88,NFL Records & History,How many career rushing yards does Barry Sanders have?,"15,269","16,726","14,580","15,000","15,269"
+89,NFL Records & History,Who holds the single-season rushing yards record?,Eric Dickerson,Barry Sanders,Terrell Davis,Saquon Barkley,Eric Dickerson
+90,NFL Records & History,How many rushing yards did Eric Dickerson have in his record season?,"2,105","2,000","2,150","1,950","2,105"
+91,Sack Records,Who holds the all-time career sacks record?,Bruce Smith,Reggie White,Kevin Greene,Michael Strahan,Bruce Smith
+92,Sack Records,How many career sacks does Bruce Smith have?,200,198,160,141.5,200
+93,Sack Records,How many career sacks does Reggie White have?,198,200,160,150.5,198
+94,Sack Records,Who holds the single-season sacks record?,Michael Strahan,T.J. Watt,Jared Allen,Mark Gastineau,Michael Strahan
+95,Sack Records,How many sacks did Michael Strahan record in his record season?,22.5,22,21,23,22.5
+96,Sack Records,In what year did Michael Strahan set the single-season sacks record?,2001,2003,2000,2002,2001
+97,Sack Records,What team was Michael Strahan playing for when he set the sacks record?,New York Giants,Washington Commanders,Philadelphia Eagles,Dallas Cowboys,New York Giants
+98,Sack Records,Who also holds the single-season sacks record with 22.5 sacks?,T.J. Watt,Jared Allen,Mark Gastineau,Chris Doleman,T.J. Watt
+99,Sack Records,In what year did T.J. Watt tie the single-season sacks record?,2021,2020,2022,2019,2021
+100,Sack Records,How many career sacks does Michael Strahan have?,141.5,150.5,160,159.5,141.5
+101,Super Bowl Winners,Which team has won the most Super Bowls?,New England Patriots,Pittsburgh Steelers,Dallas Cowboys,San Francisco 49ers,New England Patriots
+102,Super Bowl Winners,How many Super Bowls have the New England Patriots won?,6,5,7,4,6
+103,Super Bowl Winners,How many Super Bowls have the Pittsburgh Steelers won?,6,5,7,4,6
+104,Super Bowl Winners,How many Super Bowls have the Kansas City Chiefs won?,4,3,2,5,4
+105,Super Bowl Winners,How many Super Bowls have the Philadelphia Eagles won?,2,1,3,0,2
+106,Super Bowl Winners,How many Super Bowls have the Dallas Cowboys won?,5,4,6,3,5
+107,Super Bowl Winners,How many Super Bowls have the San Francisco 49ers won?,5,4,6,3,5
+108,Super Bowl Winners,How many Super Bowls have the Green Bay Packers won?,4,3,2,5,4
+109,Super Bowl Winners,Which team won the most Super Bowls in the 1970s?,Pittsburgh Steelers,Dallas Cowboys,Miami Dolphins,Oakland Raiders,Pittsburgh Steelers
+110,Super Bowl Winners,Which team won the most Super Bowls in the 1980s?,San Francisco 49ers,Dallas Cowboys,Washington Commanders,Miami Dolphins,San Francisco 49ers
+111,Hall of Fame Quarterbacks,How many Hall of Fame quarterbacks are there?,26+,20,15,30,26+
+112,Hall of Fame Quarterbacks,Who holds the most NFL MVP awards?,Peyton Manning,Tom Brady,Aaron Rodgers,Joe Montana,Peyton Manning
+113,Hall of Fame Quarterbacks,How many MVP awards does Peyton Manning have?,5,4,6,3,5
+114,Hall of Fame Quarterbacks,How many MVP awards does Aaron Rodgers have?,4,3,5,2,4
+115,Hall of Fame Quarterbacks,How many MVP awards does Tom Brady have?,3,2,4,5,3
+116,Hall of Fame Quarterbacks,Which QB was inducted into the Hall of Fame in 2016?,Brett Favre,Dan Marino,John Elway,Joe Montana,Brett Favre
+117,Hall of Fame Quarterbacks,Which QB was inducted into the Hall of Fame in 2005?,Dan Marino,John Elway,Joe Montana,Steve Young,Dan Marino
+118,Hall of Fame Quarterbacks,How many career passing yards did Joe Montana have?,"40,551","45,000","38,000","42,000","40,551"
+119,Hall of Fame Quarterbacks,How many career passing yards did John Elway have?,"51,475","50,000","52,000","49,000","51,475"
+120,Hall of Fame Quarterbacks,How many career passing yards did Dan Marino have?,"61,361","60,000","62,000","59,000","61,361"
+121,2024 Season Leaders,Who led the NFL in passing yards in 2024?,Josh Allen,Lamar Jackson,Patrick Mahomes,Jalen Hurts,Josh Allen
+122,2024 Season Leaders,Who led the NFL in passing touchdowns in 2024?,Patrick Mahomes,Josh Allen,Lamar Jackson,Jalen Hurts,Patrick Mahomes
+123,2024 Season Leaders,Who led the NFL in rushing yards in 2024?,Saquon Barkley,Derrick Henry,Josh Jacobs,Jonathan Taylor,Saquon Barkley
+124,2024 Season Leaders,Who led the NFL in receiving yards in 2024?,Tyreek Hill,Travis Kelce,CeeDee Lamb,A.J. Brown,Tyreek Hill
+125,2024 Season Leaders,Who led the NFL in receptions in 2024?,Travis Kelce,Brock Bowers,Tyreek Hill,DeVonta Smith,Brock Bowers
+126,2024 Season Leaders,How many receptions did Brock Bowers have in 2024 as a rookie?,112,110,115,105,112
+128,2024 Season Leaders,How many rushing touchdowns did Saquon Barkley have in 2024?,13,11,15,10,13
+129,2024 Season Leaders,What was Travis Kelce's receiving touchdowns in 2024?,9,8,10,7,9
+130,2024 Season Leaders,How many receiving touchdowns did Tyreek Hill have in 2024?,13,11,15,10,13
+131,Defensive Players 2024,How many interceptions did Patrick Surtain II have in 2024?,4,3,5,6,4
+132,Defensive Players 2024,How many passes defended did Patrick Surtain II have in 2024?,11,10,12,9,11
+133,Defensive Players 2024,How many sacks did Trey Hendrickson have in 2024?,17.5,16,18.5,15,17.5
+134,Defensive Players 2024,How many sacks did Myles Garrett have in 2024?,14,13,15,12,14
+135,Defensive Players 2024,How many sacks did T.J. Watt have in 2024?,11.5,10,12.5,9,11.5
+136,Defensive Players 2024,Which defensive lineman led the 2024 NFL in sacks?,Trey Hendrickson,Myles Garrett,T.J. Watt,Aaron Donald,Trey Hendrickson
+137,Defensive Players 2024,How many tackles did Roquan Smith have in 2024?,132,125,140,120,132
+139,Defensive Players 2024,How many pressures did Jared Verse record in 2024?,77,70,85,65,77
+140,Defensive Players 2024,What position does Jared Verse play?,Edge Rusher,Linebacker,Safety,Cornerback,Edge Rusher
+141,Recent Trades & Signings,Which team did Saquon Barkley sign with before the 2024 season?,Philadelphia Eagles,New York Giants,Pittsburgh Steelers,Dallas Cowboys,Philadelphia Eagles
+142,Recent Trades & Signings,How many years was Saquon Barkley's contract with the Eagles?,3,4,2,5,3
+143,Recent Trades & Signings,Who won the NFL Honors as Coach of the Year in 2025?,Kevin O'Connell,Jonathan Gannon,Jim Harbaugh,Dan Campbell,Kevin O'Connell
+144,Recent Trades & Signings,What team does Kevin O'Connell coach?,Minnesota Vikings,Detroit Lions,Philadelphia Eagles,New York Giants,Minnesota Vikings
+145,Recent Trades & Signings,Who did the Buffalo Bills sign to strengthen their cornerback position in 2025?,Nate Hobbs,D.J. Reed,Adoree' Jackson,Donte Jackson,Nate Hobbs
+146,Recent Trades & Signings,How many years was Nate Hobbs' Green Bay Packers contract?,4,3,2,5,4
+147,Recent Trades & Signings,What was the value of Nate Hobbs' contract with the Packers?,$48 million,$45 million,$50 million,$42 million,$48 million
+148,Recent Trades & Signings,Who signed with the Kansas City Chiefs as a free agent in 2025?,Hollywood Brown,JuJu Smith-Schuster,Kareem Hunt,Charles Omenihu,Hollywood Brown
+149,Recent Trades & Signings,How many years was Hollywood Brown's contract with the Chiefs?,1,2,3,4,1
+150,Recent Trades & Signings,What was the value of Hollywood Brown's contract with the Chiefs?,$11 million,$10 million,$12 million,$9 million,$11 million
+151,Team Records & Standings,How many teams won 10 or more games in 2024?,14,13,15,12,14
+152,Team Records & Standings,What is the minimum wins for playoff qualification in 2024?,10,9,11,8,10
+154,Team Records & Standings,What was the Cincinnati Bengals' record in 2024?,6-8,8-8,7-9,5-11,8-8
+156,Team Records & Standings,What was the Chicago Bears' record in 2024?,5-12,4-13,6-11,3-14,5-12
+157,Team Records & Standings,How many teams made the 2024 NFL playoffs?,14,12,16,18,14
+158,Team Records & Standings,Which conference had one more playoff team in 2024?,NFC,AFC,Equal,Neither,NFC
+160,Team Records & Standings,When was the last time all playoff teams won at least 10 games before 2024?,2012,2010,2014,2008,2012
+161,Playoff Matchups & Results,Which team earned the #1 seed in the AFC?,Kansas City Chiefs,Buffalo Bills,Baltimore Ravens,Pittsburgh Steelers,Kansas City Chiefs
+162,Playoff Matchups & Results,Which team earned the #1 seed in the NFC?,Detroit Lions,Philadelphia Eagles,Minnesota Vikings,Los Angeles Rams,Detroit Lions
+163,Playoff Matchups & Results,What was the Detroit Lions' record in 2024?,14-2,13-3,15-1,12-4,14-2
+164,Playoff Matchups & Results,Which team earned the #2 seed in the AFC?,Buffalo Bills,Baltimore Ravens,Pittsburgh Steelers,Houston Texans,Buffalo Bills
+165,Playoff Matchups & Results,Which team earned the #2 seed in the NFC?,Philadelphia Eagles,Detroit Lions,Minnesota Vikings,Los Angeles Rams,Philadelphia Eagles
+166,Playoff Matchups & Results,Who did the Kansas City Chiefs face in the AFC Divisional round?,Houston Texans,Baltimore Ravens,Buffalo Bills,Pittsburgh Steelers,Houston Texans
+167,Playoff Matchups & Results,What was the score of the Chiefs vs. Texans divisional playoff game?,"Chiefs 23, Texans 14","Chiefs 20, Texans 17","Chiefs 25, Texans 15","Chiefs 19, Texans 12","Chiefs 23, Texans 14"
+168,Playoff Matchups & Results,Who did the Buffalo Bills beat in the AFC Divisional round?,Baltimore Ravens,Pittsburgh Steelers,Houston Texans,Denver Broncos,Baltimore Ravens
+169,Playoff Matchups & Results,What was the score of the Bills vs. Ravens divisional playoff game?,"Bills 27, Ravens 25","Bills 25, Ravens 22","Bills 28, Ravens 26","Bills 24, Ravens 23","Bills 27, Ravens 25"
+170,Playoff Matchups & Results,Who did the Philadelphia Eagles face in the NFC Wild Card round?,Green Bay Packers,Detroit Lions,San Francisco 49ers,Los Angeles Rams,Green Bay Packers
+171,Rookie Standouts 2024,What college did Jayden Daniels attend?,LSU,Ohio State,Alabama,Georgia,LSU
+172,Rookie Standouts 2024,How many rushing yards did Jayden Daniels have in his rookie season?,915,800,"1,000",750,915
+173,Rookie Standouts 2024,What was Jayden Daniels' completion rate in 2024?,79.1%,77.5%,81.0%,75.2%,79.1%
+174,Rookie Standouts 2024,Which college did Brock Bowers attend?,Nevada,Oregon,Colorado,Utah,Nevada
+175,Rookie Standouts 2024,How many all-time rookie receptions did Brock Bowers set?,112,115,110,120,112
+176,Rookie Standouts 2024,How many receiving yards did Brock Bowers have in 2024?,"1,194","1,100","1,300","1,050","1,194"
+177,Rookie Standouts 2024,How many receiving touchdowns did Brock Bowers have in 2024?,8,10,6,12,8
+178,Rookie Standouts 2024,What college did Jared Verse attend?,Penn State,Alabama,Georgia,LSU,Penn State
+179,Rookie Standouts 2024,How many pressures did Jared Verse have in the second half of 2024?,48,40,55,45,48
+180,Rookie Standouts 2024,How old was Jared Verse when he turned 22 during the 2024 season?,Recently turned,Already 22,Will turn 22,About to turn,Recently turned
+181,Team Achievements 2024,How many consecutive wins did the Philadelphia Eagles have?,8,7,9,6,8
+182,Team Achievements 2024,Against which team did the Eagles get their 8th consecutive win?,Baltimore Ravens,Pittsburgh Steelers,Washington Commanders,Dallas Cowboys,Baltimore Ravens
+184,Team Achievements 2024,When was the last time the Rams and Chargers both made the playoffs?,2018,2016,2020,2022,2018
+189,Team Achievements 2024,How many consecutive Super Bowl appearances did the Kansas City Chiefs make?,3,2,4,1,3
+190,Team Achievements 2024,In which year did the NFL expand the playoff format to 14 teams?,2020,2021,2019,2022,2020
+191,Historical Comparisons,How many total passes did Tom Brady throw in his career?,"13,089","12,000","14,000","11,500","13,089"
+192,Historical Comparisons,How many playoff games did Tom Brady win?,35,30,40,32,35
+193,Historical Comparisons,How many Super Bowl touchdowns did Tom Brady throw?,21,20,23,19,21
+194,Historical Comparisons,How many Super Bowl interceptions did Tom Brady throw?,6,5,7,4,6
+195,Historical Comparisons,How many Super Bowl touchdown passes does Patrick Mahomes have?,10,9,11,8,10
+196,Historical Comparisons,How many Super Bowl interceptions does Patrick Mahomes have?,7,6,8,5,7
+197,Historical Comparisons,How many Super Bowl appearances does Patrick Mahomes have?,5,4,6,3,5
+198,Historical Comparisons,What is Patrick Mahomes's current NFL status?,Currently active in the NFL,Retired,Free agent,Suspended,Currently active in the NFL
+200,Historical Comparisons,What was Mahomes' Super Bowl LIX passer rating in the first half?,33 passing yards,Low score,Mixed performance,Struggled,33 passing yards
+201,Team Histories,How many Super Bowls have the Denver Broncos won?,3,2,4,1,3
+202,Team Histories,How many Super Bowls have the Miami Dolphins won?,2,1,3,0,2
+203,Team Histories,How many Super Bowls have the Baltimore Ravens won?,2,1,3,0,2
+204,Team Histories,How many Super Bowls have the Indianapolis Colts won?,2,1,3,0,2
+205,Team Histories,How many Super Bowls have the New York Giants won?,4,3,5,2,4
+206,Team Histories,How many Super Bowls have the Oakland/Las Vegas Raiders won?,3,2,4,1,3
+207,Team Histories,How many Super Bowls have the Washington Commanders won?,3,2,4,1,3
+208,Team Histories,How many Super Bowls have the New York Jets won?,1,2,0,3,1
+209,Team Histories,How many Super Bowls have the Chicago Bears won?,1,2,0,3,1
+210,Team Histories,How many Super Bowls have the Seattle Seahawks won?,1,2,0,3,1
+211,Quarterbacks Head to Head,How many career playoff wins does Patrick Mahomes have?,26,25,27,24,26
+212,Quarterbacks Head to Head,How many career playoff games has Josh Allen played?,25+,20,30,15,25+
+213,Quarterbacks Head to Head,How many times have Josh Allen and Patrick Mahomes met in the playoffs?,3,2,4,1,3
+214,Quarterbacks Head to Head,Who has won more playoff games against the other: Allen or Mahomes?,Mahomes,Allen,Tied,Recently flipped,Mahomes
+215,Quarterbacks Head to Head,How many passing yards did Josh Allen have in the 2024 regular season?,"3,731","3,500","3,900","3,600","3,731"
+216,Quarterbacks Head to Head,How many rushing yards did Josh Allen have in 2024?,531,500,600,450,531
+217,Quarterbacks Head to Head,How many passing touchdowns did Josh Allen have in 2024?,28,25,30,22,28
+219,Quarterbacks Head to Head,How many playoff games has Lamar Jackson played?,16+,15,20,10,16+
+220,Quarterbacks Head to Head,How many interceptions did Josh Allen throw in 2024?,6,5,7,8,6
+222,Recent Player Transactions,Which team did Davante Adams play for before the trade?,Las Vegas Raiders,Kansas City Chiefs,Dallas Cowboys,New York Jets,Las Vegas Raiders
+223,Recent Player Transactions,Did Davante Adams sign with the Jets or Chiefs?,Jets,Chiefs,Packers,Raiders stayed,Jets
+226,Recent Player Transactions,How many receiving touchdowns did Xavier Worthy have in 2024?,6,5,7,4,6
+228,Recent Player Transactions,How many defensive tackles have played in the 2024 draft class?,Multiple,Few,One,Several,Multiple
+230,Recent Player Transactions,What college did Quinyon Mitchell attend?,Toledo,Ohio,Buffalo,Army,Toledo
+231,Season Performance Metrics,How many total passing yards did Patrick Mahomes have in 2024?,"4,694","4,500","4,800","4,600","4,694"
+232,Season Performance Metrics,How many passing touchdowns did Patrick Mahomes have in 2024?,27,25,30,28,27
+233,Season Performance Metrics,How many interceptions did Patrick Mahomes throw in 2024?,8,7,9,6,8
+234,Season Performance Metrics,What was Patrick Mahomes' passer rating in 2024?,102.5,100.0,105.0,99.5,102.5
+235,Season Performance Metrics,How many rushing touchdowns did Saquon Barkley have in 2024?,13,11,15,10,13
+236,Season Performance Metrics,How many total touchdowns did Saquon Barkley have in 2024?,13,14,15,12,13
+237,Season Performance Metrics,What was Lamar Jackson's passer rating in 2024?,117.0,115.0,119.0,120.5,117.0
+238,Season Performance Metrics,How many interceptions did Lamar Jackson throw in 2024?,4,3,5,6,4
+239,Season Performance Metrics,How many passing touchdowns did Lamar Jackson have in 2024?,41,40,42,39,41
+240,Season Performance Metrics,How many rushing touchdowns did Lamar Jackson have in 2024?,4,3,5,6,4
+241,Advanced Statistics,What position are the most times MVP awarded to?,Quarterback,Running Back,Wide Receiver,Linebacker,Quarterback
+242,Advanced Statistics,How many consecutive years has a QB won the MVP award?,12,10,15,8,12
+243,Advanced Statistics,What position was Alan Page when he won MVP in 1971?,Defensive Tackle,Linebacker,Safety,Cornerback,Defensive Tackle
+244,Advanced Statistics,Who was the only other player to win MVP as a defensive player?,Lawrence Taylor,Joe Greene,Reggie White,Bruce Smith,Lawrence Taylor
+245,Advanced Statistics,In what year did Lawrence Taylor win MVP?,1986,1985,1987,1988,1986
+246,Advanced Statistics,How many MVP awards did Aaron Rodgers win?,4,3,5,2,4
+247,Advanced Statistics,In what years did Aaron Rodgers win MVP?,"2011, 2014, 2020, 2021","2010, 2013, 2019, 2020","2012, 2015, 2021, 2022",Others,"2011, 2014, 2020, 2021"
+248,Advanced Statistics,How many Turnovers Worthy Play rate did Jayden Daniels have?,1.7%,1.5%,2.0%,2.5%,1.7%
+250,Advanced Statistics,What was the primary reason the Eagles won Super Bowl LIX?,Dominant Defense,Strong Offense,Good Coaching,Luck,Dominant Defense
+251,Game Statistics,How many first downs did the Eagles force the Chiefs to get in Super Bowl LIX?,12,15,10,14,12
+252,Game Statistics,How many total yards did the Chiefs have in the first half of Super Bowl LIX?,23,30,50,15,23
+253,Game Statistics,How many net passing yards did the Chiefs have in the first half?,20,33,50,15,20
+254,Game Statistics,How many rushing attempts did the Chiefs have in the first half?,3,5,7,10,3
+255,Game Statistics,How many rushing yards did the Chiefs have in the first half?,3,10,20,5,3
+256,Game Statistics,How many playoff games did the Eagles win in 2024-25?,3,2,4,1,3
+257,Game Statistics,How many sacks did Josh Sweat have in Super Bowl LIX?,2.5,2,3,1.5,2.5
+260,Game Statistics,How many passes did Jalen Hurts complete in Super Bowl LIX?,17,15,20,18,17
+262,Team Victories & Streaks,How long was the Eagles' winning streak in 2024?,8 games,7 games,9 games,6 games,8 games
+263,Team Victories & Streaks,Who broke the Eagles' winning streak?,Washington Commanders,Dallas Cowboys,Pittsburgh Steelers,New York Giants,Washington Commanders
+268,Team Victories & Streaks,Which team won more playoff games: Chiefs or Bills?,Chiefs,Bills,Tied,Eagles,Chiefs
+271,Player Contracts & Deals,Who was the franchise tag for the Kansas City Chiefs in 2025?,Trey Smith,Travis Kelce,Patrick Mahomes,Hollywood Brown,Trey Smith
+272,Player Contracts & Deals,How many years was Trey Smith's deal with the Chiefs before franchise tag?,1,2,3,4,1
+273,Player Contracts & Deals,Who won the most expensive defensive contract in 2025?,Aaron Banks,Nate Hobbs,D.J. Reed,Others,Aaron Banks
+274,Player Contracts & Deals,How many years was Aaron Banks' Green Bay contract?,4,3,5,6,4
+275,Player Contracts & Deals,What was the value of Aaron Banks' contract?,$77 million,$75 million,$80 million,$70 million,$77 million
+277,Player Contracts & Deals,How many years was D.J. Reed's contract?,3,2,4,5,3
+278,Player Contracts & Deals,What was the value of D.J. Reed's contract?,$48 million,$45 million,$50 million,$40 million,$48 million
+280,Player Contracts & Deals,How many years was Mekhi Becton's contract?,2,1,3,4,2
+283,Notable Performances,How many receiving yards did Marvin Harrison Jr. have in 2024?,993,900,"1,050",850,993
+284,Notable Performances,How many receiving touchdowns did Marvin Harrison Jr. have in 2024?,8,10,6,12,8
+286,Notable Performances,How many receiving yards did Brian Thomas Jr. have in 2024?,"1,282","1,100","1,400","1,000","1,282"
+287,Notable Performances,How many receiving touchdowns did Brian Thomas Jr. have in 2024?,10,8,12,6,10
+288,Notable Performances,Did Shedeur Sanders play well in his rookie season?,Didn't play,Was drafted later,Struggled,Great,Didn't play
+291,Coaching Performance,How long has Andy Reid been coaching the Chiefs?,6+ years,5 years,4 years,3 years,6+ years
+292,Coaching Performance,How many Super Bowls has Andy Reid won with the Chiefs?,3,2,4,1,3
+294,Coaching Performance,Who is currently coaching the Philadelphia Eagles?,Jonathan Gannon,Nick Sirianni,Doug Pederson,Jim Schwartz,Jonathan Gannon
+296,Coaching Performance,Who is the Lions' head coach?,Dan Campbell,Jim Schwartz,Barry Sanders,Matthew Millen,Dan Campbell
+299,Coaching Performance,Who is the Ravens' current head coach?,John Harbaugh,Brian Billick,Rex Ryan,Jim Schwartz,John Harbaugh
+300,Coaching Performance,How long has John Harbaugh been with the Ravens?,16+ years,15 years,14 years,10 years,16+ years
+302,Offensive Weapons,Who is Josh Allen's primary receiver?,Stefon Diggs,Gabe Davis,Dawand Jones,Cole Beasley,Stefon Diggs
+303,Offensive Weapons,How many All-Pro selections does Stefon Diggs have?,4,3,5,2,4
+306,Offensive Weapons,Who is Mahomes' primary target?,Travis Kelce,Hollywood Brown,JuJu Smith-Schuster,Xavier Worthy,Travis Kelce
+308,Offensive Weapons,Who is Lamar Jackson's top receiver?,Mark Andrews,Rashod Bateman,Odell Beckham,Others,Mark Andrews
+311,Defensive Excellence,What was the Eagles' defensive coordinator in 2024?,Vic Fangio,Leslie Frazier,Kris Richard,Others,Vic Fangio
+312,Defensive Excellence,What was Vic Fangio's record against Patrick Mahomes before Super Bowl LIX?,0-8,1-7,2-6,0-9,0-8
+314,Defensive Excellence,How many four-man pass rushes did the Eagles have in Super Bowl LIX?,Mostly,Some,Few,None,Mostly
+316,Defensive Excellence,How many interceptions did the Eagles have in Super Bowl LIX?,2,1,3,0,2
+317,Defensive Excellence,How many fumbles did Mahomes have in Super Bowl LIX?,1,0,2,3,1
+319,Defensive Excellence,Who was the Eagles' pass rush leader in 2024?,Josh Sweat,Milton Williams,Brandon Graham,Derek Barnett,Josh Sweat
+323,Individual Records & Milestones,How far was Barkley from breaking the single-season rushing record?,100 yards,50 yards,200 yards,25 yards,100 yards
+324,Individual Records & Milestones,Who holds the single-season rushing record?,Eric Dickerson,Barry Sanders,Terrell Davis,Saquon Barkley,Eric Dickerson
+326,Individual Records & Milestones,How many receptions did Brock Bowers need to tie the record?,Already tied,3,1,5,Already tied
+327,Individual Records & Milestones,Who had more rookies receptions than Brock Bowers?,"Amon-Ra St. Brown, Ja'Marr Chase",Others,Nobody,Few,"Amon-Ra St. Brown, Ja'Marr Chase"
+332,Fan Favorites & Highlights,What did Cooper DeJean do on his birthday in Super Bowl LIX?,Returned INT for TD,Got sack,Fumble recovery,Interception,Returned INT for TD
+334,Fan Favorites & Highlights,How many yards was DeJean's interception return?,38,30,40,35,38
+336,Fan Favorites & Highlights,How long was DeVonta Smith's touchdown pass?,46 yards,40 yards,50 yards,35 yards,46 yards
+337,Fan Favorites & Highlights,Where was DeVonta Smith from?,Louisiana,Texas,Florida,Georgia,Louisiana
+344,Future Outlook,Will the Eagles defend their Super Bowl title?,Possible,Unlikely,Very likely,Too early,Possible
+346,Future Outlook,Will Jayden Daniels be a perennial MVP candidate?,Possible,Unlikely,Too early,Depends,Possible
+348,Future Outlook,Will Jared Verse be a Pro Bowler in his second year?,Possible,Unlikely,Likely,Too early,Possible
+358,2025 Offseason Moves,What NFL dynasty exists currently?,Kansas City Chiefs,New England Patriots,Green Bay Packers,49ers,Kansas City Chiefs
+359,2025 Offseason Moves,How many Super Bowls have the Chiefs won recently?,3,2,4,1,3
+361,Player Achievements,How many rushing yards did Barry Sanders accumulate in his career?,"15,269","16,726","14,580","15,000","15,269"
+362,Player Achievements,"How many 1,000-yard rushing seasons did Barry Sanders have?",10,9,8,7,10
+363,Player Achievements,"How many consecutive 1,000-yard seasons did Barry Sanders have?",5,6,4,7,5
+364,Player Achievements,How many Pro Bowls did Barry Sanders make?,10,9,8,11,10
+366,Player Achievements,How many rushing yards did Barry Sanders have in 1997?,"2,053","1,883","1,700","2,100","2,053"
+367,Player Achievements,How many rushing yards did Barry Sanders have in 1994?,"1,883","1,700","1,500","2,000","1,883"
+368,Player Achievements,In what year did Barry Sanders share the MVP?,1997,1994,1996,1995,1997
+369,Player Achievements,Who shared the 1997 MVP with Barry Sanders?,Brett Favre,John Elway,Dan Marino,Steve Young,Brett Favre
+370,Player Achievements,How many rushing touchdowns did Barry Sanders have in his career?,99,110,90,100,99
+371,Conference Standings,Did the AFC or NFC have a stronger 2024 season?,NFC,AFC,Tied,Close,NFC
+372,Conference Standings,How many of the top 4 seeds were in the NFC?,2,3,4,1,2
+373,Conference Standings,Which division was strongest in 2024?,NFC North,AFC West,NFC East,AFC North,NFC North
+374,Conference Standings,How many wins did the NFC North have in 2024?,45,43,48,40,45
+378,Conference Standings,Which NFC division was weakest?,NFC South,NFC West,NFC East,NFC North,NFC South
+380,Conference Standings,How many playoff teams were in the NFC South?,1,2,3,0,1
+382,Special Teams & Other Stats,Who holds the combined rushing record?,Terrell Davis,Barry Sanders,Saquon Barkley,Eric Dickerson,Terrell Davis
+383,Special Teams & Other Stats,How many rushing yards did Terrell Davis have in 1998 (regular + playoffs)?,"2,476","2,400","2,500","2,350","2,476"
+384,Special Teams & Other Stats,How close did Saquon Barkley come to breaking the record?,Very close,Far,Matched,Exceeded,Very close
+386,Special Teams & Other Stats,Against which team did the Eagles rest starters?,New York Giants,Washington Commanders,Dallas Cowboys,Pittsburgh Steelers,New York Giants
+388,Special Teams & Other Stats,In what year did Eric Dickerson set the single-season rushing record?,1984,1985,1983,1986,1984
+389,Special Teams & Other Stats,How many rushing yards did Eric Dickerson have in his record season?,"2,105","2,050","2,150","2,000","2,105"
+390,Special Teams & Other Stats,What team was Eric Dickerson playing for?,Los Angeles Rams,Dallas Cowboys,Washington Commanders,New York Giants,Los Angeles Rams
+391,Trivia & Fun Facts,How many times has Joe Namath won a Super Bowl?,1,2,0,3,1
+392,Trivia & Fun Facts,How many times has Joe Montana won a Super Bowl?,4,3,5,2,4
+394,Trivia & Fun Facts,How many times did Tom Brady and Joe Montana's Super Bowl wins overlap?,Never,Once,Multiple,Not applicable,Never
+396,Trivia & Fun Facts,Which QBs accomplished this before Hurts?,Namath & Montana,Brady & Mahomes,Bradshaw & Staubach,Others,Namath & Montana
+398,Trivia & Fun Facts,Which college did Jalen Hurts attend?,Oklahoma & Alabama,Texas & Alabama,Ohio State & Texas,LSU & Texas,Oklahoma & Alabama
+400,Trivia & Fun Facts,What conference did Jalen Hurts play in college?,Big 12 & SEC,Pac-12 & SEC,Big Ten & SEC,ACC & SEC,Big 12 & SEC
+401,Notable Draft Picks,Who was the #1 overall pick in the 2024 NFL Draft?,Caleb Williams,Jayden Daniels,Drake Maye,Michael Penix Jr.,Caleb Williams
+402,Notable Draft Picks,Which college did Caleb Williams attend?,USC,Oklahoma,Texas,LSU,USC
+404,Notable Draft Picks,Who was the #2 overall pick in the 2024 NFL Draft?,Jayden Daniels,Drake Maye,Michael Penix Jr.,Rome Odunze,Jayden Daniels
+405,Notable Draft Picks,Who was the #3 overall pick in the 2024 NFL Draft?,Drake Maye,Michael Penix Jr.,Rome Odunze,Latu Laiatu,Drake Maye
+408,Notable Draft Picks,Who was the #4 overall pick in the 2024 NFL Draft?,Michael Penix Jr.,Rome Odunze,Laiatu Laiatu,Byron Murphy,Michael Penix Jr.
+410,Notable Draft Picks,How many quarterbacks were selected in the first round of 2024?,5,4,6,3,5
+411,Statistical Leaders Continued,Who led the NFL in sacks in 2024?,Trey Hendrickson,Myles Garrett,T.J. Watt,Aaron Donald,Trey Hendrickson
+412,Statistical Leaders Continued,Who led the NFL in tackles in 2024?,Roquan Smith,Fred Warner,Lavonte David,Bobby Wagner,Roquan Smith
+413,Statistical Leaders Continued,Who led the NFL in interceptions in 2024?,Patrick Surtain II,Sauce Gardner,Jalen Mills,Stephon Gilmore,Patrick Surtain II
+414,Statistical Leaders Continued,Who led the NFL in forced fumbles in 2024?,Multiple players,TJ Watt,Aaron Donald,Chris Jones,Multiple players
+415,Statistical Leaders Continued,Which position led the NFL in MVP voting categories?,Quarterback,Running Back,Linebacker,Cornerback,Quarterback
+418,Statistical Leaders Continued,What position has won the most DPOY awards?,Linebacker,Defensive End,Defensive Tackle,Cornerback,Linebacker
+419,Statistical Leaders Continued,How many times have linebackers won DPOY?,17,15,20,12,17
+420,Statistical Leaders Continued,How many times have defensive ends won DPOY?,15,17,12,20,15
+423,Playoff Seeding Analysis,Who beat the #1 seed Lions?,Washington Commanders,Tampa Bay Buccaneers,Philadelphia Eagles,New Orleans Saints,Washington Commanders
+429,Playoff Seeding Analysis,Was the AFC weak or strong in 2024?,Strong,Weak,Average,Mixed,Strong
+430,Playoff Seeding Analysis,Was the NFC weak or strong in 2024?,Strong,Weak,Average,Mixed,Strong
+452,Franchise Records & Milestones,How many Super Bowls have the Eagles won total?,2,1,3,0,2
+453,Franchise Records & Milestones,In what year did the Eagles win their first Super Bowl?,2017,2018,2015,2016,2017
+454,Franchise Records & Milestones,How many championships do the Eagles have (including pre-Super Bowl era)?,5,4,3,2,5
+456,Franchise Records & Milestones,Who did the Eagles beat in Super Bowl LII?,New England Patriots,Atlanta Falcons,Kansas City Chiefs,San Francisco 49ers,New England Patriots
+457,Franchise Records & Milestones,What was the score of Super Bowl LII?,41-33,38-33,36-33,45-30,41-33
+458,Franchise Records & Milestones,Who was the MVP of Super Bowl LII?,Nick Foles,Carson Wentz,Corey Clement,Jay Ajayi,Nick Foles
+459,Franchise Records & Milestones,How many playoff appearances have the Eagles had?,15+,12,10,8,15+
+461,Competitive Balance,How many different conference winners were there across different divisions?,8,7,6,9,8
+471,Media & Broadcasting,Which network broadcast Super Bowl LIX?,CBS,NBC,Fox,ESPN,CBS
+473,Media & Broadcasting,Which network broadcasts most NFL games?,CBS/Fox,NBC,ESPN,All equally,CBS/Fox
+475,Media & Broadcasting,Which network has Thursday Night Football?,Amazon Prime,ESPN,Fox,NBC,Amazon Prime
+486,Rule Changes & Officiating,What is the hip drop tackle rule?,Safer tackle method,Illegal now,Flagged sometimes,New rule,Safer tackle method
+488,Rule Changes & Officiating,How many officials are on the field?,7,6,8,5,7
+492,Youth & Rookie Development,Who were the top rookie performers in 2024?,"Daniels, Bowers, Verse","Williams, Robinson, Jackson",All above,Others,"Daniels, Bowers, Verse"
+493,Youth & Rookie Development,How many quarterbacks had rookie years in 2024?,Multiple,5,3,7,Multiple
+501,Super Bowl LIV 2020,What was the final score of Super Bowl LIV?,"Chiefs 31, 49ers 20","Chiefs 28, 49ers 24","Chiefs 35, 49ers 17","Chiefs 25, 49ers 22","Chiefs 31, 49ers 20"
+502,Super Bowl LIV 2020,Who was the Super Bowl LIV MVP?,Patrick Mahomes,Travis Kelce,Damien Williams,Mecole Hardman,Patrick Mahomes
+503,Super Bowl LIV 2020,How many passing touchdowns did Patrick Mahomes have in Super Bowl LIV?,2,1,3,4,2
+504,Super Bowl LIV 2020,How many rushing touchdowns did Patrick Mahomes have in Super Bowl LIV?,1,2,0,3,1
+506,Super Bowl LIV 2020,How many points behind were the Chiefs at halftime of Super Bowl LIV?,10 points,7 points,3 points,14 points,10 points
+507,Super Bowl LIV 2020,Was this the Chiefs' first Super Bowl win in how many years?,50 years,40 years,30 years,20 years,50 years
+508,Super Bowl LIV 2020,Where was Super Bowl LIV played?,Miami,Atlanta,Tampa,Phoenix,Miami
+509,Super Bowl LIV 2020,What was Patrick Mahomes' age at Super Bowl LIV?,24,23,25,26,24
+511,Super Bowl LV 2021,What was the final score of Super Bowl LV?,"Buccaneers 31, Chiefs 9","Buccaneers 28, Chiefs 10","Buccaneers 35, Chiefs 14","Buccaneers 25, Chiefs 3","Buccaneers 31, Chiefs 9"
+512,Super Bowl LV 2021,Who won Super Bowl LV?,Tampa Bay Buccaneers,Kansas City Chiefs,San Francisco 49ers,Buffalo Bills,Tampa Bay Buccaneers
+513,Super Bowl LV 2021,Who was the MVP of Super Bowl LV?,Tom Brady,Leonard Fournette,Antonio Brown,Rob Gronkowski,Tom Brady
+514,Super Bowl LV 2021,How many Super Bowl wins does Tom Brady have total?,7,6,5,8,7
+515,Super Bowl LV 2021,Which team was Tom Brady's first Super Bowl win with?,New England Patriots,Tampa Bay Buccaneers,San Francisco 49ers,Detroit Lions,New England Patriots
+516,Super Bowl LV 2021,How many interceptions did Patrick Mahomes throw in Super Bowl LV?,2,1,3,0,2
+517,Super Bowl LV 2021,How many interceptions did the Buccaneers get in Super Bowl LV?,2,3,1,4,2
+519,Super Bowl LV 2021,How many touchdowns did Tom Brady throw in Super Bowl LV?,3,2,4,1,3
+521,Super Bowl LVI 2022,What was the final score of Super Bowl LVI?,"Rams 23, Bengals 20","Rams 25, Bengals 22","Rams 27, Bengals 24","Rams 21, Bengals 17","Rams 23, Bengals 20"
+522,Super Bowl LVI 2022,Who was the MVP of Super Bowl LVI?,Cooper Kupp,Matthew Stafford,Aaron Donald,Jalen Ramsey,Cooper Kupp
+523,Super Bowl LVI 2022,When did Cooper Kupp score the game-winning touchdown?,1:25 left,2:00 left,1:00 left,1:50 left,1:25 left
+524,Super Bowl LVI 2022,How many yards was Cooper Kupp's game-winning touchdown?,1 yard,3 yards,5 yards,7 yards,1 yard
+526,Super Bowl LVI 2022,What is the name of the Rams' home stadium?,SoFi Stadium,Crypto.com Arena,Inglewood Stadium,LA Coliseum,SoFi Stadium
+527,Super Bowl LVI 2022,How many Super Bowls have the Rams won?,2,1,3,0,2
+528,Super Bowl LVI 2022,When did the Rams win their first Super Bowl?,1999,2000,1998,2001,1999
+531,Super Bowl LVII 2023,What was the final score of Super Bowl LVII?,"Chiefs 38, Eagles 35","Chiefs 35, Eagles 32","Chiefs 40, Eagles 37","Chiefs 36, Eagles 33","Chiefs 38, Eagles 35"
+532,Super Bowl LVII 2023,Who kicked the game-winning field goal in Super Bowl LVII?,Harrison Butker,Jake Elliott,Matt Gay,Greg Joseph,Harrison Butker
+533,Super Bowl LVII 2023,What was the distance of the game-winning field goal?,27 yards,25 yards,30 yards,22 yards,27 yards
+534,Super Bowl LVII 2023,Who was the MVP of Super Bowl LVII?,Patrick Mahomes,Jalen Hurts,Travis Kelce,A.J. Brown,Patrick Mahomes
+537,Super Bowl LVII 2023,How many passing touchdowns did Patrick Mahomes have in Super Bowl LVII?,2,3,1,4,2
+538,Super Bowl LVII 2023,How many passing touchdowns did Jalen Hurts have in Super Bowl LVII?,3,2,4,1,3
+539,Super Bowl LVII 2023,Where was Super Bowl LVII played?,Phoenix,Tampa,Las Vegas,Miami,Phoenix
+540,Super Bowl LVII 2023,How many consecutive Super Bowls has Patrick Mahomes been in?,3,2,4,1,3
+541,Super Bowl LVIII 2024,What was the final score of Super Bowl LVIII?,"Chiefs 25, 49ers 22","Chiefs 28, 49ers 25","Chiefs 23, 49ers 20","Chiefs 30, 49ers 27","Chiefs 25, 49ers 22"
+543,Super Bowl LVIII 2024,Who won Super Bowl LVIII?,Kansas City Chiefs,San Francisco 49ers,Buffalo Bills,Detroit Lions,Kansas City Chiefs
+544,Super Bowl LVIII 2024,Who was the MVP of Super Bowl LVIII?,Patrick Mahomes,Travis Kelce,Jerick McKinnon,Christian McCaffrey,Patrick Mahomes
+545,Super Bowl LVIII 2024,How many Super Bowl wins does Patrick Mahomes have?,3,2,4,1,3
+547,Super Bowl LVIII 2024,Who were the 2004 back-to-back champions?,New England Patriots,New York Giants,Green Bay Packers,Dallas Cowboys,New England Patriots
+548,Super Bowl LVIII 2024,How many Super Bowl championships does the Kansas City Chiefs franchise have?,4,3,5,2,4
+550,Super Bowl LVIII 2024,Where was Super Bowl LVIII played?,Las Vegas,New Orleans,Miami,Phoenix,Las Vegas
+551,2020 NFL Season,What was Aaron Rodgers' MVP year?,2020,2019,2021,2018,2020
+552,2020 NFL Season,How many passing touchdowns did Aaron Rodgers have in 2020?,48,45,42,50,48
+553,2020 NFL Season,How many interceptions did Aaron Rodgers throw in 2020?,5,7,3,10,5
+554,2020 NFL Season,What was Aaron Rodgers' passer rating in 2020?,121.5,119.0,123.0,118.5,121.5
+555,2020 NFL Season,What was Aaron Rodgers' completion percentage in 2020?,70.7%,68.5%,72.3%,69.1%,70.7%
+556,2020 NFL Season,How many passing yards did Aaron Rodgers have in 2020?,"4,299","4,000","4,500","4,150","4,299"
+557,2020 NFL Season,What was Aaron Rodgers' age in 2020?,37,36,38,35,37
+559,2020 NFL Season,What is Aaron Rodgers' highest passer rating season?,122.5 in 2011,121.5 in 2020,120.5 in 2014,119.5 in 2019,122.5 in 2011
+562,2021 NFL Season,Who won the 2021 NFL MVP?,Aaron Rodgers,Tom Brady,Josh Allen,Patrick Mahomes,Aaron Rodgers
+563,2021 NFL Season,How many passing yards did Tom Brady have in 2021?,"5,316","4,500","4,900","5,100","5,316"
+565,2021 NFL Season,How many touchdowns did Tom Brady throw in 2021?,43,40,45,38,43
+566,2021 NFL Season,How many interceptions did Tom Brady throw in 2021?,12,10,14,8,12
+570,2021 NFL Season,How many pass attempts did Tom Brady have in 2021?,719,700,650,750,719
+571,2022 NFL Season,Who won the 2022 NFL MVP?,Patrick Mahomes,Josh Allen,Jalen Hurts,Lamar Jackson,Patrick Mahomes
+572,2022 NFL Season,How many passing yards did Patrick Mahomes have in 2022?,"5,250","5,000","5,500","4,900","5,250"
+573,2022 NFL Season,How many passing touchdowns did Patrick Mahomes have in 2022?,41,40,43,38,41
+574,2022 NFL Season,How many interceptions did Patrick Mahomes throw in 2022?,12,10,14,8,12
+575,2022 NFL Season,What was Patrick Mahomes' passer rating in 2022?,105.2,103.0,107.5,101.5,105.2
+578,2022 NFL Season,How many Super Bowl titles did the Chiefs win through 2022?,3,2,4,1,3
+579,2022 NFL Season,What was the Chiefs' record in 2022?,14-3,13-4,15-2,12-5,14-3
+581,2023 NFL Season MVP,Who won the 2023 NFL MVP?,Lamar Jackson,Christian McCaffrey,Jalen Hurts,Patrick Mahomes,Lamar Jackson
+582,2023 NFL Season MVP,How many MVP votes did Lamar Jackson get in 2023?,49 of 50,48 of 50,50 of 50,47 of 50,49 of 50
+583,2023 NFL Season MVP,Who got the one first-place MVP vote instead of Lamar Jackson?,Josh Allen,Christian McCaffrey,Jalen Hurts,Patrick Mahomes,Josh Allen
+584,2023 NFL Season MVP,How many passing yards did Lamar Jackson have in 2023?,"4,280","4,000","4,500","3,900","4,280"
+585,2023 NFL Season MVP,How many passing touchdowns did Lamar Jackson have in 2023?,31,28,35,25,31
+586,2023 NFL Season MVP,How many interceptions did Lamar Jackson throw in 2023?,11,8,14,6,11
+588,2023 NFL Season MVP,How many MVP awards does Lamar Jackson have?,3,2,4,1,3
+590,2023 NFL Season MVP,What was Lamar Jackson's passer rating in 2023?,117.0,115.0,119.0,113.5,117.0
+591,2023 Season Awards,Who won the 2023 Offensive Player of the Year?,Christian McCaffrey,Lamar Jackson,Jalen Hurts,Josh Allen,Christian McCaffrey
+592,2023 Season Awards,How many rushing yards did Christian McCaffrey have in 2023?,"1,459","1,300","1,600","1,200","1,459"
+593,2023 Season Awards,How many receiving yards did Christian McCaffrey have in 2023?,564,450,650,400,564
+594,2023 Season Awards,How many total rushing and receiving touchdowns did Christian McCaffrey have in 2023?,21,18,24,15,21
+596,2023 Season Awards,What record did Christian McCaffrey tie?,Lenny Moore's TD streak,Jerry Rice's receptions,Barry Sanders' rushing,Emmitt Smith's total yards,Lenny Moore's TD streak
+597,2023 Season Awards,How many Heisman Trophy winners have won multiple MVPs?,2,1,3,4,2
+598,2023 Season Awards,What was Christian McCaffrey's average yards per carry in 2023?,5.4,5.0,5.8,4.9,5.4
+600,2023 Season Awards,What position did Christian McCaffrey play in 2023?,Running Back,Wide Receiver,Tight End,Full Back,Running Back
+601,Tom Brady Career Stats,How many career passing yards does Tom Brady have?,"89,214","85,000","92,000","80,000","89,214"
+602,Tom Brady Career Stats,How many career touchdown passes does Tom Brady have?,649,600,700,550,649
+603,Tom Brady Career Stats,How many career games did Tom Brady start?,316,300,330,285,316
+604,Tom Brady Career Stats,How many career interceptions did Tom Brady throw?,171,150,190,140,171
+605,Tom Brady Career Stats,In what year did Tom Brady retire for the first time?,2022,2021,2023,2020,2022
+607,Tom Brady Career Stats,When did Tom Brady make his final retirement announcement?,February 2023,January 2023,March 2023,December 2022,February 2023
+608,Tom Brady Career Stats,How many consecutive Super Bowls did Brady play in?,9,8,10,7,9
+609,Tom Brady Career Stats,How many All-Pro selections does Tom Brady have?,15,12,18,10,15
+610,Tom Brady Career Stats,How many Pro Bowls did Tom Brady make?,15,14,16,13,15
+611,Patrick Mahomes Career,How many Pro Bowls has Patrick Mahomes made through 2024?,6,5,7,4,6
+612,Patrick Mahomes Career,How many MVP awards does Patrick Mahomes have?,3,2,4,1,3
+613,Patrick Mahomes Career,How many Super Bowl MVP awards does Patrick Mahomes have?,3,2,4,1,3
+614,Patrick Mahomes Career,In what year was Patrick Mahomes drafted?,2017,2016,2018,2015,2017
+615,Patrick Mahomes Career,What overall pick was Patrick Mahomes?,10th,15th,5th,20th,10th
+616,Patrick Mahomes Career,Which college did Patrick Mahomes attend?,Texas Tech,Oklahoma,Texas,Kansas State,Texas Tech
+618,Patrick Mahomes Career,What was Patrick Mahomes' father's profession?,MLB pitcher,NFL player,Coach,Athletic director,MLB pitcher
+619,Patrick Mahomes Career,How many passing yards has Patrick Mahomes accumulated through 2024?,"35,000+","30,000","40,000","25,000","35,000+"
+621,Lamar Jackson Career,In what year was Lamar Jackson drafted?,2018,2017,2019,2016,2018
+622,Lamar Jackson Career,What overall pick was Lamar Jackson?,32nd,25th,50th,10th,32nd
+623,Lamar Jackson Career,Which college did Lamar Jackson attend?,Louisville,LSU,Alabama,Clemson,Louisville
+625,Lamar Jackson Career,In what year did Lamar Jackson win the Heisman?,2016,2017,2015,2018,2016
+626,Lamar Jackson Career,How many rushing yards did Lamar Jackson have in 2023?,821,700,900,600,821
+627,Lamar Jackson Career,How many rushing touchdowns did Lamar Jackson have in 2023?,5,3,7,4,5
+629,Lamar Jackson Career,How many Pro Bowls has Lamar Jackson made?,5,4,6,3,5
+630,Lamar Jackson Career,How many All-Pro selections does Lamar Jackson have?,4,3,5,2,4
+631,Christian McCaffrey Career,Which team drafted Christian McCaffrey?,Carolina Panthers,San Francisco 49ers,Arizona Cardinals,Denver Broncos,Carolina Panthers
+632,Christian McCaffrey Career,When was Christian McCaffrey drafted?,2017,2018,2016,2019,2017
+633,Christian McCaffrey Career,What overall pick was Christian McCaffrey?,8th,5th,10th,1st,8th
+635,Christian McCaffrey Career,Which team did Christian McCaffrey get traded to?,San Francisco 49ers,Miami Dolphins,Buffalo Bills,Los Angeles Rams,San Francisco 49ers
+636,Christian McCaffrey Career,In what year was Christian McCaffrey traded?,2020,2019,2021,2022,2020
+638,Christian McCaffrey Career,How many total yards did Christian McCaffrey have in Super Bowl LVIII?,160,140,180,120,160
+640,Christian McCaffrey Career,How many rushing yards did Christian McCaffrey have in 2022?,"1,139","1,000","1,300",900,"1,139"
+641,Tyreek Hill Career,Which team drafted Tyreek Hill?,Kansas City Chiefs,Miami Dolphins,Buffalo Bills,Tampa Bay,Kansas City Chiefs
+642,Tyreek Hill Career,In what year was Tyreek Hill drafted?,2016,2015,2017,2014,2016
+643,Tyreek Hill Career,What overall pick was Tyreek Hill?,125th,100th,150th,75th,125th
+645,Tyreek Hill Career,Which team did Tyreek Hill get traded to?,Miami Dolphins,Buffalo Bills,New York Jets,Los Angeles Rams,Miami Dolphins
+646,Tyreek Hill Career,In what year was Tyreek Hill traded?,2022,2021,2023,2020,2022
+647,Tyreek Hill Career,How many receiving yards did Tyreek Hill have in his first year with the Dolphins?,"1,799","1,700","1,900","1,600","1,799"
+649,Tyreek Hill Career,How many Pro Bowls has Tyreek Hill made?,7,6,8,5,7
+650,Tyreek Hill Career,How many All-Pro selections does Tyreek Hill have?,5,4,6,3,5
+651,Aaron Rodgers Career Continued,How many MVP awards does Aaron Rodgers have?,4,3,5,2,4
+652,Aaron Rodgers Career Continued,In what years did Aaron Rodgers win MVP?,"2011, 2014, 2020, 2021","2010, 2013, 2019, 2020","2012, 2015, 2021, 2022",Others,"2011, 2014, 2020, 2021"
+654,Aaron Rodgers Career Continued,How many Super Bowls has Aaron Rodgers won?,1,2,3,0,1
+655,Aaron Rodgers Career Continued,In what year did Aaron Rodgers win his Super Bowl?,2011,2010,2012,2009,2011
+656,Aaron Rodgers Career Continued,Which college did Aaron Rodgers attend?,University of California,University of Arizona,Stanford,Oregon,University of California
+657,Aaron Rodgers Career Continued,When was Aaron Rodgers drafted?,2005,2004,2006,2003,2005
+658,Aaron Rodgers Career Continued,What overall pick was Aaron Rodgers?,1st,5th,10th,15th,1st
+659,Aaron Rodgers Career Continued,How many Pro Bowls has Aaron Rodgers made?,9,8,10,7,9
+660,Aaron Rodgers Career Continued,How many All-Pro selections does Aaron Rodgers have?,9,8,10,7,9
+661,2020-2023 Draft Highlights,Who was the 1st overall pick in the 2021 NFL Draft?,Trevor Lawrence,Zach Wilson,Trey Lance,Justin Fields,Trevor Lawrence
+662,2020-2023 Draft Highlights,Who was the 1st overall pick in the 2022 NFL Draft?,Travon Walker,Aidan Hutchinson,Ikem Ekwonu,Sauce Gardner,Travon Walker
+663,2020-2023 Draft Highlights,Who was the 1st overall pick in the 2023 NFL Draft?,Will Anderson,Bryce Young,C.J. Stroud,Anthony Richardson,Will Anderson
+665,2020-2023 Draft Highlights,Where was Bryce Young selected in 2023?,2nd overall,1st overall,3rd overall,5th overall,2nd overall
+667,2020-2023 Draft Highlights,Where was C.J. Stroud selected in 2023?,3rd overall,2nd overall,1st overall,5th overall,3rd overall
+669,2020-2023 Draft Highlights,Where was Anthony Richardson selected in 2023?,4th overall,3rd overall,5th overall,1st overall,4th overall
+672,2020-2023 Season Records,What was the Kansas City Chiefs' record in 2020?,14-2,13-3,15-1,12-4,14-2
+673,2020-2023 Season Records,What was the Green Bay Packers' record in 2020?,13-3,14-2,12-4,15-1,13-3
+675,2020-2023 Season Records,What was the Tampa Bay Buccaneers' record in 2021?,13-4,14-3,12-5,15-2,13-4
+677,2020-2023 Season Records,What was the Kansas City Chiefs' record in 2022?,14-3,13-4,15-2,12-5,14-3
+679,2020-2023 Season Records,What was the San Francisco 49ers' record in 2023?,12-5,13-4,14-3,11-6,12-5
+681,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2020?,Aaron Donald,Chris Paul,Khalil Mack,J.J. Watt,Aaron Donald
+682,Defensive Standouts 2020-2023,How many sacks did Aaron Donald have in 2020?,13.5,12,15,11,13.5
+683,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2021?,T.J. Watt,Micah Parsons,Aaron Donald,Khalil Mack,T.J. Watt
+684,Defensive Standouts 2020-2023,How many sacks did T.J. Watt have in 2021?,22.5,20,24,19,22.5
+686,Defensive Standouts 2020-2023,Who tied the sacks record with T.J. Watt?,Michael Strahan,Mark Gastineau,Jared Allen,Chris Doleman,Michael Strahan
+687,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2022?,Chris Jones,Micah Parsons,Aaron Donald,T.J. Watt,Micah Parsons
+688,Defensive Standouts 2020-2023,How many sacks did Micah Parsons have in 2022?,13,12,14,11,13
+689,Defensive Standouts 2020-2023,Who led the NFL in sacks in 2023?,Micah Parsons,Aaron Donald,Chris Jones,T.J. Watt,Micah Parsons
+690,Defensive Standouts 2020-2023,How many sacks did Micah Parsons have in 2023?,12.5,12,13,11.5,12.5
+691,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2020?,DeAndre Hopkins,Stefon Diggs,Mike Evans,Travis Kelce,DeAndre Hopkins
+692,Receiving Leaders 2020-2023,How many receiving yards did DeAndre Hopkins have in 2020?,"1,104","1,000","1,200",950,"1,104"
+693,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2021?,Davante Adams,Cooper Kupp,Travis Kelce,Tyreek Hill,Davante Adams
+694,Receiving Leaders 2020-2023,How many receiving yards did Davante Adams have in 2021?,"1,553","1,400","1,650","1,300","1,553"
+695,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2022?,Tyreek Hill,Travis Kelce,Davante Adams,Cooper Kupp,Tyreek Hill
+696,Receiving Leaders 2020-2023,How many receiving yards did Tyreek Hill have in 2022?,"1,239","1,100","1,350","1,000","1,239"
+697,Receiving Leaders 2020-2023,Who led the NFL in receiving yards in 2023?,Davante Adams,Tyreek Hill,Travis Kelce,Cooper Kupp,Davante Adams
+698,Receiving Leaders 2020-2023,How many receiving yards did Davante Adams have in 2023?,"1,596","1,400","1,700","1,300","1,596"
+700,Receiving Leaders 2020-2023,How many receiving yards did Cooper Kupp have in 2021?,"1,947","1,800","2,000","1,700","1,947"
+702,Notable Playoff Moments 2020-2023,Who did the Tampa Bay Buccaneers beat in the NFC Championship?,Green Bay Packers,New Orleans Saints,Washington,Los Angeles Rams,Green Bay Packers
+703,Notable Playoff Moments 2020-2023,What was the score of the NFC Championship game?,31-26,28-24,30-20,35-17,31-26
+711,Individual Milestone Records,Who threw the first pass to achieve 600 career TDs?,Tom Brady,Peyton Manning,Brett Favre,Dan Marino,Tom Brady
+712,Individual Milestone Records,In what year did Tom Brady achieve 600 career TDs?,2021,2020,2022,2019,2021
+714,Individual Milestone Records,Who set the record for most passing yards in a season before 2021?,Peyton Manning,Tom Brady,Dan Marino,Brett Favre,Peyton Manning
+715,Individual Milestone Records,How many passing yards did Peyton Manning throw in his record year?,"5,477","5,300","5,600","5,100","5,477"
+716,Individual Milestone Records,In what year did Peyton Manning set the passing yards record?,2013,2012,2014,2011,2013
+718,Individual Milestone Records,What is Tom Brady's single-season passing yards record?,"5,316","5,300","5,400","5,200","5,316"
+720,Individual Milestone Records,What was Aaron Rodgers' highest completion percentage?,70.7%,70.0%,71.5%,69.5%,70.7%
+721,Conference Winners 2020-2023,Which team won the AFC East in 2020?,Miami Dolphins,Buffalo Bills,New England Patriots,New York Jets,Miami Dolphins
+722,Conference Winners 2020-2023,Which team won the AFC North in 2020?,Baltimore Ravens,Pittsburgh Steelers,Cleveland Browns,Cincinnati Bengals,Baltimore Ravens
+723,Conference Winners 2020-2023,Which team won the NFC East in 2020?,Washington Football Team,Philadelphia Eagles,Dallas Cowboys,New York Giants,Washington Football Team
+724,Conference Winners 2020-2023,Which team won the NFC West in 2020?,Seattle Seahawks,San Francisco 49ers,Los Angeles Rams,Arizona Cardinals,Seattle Seahawks
+725,Conference Winners 2020-2023,Which team won the AFC East in 2021?,Buffalo Bills,New England Patriots,Miami Dolphins,New York Jets,Buffalo Bills
+726,Conference Winners 2020-2023,Which team won the NFC East in 2021?,Dallas Cowboys,Washington Football Team,Philadelphia Eagles,New York Giants,Dallas Cowboys
+727,Conference Winners 2020-2023,Which team won the AFC West in 2022?,Kansas City Chiefs,Los Angeles Chargers,Las Vegas Raiders,Denver Broncos,Kansas City Chiefs
+728,Conference Winners 2020-2023,Which team won the NFC South in 2023?,Tampa Bay Buccaneers,New Orleans Saints,Atlanta Falcons,Carolina Panthers,Tampa Bay Buccaneers
+729,Conference Winners 2020-2023,Which team won the AFC South in 2023?,Houston Texans,Indianapolis Colts,Jacksonville Jaguars,Tennessee Titans,Houston Texans
+730,Conference Winners 2020-2023,Which team won the NFC North in 2023?,Detroit Lions,Minnesota Vikings,Green Bay Packers,Chicago Bears,Detroit Lions
+732,Free Agency & Trades 2020-2023,In what year did Tom Brady sign with Tampa Bay?,2020,2019,2021,2018,2020
+735,Free Agency & Trades 2020-2023,Which team did Matthew Stafford get traded to?,Los Angeles Rams,Detroit Lions,Miami Dolphins,Buffalo Bills,Los Angeles Rams
+736,Free Agency & Trades 2020-2023,In what year was Matthew Stafford traded?,2021,2020,2022,2019,2021
+739,Free Agency & Trades 2020-2023,In what year was Christian McCaffrey traded mid-season?,2022,2021,2023,2020,2022
+742,Hall of Fame & Awards 2020-2023,In what year was Peyton Manning inducted?,2023,2022,2024,2021,2023
+743,Hall of Fame & Awards 2020-2023,How many Pro Bowls did Peyton Manning make?,14,13,15,12,14
+744,Hall of Fame & Awards 2020-2023,How many Super Bowls did Peyton Manning win?,2,1,3,0,2
+746,Hall of Fame & Awards 2020-2023,In what year was John Elway inducted?,2004,2005,2003,2002,2004
+747,Hall of Fame & Awards 2020-2023,How many Super Bowls did John Elway win?,2,1,3,0,2
+750,Hall of Fame & Awards 2020-2023,In what year was Dan Marino inducted?,2005,2004,2006,2003,2005
+751,Offensive Legends 2020-2023,How many times did Davante Adams lead the league in receiving yards?,2,1,3,4,2
+753,Offensive Legends 2020-2023,How many receiving yards did Travis Kelce have in 2020?,"1,229","1,100","1,350","1,000","1,229"
+754,Offensive Legends 2020-2023,How many receiving touchdowns did Travis Kelce have in 2020?,11,10,13,9,11
+756,Offensive Legends 2020-2023,How many receiving yards did Mike Evans have in 2020?,"1,006",950,"1,100",850,"1,006"
+759,Offensive Legends 2020-2023,In what year did Gronkowski return?,2021,2020,2022,2023,2021
+760,Offensive Legends 2020-2023,How many receiving touchdowns did Gronkowski have in 2021?,13,11,15,10,13
+761,Running Backs 2020-2023,Who led the NFL in rushing yards in 2020?,Derrick Henry,Aaron Jones,Jonathan Taylor,Dalvin Cook,Derrick Henry
+762,Running Backs 2020-2023,How many rushing yards did Derrick Henry have in 2020?,"1,540","1,400","1,650","1,300","1,540"
+763,Running Backs 2020-2023,Who led the NFL in rushing yards in 2021?,Jonathan Taylor,Derrick Henry,Aaron Jones,Najee Harris,Jonathan Taylor
+764,Running Backs 2020-2023,How many rushing yards did Jonathan Taylor have in 2021?,"1,811","1,700","1,900","1,600","1,811"
+765,Running Backs 2020-2023,Who led the NFL in rushing yards in 2022?,Jeff Wilson Jr.,Christian McCaffrey,Nick Chubb,Aaron Jones,Jeff Wilson Jr.
+766,Running Backs 2020-2023,How many rushing yards did Jeff Wilson Jr. have in 2022?,"1,025",950,"1,100",850,"1,025"
+770,Running Backs 2020-2023,Which team did Derrick Henry play for?,Los Angeles Rams,Tennessee Titans,Pittsburgh Steelers,Dallas Cowboys,Los Angeles Rams
+772,Defensive Backs 2020-2023,How many interceptions did Jalen Ramsey have in 2020?,3,2,4,1,3
+774,Defensive Backs 2020-2023,When was Sauce Gardner drafted?,2022,2021,2023,2020,2022
+775,Defensive Backs 2020-2023,Which team drafted Sauce Gardner?,New York Jets,New York Giants,New England Patriots,Buffalo Bills,New York Jets
+778,Defensive Backs 2020-2023,How many interceptions did Xavien Howard have in 2023?,8,6,10,5,8
+780,Defensive Backs 2020-2023,In what year was Darrelle Revis inducted?,2023,2022,2024,2021,2023
+782,Defensive Line 2020-2023,When did Aaron Donald retire?,March 2024,February 2024,January 2024,April 2023,March 2024
+783,Defensive Line 2020-2023,How many career sacks does Aaron Donald have?,111,100,120,95,111
+784,Defensive Line 2020-2023,How many Pro Bowls did Aaron Donald make?,8,7,9,6,8
+785,Defensive Line 2020-2023,How many All-Pro selections did Aaron Donald have?,8,7,9,6,8
+787,Defensive Line 2020-2023,How many sacks did Chris Jones have in 2023?,10.5,9,12,8,10.5
+789,Defensive Line 2020-2023,When did J.J. Watt retire?,2023,2022,2024,2021,2023
+790,Defensive Line 2020-2023,How many career sacks does J.J. Watt have?,114.5,100,120,110,114.5
+792,Linebackers 2020-2023,How many sacks did Micah Parsons have in 2022?,13,12,14,11,13
+794,Linebackers 2020-2023,How many tackles did Bobby Wagner have in 2022?,169,150,180,140,169
+796,Linebackers 2020-2023,How many tackles did Fred Warner have in 2023?,162,150,175,140,162
+800,Linebackers 2020-2023,How many career sacks does Ryan Kerrigan have?,117.5,110,120,105,117.5
+802,Special Teams & Kickers 2020-2023,How many field goals did Harrison Butker make in 2022?,33,30,35,28,33
+804,Special Teams & Kickers 2020-2023,When did Justin Tucker retire?,2023,2022,2024,2021,2023
+805,Special Teams & Kickers 2020-2023,How many career field goals did Justin Tucker make?,413,400,425,390,413
+808,Special Teams & Kickers 2020-2023,How many field goals did Matt Gay make in 2022?,29,27,31,25,29
+810,Special Teams & Kickers 2020-2023,How many field goals did Greg Joseph make in 2023?,34,32,36,30,34
+813,Coaching Changes 2020-2023,Who replaced Bruce Arians?,Todd Bowles,Giff Smith,Byron Leftwich,Kellen Moore,Todd Bowles
+816,Coaching Changes 2020-2023,In what year did Sean Payton become Broncos coach?,2023,2022,2024,2021,2023
+820,Coaching Changes 2020-2023,In what year did Jim Harbaugh become Chargers coach?,2024,2023,2025,2022,2024
+822,Team Turnarounds,What was the Houston Texans' record improvement?,From 3-14 to playoff,From 4-13 to 8-9,From 5-12 to 10-7,From 6-11 to 9-8,From 3-14 to playoff
+832,Comebacks & Close Games,How many points behind were the Chiefs at one point?,10,14,7,20,10
+840,Comebacks & Close Games,How many field goals did the game go to in Super Bowl LVIII?,2,1,3,None,2
+842,Record Breaking Performances,What was Aaron Rodgers' TD to INT ratio in 2020?,48:5,45:5,50:5,40:5,48:5
+845,Record Breaking Performances,How many receptions did Christian McCaffrey have in 2023?,80+,70+,90+,60+,80+
+876,Unanimous Picks & MVPs,How many MVP votes did Lamar Jackson get in 2023?,49 of 50,48 of 50,50 of 50,47 of 50,49 of 50
+892,Notable Transactions & Signings,In what year did OBJ sign with the Rams?,2021,2020,2022,2023,2021

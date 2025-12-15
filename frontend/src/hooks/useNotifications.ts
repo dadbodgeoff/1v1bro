@@ -13,8 +13,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
-
-const API_BASE = import.meta.env.VITE_API_URL || ''
+import { API_BASE } from '@/utils/constants'
 
 export type NotificationType = 'friend_request' | 'match_invite' | 'reward' | 'system'
 
@@ -81,7 +80,7 @@ export function useNotifications(): UseNotificationsReturn {
       if (options?.offset) params.set('offset', String(options.offset))
 
       const response = await fetch(
-        `${API_BASE}/api/v1/notifications?${params.toString()}`,
+        `${API_BASE}/notifications?${params.toString()}`,
         { headers: getAuthHeaders() }
       )
 
@@ -112,7 +111,7 @@ export function useNotifications(): UseNotificationsReturn {
 
     try {
       const response = await fetch(
-        `${API_BASE}/api/v1/notifications/count`,
+        `${API_BASE}/notifications/count`,
         { headers: getAuthHeaders() }
       )
 
@@ -132,7 +131,7 @@ export function useNotifications(): UseNotificationsReturn {
     if (!token || notificationIds.length === 0) return
 
     try {
-      const response = await fetch(`${API_BASE}/api/v1/notifications/read`, {
+      const response = await fetch(`${API_BASE}/notifications/read`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ notification_ids: notificationIds }),
@@ -161,7 +160,7 @@ export function useNotifications(): UseNotificationsReturn {
     if (!token) return
 
     try {
-      const response = await fetch(`${API_BASE}/api/v1/notifications/read-all`, {
+      const response = await fetch(`${API_BASE}/notifications/read-all`, {
         method: 'POST',
         headers: getAuthHeaders(),
       })
@@ -189,7 +188,7 @@ export function useNotifications(): UseNotificationsReturn {
     if (!token) return
 
     try {
-      const response = await fetch(`${API_BASE}/api/v1/notifications/${notificationId}`, {
+      const response = await fetch(`${API_BASE}/notifications/${notificationId}`, {
         method: 'DELETE',
         headers: getAuthHeaders(),
       })

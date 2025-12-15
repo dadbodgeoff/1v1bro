@@ -1,0 +1,189 @@
+# Implementation Plan
+
+- [x] 1. Create ScreenShakeSystem
+  - [x] 1.1 Create ScreenShakeSystem class with trauma-based shake
+    - Implement addTrauma() with cap at 1.0
+    - Implement update() with exponential decay (0.8/sec)
+    - Use simplex noise for organic shake offset
+    - Apply quadratic falloff (trauma²) for intensity
+    - _Requirements: 1.1, 1.3, 1.4, 1.6_
+  - [x] 1.2 Write property test for trauma decay
+    - **Property 1: Trauma decay is exponential**
+    - **Validates: Requirements 1.3**
+  - [x] 1.3 Write property test for quadratic falloff
+    - **Property 2: Shake intensity uses quadratic falloff**
+    - **Validates: Requirements 1.4**
+  - [x] 1.4 Write property test for trauma cap
+    - **Property 3: Trauma is capped at 1.0**
+    - **Validates: Requirements 1.6**
+  - [x] 1.5 Integrate ScreenShakeSystem with CameraController
+    - Apply shake offset in camera update
+    - Include both positional and rotational shake
+    - _Requirements: 1.2, 1.5_
+
+- [x] 2. Implement Dodge Particle Bursts
+  - [x] 2.1 Add dodge particle types to ParticleSystem
+    - Create 'dodge-sparks' pool (orange, 40 particles)
+    - Create 'perfect-burst' pool (cyan, 60 particles)
+    - Create 'perfect-flash' pool (white glow, 20 particles)
+    - _Requirements: 2.1, 2.2, 2.6_
+  - [x] 2.2 Implement emitDodgeParticles method
+    - Calculate direction away from obstacle
+    - Emit 15-20 for near-miss, 30-40 for perfect
+    - Use brand colors (orange/cyan)
+    - _Requirements: 2.1, 2.2, 2.3, 2.4_
+  - [x] 2.3 Write property test for near-miss particle count
+    - **Property 4: Near-miss emits correct particle count**
+    - **Validates: Requirements 2.1**
+  - [x] 2.4 Write property test for perfect dodge particle count
+    - **Property 5: Perfect dodge emits enhanced particles**
+    - **Validates: Requirements 2.2**
+  - [x] 2.5 Implement emitPerfectFlash method
+    - Brief expanding glow at dodge position
+    - White/cyan color with additive blending
+    - _Requirements: 2.5_
+  - [x] 2.6 Wire dodge particles to collision system
+    - Connect near-miss callback to emitDodgeParticles
+    - Connect perfect dodge to enhanced emission + flash
+    - _Requirements: 2.1, 2.2_
+
+- [x] 3. Implement Camera Tilt on Lane Changes
+  - [x] 3.1 Add tilt state to CameraController
+    - Add currentTilt, targetTilt, tiltVelocity properties
+    - Add maxTilt constant (3 degrees = 0.052 radians)
+    - _Requirements: 4.2_
+  - [x] 3.2 Implement setTiltTarget method
+    - Set target based on lane change direction (-1, 0, 1)
+    - Use ease-out curve for snappy response
+    - _Requirements: 4.1, 4.4_
+  - [x] 3.3 Implement updateTilt method
+    - Smooth interpolation toward target
+    - Apply airborne multiplier (0.5) when jumping
+    - Blend multiple rapid changes smoothly
+    - _Requirements: 4.3, 4.5, 4.6_
+  - [x] 3.4 Write property test for tilt bounds
+    - **Property 7: Camera tilt is bounded**
+    - **Validates: Requirements 4.2**
+  - [x] 3.5 Write property test for airborne tilt reduction
+    - **Property 8: Airborne tilt is reduced**
+    - **Validates: Requirements 4.6**
+  - [x] 3.6 Apply tilt in camera render update
+    - Add roll rotation to camera transform
+    - Ensure smooth return to neutral
+    - _Requirements: 4.3_
+
+- [x] 4. Implement Impact Flash Effect
+  - [x] 4.1 Create ImpactFlashOverlay class
+    - Create full-screen quad mesh
+    - Use MeshBasicMaterial with transparent, additive blending
+    - Position in front of camera
+    - _Requirements: 5.1, 5.3_
+  - [x] 4.2 Implement trigger method
+    - Set initial opacity to 0.3
+    - Use white for normal hits, red for lethal
+    - Start fade timer
+    - _Requirements: 5.1, 5.4_
+  - [x] 4.3 Implement update method
+    - Fade from 30% to 0% over 150ms
+    - Use linear interpolation
+    - _Requirements: 5.2_
+  - [x] 4.4 Write property test for flash duration
+    - **Property 9: Impact flash duration is consistent**
+    - **Validates: Requirements 5.2**
+  - [x] 4.5 Integrate with SurvivalRenderer
+    - Add flash overlay to scene
+    - Call trigger on collision
+    - _Requirements: 5.1_
+
+- [x] 5. Implement Combo Visual Escalation
+  - [x] 5.1 Create ComboEscalationSystem class
+    - Track current combo and visual level
+    - Define level thresholds (5, 10, 15)
+    - _Requirements: 6.1, 6.2, 6.3_
+  - [x] 5.2 Add combo trail particles to ParticleSystem
+    - Create 'combo-trail' pool (50 particles)
+    - Emit behind player at combo 5+
+    - Intensify at combo 10+
+    - _Requirements: 6.1, 6.2_
+  - [x] 5.3 Implement screen edge glow effect
+    - Create edge glow overlay mesh
+    - Activate at combo 15+
+    - Use brand color gradient
+    - _Requirements: 6.3_
+  - [x] 5.4 Implement fade-out on combo reset
+    - Fade all combo visuals over 0.5 seconds
+    - Reset visual state
+    - _Requirements: 6.4_
+  - [x] 5.5 Write property test for combo visual levels
+    - **Property 10: Combo visual levels are correct**
+    - **Validates: Requirements 6.1, 6.2, 6.3**
+  - [ ] 5.6 Implement time pulse on milestone
+    - Brief 1.1x time scale for 100ms
+    - Trigger on combo multiples of 5
+    - _Requirements: 6.5_
+
+- [x] 6. Enhance Landing Impact Effects
+  - [x] 6.1 Scale landing dust with velocity
+    - Emit more particles for higher velocity
+    - Cap at 25 particles
+    - _Requirements: 7.1_
+  - [x] 6.2 Add landing shake for high velocity
+    - Apply trauma 0.15 for velocity > 15
+    - Scale with velocity
+    - _Requirements: 7.2_
+  - [ ] 6.3 Write property test for landing shake scaling
+    - **Property 11: Landing shake scales with velocity**
+    - **Validates: Requirements 7.2**
+  - [ ] 6.4 Add track light pulse on landing
+    - Briefly brighten nearby track segment
+    - Fade over 200ms
+    - _Requirements: 7.4_
+
+- [ ] 7. Enhance Speed Feedback
+  - [ ] 7.1 Implement vignette effect
+    - Create vignette overlay
+    - Activate at speed > 45
+    - Intensity scales with speed
+    - _Requirements: 8.5_
+  - [ ] 7.2 Write property test for speed feedback thresholds
+    - **Property 12: Speed feedback thresholds are correct**
+    - **Validates: Requirements 8.1, 8.2**
+  - [ ] 7.3 Write property test for speed lines opacity
+    - **Property 6: Speed lines opacity scales with speed**
+    - **Validates: Requirements 3.1, 3.2**
+  - [ ] 7.4 Add speed line brightness pulse
+    - Pulse brightness on distance milestones (100m, 500m, 1000m)
+    - Brief flash then return to normal
+    - _Requirements: 3.6_
+  - [ ] 7.5 Enhance engine trail at high speed
+    - Increase particle count and size at speed > 40
+    - Add color variation (orange to cyan gradient)
+    - _Requirements: 8.3_
+
+- [x] 8. Integration and Polish
+  - [x] 8.1 Wire all systems in SurvivalEngine
+    - Connect collision to shake + flash
+    - Connect dodge to particles
+    - Connect lane change to tilt
+    - Connect combo to escalation
+    - _Requirements: All_
+  - [ ] 8.2 Add configuration options
+    - Allow disabling individual effects
+    - Performance presets (low/medium/high)
+    - _Requirements: Performance_
+  - [ ] 8.3 Performance optimization pass
+    - Profile particle systems
+    - Optimize shader usage
+    - Ensure 60fps on target hardware
+    - _Requirements: Performance_
+
+- [x] 9. Final Testing
+  - [x] 9.1 Run all property tests
+    - Ensure 100+ iterations per test
+    - All 10 properties passing (44 tests total)
+  - [ ] 9.2 Manual playtesting
+    - Verify feel of each effect
+    - Tune parameters as needed
+  - [ ] 9.3 Performance verification
+    - Test on low-end hardware
+    - Verify no frame drops

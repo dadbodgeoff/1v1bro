@@ -51,10 +51,16 @@ export function ArcadeLanding({
       onBootComplete?.();
     },
     onPhaseChange: (phase) => {
-      // Play startup chime when boot starts
+      // Play appropriate sounds for each boot phase
       if (phase === 'powering-on') {
         sound.playStartupChime();
+      } else if (phase === 'ready') {
+        sound.playReadyFanfare?.();
       }
+    },
+    onLineComplete: () => {
+      // Play blip for each boot line
+      sound.playBootLine?.();
     },
     trackEvent,
   });

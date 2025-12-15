@@ -109,6 +109,22 @@ COSMETICS = [
     },
     
     # ============================================
+    # 3D MODEL SKINS - Use model_url (loaded from Supabase Storage 3D bucket)
+    # These have 3D GLB models for interactive preview in the shop
+    # ============================================
+    {
+        "name": "Cape Runner",
+        "type": "skin",
+        "rarity": "epic",
+        "description": "A heroic runner with a flowing cape. Feel the wind as you dash through obstacles!",
+        "image_url": "https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/3d/cape-optimized.glb",  # Use model as preview (will show 3D)
+        "model_url": "https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/3d/cape-optimized.glb",  # 3D model for interactive preview
+        "price_coins": 300,
+        "is_featured": True,
+        "sort_order": 6,
+    },
+    
+    # ============================================
     # DYNAMIC CMS SKINS - Use sprite_sheet_url (loaded from Supabase Storage)
     # These are single images loaded dynamically with background removal
     # ============================================

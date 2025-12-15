@@ -9,10 +9,15 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+import logging
 
 from app.core.config import get_settings
 from app.core.exceptions import AppException
 from app.middleware.error_handler import app_exception_handler
+
+logger = logging.getLogger(__name__)
 from app.middleware.auth import decode_jwt_token, AuthenticationError, RequestTracingMiddleware
 from app.middleware.request_logging import RequestLoggingMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
@@ -84,6 +89,16 @@ app.add_middleware(RequestLoggingMiddleware)
 
 # Exception handlers
 app.add_exception_handler(AppException, app_exception_handler)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Log validation errors for debugging."""
+    logger.error(f"Validation error on {request.method} {request.url.path}: {exc.errors()}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )
 
 
 # Health check (Requirements: 14.6)

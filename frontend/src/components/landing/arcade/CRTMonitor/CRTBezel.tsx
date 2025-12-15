@@ -28,9 +28,11 @@ export interface CRTBezelProps {
   mode?: 'mobile' | 'tablet' | 'desktop';
   /** Additional CSS classes */
   className?: string;
+  /** Callback when control panel / insert coin is clicked */
+  onControlPanelClick?: () => void;
 }
 
-export function CRTBezel({ children, mode = 'desktop', className }: CRTBezelProps) {
+export function CRTBezel({ children, mode = 'desktop', className, onControlPanelClick }: CRTBezelProps) {
   const config = RESPONSIVE_BEHAVIORS[mode];
   const showCabinetDetails = config.showVents; // Desktop only
   const showBrandBadge = config.showBrandBadge;
@@ -103,9 +105,14 @@ export function CRTBezel({ children, mode = 'desktop', className }: CRTBezelProp
         )}
       </div>
 
-      {/* Control panel area (desktop/tablet) */}
+      {/* Control panel area (desktop/tablet) - clickable to login */}
       {(isDesktop || isTablet) && (
-        <div className="arcade-control-panel" aria-hidden="true">
+        <button
+          className="arcade-control-panel arcade-control-panel--clickable"
+          onClick={onControlPanelClick}
+          aria-label="Insert coin to log in"
+          type="button"
+        >
           {/* Joystick indicator */}
           <div className="control-panel-joystick">
             <div className="joystick-base" />
@@ -126,7 +133,7 @@ export function CRTBezel({ children, mode = 'desktop', className }: CRTBezelProp
               <span className="coin-slot-text">INSERT COIN</span>
             </div>
           )}
-        </div>
+        </button>
       )}
     </div>
   );

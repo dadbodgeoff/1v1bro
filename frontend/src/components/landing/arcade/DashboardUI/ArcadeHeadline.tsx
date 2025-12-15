@@ -18,23 +18,14 @@ export interface ArcadeHeadlineComponentProps extends ArcadeHeadlineProps {
   mode?: 'mobile' | 'tablet' | 'desktop';
 }
 
-// Feature highlights for the landing page
-const FEATURES = [
-  'Real-time PvP combat',
-  'Trivia-powered abilities',
-  'Ranked matchmaking',
-];
-
 export function ArcadeHeadline({
   text = ARCADE_CONTENT.headline,
   tagline = ARCADE_CONTENT.tagline,
   animate = true,
   mode = 'desktop',
 }: ArcadeHeadlineComponentProps) {
-  const isDesktop = mode === 'desktop' || mode === 'tablet';
-  
   return (
-    <div className={isDesktop ? '' : 'text-center'}>
+    <div className="arcade-headline-wrapper">
       {/* Main headline */}
       <h1
         className={cn(
@@ -46,17 +37,6 @@ export function ArcadeHeadline({
         {text}
       </h1>
       
-      {/* Divider line */}
-      {isDesktop && (
-        <div 
-          className={cn(
-            'arcade-divider',
-            animate && 'stagger-item stagger-item--visible stagger-item--delay-2'
-          )}
-          aria-hidden="true"
-        />
-      )}
-      
       {/* Tagline */}
       <p
         className={cn(
@@ -67,22 +47,6 @@ export function ArcadeHeadline({
       >
         {tagline}
       </p>
-      
-      {/* Feature list - desktop only */}
-      {isDesktop && (
-        <div 
-          className={cn(
-            'arcade-features',
-            animate && 'stagger-item stagger-item--visible stagger-item--delay-3'
-          )}
-        >
-          {FEATURES.map((feature, index) => (
-            <span key={index} className="arcade-feature">
-              {feature}
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

@@ -10,8 +10,7 @@ import type {
   CheckoutResponse,
   PurchaseVerifyResponse,
 } from '../types/coin';
-
-const API_BASE = import.meta.env.VITE_API_URL || '';
+import { API_BASE } from '../utils/constants';
 
 interface UseCoinPurchaseReturn {
   packages: CoinPackage[];
@@ -49,7 +48,7 @@ export function useCoinPurchase(): UseCoinPurchaseReturn {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE}/api/v1/coins/packages`, {
+      const response = await fetch(`${API_BASE}/coins/packages`, {
         headers: getAuthHeaders(),
         credentials: 'include',
       });
@@ -76,7 +75,7 @@ export function useCoinPurchase(): UseCoinPurchaseReturn {
     setPurchaseLoading(packageId);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE}/api/v1/coins/checkout`, {
+      const response = await fetch(`${API_BASE}/coins/checkout`, {
         method: 'POST',
         headers: getAuthHeaders(),
         credentials: 'include',
@@ -113,7 +112,7 @@ export function useCoinPurchase(): UseCoinPurchaseReturn {
     setError(null);
     try {
       const response = await fetch(
-        `${API_BASE}/api/v1/coins/verify?session_id=${encodeURIComponent(sessionId)}`,
+        `${API_BASE}/coins/verify?session_id=${encodeURIComponent(sessionId)}`,
         {
           headers: getAuthHeaders(),
           credentials: 'include',
