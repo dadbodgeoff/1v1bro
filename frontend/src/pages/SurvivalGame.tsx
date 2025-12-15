@@ -33,7 +33,6 @@ import {
   HighlightBox,
   EnterpriseButton,
   EnterpriseDivider,
-  ControlsPanel,
   TriviaStatsBar,
   PlayerInfo,
   ErrorDisplay,
@@ -45,7 +44,6 @@ import { useMobileOptimization } from '@/survival/hooks/useMobileOptimization'
 import type { PerformanceMetrics } from '@/survival/engine/PerformanceMonitor'
 
 // Feature flags
-const ENABLE_TRIVIA_BILLBOARDS = true
 const ENABLE_GHOST_REPLAY = true
 
 function SurvivalGameContent() {
@@ -54,8 +52,19 @@ function SurvivalGameContent() {
   const { loadoutWithDetails, fetchLoadout } = useCosmeticsStore()
   const { leaderboard, refresh: refreshRank } = useLeaderboard({ autoStart: true })
   const { isTouch, deviceCapabilities } = useMobileOptimization()
-  // Use UA-based mobile detection for UI decisions (more reliable than screen-size based)
-  const isMobileDevice = deviceCapabilities.isMobile || isTouch
+  // Use multiple detection methods for reliable mobile detection
+  // Check UA, touch support, and screen size as fallbacks
+  const isMobileDevice = useMemo(() => {
+    // Direct UA check (most reliable)
+    const ua = navigator.userAgent.toLowerCase()
+    const uaIsMobile = /iphone|ipad|ipod|android|mobile|webos|blackberry|opera mini|iemobile/.test(ua)
+    // Touch check
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    // Screen size check (portrait phone)
+    const isSmallScreen = window.innerWidth < 768
+    // Combined: UA says mobile OR (has touch AND small screen)
+    return uaIsMobile || deviceCapabilities.isMobile || isTouch || (hasTouch && isSmallScreen)
+  }, [deviceCapabilities.isMobile, isTouch])
   const playerRank = leaderboard?.playerEntry
   const [showGameOver, setShowGameOver] = useState(false)
   const [showReadyCard, setShowReadyCard] = useState(true)
@@ -67,6 +76,9 @@ function SurvivalGameContent() {
   } | null>(null)
   // Default trivia category - user selects from dashboard before entering
   const selectedCategory: TriviaCategory = 'fortnite'
+  
+  // Disable trivia billboards on mobile - too hard to interact with in 3D
+  const enableTriviaBillboards = !isMobileDevice
 
   // Fetch loadout on mount to get equipped runner skin
   useEffect(() => {
@@ -201,7 +213,7 @@ function SurvivalGameContent() {
   // Trivia billboards - category is dynamic based on user selection
   const billboards = useTriviaBillboards(engine, {
     category: selectedCategory,
-    enabled: ENABLE_TRIVIA_BILLBOARDS,
+    enabled: enableTriviaBillboards,
     onCorrectAnswer: (points) => {
       console.log(`[Billboards] Correct! +${points}pts`)
       addScore?.(points)
@@ -226,7 +238,7 @@ function SurvivalGameContent() {
   billboardsRef.current = billboards
 
   useEffect(() => {
-    if (!ENABLE_TRIVIA_BILLBOARDS) return
+    if (!enableTriviaBillboards) return
     
     const bb = billboardsRef.current
     if (phase === 'running' && !bb.isActive) {
@@ -244,7 +256,7 @@ function SurvivalGameContent() {
   }, [isLoading, gameState?.phase, loadPersonalBestGhost])
 
   const handleReset = () => {
-    if (ENABLE_TRIVIA_BILLBOARDS) billboards.stop()
+    if (enableTriviaBillboards) billboards.stop()
     setShowGameOver(false)
     setShowReadyCard(true) // Show ready card again on reset
     setLastRunStats(null)
@@ -253,12 +265,12 @@ function SurvivalGameContent() {
 
   // Quick restart - immediately start a new run without going back to ready screen
   const handleQuickRestart = useCallback(() => {
-    if (ENABLE_TRIVIA_BILLBOARDS) billboards.stop()
+    if (enableTriviaBillboards) billboards.stop()
     setShowGameOver(false)
     setShowReadyCard(false) // Keep ready card hidden on quick restart
     setLastRunStats(null)
     quickRestart()
-  }, [billboards, quickRestart])
+  }, [billboards, quickRestart, enableTriviaBillboards])
 
   // Keyboard shortcut for quick restart (R key) when game over or paused
   useEffect(() => {
@@ -340,7 +352,7 @@ function SurvivalGameContent() {
       )}
 
       {/* Trivia Stats */}
-      {ENABLE_TRIVIA_BILLBOARDS && !isLoading && !error && gameState && (phase === 'running' || phase === 'paused') && (
+      {enableTriviaBillboards && !isLoading && !error && gameState && (phase === 'running' || phase === 'paused') && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
           <TriviaStatsBar
             timeRemaining={billboards.stats?.timeRemaining}
@@ -357,48 +369,10 @@ function SurvivalGameContent() {
         <PerformanceOverlay metrics={performanceMetrics} />
       )}
 
-      {/* Controls - Desktop only */}
-      {!isMobileDevice && (
-        <div className="absolute bottom-4 left-4 z-10">
-          <ControlsPanel
-            controls={[
-              { key: 'SPACE/W', action: 'Start / Jump' },
-              { key: 'A / ←', action: 'Move Left' },
-              { key: 'D / →', action: 'Move Right' },
-              { key: 'S / ↓', action: 'Slide' },
-              { key: 'ESC / P', action: 'Pause' },
-              { key: 'R', action: 'Quick Restart' },
-              { key: '1-4', action: 'Answer Billboards' },
-            ]}
-            onMuteToggle={() => setMuted(!isMuted)}
-            isMuted={isMuted}
-          />
-        </div>
-      )}
-      
-      {/* Mobile Touch Controls Hint - shown before game starts */}
-      {isMobileDevice && !isLoading && phase === 'ready' && showReadyCard && (
-        <div className="absolute bottom-4 left-4 right-4 z-10">
-          <div className="bg-black/70 backdrop-blur-sm rounded-xl border border-white/10 p-3">
-            <p className="text-gray-300 font-semibold mb-2 text-sm">Touch Controls</p>
-            <div className="grid grid-cols-2 gap-2 text-xs text-gray-400">
-              <div><span className="text-cyan-400">Swipe Up</span> = Jump</div>
-              <div><span className="text-cyan-400">Swipe Down</span> = Slide</div>
-              <div><span className="text-cyan-400">Tap Left</span> = Move Left</div>
-              <div><span className="text-cyan-400">Tap Right</span> = Move Right</div>
-            </div>
-            <button
-              onClick={() => setMuted(!isMuted)}
-              className="mt-2 bg-gray-700 hover:bg-gray-600 rounded px-2 py-1 text-xs flex items-center gap-2 transition-colors"
-            >
-              {isMuted ? '🔇 Unmute' : '🔊 Mute'}
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Controls moved to Ready card - no longer shown during gameplay */}
 
       {/* Mobile Trivia Answer Buttons - shown during gameplay when question is active */}
-      {isMobileDevice && ENABLE_TRIVIA_BILLBOARDS && phase === 'running' && billboards.hasActiveQuestion && (
+      {isMobileDevice && enableTriviaBillboards && phase === 'running' && billboards.hasActiveQuestion && (
         <div className="absolute bottom-20 left-0 right-0 z-20 flex justify-center">
           <div className="flex gap-3 bg-black/80 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/20">
             {[1, 2, 3, 4].map((num) => (
@@ -417,14 +391,9 @@ function SurvivalGameContent() {
         </div>
       )}
 
-      {/* Action Buttons */}
-      {!isLoading && gameState && (
+      {/* Action Buttons - Only during gameplay */}
+      {!isLoading && gameState && phase !== 'ready' && (
         <div className="absolute bottom-4 right-4 z-10 flex gap-2">
-          {phase === 'ready' && (
-            <EnterpriseButton onClick={handleStart} variant="primary">
-              Start Run
-            </EnterpriseButton>
-          )}
           {phase === 'running' && (
             <EnterpriseButton onClick={pause} variant="secondary" size="sm">
               ⏸ Pause
@@ -443,15 +412,63 @@ function SurvivalGameContent() {
         </div>
       )}
 
-      {/* Ready State - Auto-start or show simple start prompt */}
+      {/* Ready State - Pre-game lobby with controls */}
       {phase === 'ready' && !isLoading && showReadyCard && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
-          <EnterpriseCard maxWidth="sm" glow="subtle">
+        <div className="absolute inset-0 z-20 flex items-center justify-center p-4">
+          <EnterpriseCard maxWidth="md" glow="subtle">
             <EnterpriseTitle size="lg">Ready to Run</EnterpriseTitle>
-            <p className="text-gray-400 text-sm text-center mb-6">
-              {isMobileDevice ? 'Tap Start to begin' : 'Press SPACE or tap Start to begin'}
-            </p>
             
+            {/* Controls Section */}
+            <div className="mb-6">
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-3 font-medium">
+                {isMobileDevice ? 'Touch Controls' : 'Keyboard Controls'}
+              </p>
+              
+              {isMobileDevice ? (
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { action: 'Jump', control: 'Swipe Up' },
+                    { action: 'Slide', control: 'Swipe Down' },
+                    { action: 'Move Left', control: 'Tap Left' },
+                    { action: 'Move Right', control: 'Tap Right' },
+                  ].map(({ action, control }) => (
+                    <div key={action} className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2">
+                      <span className="text-gray-400 text-sm">{action}</span>
+                      <span className="text-orange-400 text-sm font-medium">{control}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { key: 'SPACE / W', action: 'Jump' },
+                    { key: 'S / ↓', action: 'Slide' },
+                    { key: 'A / ←', action: 'Move Left' },
+                    { key: 'D / →', action: 'Move Right' },
+                    { key: 'ESC / P', action: 'Pause' },
+                    { key: 'R', action: 'Quick Restart' },
+                  ].map(({ key, action }) => (
+                    <div key={key} className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2">
+                      <span className="text-gray-400 text-sm">{action}</span>
+                      <kbd className="bg-gray-800 text-orange-400 text-xs font-mono px-2 py-1 rounded border border-gray-700">
+                        {key}
+                      </kbd>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Sound Toggle */}
+            <button
+              onClick={() => setMuted(!isMuted)}
+              className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 
+                       rounded-lg px-4 py-2 mb-4 text-sm text-gray-400 transition-colors"
+            >
+              {isMuted ? '🔇 Sound Off' : '🔊 Sound On'}
+            </button>
+
+            {/* Action Buttons */}
             <div className="space-y-3">
               <EnterpriseButton onClick={handleStart} variant="primary" fullWidth>
                 Start Run
