@@ -1,24 +1,22 @@
 /**
- * TriviaOverlay - Portrait-optimized 2D trivia overlay for mobile runner
+ * TriviaPanel - Always-on trivia panel for mobile runner
  * 
  * Layout (portrait mobile):
  * ┌─────────────────────────┐
- * │      Game Canvas        │
+ * │      Game Canvas        │ ← Resizes to fit above panel
  * │                         │
- * ├─────────────────────────┤ ← 200px reserved area
- * │   Question Text Area    │ ← ~60px
+ * ├─────────────────────────┤
+ * │ [Timer] Question        │ ← Compact question row
  * ├───────────┬─────────────┤
- * │  Answer A │  Answer B   │ ← 2x2 grid
- * ├───────────┼─────────────┤   ~140px total
- * │  Answer C │  Answer D   │
+ * │  A │  B   │  C  │  D    │ ← Compact answer buttons
  * └───────────┴─────────────┘
  * 
  * Features:
- * - Slides up from bottom when trivia triggers
- * - 2x2 touch-friendly answer grid
- * - Timer bar at top of overlay
- * - Correct/incorrect feedback animations
- * - Game continues running in background (slowed)
+ * - Always visible during gameplay (not an overlay)
+ * - 30 second timer per question
+ * - New question immediately after answering
+ * - Compact auto-sizing answer buttons
+ * - Risk/reward: answer for points or focus on running
  */
 
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
@@ -37,32 +35,42 @@ export interface TriviaQuestion {
 }
 
 export interface TriviaOverlayProps {
-  /** Whether the overlay is visible */
-  isOpen: boolean
-  /** Current question to display */
-  question: TriviaQuestion | null
+  /** Whether trivia is active (game is running) */
+  isActive: boolean
+  /** Function to get next question */
+  getNextQuestion: () => TriviaQuestion | null
   /** Time limit in seconds */
   timeLimit?: number
   /** Called when player selects an answer */
   onAnswer: (questionId: string, selectedIndex: number, isCorrect: boolean) => void
   /** Called when time runs out */
   onTimeout: (questionId: string) => void
-  /** Called when overlay animation completes (after feedback) */
+}
+
+// Legacy props for backward compatibility
+export interface TriviaOverlayLegacyProps {
+  isOpen: boolean
+  question: TriviaQuestion | null
+  timeLimit?: number
+  onAnswer: (questionId: string, selectedIndex: number, isCorrect: boolean) => void
+  onTimeout: (questionId: string) => void
   onComplete: () => void
 }
 
-// Timer type for browser environment
 type TimerId = ReturnType<typeof setTimeout>
 
+// Panel height constant - export for parent layout
+export const TRIVIA_PANEL_HEIGHT = 120
+
 // ============================================
-// Answer Button Component
+// Compact Answer Button
 // ============================================
 
 interface AnswerButtonProps {
   answer: string
   index: number
   isSelected: boolean
-  isCorrect: boolean | null // null = not revealed yet
+  isCorrect: boolean | null
   isDisabled: boolean
   onSelect: (index: number) => void
 }
@@ -77,29 +85,18 @@ const AnswerButton = memo(({
 }: AnswerButtonProps) => {
   const labels = ['A', 'B', 'C', 'D']
   
-  // Determine button state and styling
-  let bgColor = 'bg-zinc-800/90'
-  let borderColor = 'border-zinc-600/50'
-  let textColor = 'text-white'
-  let labelBg = 'bg-zinc-700'
+  let bgColor = 'bg-zinc-800'
+  let borderColor = 'border-zinc-700'
   
   if (isCorrect === true) {
-    // This is the correct answer (revealed)
-    bgColor = 'bg-emerald-600/90'
+    bgColor = 'bg-emerald-600'
     borderColor = 'border-emerald-400'
-    textColor = 'text-white'
-    labelBg = 'bg-emerald-500'
   } else if (isCorrect === false && isSelected) {
-    // Player selected this wrong answer
-    bgColor = 'bg-red-600/90'
+    bgColor = 'bg-red-600'
     borderColor = 'border-red-400'
-    textColor = 'text-white'
-    labelBg = 'bg-red-500'
   } else if (isSelected) {
-    // Selected but not yet revealed
-    bgColor = 'bg-orange-500/90'
+    bgColor = 'bg-orange-500'
     borderColor = 'border-orange-400'
-    labelBg = 'bg-orange-400'
   }
   
   return (
@@ -107,114 +104,98 @@ const AnswerButton = memo(({
       onClick={() => !isDisabled && onSelect(index)}
       disabled={isDisabled}
       className={`
-        relative w-full h-full min-h-[56px]
-        ${bgColor} ${textColor}
-        border-2 ${borderColor}
-        rounded-xl
-        flex items-center justify-center
-        text-sm font-semibold
-        transition-all duration-150
+        ${bgColor} ${borderColor}
+        border rounded-lg
+        px-2 py-1.5
+        text-xs font-medium text-white
+        transition-all duration-100
         active:scale-95
-        disabled:opacity-70 disabled:cursor-not-allowed
+        disabled:opacity-60
         touch-manipulation
-        p-2
+        flex items-center gap-1
+        min-w-0
       `}
-      style={{
-        WebkitTapHighlightColor: 'transparent',
-      }}
+      style={{ WebkitTapHighlightColor: 'transparent' }}
     >
-      {/* Letter label */}
-      <span className={`
-        absolute top-1 left-1
-        ${labelBg}
-        w-5 h-5 rounded-md
-        flex items-center justify-center
-        text-xs font-bold text-white
-      `}>
-        {labels[index]}
-      </span>
-      
-      {/* Answer text - centered, with padding for label */}
-      <span className="text-center leading-tight px-1 line-clamp-3">
-        {answer}
-      </span>
-      
-      {/* Correct/incorrect icon */}
-      {isCorrect === true && (
-        <span className="absolute top-1 right-1 text-lg">✓</span>
-      )}
-      {isCorrect === false && isSelected && (
-        <span className="absolute top-1 right-1 text-lg">✗</span>
-      )}
+      <span className="text-[10px] text-zinc-400 font-bold shrink-0">{labels[index]}</span>
+      <span className="truncate">{answer}</span>
+      {isCorrect === true && <span className="shrink-0">✓</span>}
+      {isCorrect === false && isSelected && <span className="shrink-0">✗</span>}
     </button>
   )
 })
 AnswerButton.displayName = 'AnswerButton'
 
 // ============================================
-// Timer Bar Component
+// Timer Display
 // ============================================
 
-const TimerBar = memo(({ progress, isUrgent }: { progress: number; isUrgent: boolean }) => {
-  return (
-    <div className="w-full h-1.5 bg-zinc-700 rounded-full overflow-hidden">
-      <div 
-        className={`h-full transition-all duration-100 ${
-          isUrgent ? 'bg-red-500 animate-pulse' : 'bg-orange-500'
-        }`}
-        style={{ width: `${progress * 100}%` }}
-      />
-    </div>
-  )
-})
-TimerBar.displayName = 'TimerBar'
+const TimerDisplay = memo(({ seconds, isUrgent }: { seconds: number; isUrgent: boolean }) => (
+  <div className={`
+    text-sm font-bold tabular-nums
+    ${isUrgent ? 'text-red-400 animate-pulse' : 'text-orange-400'}
+  `}>
+    {Math.ceil(seconds)}s
+  </div>
+))
+TimerDisplay.displayName = 'TimerDisplay'
 
 // ============================================
-// Main Trivia Overlay Component
+// Main Trivia Panel Component (Always-On)
 // ============================================
 
-export const TriviaOverlay: React.FC<TriviaOverlayProps> = memo(({
-  isOpen,
-  question,
-  timeLimit = 10,
+export const TriviaPanel: React.FC<TriviaOverlayProps> = memo(({
+  isActive,
+  getNextQuestion,
+  timeLimit = 30,
   onAnswer,
   onTimeout,
-  onComplete,
 }) => {
-  // State
+  const [question, setQuestion] = useState<TriviaQuestion | null>(null)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [isRevealed, setIsRevealed] = useState(false)
   const [timeRemaining, setTimeRemaining] = useState(timeLimit)
-  const [isVisible, setIsVisible] = useState(false)
   
-  // Refs - using TimerId type for browser compatibility
   const timerRef = useRef<TimerId | null>(null)
   const feedbackTimeoutRef = useRef<TimerId | null>(null)
   
-  // Reset state when question changes
+  // Load first question when becoming active
   useEffect(() => {
-    if (question && isOpen) {
+    if (isActive && !question) {
+      const q = getNextQuestion()
+      if (q) {
+        setQuestion(q)
+        setTimeRemaining(timeLimit)
+        setSelectedIndex(null)
+        setIsRevealed(false)
+      }
+    }
+  }, [isActive, question, getNextQuestion, timeLimit])
+  
+  // Load next question after feedback
+  const loadNextQuestion = useCallback(() => {
+    const q = getNextQuestion()
+    if (q) {
+      setQuestion(q)
+      setTimeRemaining(timeLimit)
       setSelectedIndex(null)
       setIsRevealed(false)
-      setTimeRemaining(timeLimit)
-      
-      // Slide in animation
-      requestAnimationFrame(() => {
-        setIsVisible(true)
-      })
     }
-  }, [question?.id, isOpen, timeLimit])
+  }, [getNextQuestion, timeLimit])
   
   // Timer countdown
   useEffect(() => {
-    if (!isOpen || !question || isRevealed) return
+    if (!isActive || !question || isRevealed) return
     
     timerRef.current = setInterval(() => {
       setTimeRemaining(prev => {
         if (prev <= 0.1) {
-          // Time's up
           clearInterval(timerRef.current!)
-          handleTimeout()
+          // Handle timeout
+          setIsRevealed(true)
+          onTimeout(question.id)
+          // Load next question after brief feedback
+          feedbackTimeoutRef.current = setTimeout(loadNextQuestion, 800)
           return 0
         }
         return prev - 0.1
@@ -224,7 +205,7 @@ export const TriviaOverlay: React.FC<TriviaOverlayProps> = memo(({
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [isOpen, question?.id, isRevealed])
+  }, [isActive, question?.id, isRevealed, onTimeout, loadNextQuestion])
   
   // Handle answer selection
   const handleSelect = useCallback((index: number) => {
@@ -233,34 +214,16 @@ export const TriviaOverlay: React.FC<TriviaOverlayProps> = memo(({
     setSelectedIndex(index)
     setIsRevealed(true)
     
-    // Stop timer
     if (timerRef.current) clearInterval(timerRef.current)
     
     const isCorrect = index === question.correctIndex
     onAnswer(question.id, index, isCorrect)
     
-    // Show feedback then close
-    feedbackTimeoutRef.current = setTimeout(() => {
-      setIsVisible(false)
-      setTimeout(onComplete, 200) // Wait for slide-out animation
-    }, 1200)
-  }, [selectedIndex, isRevealed, question, onAnswer, onComplete])
+    // Load next question after brief feedback
+    feedbackTimeoutRef.current = setTimeout(loadNextQuestion, 600)
+  }, [selectedIndex, isRevealed, question, onAnswer, loadNextQuestion])
   
-  // Handle timeout
-  const handleTimeout = useCallback(() => {
-    if (!question || isRevealed) return
-    
-    setIsRevealed(true)
-    onTimeout(question.id)
-    
-    // Show correct answer then close
-    feedbackTimeoutRef.current = setTimeout(() => {
-      setIsVisible(false)
-      setTimeout(onComplete, 200)
-    }, 1500)
-  }, [question, isRevealed, onTimeout, onComplete])
-  
-  // Cleanup on unmount
+  // Cleanup
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
@@ -268,67 +231,164 @@ export const TriviaOverlay: React.FC<TriviaOverlayProps> = memo(({
     }
   }, [])
   
-  // Don't render if not open or no question
-  if (!isOpen || !question) return null
+  // Reset when becoming inactive
+  useEffect(() => {
+    if (!isActive) {
+      setQuestion(null)
+      setSelectedIndex(null)
+      setIsRevealed(false)
+      if (timerRef.current) clearInterval(timerRef.current)
+      if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current)
+    }
+  }, [isActive])
   
-  const progress = timeRemaining / timeLimit
-  const isUrgent = timeRemaining <= 3
+  if (!isActive || !question) return null
+  
+  const isUrgent = timeRemaining <= 5
   
   return (
     <div 
-      className={`
-        fixed bottom-0 left-0 right-0 z-50
-        transition-transform duration-200 ease-out
-        ${isVisible ? 'translate-y-0' : 'translate-y-full'}
-      `}
-      style={{ height: '200px' }}
+      className="bg-zinc-900/95 border-t border-zinc-700/50 px-2 py-2"
+      style={{ height: TRIVIA_PANEL_HEIGHT }}
     >
-      {/* Background with blur */}
-      <div className="absolute inset-0 bg-zinc-900/95 backdrop-blur-md border-t border-zinc-700/50" />
+      {/* Question row with timer */}
+      <div className="flex items-start gap-2 mb-2">
+        <TimerDisplay seconds={timeRemaining} isUrgent={isUrgent} />
+        <p className="text-white text-xs font-medium leading-tight line-clamp-2 flex-1">
+          {question.question}
+        </p>
+      </div>
       
-      {/* Content */}
-      <div className="relative h-full flex flex-col p-3 gap-2">
-        {/* Timer bar */}
-        <TimerBar progress={progress} isUrgent={isUrgent} />
-        
-        {/* Question text */}
-        <div className="flex-shrink-0 px-1">
-          <p className="text-white text-sm font-medium leading-tight line-clamp-2 text-center">
-            {question.question}
-          </p>
-        </div>
-        
-        {/* 2x2 Answer grid */}
-        <div className="flex-1 grid grid-cols-2 gap-2 min-h-0">
-          {question.answers.slice(0, 4).map((answer, index) => (
-            <AnswerButton
-              key={index}
-              answer={answer}
-              index={index}
-              isSelected={selectedIndex === index}
-              isCorrect={
-                isRevealed 
-                  ? index === question.correctIndex 
-                    ? true 
-                    : selectedIndex === index 
-                      ? false 
-                      : null
-                  : null
-              }
-              isDisabled={isRevealed}
-              onSelect={handleSelect}
-            />
-          ))}
-        </div>
-        
-        {/* Timeout indicator */}
-        {isRevealed && selectedIndex === null && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <span className="text-red-400 text-xl font-bold animate-pulse">
-              TIME'S UP!
-            </span>
-          </div>
-        )}
+      {/* 2x2 Answer grid - compact */}
+      <div className="grid grid-cols-2 gap-1.5">
+        {question.answers.slice(0, 4).map((answer, index) => (
+          <AnswerButton
+            key={index}
+            answer={answer}
+            index={index}
+            isSelected={selectedIndex === index}
+            isCorrect={
+              isRevealed 
+                ? index === question.correctIndex 
+                  ? true 
+                  : selectedIndex === index 
+                    ? false 
+                    : null
+                : null
+            }
+            isDisabled={isRevealed}
+            onSelect={handleSelect}
+          />
+        ))}
+      </div>
+    </div>
+  )
+})
+TriviaPanel.displayName = 'TriviaPanel'
+
+// ============================================
+// Legacy TriviaOverlay (for backward compatibility)
+// ============================================
+
+export const TriviaOverlay: React.FC<TriviaOverlayLegacyProps> = memo(({
+  isOpen,
+  question,
+  timeLimit = 10,
+  onAnswer,
+  onTimeout,
+  onComplete,
+}) => {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [isRevealed, setIsRevealed] = useState(false)
+  const [timeRemaining, setTimeRemaining] = useState(timeLimit)
+  
+  const timerRef = useRef<TimerId | null>(null)
+  const feedbackTimeoutRef = useRef<TimerId | null>(null)
+  
+  useEffect(() => {
+    if (question && isOpen) {
+      setSelectedIndex(null)
+      setIsRevealed(false)
+      setTimeRemaining(timeLimit)
+    }
+  }, [question?.id, isOpen, timeLimit])
+  
+  useEffect(() => {
+    if (!isOpen || !question || isRevealed) return
+    
+    timerRef.current = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 0.1) {
+          clearInterval(timerRef.current!)
+          setIsRevealed(true)
+          onTimeout(question.id)
+          feedbackTimeoutRef.current = setTimeout(onComplete, 1000)
+          return 0
+        }
+        return prev - 0.1
+      })
+    }, 100)
+    
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [isOpen, question?.id, isRevealed, onTimeout, onComplete])
+  
+  const handleSelect = useCallback((index: number) => {
+    if (selectedIndex !== null || isRevealed || !question) return
+    
+    setSelectedIndex(index)
+    setIsRevealed(true)
+    if (timerRef.current) clearInterval(timerRef.current)
+    
+    const isCorrect = index === question.correctIndex
+    onAnswer(question.id, index, isCorrect)
+    feedbackTimeoutRef.current = setTimeout(onComplete, 600)
+  }, [selectedIndex, isRevealed, question, onAnswer, onComplete])
+  
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+      if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current)
+    }
+  }, [])
+  
+  if (!isOpen || !question) return null
+  
+  const isUrgent = timeRemaining <= 5
+  
+  return (
+    <div 
+      className="bg-zinc-900/95 border-t border-zinc-700/50 px-2 py-2"
+      style={{ height: TRIVIA_PANEL_HEIGHT }}
+    >
+      <div className="flex items-start gap-2 mb-2">
+        <TimerDisplay seconds={timeRemaining} isUrgent={isUrgent} />
+        <p className="text-white text-xs font-medium leading-tight line-clamp-2 flex-1">
+          {question.question}
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-1.5">
+        {question.answers.slice(0, 4).map((answer, index) => (
+          <AnswerButton
+            key={index}
+            answer={answer}
+            index={index}
+            isSelected={selectedIndex === index}
+            isCorrect={
+              isRevealed 
+                ? index === question.correctIndex 
+                  ? true 
+                  : selectedIndex === index 
+                    ? false 
+                    : null
+                : null
+            }
+            isDisabled={isRevealed}
+            onSelect={handleSelect}
+          />
+        ))}
       </div>
     </div>
   )

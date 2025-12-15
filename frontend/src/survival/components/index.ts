@@ -8,7 +8,7 @@ export { EnterpriseLoadingScreen, useLoadingScreen } from './EnterpriseLoadingSc
 export { SurvivalHUD } from './SurvivalHUD'
 export { TransitionOverlay, useTransitionOverlay } from './TransitionOverlay'
 export { TriviaModal } from './TriviaModal'
-export { TriviaOverlay, type TriviaQuestion, type TriviaOverlayProps } from './TriviaOverlay'
+export { TriviaOverlay, TriviaPanel, TRIVIA_PANEL_HEIGHT, type TriviaQuestion, type TriviaOverlayProps } from './TriviaOverlay'
 export { QuizPanel } from './QuizPanel'
 export { SymphonyDebugOverlay } from './SymphonyDebugOverlay'
 export { MilestoneBanner, AchievementToast, MilestoneProgress } from './MilestoneCelebration'

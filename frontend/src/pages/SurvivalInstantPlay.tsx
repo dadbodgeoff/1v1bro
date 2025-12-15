@@ -35,7 +35,8 @@ import {
   TriviaStatsBar,
   GuestIndicator,
   ErrorDisplay,
-  TriviaOverlay,
+  TriviaPanel,
+  TRIVIA_PANEL_HEIGHT,
   type TriviaQuestion,
 } from '@/survival/components'
 import { useMobileOptimization } from '@/survival/hooks/useMobileOptimization'
@@ -95,10 +96,7 @@ function SurvivalInstantPlayContent() {
   // Track max combo during the run
   const maxComboRef = useRef(0)
   
-  // Mobile trivia overlay state
-  const [mobileTriviaQuestion, setMobileTriviaQuestion] = useState<TriviaQuestion | null>(null)
-  const [isMobileTriviaOpen, setIsMobileTriviaOpen] = useState(false)
-  const mobileTriviaIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // Mobile trivia - always-on question pool
   const usedMobileQuestionsRef = useRef<Set<string>>(new Set())
 
   // Redirect if already authenticated - they should use the full version
@@ -320,7 +318,7 @@ function SurvivalInstantPlayContent() {
     }
   }, [phase, billboards, enableTriviaBillboards])
   
-  // Mobile trivia: get next question
+  // Mobile trivia: get next question (always-on, called after each answer)
   const getNextMobileQuestion = useCallback((): TriviaQuestion | null => {
     const allQuestions = getRandomQuestions(50)
     const unusedQuestions = allQuestions.filter(q => !usedMobileQuestionsRef.current.has(q.id))
@@ -334,7 +332,6 @@ function SurvivalInstantPlayContent() {
     const quizQ = pool[Math.floor(Math.random() * pool.length)]
     usedMobileQuestionsRef.current.add(quizQ.id)
     
-    // Convert QuizQuestion to TriviaQuestion format
     return {
       id: quizQ.id,
       question: quizQ.question,
@@ -345,19 +342,7 @@ function SurvivalInstantPlayContent() {
     }
   }, [])
   
-  // Mobile trivia: trigger question
-  const triggerMobileTrivia = useCallback(() => {
-    if (isMobileTriviaOpen || phase !== 'running') return
-    
-    const question = getNextMobileQuestion()
-    if (question) {
-      setMobileTriviaQuestion(question)
-      setIsMobileTriviaOpen(true)
-      // Optionally slow down game here via engine
-    }
-  }, [isMobileTriviaOpen, phase, getNextMobileQuestion])
-  
-  // Mobile trivia: handle answer
+  // Mobile trivia: handle answer (always-on panel)
   const handleMobileTriviaAnswer = useCallback((_questionId: string, _selectedIndex: number, isCorrect: boolean) => {
     runTriviaStatsRef.current.questionsAnswered += 1
     
@@ -374,56 +359,16 @@ function SurvivalInstantPlayContent() {
       runTriviaStatsRef.current.currentStreak = 0
       loseLife?.()
     }
-    // Sync trivia stats to engine for XP calculation
     setTriviaStats?.(runTriviaStatsRef.current.questionsCorrect, runTriviaStatsRef.current.questionsAnswered)
   }, [addScore, loseLife, setTriviaStats])
   
-  // Mobile trivia: handle timeout
+  // Mobile trivia: handle timeout (always-on panel)
   const handleMobileTriviaTimeout = useCallback((_questionId: string) => {
     runTriviaStatsRef.current.questionsAnswered += 1
     runTriviaStatsRef.current.currentStreak = 0
     loseLife?.()
-    // Sync trivia stats to engine for XP calculation
     setTriviaStats?.(runTriviaStatsRef.current.questionsCorrect, runTriviaStatsRef.current.questionsAnswered)
   }, [loseLife, setTriviaStats])
-  
-  // Mobile trivia: handle complete (after feedback animation)
-  const handleMobileTriviaComplete = useCallback(() => {
-    setIsMobileTriviaOpen(false)
-    setMobileTriviaQuestion(null)
-  }, [])
-  
-  // Mobile trivia: start/stop interval based on game phase
-  useEffect(() => {
-    // Only run mobile trivia on mobile devices when billboards are disabled
-    if (enableTriviaBillboards || !isMobileDevice) return
-    
-    if (phase === 'running' && !isMobileTriviaOpen) {
-      // Trigger first question after 15 seconds, then every 20-30 seconds
-      const initialDelay = setTimeout(() => {
-        triggerMobileTrivia()
-        
-        // Set up recurring interval
-        mobileTriviaIntervalRef.current = setInterval(() => {
-          triggerMobileTrivia()
-        }, 20000 + Math.random() * 10000) // 20-30 seconds
-      }, 15000)
-      
-      return () => {
-        clearTimeout(initialDelay)
-        if (mobileTriviaIntervalRef.current) {
-          clearInterval(mobileTriviaIntervalRef.current)
-          mobileTriviaIntervalRef.current = null
-        }
-      }
-    } else if (phase !== 'running') {
-      // Clear interval when not running
-      if (mobileTriviaIntervalRef.current) {
-        clearInterval(mobileTriviaIntervalRef.current)
-        mobileTriviaIntervalRef.current = null
-      }
-    }
-  }, [phase, enableTriviaBillboards, isMobileDevice, isMobileTriviaOpen, triggerMobileTrivia])
 
   // Track max combo during the run
   useEffect(() => {
@@ -442,13 +387,8 @@ function SurvivalInstantPlayContent() {
       triviaScore: 0,
     }
     maxComboRef.current = 0
-    // Reset mobile trivia state
-    setIsMobileTriviaOpen(false)
-    setMobileTriviaQuestion(null)
-    if (mobileTriviaIntervalRef.current) {
-      clearInterval(mobileTriviaIntervalRef.current)
-      mobileTriviaIntervalRef.current = null
-    }
+    // Reset mobile trivia question pool
+    usedMobileQuestionsRef.current.clear()
   }, [])
 
   const handleReset = () => {
@@ -685,8 +625,30 @@ function SurvivalInstantPlayContent() {
         </div>
       )}
 
-      {/* Three.js Container */}
-      <div ref={containerRef} className="w-full h-screen" />
+      {/* Game Layout - Canvas + Trivia Panel */}
+      <div className="flex flex-col h-screen">
+        {/* Three.js Container - shrinks when trivia panel is visible */}
+        <div 
+          ref={containerRef} 
+          className="w-full flex-1"
+          style={{ 
+            height: isMobileDevice && phase === 'running' 
+              ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` 
+              : '100vh' 
+          }}
+        />
+        
+        {/* Always-on Trivia Panel - Mobile only, during gameplay */}
+        {isMobileDevice && !enableTriviaBillboards && phase === 'running' && (
+          <TriviaPanel
+            isActive={phase === 'running'}
+            getNextQuestion={getNextMobileQuestion}
+            timeLimit={30}
+            onAnswer={handleMobileTriviaAnswer}
+            onTimeout={handleMobileTriviaTimeout}
+          />
+        )}
+      </div>
       
       {/* Pause Overlay */}
       {phase === 'paused' && !showGameOver && (
@@ -719,18 +681,6 @@ function SurvivalInstantPlayContent() {
           onViewLeaderboard={handleViewLeaderboard}
           onCreateAccount={handleCreateAccount}
           onBackToHome={handleBackToHome}
-        />
-      )}
-      
-      {/* Mobile Trivia Overlay - Portrait 2x2 grid */}
-      {isMobileDevice && !enableTriviaBillboards && (
-        <TriviaOverlay
-          isOpen={isMobileTriviaOpen}
-          question={mobileTriviaQuestion}
-          timeLimit={10}
-          onAnswer={handleMobileTriviaAnswer}
-          onTimeout={handleMobileTriviaTimeout}
-          onComplete={handleMobileTriviaComplete}
         />
       )}
       

@@ -36,7 +36,8 @@ import {
   TriviaStatsBar,
   PlayerInfo,
   ErrorDisplay,
-  TriviaOverlay,
+  TriviaPanel,
+  TRIVIA_PANEL_HEIGHT,
   type TriviaQuestion,
 } from '@/survival/components'
 import { useTriviaBillboards } from '@/survival/hooks/useTriviaBillboards'
@@ -84,10 +85,7 @@ function SurvivalGameContent() {
   // Disable trivia billboards on mobile - too hard to interact with in 3D
   const enableTriviaBillboards = !isMobileDevice
   
-  // Mobile trivia overlay state
-  const [mobileTriviaQuestion, setMobileTriviaQuestion] = useState<TriviaQuestion | null>(null)
-  const [isMobileTriviaOpen, setIsMobileTriviaOpen] = useState(false)
-  const mobileTriviaIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // Mobile trivia - always-on question pool
   const usedMobileQuestionsRef = useRef<Set<string>>(new Set())
 
   // Fetch loadout on mount to get equipped runner skin
@@ -288,7 +286,7 @@ function SurvivalGameContent() {
     }
   }, [phase])
   
-  // Mobile trivia: get next question
+  // Mobile trivia: get next question (always-on, called after each answer)
   const getNextMobileQuestion = useCallback((): TriviaQuestion | null => {
     const allQuestions = getRandomQuestions(50)
     const unusedQuestions = allQuestions.filter(q => !usedMobileQuestionsRef.current.has(q.id))
@@ -312,18 +310,7 @@ function SurvivalGameContent() {
     }
   }, [])
   
-  // Mobile trivia: trigger question
-  const triggerMobileTrivia = useCallback(() => {
-    if (isMobileTriviaOpen || phase !== 'running') return
-    
-    const question = getNextMobileQuestion()
-    if (question) {
-      setMobileTriviaQuestion(question)
-      setIsMobileTriviaOpen(true)
-    }
-  }, [isMobileTriviaOpen, phase, getNextMobileQuestion])
-  
-  // Mobile trivia: handle answer
+  // Mobile trivia: handle answer (always-on panel)
   const handleMobileTriviaAnswer = useCallback((_questionId: string, _selectedIndex: number, isCorrect: boolean) => {
     triviaStatsRef.current.answered += 1
     if (isCorrect) {
@@ -332,51 +319,15 @@ function SurvivalGameContent() {
     } else {
       loseLife?.()
     }
-    // Sync trivia stats to engine for XP calculation
     setTriviaStats?.(triviaStatsRef.current.correct, triviaStatsRef.current.answered)
   }, [addScore, loseLife, setTriviaStats])
   
-  // Mobile trivia: handle timeout
+  // Mobile trivia: handle timeout (always-on panel)
   const handleMobileTriviaTimeout = useCallback((_questionId: string) => {
     triviaStatsRef.current.answered += 1
     loseLife?.()
-    // Sync trivia stats to engine for XP calculation
     setTriviaStats?.(triviaStatsRef.current.correct, triviaStatsRef.current.answered)
   }, [loseLife, setTriviaStats])
-  
-  // Mobile trivia: handle complete
-  const handleMobileTriviaComplete = useCallback(() => {
-    setIsMobileTriviaOpen(false)
-    setMobileTriviaQuestion(null)
-  }, [])
-  
-  // Mobile trivia: start/stop interval based on game phase
-  useEffect(() => {
-    if (enableTriviaBillboards || !isMobileDevice) return
-    
-    if (phase === 'running' && !isMobileTriviaOpen) {
-      const initialDelay = setTimeout(() => {
-        triggerMobileTrivia()
-        
-        mobileTriviaIntervalRef.current = setInterval(() => {
-          triggerMobileTrivia()
-        }, 20000 + Math.random() * 10000)
-      }, 15000)
-      
-      return () => {
-        clearTimeout(initialDelay)
-        if (mobileTriviaIntervalRef.current) {
-          clearInterval(mobileTriviaIntervalRef.current)
-          mobileTriviaIntervalRef.current = null
-        }
-      }
-    } else if (phase !== 'running') {
-      if (mobileTriviaIntervalRef.current) {
-        clearInterval(mobileTriviaIntervalRef.current)
-        mobileTriviaIntervalRef.current = null
-      }
-    }
-  }, [phase, enableTriviaBillboards, isMobileDevice, isMobileTriviaOpen, triggerMobileTrivia])
 
   // Load personal best ghost when game is ready
   useEffect(() => {
@@ -390,13 +341,8 @@ function SurvivalGameContent() {
     setShowGameOver(false)
     setShowReadyCard(true) // Show ready card again on reset
     setLastRunStats(null)
-    // Reset mobile trivia state
-    setIsMobileTriviaOpen(false)
-    setMobileTriviaQuestion(null)
-    if (mobileTriviaIntervalRef.current) {
-      clearInterval(mobileTriviaIntervalRef.current)
-      mobileTriviaIntervalRef.current = null
-    }
+    // Reset mobile trivia question pool
+    usedMobileQuestionsRef.current.clear()
     // Reset trivia stats for XP calculation
     triviaStatsRef.current = { correct: 0, answered: 0 }
     reset()
@@ -408,13 +354,8 @@ function SurvivalGameContent() {
     setShowGameOver(false)
     setShowReadyCard(false) // Keep ready card hidden on quick restart
     setLastRunStats(null)
-    // Reset mobile trivia state
-    setIsMobileTriviaOpen(false)
-    setMobileTriviaQuestion(null)
-    if (mobileTriviaIntervalRef.current) {
-      clearInterval(mobileTriviaIntervalRef.current)
-      mobileTriviaIntervalRef.current = null
-    }
+    // Reset mobile trivia question pool
+    usedMobileQuestionsRef.current.clear()
     // Reset trivia stats for XP calculation
     triviaStatsRef.current = { correct: 0, answered: 0 }
     quickRestart()
@@ -633,8 +574,30 @@ function SurvivalGameContent() {
         </div>
       )}
 
-      {/* Three.js Container */}
-      <div ref={containerRef} className="w-full h-screen" />
+      {/* Game Layout - Canvas + Trivia Panel */}
+      <div className="flex flex-col h-screen">
+        {/* Three.js Container - shrinks when trivia panel is visible */}
+        <div 
+          ref={containerRef} 
+          className="w-full flex-1"
+          style={{ 
+            height: isMobileDevice && phase === 'running' 
+              ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` 
+              : '100vh' 
+          }}
+        />
+        
+        {/* Always-on Trivia Panel - Mobile only, during gameplay */}
+        {isMobileDevice && !enableTriviaBillboards && phase === 'running' && (
+          <TriviaPanel
+            isActive={phase === 'running'}
+            getNextQuestion={getNextMobileQuestion}
+            timeLimit={30}
+            onAnswer={handleMobileTriviaAnswer}
+            onTimeout={handleMobileTriviaTimeout}
+          />
+        )}
+      </div>
       
       {/* Pause Overlay */}
       {phase === 'paused' && !showGameOver && (
@@ -665,18 +628,6 @@ function SurvivalGameContent() {
           onPlayAgain={handleQuickRestart}
           onViewLeaderboard={handleViewLeaderboard}
           onBackToDashboard={handleBackToDashboard}
-        />
-      )}
-      
-      {/* Mobile Trivia Overlay - Portrait 2x2 grid */}
-      {isMobileDevice && !enableTriviaBillboards && (
-        <TriviaOverlay
-          isOpen={isMobileTriviaOpen}
-          question={mobileTriviaQuestion}
-          timeLimit={10}
-          onAnswer={handleMobileTriviaAnswer}
-          onTimeout={handleMobileTriviaTimeout}
-          onComplete={handleMobileTriviaComplete}
         />
       )}
       
