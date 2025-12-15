@@ -16,6 +16,7 @@ import { getQualityProfile, onQualityChange, recordFPSForQuality, type QualityPr
 import { getDeviceCapabilities } from '../config/device'
 import { SpaceBackground } from '../space'
 import type { CelestialType } from '../space'
+import { MemoryMonitor, type MemoryStats, type MemoryBudget } from '../debug/MemoryMonitor'
 
 export class SurvivalRenderer {
   private container: HTMLElement
@@ -46,6 +47,9 @@ export class SurvivalRenderer {
   private speedLinesMaterial: THREE.LineBasicMaterial | null = null
   private speedLinesThreshold: number = 25 // Speed at which lines start appearing
   private speedLinesMax: number = 50 // Speed at which lines are fully visible
+
+  // Memory monitoring
+  private memoryMonitor: MemoryMonitor | null = null
 
   constructor(container: HTMLElement) {
     this.container = container
@@ -137,6 +141,12 @@ export class SurvivalRenderer {
     
     // Subscribe to quality changes for runtime adjustment
     this.unsubscribeQuality = onQualityChange(this.handleQualityChange.bind(this))
+    
+    // Initialize memory monitor with iOS Safari budget
+    const memoryBudget: MemoryBudget = isSafariMobile 
+      ? { textures: 64, geometry: 32, total: 128 }  // Conservative for Safari
+      : { textures: 128, geometry: 64, total: 256 } // Standard mobile budget
+    this.memoryMonitor = new MemoryMonitor(this.renderer, this.scene, memoryBudget)
   }
 
   /**
@@ -554,6 +564,20 @@ export class SurvivalRenderer {
    */
   getRendererInfo(): THREE.WebGLInfo {
     return this.renderer.info
+  }
+
+  /**
+   * Get memory usage stats
+   */
+  getMemoryStats(): MemoryStats | null {
+    return this.memoryMonitor?.getStats() ?? null
+  }
+
+  /**
+   * Log detailed memory breakdown to console
+   */
+  logMemoryBreakdown(): void {
+    this.memoryMonitor?.logDetailedBreakdown()
   }
 
   /**

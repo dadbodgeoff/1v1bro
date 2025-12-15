@@ -40,6 +40,7 @@ import { useMobileOptimization } from '@/survival/hooks/useMobileOptimization'
 import { leaderboardService } from '@/survival/services/LeaderboardService'
 import { getSurvivalGuestSession, type SurvivalRunResult } from '@/survival/guest'
 import type { PerformanceMetrics } from '@/survival/engine/PerformanceMonitor'
+import type { MemoryStats } from '@/survival/debug/MemoryMonitor'
 import type { TriviaCategory } from '@/survival/world/TriviaQuestionProvider'
 
 
@@ -236,9 +237,25 @@ function SurvivalInstantPlayContent() {
     quickRestart,
     loseLife,
     addScore,
+    getMemoryStats,
+    logMemoryBreakdown,
   } = useSurvivalGame({
     onGameOver: handleGameOver,
   })
+  
+  // Expose memory debug to console for dev testing
+  useEffect(() => {
+    // @ts-expect-error - exposing for dev console access
+    window.logMemory = logMemoryBreakdown
+    // @ts-expect-error - exposing for dev console access
+    window.getMemory = getMemoryStats
+    return () => {
+      // @ts-expect-error - cleanup
+      delete window.logMemory
+      // @ts-expect-error - cleanup
+      delete window.getMemory
+    }
+  }, [logMemoryBreakdown, getMemoryStats])
 
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
@@ -418,7 +435,11 @@ function SurvivalInstantPlayContent() {
       
       {/* Performance Stats */}
       {!isLoading && performanceMetrics && (
-        <PerformanceOverlay metrics={performanceMetrics} isMobile={isMobileDevice} />
+        <PerformanceOverlay 
+          metrics={performanceMetrics} 
+          memoryStats={getMemoryStats()} 
+          isMobile={isMobileDevice} 
+        />
       )}
 
       {/* Controls moved to Ready card - no longer shown during gameplay */}
@@ -733,9 +754,21 @@ function GuestGameOverOverlay({
 
 /**
  * Performance overlay - Minimal text for mobile, enterprise styled for desktop
+ * Shows FPS, frame time, and memory usage
  */
-function PerformanceOverlay({ metrics, isMobile }: { metrics: PerformanceMetrics; isMobile: boolean }) {
+function PerformanceOverlay({ 
+  metrics, 
+  memoryStats,
+  isMobile 
+}: { 
+  metrics: PerformanceMetrics
+  memoryStats: MemoryStats | null
+  isMobile: boolean 
+}) {
   const fpsColor = metrics.fps >= 55 ? '#22c55e' : metrics.fps >= 30 ? '#eab308' : '#ef4444'
+  const memoryColor = memoryStats 
+    ? (memoryStats.budgetUsedPercent >= 90 ? '#ef4444' : memoryStats.budgetUsedPercent >= 70 ? '#eab308' : '#22c55e')
+    : '#6b7280'
   
   // Mobile: minimal text on left side, no box
   if (isMobile) {
@@ -744,6 +777,11 @@ function PerformanceOverlay({ metrics, isMobile }: { metrics: PerformanceMetrics
         <div className="text-[10px] font-mono opacity-60 space-y-0.5">
           <div style={{ color: fpsColor }}>{metrics.fps} fps</div>
           <div className="text-gray-500">{metrics.avgFrameTime.toFixed(1)}ms</div>
+          {memoryStats && (
+            <div style={{ color: memoryColor }}>
+              {memoryStats.totalEstimatedMB.toFixed(0)}/{memoryStats.budgetMB}MB
+            </div>
+          )}
         </div>
       </div>
     )
@@ -767,6 +805,17 @@ function PerformanceOverlay({ metrics, isMobile }: { metrics: PerformanceMetrics
         <span className="text-gray-500">
           Frame: <span className="text-gray-400 tabular-nums">{metrics.avgFrameTime.toFixed(1)}ms</span>
         </span>
+        {memoryStats && (
+          <>
+            <span className="text-gray-600">|</span>
+            <span className="text-gray-500">
+              VRAM: <span className="tabular-nums" style={{ color: memoryColor }}>
+                {memoryStats.totalEstimatedMB.toFixed(1)}/{memoryStats.budgetMB}MB
+              </span>
+              <span className="text-gray-600 ml-1">({memoryStats.budgetUsedPercent}%)</span>
+            </span>
+          </>
+        )}
         {metrics.lagSpikes > 0 && (
           <>
             <span className="text-gray-600">|</span>

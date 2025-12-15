@@ -527,6 +527,14 @@ export class SurvivalEngine {
     return this.performanceMonitor.getMetrics()
   }
 
+  getMemoryStats() {
+    return this.renderer.getMemoryStats()
+  }
+
+  logMemoryBreakdown() {
+    this.renderer.logMemoryBreakdown()
+  }
+
   dispose(): void {
     this.gameLoop.stop()
     this.inputController.detach()

@@ -13,6 +13,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { SurvivalEngine } from '../engine/SurvivalEngine'
 import type { SurvivalGameState, SurvivalCallbacks } from '../types/survival'
 import type { PerformanceMetrics } from '../engine/PerformanceMonitor'
+import type { MemoryStats } from '../debug/MemoryMonitor'
 import type { TransitionSystem } from '../effects/TransitionSystem'
 import type { LoadingProgress } from '../core/LoadingOrchestrator'
 import type { MilestoneEvent } from '../systems/MilestoneSystem'
@@ -73,6 +74,9 @@ interface UseSurvivalGameReturn {
   nextMilestone: number
   currentAchievement: UnlockedAchievement | null
   dismissAchievement: () => void
+  // Memory monitoring
+  getMemoryStats: () => MemoryStats | null
+  logMemoryBreakdown: () => void
 }
 
 export function useSurvivalGame(
@@ -438,5 +442,8 @@ export function useSurvivalGame(
     nextMilestone,
     currentAchievement,
     dismissAchievement,
+    // Memory monitoring
+    getMemoryStats: useCallback(() => engineRef.current?.getMemoryStats() ?? null, []),
+    logMemoryBreakdown: useCallback(() => engineRef.current?.logMemoryBreakdown(), []),
   }
 }
