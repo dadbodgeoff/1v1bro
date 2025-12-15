@@ -628,4 +628,12 @@ export class SurvivalEngine {
   getPlayerZ(): number {
     return this.stateManager.getMutableState().player.z
   }
+
+  /**
+   * Resize the renderer - call when container size changes
+   * (e.g., when mobile trivia panel shows/hides)
+   */
+  resize(): void {
+    this.renderer.resize()
+  }
 }

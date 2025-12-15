@@ -146,7 +146,7 @@ function SurvivalGameContent() {
     loadPersonalBestGhost, isGhostActive,
     currentMilestone, milestoneProgress, nextMilestone,
     currentAchievement, dismissAchievement, quickRestart,
-    setTriviaStats, getMemoryStats,
+    setTriviaStats, getMemoryStats, resize,
   } = useSurvivalGameWithAnalytics({
     onGameOver: handleGameOver,
     analyticsEnabled: true,
@@ -155,6 +155,33 @@ function SurvivalGameContent() {
 
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
+  
+  // Calculate if mobile trivia should show
+  const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
+  
+  // Resize renderer when trivia panel shows/hides (mobile only)
+  // Also resize on window resize to handle orientation changes
+  useEffect(() => {
+    if (!isMobile) return
+    
+    // Resize after DOM updates
+    const doResize = () => {
+      // Multiple resize calls to ensure Three.js catches the change
+      resize()
+      requestAnimationFrame(() => resize())
+    }
+    
+    // Initial resize with delay for DOM to settle
+    const timer = setTimeout(doResize, 100)
+    
+    // Also listen for resize events (orientation change, etc.)
+    window.addEventListener('resize', doResize)
+    
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', doResize)
+    }
+  }, [showMobileTrivia, isMobile, resize])
 
   // Update trivia stats helper
   const updateTriviaStats = useCallback((correct: boolean, points: number = 0) => {
@@ -313,8 +340,11 @@ function SurvivalGameContent() {
 
   if (!isAuthenticated) return null
 
+  // Calculate game area height for mobile with trivia panel
+  const gameAreaHeight = showMobileTrivia ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh'
+
   return (
-    <div className="min-h-screen bg-[#09090b] text-white">
+    <div className="fixed inset-0 bg-[#09090b] text-white overflow-hidden">
       {/* Loading */}
       {isLoading && loadingProgress && (
         <EnterpriseLoadingScreen progress={loadingProgress} onRetry={() => window.location.reload()} />
@@ -327,8 +357,15 @@ function SurvivalGameContent() {
         </div>
       )}
 
-      {/* Player Info */}
-      {!isLoading && !error && (
+      {/* Game Canvas Container - takes remaining space above trivia */}
+      <div 
+        ref={containerRef} 
+        className="absolute top-0 left-0 right-0"
+        style={{ height: gameAreaHeight }}
+      />
+
+      {/* Player Info - only show if it fits in game area (not on mobile with trivia) */}
+      {!isLoading && !error && !showMobileTrivia && (
         <div className="absolute top-[120px] left-4 z-10">
           <PlayerInfo 
             displayName={user?.display_name || 'Player'}
@@ -338,14 +375,21 @@ function SurvivalGameContent() {
         </div>
       )}
 
-      {/* HUD */}
+      {/* HUD - positioned within game area */}
       {!isLoading && !error && gameState && (
-        <SurvivalHUD 
-          gameState={gameState} combo={combo} multiplier={multiplier} isGhostActive={isGhostActive}
-          currentMilestone={currentMilestone} milestoneProgress={milestoneProgress}
-          nextMilestone={nextMilestone} currentAchievement={currentAchievement}
-          onAchievementDismiss={dismissAchievement}
-        />
+        <div 
+          style={{ height: gameAreaHeight }} 
+          className="absolute top-0 left-0 right-0 pointer-events-none overflow-hidden"
+        >
+          <div className="relative w-full h-full pointer-events-auto">
+            <SurvivalHUD 
+              gameState={gameState} combo={combo} multiplier={multiplier} isGhostActive={isGhostActive}
+              currentMilestone={currentMilestone} milestoneProgress={milestoneProgress}
+              nextMilestone={nextMilestone} currentAchievement={currentAchievement}
+              onAchievementDismiss={dismissAchievement}
+            />
+          </div>
+        </div>
       )}
 
       {/* Trivia Stats (desktop) */}
@@ -361,34 +405,16 @@ function SurvivalGameContent() {
         </div>
       )}
       
-      {/* Performance Stats */}
+      {/* Performance Stats - position above trivia panel on mobile */}
       {!isLoading && performanceMetrics && (
-        <PerformanceOverlay metrics={performanceMetrics} memoryStats={getMemoryStats()} isMobile={isMobile} />
-      )}
-
-      {/* Mobile Trivia Answer Buttons (desktop billboards - legacy, shouldn't show on mobile now) */}
-      {isMobile && enableTriviaBillboards && phase === 'running' && billboards.hasActiveQuestion && (
-        <div className="absolute bottom-20 left-0 right-0 z-20 flex justify-center">
-          <div className="flex gap-3 bg-black/80 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/20">
-            {[1, 2, 3, 4].map((num) => (
-              <button
-                key={num}
-                onClick={() => billboards.answerQuestion(num - 1)}
-                className="w-14 h-14 rounded-xl bg-gradient-to-b from-orange-500 to-orange-600 
-                         text-white font-bold text-2xl shadow-lg shadow-orange-500/30
-                         active:scale-95 active:from-orange-600 active:to-orange-700
-                         transition-all duration-100"
-              >
-                {num}
-              </button>
-            ))}
-          </div>
+        <div className="absolute left-2 z-10" style={{ bottom: showMobileTrivia ? `${TRIVIA_PANEL_HEIGHT + 8}px` : '8px' }}>
+          <PerformanceOverlay metrics={performanceMetrics} memoryStats={getMemoryStats()} isMobile={isMobile} />
         </div>
       )}
 
-      {/* Action Buttons */}
+      {/* Action Buttons - position above trivia panel on mobile */}
       {!isLoading && gameState && phase !== 'ready' && (
-        <div className="absolute bottom-4 right-4 z-10 flex gap-2">
+        <div className="absolute right-4 z-10 flex gap-2" style={{ bottom: showMobileTrivia ? `${TRIVIA_PANEL_HEIGHT + 8}px` : '16px' }}>
           {phase === 'running' && (
             <EnterpriseButton onClick={pause} variant="secondary" size="sm">⏸ Pause</EnterpriseButton>
           )}
@@ -410,15 +436,9 @@ function SurvivalGameContent() {
         />
       )}
 
-      {/* Game Layout */}
-      <div className="flex flex-col h-screen">
-        <div 
-          ref={containerRef} 
-          className="w-full flex-1"
-          style={{ height: isMobile && phase === 'running' ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh' }}
-        />
-        
-        {isMobile && !enableTriviaBillboards && phase === 'running' && (
+      {/* Mobile Trivia Panel - fixed at bottom */}
+      {showMobileTrivia && (
+        <div className="absolute bottom-0 left-0 right-0 z-20">
           <TriviaPanel
             isActive={phase === 'running'}
             getNextQuestion={getNextMobileQuestion}
@@ -426,8 +446,8 @@ function SurvivalGameContent() {
             onAnswer={handleMobileTriviaAnswer}
             onTimeout={handleMobileTriviaTimeout}
           />
-        )}
-      </div>
+        </div>
+      )}
       
       {/* Pause Overlay */}
       {phase === 'paused' && !showGameOver && (

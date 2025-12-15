@@ -78,6 +78,8 @@ interface UseSurvivalGameReturn {
   // Memory monitoring
   getMemoryStats: () => MemoryStats | null
   logMemoryBreakdown: () => void
+  // Renderer control
+  resize: () => void
 }
 
 export function useSurvivalGame(
@@ -452,5 +454,7 @@ export function useSurvivalGame(
     // Memory monitoring
     getMemoryStats: useCallback(() => engineRef.current?.getMemoryStats() ?? null, []),
     logMemoryBreakdown: useCallback(() => engineRef.current?.logMemoryBreakdown(), []),
+    // Renderer control
+    resize: useCallback(() => engineRef.current?.resize(), []),
   }
 }

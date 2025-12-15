@@ -584,12 +584,31 @@ export class SurvivalRenderer {
    * Handle window resize
    */
   private handleResize = (): void => {
-    const width = this.container.clientWidth
-    const height = this.container.clientHeight
+    this.resize()
+  }
 
+  /**
+   * Public resize method - call when container size changes
+   * (e.g., when mobile trivia panel shows/hides)
+   */
+  resize(): void {
+    // Get container dimensions - use getBoundingClientRect for more accurate values
+    // especially when CSS calc() is used
+    const rect = this.container.getBoundingClientRect()
+    const width = rect.width || this.container.clientWidth
+    const height = rect.height || this.container.clientHeight
+
+    if (width === 0 || height === 0) return
+
+    // Update camera aspect ratio
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
+    
+    // Update renderer size
     this.renderer.setSize(width, height)
+    
+    // Force a render to apply changes immediately
+    this.renderer.render(this.scene, this.camera)
   }
 
   /**

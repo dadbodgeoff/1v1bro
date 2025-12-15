@@ -151,11 +151,38 @@ function SurvivalInstantPlayContent() {
     start, pause, resume, reset, setMuted, isMuted,
     currentMilestone, milestoneProgress, nextMilestone,
     currentAchievement, dismissAchievement, quickRestart,
-    loseLife, addScore, setTriviaStats, getMemoryStats,
+    loseLife, addScore, setTriviaStats, getMemoryStats, resize,
   } = useSurvivalGame({ onGameOver: handleGameOver })
 
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
+  
+  // Calculate if mobile trivia should show
+  const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
+  
+  // Resize renderer when trivia panel shows/hides (mobile only)
+  // Also resize on window resize to handle orientation changes
+  useEffect(() => {
+    if (!isMobile) return
+    
+    // Resize after DOM updates
+    const doResize = () => {
+      // Multiple resize calls to ensure Three.js catches the change
+      resize()
+      requestAnimationFrame(() => resize())
+    }
+    
+    // Initial resize with delay for DOM to settle
+    const timer = setTimeout(doResize, 100)
+    
+    // Also listen for resize events (orientation change, etc.)
+    window.addEventListener('resize', doResize)
+    
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', doResize)
+    }
+  }, [showMobileTrivia, isMobile, resize])
 
   // Update trivia stats helper
   const updateTriviaStats = useCallback((correct: boolean, points: number = 0) => {
@@ -309,7 +336,6 @@ function SurvivalInstantPlayContent() {
   if (isAuthenticated) return null
 
   // Calculate game area height for mobile with trivia panel
-  const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
   const gameAreaHeight = showMobileTrivia ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh'
 
   return (
@@ -342,8 +368,11 @@ function SurvivalInstantPlayContent() {
 
       {/* HUD - positioned within game area */}
       {!isLoading && !error && gameState && (
-        <div style={{ height: gameAreaHeight }} className="absolute top-0 left-0 right-0 pointer-events-none">
-          <div className="pointer-events-auto">
+        <div 
+          style={{ height: gameAreaHeight }} 
+          className="absolute top-0 left-0 right-0 pointer-events-none overflow-hidden"
+        >
+          <div className="relative w-full h-full pointer-events-auto">
             <SurvivalHUD 
               gameState={gameState} combo={combo} multiplier={multiplier} isGhostActive={false}
               currentMilestone={currentMilestone} milestoneProgress={milestoneProgress}
