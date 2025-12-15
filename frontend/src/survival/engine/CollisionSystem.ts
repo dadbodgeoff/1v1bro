@@ -8,6 +8,7 @@
 import * as THREE from 'three'
 import type { Lane, ObstacleType } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
+import { getMobileConfig } from '../config/mobile'
 
 // Collision box definition
 export interface CollisionBox {
@@ -55,8 +56,8 @@ export class CollisionSystem {
   private playerHeight: number = 2.0
   private playerDepth: number = 0.8
   
-  // Collision tuning
-  private readonly COLLISION_TOLERANCE: number = 0.2 // Tighter tolerance for accuracy
+  // Collision tuning - uses mobile config for device-specific tolerance
+  private collisionTolerance: number = 0.2
   private readonly SLIDE_HEIGHT_RATIO: number = 0.4 // Slide reduces height to 40%
 
   // AAA Feature: Near-miss detection
@@ -76,7 +77,10 @@ export class CollisionSystem {
 
   constructor() {
     const config = getSurvivalConfig()
+    const mobileConfig = getMobileConfig()
     this.laneWidth = config.laneWidth
+    // Use device-specific hitbox tolerance (mobile is more forgiving)
+    this.collisionTolerance = mobileConfig.balance.hitboxTolerance
   }
 
   /**
@@ -250,12 +254,12 @@ export class CollisionSystem {
    */
   private boxesIntersect(a: CollisionBox, b: CollisionBox): boolean {
     return (
-      a.minX <= b.maxX + this.COLLISION_TOLERANCE &&
-      a.maxX >= b.minX - this.COLLISION_TOLERANCE &&
-      a.minY <= b.maxY + this.COLLISION_TOLERANCE &&
-      a.maxY >= b.minY - this.COLLISION_TOLERANCE &&
-      a.minZ <= b.maxZ + this.COLLISION_TOLERANCE &&
-      a.maxZ >= b.minZ - this.COLLISION_TOLERANCE
+      a.minX <= b.maxX + this.collisionTolerance &&
+      a.maxX >= b.minX - this.collisionTolerance &&
+      a.minY <= b.maxY + this.collisionTolerance &&
+      a.maxY >= b.minY - this.collisionTolerance &&
+      a.minZ <= b.maxZ + this.collisionTolerance &&
+      a.maxZ >= b.minZ - this.collisionTolerance
     )
   }
 
