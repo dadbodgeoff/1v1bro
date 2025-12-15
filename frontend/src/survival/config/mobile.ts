@@ -108,9 +108,9 @@ const TOUCH_ZONES: Record<DeviceType, TouchZoneConfig> = {
     slideZone: { x: [0.35, 0.65], y: [0.65, 1] },
     pauseZone: { x: [0.85, 1], y: [0, 0.15] },
     
-    swipeThreshold: 30,
-    swipeVelocity: 0.3,
-    tapTimeout: 200,
+    swipeThreshold: 15,         // Lower = easier to trigger (was 30)
+    swipeVelocity: 0.15,        // Lower = slower swipes count (was 0.3)
+    tapTimeout: 250,            // Longer tap window (was 200)
     doubleTapTimeout: 300,
     holdDuration: 500,
     
@@ -207,8 +207,8 @@ const MOBILE_BALANCE: Record<DeviceType, MobileBalanceConfig> = {
     speedMultiplier: 0.9,       // Slightly slower for touch
     obstacleGapMultiplier: 1.15, // More space between obstacles
     hitboxTolerance: 0.15,      // More forgiving collisions
-    inputBufferMs: 200,         // Longer input buffer
-    coyoteTimeMs: 150,          // Longer coyote time
+    inputBufferMs: 300,         // Longer input buffer for touch latency (was 200)
+    coyoteTimeMs: 200,          // More forgiving edge jumps (was 150)
     cameraDistance: 4.5,        // Closer camera for mobile (feels more connected)
     cameraHeight: 5,            // Lower camera angle
     fov: 65,                    // Narrower FOV for closer feel
