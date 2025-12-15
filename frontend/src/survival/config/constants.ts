@@ -21,9 +21,8 @@ const STORAGE_BASE = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object
 export const SURVIVAL_ASSETS: SurvivalAssets = {
   track: {
     longTile: `${STORAGE_BASE}/track-optimized.glb`,
-    flatTile: `${STORAGE_BASE}/flattile.glb`,
-    narrowBridge: `${STORAGE_BASE}/narrow%20bridge.glb`,
-    gapped: `${STORAGE_BASE}/gapped.glb`,
+    narrowBridge: `${STORAGE_BASE}/narrowbridge-optimized.glb`,
+    gapped: `${STORAGE_BASE}/gapped-optimized.glb`,
     icyTile: `${STORAGE_BASE}/icytile-optimized.glb`,
   },
   obstacles: {

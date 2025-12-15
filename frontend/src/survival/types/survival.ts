@@ -59,7 +59,6 @@ export interface TrackTile {
 export interface SurvivalAssets {
   track: {
     longTile: string
-    flatTile: string
     narrowBridge: string
     gapped: string
     icyTile?: string

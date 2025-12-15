@@ -238,10 +238,9 @@ export class AssetLoader {
     const runnerUrls = this.customRunnerSkin || SURVIVAL_ASSETS.character.runner
 
     // Load core assets first (required for gameplay)
+    // NOTE: gapped and narrowBridge track tiles removed - not currently used, saves memory
     const [
       longTile,
-      gapped,
-      narrowBridge,
       highBarrier,
       lowBarrier,
       laneBarrier,
@@ -252,8 +251,6 @@ export class AssetLoader {
       runnerDown,
     ] = await Promise.all([
       this.loadModel(SURVIVAL_ASSETS.track.longTile, 'longTile'),
-      this.loadModel(SURVIVAL_ASSETS.track.gapped, 'gapped'),
-      this.loadModel(SURVIVAL_ASSETS.track.narrowBridge, 'narrowBridge'),
       this.loadModel(SURVIVAL_ASSETS.obstacles.highBarrier, 'highBarrier'),
       this.loadModel(SURVIVAL_ASSETS.obstacles.lowBarrier, 'lowBarrier'),
       this.loadModel(SURVIVAL_ASSETS.obstacles.laneBarrier, 'laneBarrier'),
@@ -264,8 +261,9 @@ export class AssetLoader {
       this.loadModelWithAnimations(runnerUrls.down, 'runner-down'),
     ])
 
+    // Use longTile for all track variants until we implement track variety
     const result: LoadedAssets = {
-      track: { longTile, gapped, narrowBridge },
+      track: { longTile, gapped: longTile, narrowBridge: longTile },
       obstacles: { highBarrier, lowBarrier, laneBarrier, knowledgeGate, spikes },
       character: { runner: { run: runnerRun, jump: runnerJump, down: runnerDown } },
     }
@@ -292,7 +290,74 @@ export class AssetLoader {
   }
 
   /**
+   * Downscale textures in a model to save VRAM
+   * Celestials are far away so 256-512px textures look fine
+   */
+  private downscaleModelTextures(model: THREE.Group, maxSize: number = 512): void {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const processedTextures = new Set<THREE.Texture>()
+
+    model.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) return
+      
+      const materials = Array.isArray(child.material) ? child.material : [child.material]
+      
+      for (const material of materials) {
+        if (!material) continue
+        
+        // Get all texture properties
+        const textureProps = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap'] as const
+        
+        for (const prop of textureProps) {
+          const texture = (material as Record<string, unknown>)[prop] as THREE.Texture | undefined
+          if (!texture || !texture.image || processedTextures.has(texture)) continue
+          
+          processedTextures.add(texture)
+          
+          const img = texture.image as HTMLImageElement | ImageBitmap
+          const origWidth = img.width || 1
+          const origHeight = img.height || 1
+          
+          // Skip if already small enough
+          if (origWidth <= maxSize && origHeight <= maxSize) continue
+          
+          // Calculate new size maintaining aspect ratio
+          const scale = maxSize / Math.max(origWidth, origHeight)
+          const newWidth = Math.floor(origWidth * scale)
+          const newHeight = Math.floor(origHeight * scale)
+          
+          // Downscale using canvas
+          canvas.width = newWidth
+          canvas.height = newHeight
+          ctx.drawImage(img as CanvasImageSource, 0, 0, newWidth, newHeight)
+          
+          // Create new texture from downscaled canvas
+          const newTexture = new THREE.CanvasTexture(canvas)
+          newTexture.colorSpace = texture.colorSpace
+          newTexture.wrapS = texture.wrapS
+          newTexture.wrapT = texture.wrapT
+          newTexture.minFilter = THREE.LinearFilter // No mipmaps needed
+          newTexture.magFilter = THREE.LinearFilter
+          newTexture.generateMipmaps = false // Save more VRAM
+          
+          // Replace the texture
+          ;(material as Record<string, unknown>)[prop] = newTexture
+          
+          // Dispose old texture to free memory
+          texture.dispose()
+        }
+      }
+    })
+    
+    console.log(`[AssetLoader] Downscaled ${processedTextures.size} textures to max ${maxSize}px`)
+  }
+
+  /**
    * Load celestial models asynchronously (for space background)
+   * Textures are downscaled to 256-512px since celestials are distant
    * Skipped on Safari mobile to save ~12MB GPU memory
    */
   async loadCelestialsAsync(): Promise<LoadedAssets['celestials'] | null> {
@@ -302,6 +367,10 @@ export class AssetLoader {
       return null
     }
     if (!SURVIVAL_ASSETS.celestials) return null
+
+    // Celestial texture size - smaller since they're far away
+    // 256px for mobile, 512px for desktop
+    const celestialTextureSize = this.maxTextureSize <= 1024 ? 256 : 512
 
     try {
       const [
@@ -317,7 +386,7 @@ export class AssetLoader {
         orbitalDefense,
         derelictShip,
       ] = await Promise.all([
-        this.loadModel(SURVIVAL_ASSETS.celestials.planetVolcanic, 'planetVolcanic'),
+        this.loadModel(SURVIVAL_ASSETS.celestials.planetVolcanic, 'planetVolcanic').then(m => { this.downscaleModelTextures(m, celestialTextureSize); return m }),
         this.loadModel(SURVIVAL_ASSETS.celestials.planetIce, 'planetIce'),
         this.loadModel(SURVIVAL_ASSETS.celestials.planetGasGiant, 'planetGasGiant'),
         this.loadModel(SURVIVAL_ASSETS.celestials.asteroidCluster, 'asteroidCluster'),
