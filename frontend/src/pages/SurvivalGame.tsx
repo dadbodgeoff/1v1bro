@@ -146,7 +146,7 @@ function SurvivalGameContent() {
     loadPersonalBestGhost, isGhostActive,
     currentMilestone, milestoneProgress, nextMilestone,
     currentAchievement, dismissAchievement, quickRestart,
-    setTriviaStats, getMemoryStats, resize,
+    setTriviaStats, getMemoryStats,
   } = useSurvivalGameWithAnalytics({
     onGameOver: handleGameOver,
     analyticsEnabled: true,
@@ -159,29 +159,8 @@ function SurvivalGameContent() {
   // Calculate if mobile trivia should show
   const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
   
-  // Resize renderer when trivia panel shows/hides (mobile only)
-  // Also resize on window resize to handle orientation changes
-  useEffect(() => {
-    if (!isMobile) return
-    
-    // Resize after DOM updates
-    const doResize = () => {
-      // Multiple resize calls to ensure Three.js catches the change
-      resize()
-      requestAnimationFrame(() => resize())
-    }
-    
-    // Initial resize with delay for DOM to settle
-    const timer = setTimeout(doResize, 100)
-    
-    // Also listen for resize events (orientation change, etc.)
-    window.addEventListener('resize', doResize)
-    
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener('resize', doResize)
-    }
-  }, [showMobileTrivia, isMobile, resize])
+  // Note: Renderer uses ResizeObserver to automatically detect container size changes
+  // No manual resize handling needed here - the renderer handles it
 
   // Update trivia stats helper
   const updateTriviaStats = useCallback((correct: boolean, points: number = 0) => {

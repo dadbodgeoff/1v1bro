@@ -50,6 +50,9 @@ export class SurvivalRenderer {
 
   // Memory monitoring
   private memoryMonitor: MemoryMonitor | null = null
+  
+  // ResizeObserver for container size changes (CSS-driven resizes)
+  private resizeObserver: ResizeObserver | null = null
 
   constructor(container: HTMLElement) {
     this.container = container
@@ -136,7 +139,12 @@ export class SurvivalRenderer {
       this.setupSpeedLines()
     }
 
-    // Handle resize
+    // Handle resize - use ResizeObserver for container size changes (CSS-driven)
+    // This properly handles cases like mobile trivia panel showing/hiding
+    this.resizeObserver = new ResizeObserver(this.handleResize)
+    this.resizeObserver.observe(container)
+    
+    // Also listen for window resize as fallback (orientation changes, etc.)
     window.addEventListener('resize', this.handleResize)
     
     // Subscribe to quality changes for runtime adjustment
@@ -655,6 +663,12 @@ export class SurvivalRenderer {
    */
   dispose(): void {
     this.stop()
+    
+    // Clean up resize observers/listeners
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect()
+      this.resizeObserver = null
+    }
     window.removeEventListener('resize', this.handleResize)
     
     // Unsubscribe from quality changes
