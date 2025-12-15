@@ -175,7 +175,15 @@ export class TouchController {
   private handleTouchStart(e: globalThis.TouchEvent): void {
     if (!this.enabled) return
     
-    // Prevent default to avoid scrolling/zooming
+    // Only prevent default if touch is on the canvas, not on UI buttons
+    const target = e.target as HTMLElement
+    const isUIElement = target.closest('button, a, [role="button"], .z-10, .z-20, .z-30')
+    if (isUIElement) {
+      // Let UI elements handle their own touch events
+      return
+    }
+    
+    // Prevent default to avoid scrolling/zooming on canvas
     e.preventDefault()
     
     const now = performance.now()
@@ -216,7 +224,13 @@ export class TouchController {
 
   private handleTouchMove(e: globalThis.TouchEvent): void {
     if (!this.enabled) return
-    e.preventDefault()
+    
+    // Only prevent default if not on UI elements
+    const target = e.target as HTMLElement
+    const isUIElement = target.closest('button, a, [role="button"], .z-10, .z-20, .z-30')
+    if (!isUIElement) {
+      e.preventDefault()
+    }
     
     const now = performance.now()
     

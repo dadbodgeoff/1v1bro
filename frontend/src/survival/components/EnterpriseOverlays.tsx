@@ -386,6 +386,11 @@ export const EnterpriseButton = memo(({
   return (
     <button
       onClick={onClick}
+      onTouchEnd={(e) => {
+        // Ensure touch events trigger onClick on mobile
+        e.preventDefault()
+        if (!disabled) onClick()
+      }}
       disabled={disabled}
       className={`
         ${sizeStyles}
@@ -394,7 +399,9 @@ export const EnterpriseButton = memo(({
         rounded-xl transition-all duration-200
         flex items-center justify-center gap-2
         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+        touch-action-manipulation select-none
       `}
+      style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
     >
       {icon && <span>{icon}</span>}
       {children}
