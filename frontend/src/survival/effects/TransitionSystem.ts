@@ -120,6 +120,9 @@ export class TransitionSystem {
    * Optionally skip the countdown for quick restarts
    */
   startCountdown(skipCountdown: boolean = false): void {
+    // Ensure screen is visible when starting countdown
+    this.screenOpacity = 0
+    
     if (skipCountdown) {
       // Skip directly to GO flash
       this.phase = 'go-flash'

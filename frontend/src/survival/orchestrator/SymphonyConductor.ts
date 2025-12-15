@@ -142,12 +142,9 @@ export class SymphonyConductor {
         break
       }
 
-      // DEBUG: Log pattern selection with obstacle types
-      const obstacleTypes = pattern.placements.map(p => p.type).join(', ')
+      // Track if pattern has jump obstacles (used for gap calculation)
       const hasJumpObstacle = pattern.placements.some(p => p.type === 'lowBarrier' || p.type === 'spikes')
-      if (hasJumpObstacle) {
-        console.log(`[Symphony] 🎯 JUMP PATTERN: ${pattern.id} - obstacles: [${obstacleTypes}]`)
-      }
+      void hasJumpObstacle
 
       // Calculate gap
       const gap = this.calculateGap(pattern, currentSpeed, distance)

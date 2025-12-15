@@ -53,8 +53,9 @@ interface CosmeticsState {
   resetAll: () => void
 }
 
-// Cache duration: 30 seconds (shop/inventory refresh frequently)
-const CACHE_DURATION = 30 * 1000
+// Cache duration: 2 minutes for shop/inventory (reduces API calls while keeping data fresh)
+// Users can force refresh by navigating away and back
+const CACHE_DURATION = 2 * 60 * 1000
 
 const getAuthHeaders = (token: string | null) => ({
   'Content-Type': 'application/json',

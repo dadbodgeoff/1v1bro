@@ -97,6 +97,15 @@ export function ArcadeLanding({
     navigate(isAuthenticated ? '/dashboard' : '/register');
   }, [navigate, isAuthenticated, sound]);
 
+  const handleLoginCTA = useCallback(() => {
+    sound.playClickBlip();
+    trackEvent(ANALYTICS_EVENTS.ctaClick, {
+      cta_type: 'login',
+      is_authenticated: isAuthenticated,
+    });
+    navigate('/login');
+  }, [navigate, isAuthenticated, sound]);
+
   // Sound toggle handler
   const handleSoundToggle = useCallback(() => {
     sound.setMuted(!sound.isMuted);
@@ -160,6 +169,7 @@ export function ArcadeLanding({
             isAuthenticated={isAuthenticated}
             onPrimaryCTA={handlePrimaryCTA}
             onSecondaryCTA={handleSecondaryCTA}
+            onLoginCTA={handleLoginCTA}
             animate={!reducedMotion}
             onHoverSound={() => sound.playHoverBlip()}
           />

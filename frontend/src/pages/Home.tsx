@@ -34,9 +34,16 @@ export function Home() {
   const { fetchFriends } = useFriends()
   const { showOnboarding, closeOnboarding } = useOnboarding()
 
+  // Fetch friends data on mount - low priority, doesn't block render
   useEffect(() => {
-    fetchFriends()
-  }, [fetchFriends])
+    // Use requestIdleCallback to defer non-critical data fetch
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => fetchFriends(), { timeout: 2000 })
+    } else {
+      // Fallback for Safari
+      setTimeout(fetchFriends, 100)
+    }
+  }, []) // Empty deps - only fetch on mount
 
   return (
     <DashboardLayout activeNav="play">

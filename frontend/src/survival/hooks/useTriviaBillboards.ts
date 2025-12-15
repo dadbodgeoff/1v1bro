@@ -147,8 +147,6 @@ export function useTriviaBillboards(
       callbacksRef.current.onTimeout?.()
     })
 
-    console.log('[useTriviaBillboards] Subsystem initialized')
-
     return () => {
       unsubScore()
       unsubTimeout()
@@ -159,14 +157,12 @@ export function useTriviaBillboards(
       subsystem.dispose()
       subsystemRef.current = null
       initializedRef.current = false
-      console.log('[useTriviaBillboards] Subsystem disposed')
     }
   }, [engine, enabled, category])
 
   // Start the billboard system
   const start = useCallback(() => {
     if (!subsystemRef.current) {
-      console.warn('[useTriviaBillboards] Cannot start - subsystem not initialized')
       return
     }
 
@@ -177,8 +173,6 @@ export function useTriviaBillboards(
 
     subsystemRef.current.start()
     setIsActive(true)
-
-    console.log('[useTriviaBillboards] Starting billboard system')
 
     // Start update loop
     let lastTime = performance.now()
@@ -212,8 +206,6 @@ export function useTriviaBillboards(
       cancelAnimationFrame(animationFrameRef.current)
       animationFrameRef.current = null
     }
-    
-    console.log('[useTriviaBillboards] Stopped')
   }, [])
 
   // Change category

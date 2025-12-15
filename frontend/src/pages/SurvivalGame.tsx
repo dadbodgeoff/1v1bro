@@ -305,9 +305,9 @@ function SurvivalGameContent() {
         </div>
       )}
 
-      {/* Player Info Header */}
+      {/* Player Info Header - positioned below the HUD lives panel */}
       {!isLoading && !error && (
-        <div className="absolute top-4 left-4 z-10">
+        <div className="absolute top-[120px] left-4 z-10">
           <PlayerInfo 
             displayName={user?.display_name || 'Player'}
             rank={playerRank?.rank}

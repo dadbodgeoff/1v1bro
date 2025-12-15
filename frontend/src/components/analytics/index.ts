@@ -9,3 +9,6 @@ export { DataVerification } from './DataVerification'
 export { CohortsPanel } from './CohortsPanel'
 export { FunnelsPanel } from './FunnelsPanel'
 export { AnalyticsDebugger } from './AnalyticsDebugger'
+
+// Enterprise dashboard components
+export * from './enterprise'

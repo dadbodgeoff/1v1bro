@@ -3,10 +3,13 @@ Balance repository - Database operations for coin balances and transactions.
 Requirements: 3.4, 3.5, 4.1, 5.3
 """
 
+import logging
 from typing import Optional, List
 from datetime import datetime
 
 from supabase import Client
+
+logger = logging.getLogger(__name__)
 
 
 class BalanceRepository:
@@ -102,6 +105,8 @@ class BalanceRepository:
         Returns:
             New balance after debit, or None if insufficient funds
         """
+        logger.info(f"debit_coins RPC: user_id={user_id}, amount={amount}")
+        
         result = self._client.rpc(
             "debit_coins",
             {
@@ -111,6 +116,8 @@ class BalanceRepository:
                 "p_source": source,
             }
         ).execute()
+        
+        logger.info(f"debit_coins RPC result: data={result.data}")
         
         return result.data  # Returns None if insufficient funds
 

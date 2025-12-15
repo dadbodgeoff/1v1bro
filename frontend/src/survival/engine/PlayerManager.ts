@@ -97,10 +97,6 @@ export class PlayerManager {
     this.characterHeight = size.y
     const footOffset = min.y * scale
 
-    console.log(
-      `[PlayerManager] Runner dimensions: height=${this.characterHeight.toFixed(2)}, footOffset=${footOffset.toFixed(2)}`
-    )
-
     this.physicsController.setCharacterDimensions(this.characterHeight, footOffset)
     this.collisionSystem.setPlayerDimensions(size.x, this.characterHeight, size.z)
 
@@ -115,7 +111,6 @@ export class PlayerManager {
     this.animationController.setPosition(playerPos.x, playerPos.y, playerPos.z)
 
     this.useAnimatedCharacter = true
-    console.log('[PlayerManager] Animated runner loaded')
   }
 
   /**
@@ -136,7 +131,6 @@ export class PlayerManager {
     const playerPos = this.playerController.getPosition()
     this.particleSystem.emitRespawnGlow(playerPos)
     
-    console.log('[PlayerManager] Player respawned with transition')
   }
 
   /**

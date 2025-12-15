@@ -113,7 +113,6 @@ export class TrackManager {
     })
     
     if (!geometry || !material) {
-      console.log('[TrackManager] Could not extract geometry for instancing, using clone fallback')
       return
     }
     
@@ -286,7 +285,6 @@ export class TrackManager {
    */
   reset(): void {
     if (this.tiles.length === 0) {
-      console.warn('[TrackManager] Cannot reset - no tiles exist')
       return
     }
 
@@ -306,8 +304,6 @@ export class TrackManager {
     if (this.instancedMesh) {
       this.instancedMesh.instanceMatrix.needsUpdate = true
     }
-
-    console.log('[TrackManager] Reset - tiles repositioned to initial layout')
   }
   
   /**

@@ -113,7 +113,6 @@ export class FeedbackSystem {
         if (gp.vibrationActuator) {
           this.hapticSupported = true
           this.gamepad = gp
-          console.log('[FeedbackSystem] Gamepad with haptics connected')
         }
       })
     }

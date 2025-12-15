@@ -54,7 +54,6 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
     sessionId,
     visitorId,
     trackPageView,
-    trackJourneyStep,
   } = useEnterpriseAnalytics({
     enabled: isEnabled,
     trackPerformance: true,
@@ -120,46 +119,33 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
   const pageStartTime = useRef(Date.now())
   const lastPage = useRef(location.pathname)
 
-  // Track page views on route change
+  // Track page views on route change - SINGLE tracking path only
   useEffect(() => {
     if (!isEnabled) return
 
     const page = location.pathname
-    const now = Date.now()
     
-    // Track duration for previous page before switching
-    if (lastPage.current !== page && lastPage.current) {
-      const duration = now - pageStartTime.current
-      
-      // Send duration update for previous page
-      fetch(`${API_BASE}/analytics/pageview/duration`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session_id: sessionId,
-          page: lastPage.current,
-          duration_ms: duration,
-        }),
-      }).catch(() => {})
+    // Skip if same page (e.g., query param changes)
+    if (lastPage.current === page) return
+    
+    const now = Date.now()
+    const duration = now - pageStartTime.current
+    
+    // Use sendBeacon for non-blocking delivery of previous page duration
+    if (lastPage.current && navigator.sendBeacon) {
+      const blob = new Blob([JSON.stringify({
+        session_id: sessionId,
+        page: lastPage.current,
+        duration_ms: duration,
+      })], { type: 'application/json' })
+      navigator.sendBeacon(`${API_BASE}/analytics/pageview/duration`, blob)
     }
     
     // Reset for new page
     pageStartTime.current = now
     lastPage.current = page
-    
-    // Track in basic analytics
-    fetch(`${API_BASE}/analytics/pageview`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        session_id: sessionId,
-        page,
-        referrer: document.referrer,
-        load_time_ms: Math.round(performance.now()),
-      }),
-    }).catch(() => {})
 
-    // Track in enterprise analytics
+    // Only track via enterprise analytics (removes duplicate basic tracking)
     trackPageView(page)
   }, [location.pathname, isEnabled, sessionId, trackPageView])
 
@@ -169,14 +155,11 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
 
     const handleBeforeUnload = () => {
       const duration = Date.now() - pageStartTime.current
-      
-      // Use sendBeacon for reliable delivery on page unload
       const data = JSON.stringify({
         session_id: sessionId,
         page: lastPage.current,
         duration_ms: duration,
       })
-      
       navigator.sendBeacon?.(`${API_BASE}/analytics/pageview/duration`, data)
     }
 
@@ -184,28 +167,29 @@ export function AnalyticsProvider({ children, enabled = true }: AnalyticsProvide
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [isEnabled, sessionId])
 
-  // Track custom event
+  // Track custom event - single path, non-blocking
   const trackEvent = (name: string, properties?: Record<string, unknown>) => {
     if (!isEnabled) return
 
-    // Basic analytics
-    fetch(`${API_BASE}/analytics/event`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        session_id: sessionId,
-        event_name: name,
-        page: location.pathname,
-        metadata: properties,
-      }),
-    }).catch(() => {})
-
-    // Enterprise journey tracking
-    trackJourneyStep('event', {
+    // Use sendBeacon for non-blocking delivery
+    const data = JSON.stringify({
+      session_id: sessionId,
       event_name: name,
       page: location.pathname,
       metadata: properties,
     })
+    
+    if (navigator.sendBeacon) {
+      const blob = new Blob([data], { type: 'application/json' })
+      navigator.sendBeacon(`${API_BASE}/analytics/event`, blob)
+    } else {
+      fetch(`${API_BASE}/analytics/event`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: data,
+        keepalive: true,
+      }).catch(() => {})
+    }
   }
 
   // Track conversion

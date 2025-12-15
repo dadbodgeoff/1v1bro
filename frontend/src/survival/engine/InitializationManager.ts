@@ -172,10 +172,9 @@ export class InitializationManager {
       const collectibles = await this.deps.assetLoader.loadCollectiblesAsync()
       if (collectibles?.gem) {
         this.deps.collectibleManager.initialize(collectibles.gem)
-        console.log('[InitializationManager] Collectibles initialized')
       }
-    } catch (error) {
-      console.warn('[InitializationManager] Failed to load collectibles:', error)
+    } catch {
+      // Collectibles failed to load - non-critical
     }
   }
 
@@ -200,10 +199,8 @@ export class InitializationManager {
       renderer.registerCelestialModel('crystal-formation', celestials.crystalFormation)
       renderer.registerCelestialModel('orbital-defense', celestials.orbitalDefense)
       renderer.registerCelestialModel('derelict-ship', celestials.derelictShip)
-
-      console.log('[InitializationManager] Celestial models registered (11 types)')
-    } catch (error) {
-      console.warn('[InitializationManager] Failed to load celestials:', error)
+    } catch {
+      // Celestials failed to load - non-critical
     }
   }
 
@@ -216,9 +213,8 @@ export class InitializationManager {
       if (!city) return
 
       this.deps.renderer.registerCityModel(city)
-      console.log('[InitializationManager] City model registered')
-    } catch (error) {
-      console.warn('[InitializationManager] Failed to load city:', error)
+    } catch {
+      // City failed to load - non-critical
     }
   }
 

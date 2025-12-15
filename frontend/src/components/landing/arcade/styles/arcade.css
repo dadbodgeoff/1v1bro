@@ -2095,6 +2095,27 @@
   -webkit-backdrop-filter: blur(4px);
 }
 
+/* Auth CTAs container - Login/Register buttons */
+.dashboard-auth-ctas {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .dashboard-auth-ctas {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .dashboard-auth-ctas .arcade-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* Content area - holds headline, tagline (legacy - kept for compatibility) */
 .dashboard-content-area {
   grid-area: content;
@@ -2329,9 +2350,16 @@
   min-height: 0; /* Allow shrinking */
 }
 
-.demo-panel > :last-child {
+/* Demo screen area - takes most of the space */
+.demo-screen {
   flex: 1;
   min-height: 0;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-screen > * {
   width: 100%;
   height: 100%;
 }
@@ -2456,67 +2484,115 @@
 }
 
 /* ============================================
- * Demo Play Now CTAs
+ * Demo Arcade Box - Retro Control Panel Style
  * ============================================ */
 
-.demo-play-cta {
+.demo-arcade-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background: #151515;
+  border-top: 2px solid #333;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* T-molding accent strip */
+.demo-arcade-box::before {
+  content: '';
   position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 15;
-  padding: 6px 16px;
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
+  top: -2px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--arcade-box-color, #3B82F6);
+  box-shadow: 0 0 8px var(--arcade-box-color, #3B82F6);
+}
+
+/* Screw decorations */
+.demo-arcade-box::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: #2a2a2a;
+  border-radius: 50%;
+  box-shadow:
+    calc(100% - 22px) 0 0 0 #2a2a2a,
+    0 0 0 1px #444,
+    calc(100% - 22px) 0 0 1px #444;
+}
+
+.demo-arcade-box--trivia {
+  --arcade-box-color: #3B82F6;
+}
+
+.demo-arcade-box--survival {
+  --arcade-box-color: #F97316;
+}
+
+/* Play Button - Arcade Style */
+.demo-play-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 20px;
+  font-family: 'JetBrains Mono', 'Inter', sans-serif;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: white;
-  background: rgba(59, 130, 246, 0.9);
+  background: var(--arcade-box-color, #3B82F6);
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 
-    0 2px 8px rgba(59, 130, 246, 0.4),
-    0 0 20px rgba(59, 130, 246, 0.2);
-  min-height: 32px;
-  min-width: 80px;
+  transition: all 0.15s ease;
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--arcade-box-color, #3B82F6) 70%, black),
+    0 0 15px color-mix(in srgb, var(--arcade-box-color, #3B82F6) 50%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  min-height: 36px;
 }
 
-.demo-play-cta:hover {
-  background: rgba(59, 130, 246, 1);
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 
-    0 4px 12px rgba(59, 130, 246, 0.5),
-    0 0 30px rgba(59, 130, 246, 0.3);
+.demo-play-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 5px 0 color-mix(in srgb, var(--arcade-box-color, #3B82F6) 70%, black),
+    0 0 25px color-mix(in srgb, var(--arcade-box-color, #3B82F6) 60%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-.demo-play-cta:active {
-  transform: translateX(-50%) translateY(0);
+.demo-play-btn:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--arcade-box-color, #3B82F6) 70%, black),
+    0 0 10px color-mix(in srgb, var(--arcade-box-color, #3B82F6) 40%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.demo-play-cta--survival {
-  background: rgba(249, 115, 22, 0.9);
-  box-shadow: 
-    0 2px 8px rgba(249, 115, 22, 0.4),
-    0 0 20px rgba(249, 115, 22, 0.2);
+.demo-play-btn-icon {
+  font-size: 10px;
 }
 
-.demo-play-cta--survival:hover {
-  background: rgba(249, 115, 22, 1);
-  box-shadow: 
-    0 4px 12px rgba(249, 115, 22, 0.5),
-    0 0 30px rgba(249, 115, 22, 0.3);
-}
-
-/* Mobile: smaller CTAs */
+/* Mobile: smaller arcade box */
 @media (max-width: 767px) {
-  .demo-play-cta {
-    padding: 5px 12px;
+  .demo-arcade-box {
+    padding: 8px 12px;
+  }
+  
+  .demo-play-btn {
+    padding: 6px 14px;
     font-size: 10px;
-    min-height: 28px;
-    min-width: 70px;
+    min-height: 30px;
   }
 }
 

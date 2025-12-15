@@ -3,7 +3,7 @@
  * Clean, minimal design matching the rest of the app
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { leaderboardAPI } from '@/services/api'
 import { ALL_CATEGORIES, CATEGORY_META } from '@/types/leaderboard'
@@ -118,7 +118,7 @@ interface LeaderboardCardProps {
   onClick: () => void
 }
 
-function LeaderboardCard({ category, entries, isLoading, onClick }: LeaderboardCardProps) {
+const LeaderboardCard = memo(function LeaderboardCard({ category, entries, isLoading, onClick }: LeaderboardCardProps) {
   const icon = CATEGORY_ICONS[category.id]
   
   return (
@@ -176,7 +176,7 @@ function LeaderboardCard({ category, entries, isLoading, onClick }: LeaderboardC
       </div>
     </button>
   )
-}
+})
 
 export function LeaderboardHub() {
   const navigate = useNavigate()
@@ -184,9 +184,10 @@ export function LeaderboardHub() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Load leaderboards on mount
   useEffect(() => {
     loadAllLeaderboards()
-  }, [])
+  }, []) // Empty deps - only fetch on mount
 
   const loadAllLeaderboards = async () => {
     setLoading(true)

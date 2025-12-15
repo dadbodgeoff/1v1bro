@@ -249,11 +249,6 @@ export class ObstacleManager {
 
     const id = `obstacle-${this.nextObstacleId++}`
     
-    // DEBUG: Log all spawn requests, especially for jump obstacles
-    if (request.type === 'lowBarrier' || request.type === 'spikes' || request.type === 'highBarrier') {
-      console.log(`[ObstacleManager] 🎯 Spawning ${request.type} at Z=${request.z.toFixed(1)}, lane=${request.lane}, pattern=${request.patternId}`)
-    }
-    
     // Always use clone-based rendering for GLB models
     // Instanced rendering requires single-mesh geometry which GLBs don't have
     return this.spawnClonedObstacle(request, template, id)

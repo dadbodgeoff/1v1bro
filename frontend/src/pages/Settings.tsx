@@ -61,10 +61,10 @@ export const Settings: React.FC = () => {
   const polishSettings = usePolishStore((s) => s.settings);
   const updatePolishSettings = usePolishStore((s) => s.updateSettings);
 
+  // Fetch data on mount - parallel fetches
   useEffect(() => {
-    fetchProfile();
-    fetchSettings();
-  }, [fetchProfile, fetchSettings]);
+    Promise.all([fetchProfile(), fetchSettings()])
+  }, []); // Empty deps - only fetch on mount
 
   useEffect(() => {
     if (profile) {

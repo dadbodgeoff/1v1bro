@@ -195,13 +195,11 @@ export class InputController {
   }
 
   private handleGamepadConnected = (e: GamepadEvent): void => {
-    console.log('[InputController] Gamepad connected:', e.gamepad.id)
     this.gamepadIndex = e.gamepad.index
     this.startGamepadPolling()
   }
 
   private handleGamepadDisconnected = (e: GamepadEvent): void => {
-    console.log('[InputController] Gamepad disconnected:', e.gamepad.id)
     if (this.gamepadIndex === e.gamepad.index) {
       this.gamepadIndex = null
       this.stopGamepadPolling()

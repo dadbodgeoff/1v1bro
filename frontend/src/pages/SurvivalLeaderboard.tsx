@@ -2,7 +2,7 @@
  * SurvivalLeaderboard - Public leaderboard page for survival mode
  */
 
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { useLeaderboard } from '@/survival/hooks/useLeaderboard'
@@ -73,7 +73,7 @@ function Avatar({ url, name }: { url?: string; name: string }) {
   return <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-sm">{name.charAt(0).toUpperCase()}</div>
 }
 
-function LeaderboardRow({ entry, isCurrentUser, isHighlighted, animationDelay = 0 }: { entry: LeaderboardEntry; isCurrentUser: boolean; isHighlighted: boolean; animationDelay?: number }) {
+const LeaderboardRow = memo(function LeaderboardRow({ entry, isCurrentUser, isHighlighted, animationDelay = 0 }: { entry: LeaderboardEntry; isCurrentUser: boolean; isHighlighted: boolean; animationDelay?: number }) {
   return (
     <div 
       className={`group flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-xl transition-all duration-300
@@ -112,7 +112,7 @@ function LeaderboardRow({ entry, isCurrentUser, isHighlighted, animationDelay = 
       </div>
     </div>
   )
-}
+})
 
 function PlayerRankCard({ entry, totalPlayers }: { entry: LeaderboardEntry; totalPlayers: number }) {
   const percentile = Math.max(1, Math.round((1 - entry.rank / totalPlayers) * 100))

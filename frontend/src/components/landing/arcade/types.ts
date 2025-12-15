@@ -187,6 +187,8 @@ export interface DashboardUIProps {
   onPrimaryCTA: () => void;
   /** Secondary CTA click handler */
   onSecondaryCTA: () => void;
+  /** Login CTA click handler */
+  onLoginCTA?: () => void;
   /** Whether to show stagger animation */
   animate?: boolean;
 }

@@ -12,6 +12,7 @@ export interface LoadedAssets {
   track: {
     longTile: THREE.Group
     gapped: THREE.Group
+    narrowBridge: THREE.Group
   }
   obstacles: {
     highBarrier: THREE.Group
@@ -143,6 +144,7 @@ export class AssetLoader {
     const [
       longTile,
       gapped,
+      narrowBridge,
       highBarrier,
       lowBarrier,
       laneBarrier,
@@ -154,6 +156,7 @@ export class AssetLoader {
     ] = await Promise.all([
       this.loadModel(SURVIVAL_ASSETS.track.longTile, 'longTile'),
       this.loadModel(SURVIVAL_ASSETS.track.gapped, 'gapped'),
+      this.loadModel(SURVIVAL_ASSETS.track.narrowBridge, 'narrowBridge'),
       this.loadModel(SURVIVAL_ASSETS.obstacles.highBarrier, 'highBarrier'),
       this.loadModel(SURVIVAL_ASSETS.obstacles.lowBarrier, 'lowBarrier'),
       this.loadModel(SURVIVAL_ASSETS.obstacles.laneBarrier, 'laneBarrier'),
@@ -165,7 +168,7 @@ export class AssetLoader {
     ])
 
     const result: LoadedAssets = {
-      track: { longTile, gapped },
+      track: { longTile, gapped, narrowBridge },
       obstacles: { highBarrier, lowBarrier, laneBarrier, knowledgeGate, spikes },
       character: { runner: { run: runnerRun, jump: runnerJump, down: runnerDown } },
     }

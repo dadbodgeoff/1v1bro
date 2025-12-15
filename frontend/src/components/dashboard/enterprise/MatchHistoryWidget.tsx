@@ -152,9 +152,10 @@ export function MatchHistoryWidget({ maxItems = 5, className }: MatchHistoryWidg
     }
   }, [])
 
+  // Fetch matches on mount
   useEffect(() => {
     fetchMatches()
-  }, [fetchMatches])
+  }, []) // Empty deps - only fetch on mount, fetchMatches handles caching
 
   const handleMatchClick = (matchId: string) => {
     navigate(`/match/${matchId}`)

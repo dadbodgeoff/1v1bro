@@ -47,10 +47,10 @@ export const Inventory: React.FC = () => {
     clearError,
   } = useCosmetics()
 
+  // Fetch data on mount - parallel fetches
   useEffect(() => {
-    fetchInventory()
-    fetchLoadout()
-  }, [fetchInventory, fetchLoadout])
+    Promise.all([fetchInventory(), fetchLoadout()])
+  }, []) // Empty deps - only fetch on mount
 
   // Calculate collection stats
   const stats: CollectionStatsData = useMemo(() => {

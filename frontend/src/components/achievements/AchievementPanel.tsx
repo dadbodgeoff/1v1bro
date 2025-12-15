@@ -75,10 +75,10 @@ export function AchievementPanel({ initialCategory }: AchievementPanelProps) {
     [getProgressForAchievement]
   );
 
-  // Check if reduced motion is preferred
-  const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)'
-  ).matches;
+  // Check if reduced motion is preferred - memoize to avoid recalculating
+  const prefersReducedMotion = useMemo(() => 
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  []);
 
   if (isLoading) {
     return (

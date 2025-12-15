@@ -91,11 +91,9 @@ export class RunManager {
       fixedUpdateLoop.setSpeed(this.baseSpeed)
       
       // Reset camera to proper position before starting
-      const playerZ = stateManager.getMutableState().player.z
-      console.log('[RunManager] START - Player Z before reset:', playerZ)
       renderer.resetOrbitControls()
       cameraController.reset()
-      cameraController.initialize(playerZ)
+      cameraController.initialize(8)
       
       // Check if loading is complete before starting countdown
       const isReady = loadingOrchestrator.isReadyForCountdown()
@@ -104,11 +102,9 @@ export class RunManager {
         // Start countdown sequence
         loadingOrchestrator.startCountdown()
         transitionSystem.startCountdown()
-        console.log('[RunManager] Countdown started, seed:', seed)
       } else {
         // Start immediately (fallback)
         this.startImmediate()
-        console.log('[RunManager] Started immediately, seed:', seed)
       }
     } else if (stateManager.getPhase() === 'paused') {
       stateManager.setPhase('running')
@@ -213,21 +209,7 @@ export class RunManager {
         return null
       }
       
-      if (response) {
-        console.log(
-          `[RunManager] Run submitted: ${response.id} ` +
-          `(status: ${response.validation_status || 'valid'}, ` +
-          `confidence: ${response.validation_confidence?.toFixed(2) || '1.00'})`
-        )
-        
-        if (response.distance !== runData.distance || response.score !== runData.score) {
-          console.info(
-            `[RunManager] Server verified: ` +
-            `${runData.distance}m -> ${response.distance}m, ` +
-            `${runData.score}pts -> ${response.score}pts`
-          )
-        }
-      }
+      // Run submitted successfully
       
       return response
     } catch (error) {
@@ -278,8 +260,6 @@ export class RunManager {
    * Quick restart - reset and immediately start a new run
    */
   quickRestart(): void {
-    console.log('[RunManager] Quick restart initiated')
-    
     // Reset all game state
     this.reset()
     
@@ -306,7 +286,6 @@ export class RunManager {
     if (isReady) {
       loadingOrchestrator.startCountdown()
       transitionSystem.startCountdown()
-      console.log('[RunManager] Quick restart - countdown started, seed:', seed)
     } else {
       // Fallback: start immediately
       loadingOrchestrator.startRunning()
@@ -315,7 +294,6 @@ export class RunManager {
       obstacleManager.setSpawningEnabled(true)
       collectibleManager.setSpawningEnabled(true)
       ghostManager.startGhost()
-      console.log('[RunManager] Quick restart - started immediately, seed:', seed)
     }
   }
 
@@ -326,12 +304,10 @@ export class RunManager {
     const { stateManager, playerController, obstacleManager, collectibleManager,
             ghostManager } = this.deps
     
-    console.log('[RunManager] Countdown COMPLETE - Setting phase to running')
     stateManager.setPhase('running')
     playerController.setVisualState({ isRunning: true })
     obstacleManager.setSpawningEnabled(true)
     collectibleManager.setSpawningEnabled(true)
     ghostManager.startGhost()
-    console.log('[RunManager] Obstacle and collectible spawning enabled')
   }
 }

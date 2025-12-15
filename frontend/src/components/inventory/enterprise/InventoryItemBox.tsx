@@ -21,6 +21,7 @@
  * - SkinPreview support for animated skins
  */
 
+import { memo } from 'react'
 import { cn } from '@/utils/helpers'
 import type { InventoryItem, CosmeticType } from '@/types/cosmetic'
 import { getCosmeticTypeName } from '@/types/cosmetic'
@@ -155,7 +156,7 @@ function formatRelativeDate(dateString: string): string {
   return `${Math.floor(diffDays / 365)} years ago`
 }
 
-export function InventoryItemBox({
+export const InventoryItemBox = memo(function InventoryItemBox({
   item,
   size = 'md',
   onEquip,
@@ -169,6 +170,9 @@ export function InventoryItemBox({
     ? (cosmetic.skin_id as SkinId) 
     : null
   const hasDynamicSprite = cosmetic.type === 'skin' && cosmetic.sprite_sheet_url
+  
+  // Static thumbnail for display (PNG/WebP shop_preview_url, NOT .glb)
+  const hasStaticThumbnail = cosmetic.shop_preview_url && !cosmetic.shop_preview_url.endsWith('.glb')
 
   return (
     <div
@@ -248,7 +252,15 @@ export function InventoryItemBox({
                 <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Coming Soon</span>
               </div>
             )}
-            {hasDynamicSprite ? (
+            {hasStaticThumbnail ? (
+              <DynamicImage
+                src={cosmetic.shop_preview_url}
+                alt={cosmetic.name}
+                className="rounded-lg object-cover"
+                style={{ width: config.imageSize, height: config.imageSize }}
+                removeBackgroundMode="auto"
+              />
+            ) : hasDynamicSprite ? (
               <SkinPreview
                 spriteSheetUrl={cosmetic.sprite_sheet_url}
                 metadataUrl={cosmetic.sprite_meta_url}
@@ -334,4 +346,4 @@ export function InventoryItemBox({
       </div>
     </div>
   )
-}
+})

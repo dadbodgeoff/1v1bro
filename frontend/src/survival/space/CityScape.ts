@@ -40,7 +40,6 @@ export class CityScape {
     this.cityModel = model
     this.createInstances()
     this.initialized = true
-    console.log('[CityScape] City model registered and instances created')
   }
 
   /**

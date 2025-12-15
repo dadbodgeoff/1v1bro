@@ -27,20 +27,32 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Chunk splitting for better caching
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['framer-motion', 'clsx'],
-          state: ['zustand'],
-          // Separate Three.js into its own chunk for better caching
-          three: ['three'],
+        manualChunks: (id) => {
+          // Core vendor libraries
+          if (id.includes('node_modules/react-dom')) return 'vendor'
+          if (id.includes('node_modules/react-router')) return 'vendor'
+          if (id.includes('node_modules/react/')) return 'vendor'
+          
+          // Three.js - separate chunk for game pages
+          if (id.includes('node_modules/three')) return 'three'
+          
+          // UI libraries
+          if (id.includes('node_modules/framer-motion')) return 'ui'
+          if (id.includes('node_modules/clsx')) return 'ui'
+          
+          // State management
+          if (id.includes('node_modules/zustand')) return 'state'
+          
+          // Date utilities
+          if (id.includes('node_modules/date-fns')) return 'utils'
         },
       },
     },
   },
-  // Drop console.log in production - TEMPORARILY DISABLED FOR DEBUGGING
-  // esbuild: {
-  //   drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
-  // },
+  // Drop console.log in production for performance
+  esbuild: {
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+  },
   server: {
     proxy: {
       '/api': {

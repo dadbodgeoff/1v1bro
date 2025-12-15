@@ -161,8 +161,8 @@ export class SurvivalEngine {
     this.inputBuffer = new InputBuffer()
     this.cameraController = new CameraController(this.renderer.getCamera())
     this.playerController = new PlayerController()
-    this.performanceMonitor = new PerformanceMonitor({}, (issue) => {
-      console.warn('[Performance]', issue)
+    this.performanceMonitor = new PerformanceMonitor({}, () => {
+      // Performance issues tracked silently
     })
 
     // Effects systems
@@ -216,7 +216,7 @@ export class SurvivalEngine {
     this.gameLoop = new GameLoop({
       onFixedUpdate: this.fixedUpdate,
       onUpdate: this.renderUpdate,
-      onLagSpike: (missed) => console.warn(`[GameLoop] Lag spike: ${missed} frames missed`),
+      onLagSpike: () => { /* Lag spikes tracked silently */ },
     })
 
     // Initialize modular subsystems (after gameLoop is ready)
@@ -232,7 +232,7 @@ export class SurvivalEngine {
         this.onLoadingProgress?.(progress)
       },
       onReady: () => {
-        console.log('[SurvivalEngine] Loading orchestrator reports ready')
+        // Loading complete
       },
       onError: (error) => {
         console.error('[SurvivalEngine] Loading failed:', error)
@@ -357,7 +357,6 @@ export class SurvivalEngine {
   private setupTransitionCallbacks(): void {
     this.transitionSystem.setCallbacks({
       onCountdownTick: (value) => {
-        console.log('[SurvivalEngine] Countdown tick:', value)
         if (value !== null && value !== 'GO') {
           this.feedbackSystem.emitSound('countdown', { intensity: 0.8 })
         } else if (value === 'GO') {
@@ -374,7 +373,7 @@ export class SurvivalEngine {
         }
       },
       onRespawnComplete: () => {
-        console.log('[SurvivalEngine] Respawn complete')
+        // Respawn animation complete
       },
     })
   }
@@ -542,7 +541,6 @@ export class SurvivalEngine {
     this.ghostManager.dispose()
     this.renderer.dispose()
     this.assetLoader.clearCache()
-    console.log('[SurvivalEngine] Disposed')
   }
 
   // === System accessors (backward compatibility) ===

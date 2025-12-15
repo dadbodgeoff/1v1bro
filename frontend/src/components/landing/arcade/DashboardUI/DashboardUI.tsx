@@ -33,12 +33,15 @@ function getResponsiveMode(width: number): ResponsiveMode {
 export interface DashboardUIComponentProps extends DashboardUIProps {
   /** Hover sound handler */
   onHoverSound?: (e?: React.MouseEvent) => void;
+  /** Login CTA handler */
+  onLoginCTA?: () => void;
 }
 
 export function DashboardUI({
   isAuthenticated,
   onPrimaryCTA,
   onSecondaryCTA,
+  onLoginCTA,
   animate = true,
   onHoverSound,
 }: DashboardUIComponentProps) {
@@ -91,15 +94,13 @@ export function DashboardUI({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [showPressStart, onPrimaryCTA, isAuthenticated]);
 
-  // Primary CTA: "Play Now" for instant play (no account needed)
-  const primaryText = isAuthenticated
-    ? ARCADE_CONTENT.primaryCTAAuth
-    : ARCADE_CONTENT.primaryCTA;
-
   // Secondary CTA: "Create Account" for registration
   const secondaryText = isAuthenticated
     ? ARCADE_CONTENT.secondaryCTAAuth
     : ARCADE_CONTENT.secondaryCTA;
+
+  // Login CTA text
+  const loginText = ARCADE_CONTENT.loginCTA;
 
   const isDesktop = mode === 'desktop';
 
@@ -123,25 +124,44 @@ export function DashboardUI({
           animate && 'stagger-item stagger-item--visible stagger-item--delay-4'
         )}
       >
-        {/* Play Now - instant play, no account required */}
-        <ArcadeCTA
-          variant="primary"
-          onClick={onPrimaryCTA}
-          onMouseEnter={onHoverSound}
-          ariaLabel={isAuthenticated ? 'Enter Arena' : 'Play Now - No account needed'}
-        >
-          {primaryText}
-        </ArcadeCTA>
+        {/* Auth CTAs - only show for guests */}
+        {!isAuthenticated && (
+          <div className="dashboard-auth-ctas">
+            {/* Create Account CTA */}
+            <ArcadeCTA
+              variant="primary"
+              onClick={onSecondaryCTA}
+              onMouseEnter={onHoverSound}
+              ariaLabel="Create Account"
+            >
+              {secondaryText}
+            </ArcadeCTA>
 
-        {/* Create Account CTA */}
-        <ArcadeCTA
-          variant="secondary"
-          onClick={onSecondaryCTA}
-          onMouseEnter={onHoverSound}
-          ariaLabel={isAuthenticated ? 'Go to Dashboard' : 'Create Account'}
-        >
-          {secondaryText}
-        </ArcadeCTA>
+            {/* Login CTA */}
+            {onLoginCTA && (
+              <ArcadeCTA
+                variant="secondary"
+                onClick={onLoginCTA}
+                onMouseEnter={onHoverSound}
+                ariaLabel="Log in to your account"
+              >
+                {loginText}
+              </ArcadeCTA>
+            )}
+          </div>
+        )}
+
+        {/* Dashboard CTA for authenticated users */}
+        {isAuthenticated && (
+          <ArcadeCTA
+            variant="primary"
+            onClick={onSecondaryCTA}
+            onMouseEnter={onHoverSound}
+            ariaLabel="Go to Dashboard"
+          >
+            {secondaryText}
+          </ArcadeCTA>
+        )}
 
         {/* Press Start Easter Egg - inline */}
         {showPressStart && (

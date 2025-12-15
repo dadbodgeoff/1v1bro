@@ -62,20 +62,21 @@ export function useCosmetics(): UseCosmeticsReturn {
   const clearError = useCosmeticsStore((s) => s.clearError)
 
   // Wrap store actions with token
+  // Note: force=false by default - store handles caching (2 min TTL)
+  // Only pass force=true when user explicitly requests refresh
   const fetchShop = useCallback(
     async (_filters?: ShopFilters) => {
-      // Force refresh on explicit call (user navigated to page)
-      await storeFetchShop(token, true)
+      await storeFetchShop(token, false)
     },
     [token, storeFetchShop]
   )
 
   const fetchInventory = useCallback(async () => {
-    await storeFetchInventory(token, true)
+    await storeFetchInventory(token, false)
   }, [token, storeFetchInventory])
 
   const fetchLoadout = useCallback(async () => {
-    await storeFetchLoadout(token, true)
+    await storeFetchLoadout(token, false)
   }, [token, storeFetchLoadout])
 
   const purchaseCosmetic = useCallback(

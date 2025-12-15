@@ -3,10 +3,13 @@ Balance service for coin balance management.
 Requirements: 3.1, 3.4, 4.1, 5.3, 5.5
 """
 
+import logging
 from typing import Optional, List
 from uuid import uuid4
 
 from supabase import Client
+
+logger = logging.getLogger(__name__)
 
 from app.database.repositories.balance_repo import BalanceRepository
 from app.schemas.coin import (
@@ -129,6 +132,8 @@ class BalanceService:
         if not transaction_id:
             transaction_id = str(uuid4())
         
+        logger.info(f"debit_coins: user_id={user_id}, amount={amount}, source={source}")
+        
         new_balance = await self.balance_repo.debit_coins(
             user_id=user_id,
             amount=amount,
@@ -136,8 +141,11 @@ class BalanceService:
             source=source,
         )
         
+        logger.info(f"debit_coins: result from repo = {new_balance}")
+        
         if new_balance is None:
             current_balance = await self.get_balance(user_id)
+            logger.error(f"debit_coins: INSUFFICIENT FUNDS - have {current_balance}, need {amount}")
             raise InsufficientFundsError(
                 message=f"Insufficient balance: have {current_balance}, need {amount}",
                 current_balance=current_balance,

@@ -48,8 +48,6 @@ export class AnimationController {
       const clip = mesh.animations[0] // Use first animation
       action = mixer.clipAction(clip)
       action.setLoop(THREE.LoopRepeat, Infinity)
-    } else {
-      console.warn(`[AnimationController] No animations found in ${state} mesh`)
     }
 
     // Store clip data
@@ -64,9 +62,11 @@ export class AnimationController {
     mesh.visible = state === 'run'
     
     // Set initial state
-    if (state === 'run' && action) {
+    if (state === 'run') {
       this.activeMesh = mesh
-      action.play()
+      if (action) {
+        action.play()
+      }
     }
   }
 

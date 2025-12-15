@@ -49,7 +49,8 @@ const AIR_CONTROL_STRENGTH = 0.3 // How much lane influence while airborne (0-1)
 
 // Ground offset - distance from raycast hit to character feet
 // This should be calibrated based on character model
-const GROUND_FOOT_OFFSET = 0.05 // Small offset to prevent z-fighting
+// Increased from 0.05 to 0.1 for better feet-to-ground alignment (AAA standard)
+const GROUND_FOOT_OFFSET = 0.1
 
 export class PhysicsController {
   private config: PhysicsConfig

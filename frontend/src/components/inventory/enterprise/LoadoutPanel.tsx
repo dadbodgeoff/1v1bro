@@ -95,25 +95,43 @@ export function LoadoutPanel({
                   </div>
                 )}
                 {equippedItem ? (
-                  // Use SkinPreview for skins to show single frame, DynamicImage for others
-                  // Runner cosmetics use image_url for preview (3D model is used in-game)
-                  equippedItem.cosmetic.type === 'skin' ? (
-                    <SkinPreview
-                      spriteSheetUrl={equippedItem.cosmetic.sprite_sheet_url}
-                      metadataUrl={equippedItem.cosmetic.sprite_meta_url}
-                      skinId={equippedItem.cosmetic.skin_id as SkinId | undefined}
-                      size={80}
-                      animate={false}
-                      frameIndex={0}
-                    />
-                  ) : (
-                    <DynamicImage
-                      src={equippedItem.cosmetic.image_url}
-                      alt={equippedItem.cosmetic.name}
-                      className="w-full h-full object-contain p-1"
-                      removeBackgroundMode="auto"
-                    />
-                  )
+                  // Priority: 1. Static thumbnail (PNG/WebP), 2. Sprite sheet, 3. Fallback image
+                  (() => {
+                    const cosmetic = equippedItem.cosmetic
+                    const hasStaticThumbnail = cosmetic.shop_preview_url && !cosmetic.shop_preview_url.endsWith('.glb')
+                    const hasSpriteSheet = cosmetic.sprite_sheet_url
+                    
+                    if (hasStaticThumbnail) {
+                      return (
+                        <DynamicImage
+                          src={cosmetic.shop_preview_url}
+                          alt={cosmetic.name}
+                          className="w-full h-full object-cover p-1"
+                          removeBackgroundMode="auto"
+                        />
+                      )
+                    } else if ((cosmetic.type === 'skin' || cosmetic.type === 'runner') && hasSpriteSheet) {
+                      return (
+                        <SkinPreview
+                          spriteSheetUrl={cosmetic.sprite_sheet_url}
+                          metadataUrl={cosmetic.sprite_meta_url}
+                          skinId={cosmetic.skin_id as SkinId | undefined}
+                          size={80}
+                          animate={false}
+                          frameIndex={0}
+                        />
+                      )
+                    } else {
+                      return (
+                        <DynamicImage
+                          src={cosmetic.image_url}
+                          alt={cosmetic.name}
+                          className="w-full h-full object-contain p-1"
+                          removeBackgroundMode="auto"
+                        />
+                      )
+                    }
+                  })()
                 ) : (
                   <span className="text-3xl opacity-30">{SLOT_ICONS[type]}</span>
                 )}

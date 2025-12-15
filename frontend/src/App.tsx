@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { usePresence } from '@/hooks/usePresence'
@@ -8,28 +8,76 @@ import { warmCache } from '@/game/assets'
 import { AnalyticsProvider } from '@/providers/AnalyticsProvider'
 import { PolishProvider } from '@/providers/PolishProvider'
 import { AnalyticsDebugger } from '@/components/analytics'
-import { Home, Login, Register, Lobby, Game, ArenaGame, BotGame, Results, LeaderboardHub, LeaderboardDetail, FortniteQuiz, Landing, Profile, BattlePass, Shop, Inventory, Settings, Friends } from '@/pages'
-import { Achievements } from '@/pages/Achievements'
-import { InstantPlay } from '@/pages/InstantPlay'
-import { AdminAnalytics } from '@/pages/AdminAnalytics'
-import { AdminAnalyticsEnterprise } from '@/pages/AdminAnalyticsEnterprise'
-import { AdminSurvivalAnalytics } from '@/pages/AdminSurvivalAnalytics'
-import { PrivacyPolicy, TermsOfService, RefundPolicy } from '@/pages/legal'
-import { VolcanicLanding } from '@/pages/VolcanicLanding'
-import { ArcadeLanding } from '@/pages/ArcadeLanding'
-import { MatchHistory } from '@/pages/MatchHistory'
-import { SimpleArenaTest } from '@/pages/SimpleArenaTest'
-import { CornfieldMapBuilder } from '@/pages/CornfieldMapBuilder'
-import SurvivalTest from '@/pages/SurvivalTest'
-import SurvivalDemoTest from '@/pages/SurvivalDemoTest'
-import SurvivalLeaderboard from '@/pages/SurvivalLeaderboard'
-import SurvivalGame from '@/pages/SurvivalGame'
-import SurvivalInstantPlay from '@/pages/SurvivalInstantPlay'
-import { ThumbnailGenerator } from '@/components/admin/ThumbnailGenerator'
-import { CoinShop } from '@/pages/CoinShop'
-import { CoinSuccess } from '@/pages/CoinSuccess'
 import { ProgressionProvider } from '@/components/progression'
-import { PageTransition } from '@/components/transitions'
+
+// Critical path - eagerly loaded (login, register, landing, dashboard)
+import { Home, Login, Register, Lobby } from '@/pages'
+import { ArcadeLanding } from '@/pages/ArcadeLanding'
+
+// Lazy loaded pages - split by feature for optimal chunking
+// Game pages (heavy - Three.js, game engine)
+const ArenaGame = lazy(() => import('@/pages/ArenaGame').then(m => ({ default: m.ArenaGame })))
+const Game = lazy(() => import('@/pages/Game').then(m => ({ default: m.Game })))
+const BotGame = lazy(() => import('@/pages/BotGame').then(m => ({ default: m.BotGame })))
+const SurvivalGame = lazy(() => import('@/pages/SurvivalGame'))
+const SurvivalInstantPlay = lazy(() => import('@/pages/SurvivalInstantPlay'))
+const SurvivalTest = lazy(() => import('@/pages/SurvivalTest'))
+const SurvivalDemoTest = lazy(() => import('@/pages/SurvivalDemoTest'))
+const SimpleArenaTest = lazy(() => import('@/pages/SimpleArenaTest').then(m => ({ default: m.SimpleArenaTest })))
+const CornfieldMapBuilder = lazy(() => import('@/pages/CornfieldMapBuilder').then(m => ({ default: m.CornfieldMapBuilder })))
+
+// Shop & Inventory (medium - cosmetics, 3D previews)
+const Shop = lazy(() => import('@/pages/Shop').then(m => ({ default: m.Shop })))
+const Inventory = lazy(() => import('@/pages/Inventory').then(m => ({ default: m.Inventory })))
+const CoinShop = lazy(() => import('@/pages/CoinShop').then(m => ({ default: m.CoinShop })))
+const CoinSuccess = lazy(() => import('@/pages/CoinSuccess').then(m => ({ default: m.CoinSuccess })))
+
+// Profile & Social (medium)
+const Profile = lazy(() => import('@/pages/Profile').then(m => ({ default: m.Profile })))
+const Friends = lazy(() => import('@/pages/Friends').then(m => ({ default: m.Friends })))
+const MatchHistory = lazy(() => import('@/pages/MatchHistory').then(m => ({ default: m.MatchHistory })))
+
+// Progression (medium)
+const BattlePass = lazy(() => import('@/pages/BattlePass').then(m => ({ default: m.BattlePass })))
+const Achievements = lazy(() => import('@/pages/Achievements').then(m => ({ default: m.Achievements })))
+
+// Leaderboards (light)
+const LeaderboardHub = lazy(() => import('@/pages/LeaderboardHub').then(m => ({ default: m.LeaderboardHub })))
+const LeaderboardDetail = lazy(() => import('@/pages/LeaderboardDetail').then(m => ({ default: m.LeaderboardDetail })))
+const SurvivalLeaderboard = lazy(() => import('@/pages/SurvivalLeaderboard'))
+
+// Settings (light)
+const Settings = lazy(() => import('@/pages/Settings').then(m => ({ default: m.Settings })))
+
+// Results & Quiz (light)
+const Results = lazy(() => import('@/pages/Results').then(m => ({ default: m.Results })))
+const FortniteQuiz = lazy(() => import('@/pages/FortniteQuiz').then(m => ({ default: m.FortniteQuiz })))
+const InstantPlay = lazy(() => import('@/pages/InstantPlay').then(m => ({ default: m.InstantPlay })))
+
+// Admin pages (rarely accessed)
+const AnalyticsDashboard = lazy(() => import('@/pages/AnalyticsDashboard'))
+const ThumbnailGenerator = lazy(() => import('@/components/admin/ThumbnailGenerator').then(m => ({ default: m.ThumbnailGenerator })))
+
+// Landing pages (light)
+const Landing = lazy(() => import('@/pages/Landing').then(m => ({ default: m.Landing })))
+const VolcanicLanding = lazy(() => import('@/pages/VolcanicLanding').then(m => ({ default: m.VolcanicLanding })))
+
+// Legal pages (light)
+const PrivacyPolicy = lazy(() => import('@/pages/legal').then(m => ({ default: m.PrivacyPolicy })))
+const TermsOfService = lazy(() => import('@/pages/legal').then(m => ({ default: m.TermsOfService })))
+const RefundPolicy = lazy(() => import('@/pages/legal').then(m => ({ default: m.RefundPolicy })))
+
+// Loading fallback for lazy routes
+function PageLoader() {
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm text-neutral-500">Loading...</span>
+      </div>
+    </div>
+  )
+}
 
 // Root route - shows CRT Arcade Landing for guests, redirects to dashboard for authenticated users
 function RootRoute() {
@@ -67,7 +115,7 @@ function App() {
       <PolishProvider>
       <AnalyticsProvider enabled={true}>
       <ProgressionProvider>
-      <PageTransition>
+      <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -254,30 +302,16 @@ function App() {
         <Route path="/survival-test" element={<SurvivalTest />} />
         {/* Survival Demo Test - lightweight canvas demo for landing page */}
         <Route path="/survival-demo-test" element={<SurvivalDemoTest />} />
-        {/* Admin Analytics Dashboard */}
+        {/* Legacy Analytics Routes - Redirect to new unified dashboard */}
+        <Route path="/admin/analytics" element={<Navigate to="/analytics" replace />} />
+        <Route path="/admin/analytics/enterprise" element={<Navigate to="/analytics" replace />} />
+        <Route path="/admin/analytics/survival" element={<Navigate to="/analytics" replace />} />
+        {/* Unified Analytics Dashboard */}
         <Route
-          path="/admin/analytics"
+          path="/analytics"
           element={
             <ProtectedRoute>
-              <AdminAnalytics />
-            </ProtectedRoute>
-          }
-        />
-        {/* Enterprise Analytics Dashboard */}
-        <Route
-          path="/admin/analytics/enterprise"
-          element={
-            <ProtectedRoute>
-              <AdminAnalyticsEnterprise />
-            </ProtectedRoute>
-          }
-        />
-        {/* Survival Analytics Dashboard */}
-        <Route
-          path="/admin/analytics/survival"
-          element={
-            <ProtectedRoute>
-              <AdminSurvivalAnalytics />
+              <AnalyticsDashboard />
             </ProtectedRoute>
           }
         />
@@ -297,7 +331,7 @@ function App() {
         {/* Admin: 3D Thumbnail Generator - no auth for dev convenience */}
         <Route path="/admin/thumbnail-generator" element={<ThumbnailGenerator />} />
       </Routes>
-      </PageTransition>
+      </Suspense>
       </ProgressionProvider>
       {/* Analytics debugger - only visible in development */}
       <AnalyticsDebugger />

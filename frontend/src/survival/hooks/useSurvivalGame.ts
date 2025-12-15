@@ -254,7 +254,6 @@ export function useSurvivalGame(
     if (mobileConfig.enableFullscreen) {
       try {
         await requestFullscreen()
-        console.log('[useSurvivalGame] Fullscreen requested')
       } catch {
         // Fullscreen may be blocked - that's OK
       }
@@ -264,7 +263,6 @@ export function useSurvivalGame(
     if (mobileConfig.enableWakeLock) {
       try {
         await requestWakeLock()
-        console.log('[useSurvivalGame] Wake lock acquired')
       } catch {
         // Wake lock may not be supported - that's OK
       }
@@ -275,7 +273,6 @@ export function useSurvivalGame(
     if (isMobile) {
       try {
         await lockOrientation('landscape')
-        console.log('[useSurvivalGame] Orientation locked to landscape')
       } catch {
         // Orientation lock may not be supported - that's OK
       }
@@ -358,12 +355,10 @@ export function useSurvivalGame(
       
       if (pbData?.ghost_data) {
         engineRef.current.loadGhost(pbData.ghost_data)
-        console.log('[useSurvivalGame] Personal best ghost loaded:', pbData.best_distance, 'm')
         return true
       }
       return false
-    } catch (error) {
-      console.warn('[useSurvivalGame] Failed to load personal best ghost:', error)
+    } catch {
       return false
     }
   }, [isLoading, token])

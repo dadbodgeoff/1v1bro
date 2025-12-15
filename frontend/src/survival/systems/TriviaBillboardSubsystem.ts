@@ -87,8 +87,6 @@ export class TriviaBillboardSubsystem {
     this.isRunning = true
     this.manager.setEnabled(this.config.enabled)
     this.attachKeyboardInput()
-    
-    console.log('[TriviaBillboardSubsystem] Started')
   }
 
   /**
@@ -100,8 +98,6 @@ export class TriviaBillboardSubsystem {
     this.isRunning = false
     this.manager.setEnabled(false)
     this.detachKeyboardInput()
-    
-    console.log('[TriviaBillboardSubsystem] Stopped')
   }
 
   /**

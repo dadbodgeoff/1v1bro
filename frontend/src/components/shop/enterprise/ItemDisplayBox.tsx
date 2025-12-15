@@ -24,7 +24,7 @@
  * - Spring physics animations
  */
 
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, memo } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/utils/helpers'
 import type { Cosmetic } from '@/types/cosmetic'
@@ -147,7 +147,7 @@ const sizeConfig = {
 
 
 
-export function ItemDisplayBox({
+export const ItemDisplayBox = memo(function ItemDisplayBox({
   item,
   size = 'md',
   isOwned = false,
@@ -532,4 +532,4 @@ export function ItemDisplayBox({
     )}
     </>
   )
-}
+})

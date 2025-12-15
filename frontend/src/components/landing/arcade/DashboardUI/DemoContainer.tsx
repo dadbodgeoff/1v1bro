@@ -103,49 +103,59 @@ export function DemoContainer({
           {/* Trivia Duel Demo */}
           <div className="demo-panel">
             <div className="demo-badge demo-badge--trivia">TRIVIA DUEL</div>
-            <Suspense
-              fallback={
-                <div className="demo-fallback">
-                  <span>Loading demo...</span>
-                </div>
-              }
-            >
-              <LiveDemo
-                autoPlay={true}
-                showHUD={true}
-              />
-            </Suspense>
-            <button
-              onClick={handleTriviaDuelPlay}
-              className="demo-play-cta"
-              aria-label="Play Trivia Duel now"
-            >
-              PLAY NOW
-            </button>
+            <div className="demo-screen">
+              <Suspense
+                fallback={
+                  <div className="demo-fallback">
+                    <span>Loading demo...</span>
+                  </div>
+                }
+              >
+                <LiveDemo
+                  autoPlay={true}
+                  showHUD={true}
+                />
+              </Suspense>
+            </div>
+            <div className="demo-arcade-box demo-arcade-box--trivia">
+              <button
+                onClick={handleTriviaDuelPlay}
+                className="demo-play-btn"
+                aria-label="Play Trivia Duel now"
+              >
+                <span className="demo-play-btn-icon">▶</span>
+                PLAY NOW
+              </button>
+            </div>
           </div>
           
           {/* Survival Runner Demo */}
           <div className="demo-panel">
             <div className="demo-badge demo-badge--survival">SURVIVAL MODE</div>
-            <Suspense
-              fallback={
-                <div className="demo-fallback">
-                  <span>Loading demo...</span>
-                </div>
-              }
-            >
-              <SurvivalDemo
-                autoPlay={true}
-                showHUD={true}
-              />
-            </Suspense>
-            <button
-              onClick={handleSurvivalPlay}
-              className="demo-play-cta demo-play-cta--survival"
-              aria-label="Play Survival Runner now"
-            >
-              PLAY NOW
-            </button>
+            <div className="demo-screen">
+              <Suspense
+                fallback={
+                  <div className="demo-fallback">
+                    <span>Loading demo...</span>
+                  </div>
+                }
+              >
+                <SurvivalDemo
+                  autoPlay={true}
+                  showHUD={true}
+                />
+              </Suspense>
+            </div>
+            <div className="demo-arcade-box demo-arcade-box--survival">
+              <button
+                onClick={handleSurvivalPlay}
+                className="demo-play-btn"
+                aria-label="Play Survival Runner now"
+              >
+                <span className="demo-play-btn-icon">▶</span>
+                PLAY NOW
+              </button>
+            </div>
           </div>
         </div>
       )}

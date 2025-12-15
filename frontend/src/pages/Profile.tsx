@@ -70,14 +70,18 @@ export const Profile: React.FC = () => {
     achievements,
   } = useAchievements()
 
+  // Fetch all data in parallel on mount - single effect to avoid waterfall
   useEffect(() => {
-    fetchProfile()
-    fetchProgress()
-    fetchInventory()
-    fetchLoadout()
-    fetchMatches()
-    // Achievements are auto-fetched by the hook
-  }, [fetchProfile, fetchProgress, fetchInventory, fetchLoadout, fetchMatches])
+    // Fire all fetches simultaneously - don't await sequentially
+    Promise.all([
+      fetchProfile(),
+      fetchProgress(),
+      fetchInventory(),
+      fetchLoadout(),
+      fetchMatches(),
+      // Achievements are auto-fetched by the hook
+    ])
+  }, []) // Empty deps - only fetch on mount, hooks handle their own caching
 
   const handleSave = async (updates: ProfileUpdate) => {
     await updateProfile(updates)

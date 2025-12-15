@@ -120,6 +120,7 @@ export const ARCADE_CONTENT = {
   primaryCTAAuth: 'ENTER ARENA',
   secondaryCTA: 'CREATE ACCOUNT',
   secondaryCTAAuth: 'DASHBOARD',
+  loginCTA: 'LOG IN',
   pressStart: 'PRESS START',
   skipButton: 'SKIP →',
   liveIndicator: 'LIVE',

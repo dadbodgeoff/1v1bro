@@ -70,12 +70,13 @@ export function ShopPreviewWidget({ maxItems = 4, className }: ShopPreviewWidget
   const { shopItems, shopLoading, fetchShop } = useCosmetics()
   const [timeUntilRefresh, setTimeUntilRefresh] = useState<string>('')
 
+  // Fetch shop on mount
   useEffect(() => {
     fetchShop()
-  }, [fetchShop])
+  }, []) // Empty deps - only fetch on mount, store handles caching
 
   // Calculate time until next daily refresh (midnight UTC)
-  // Updates every second for accurate countdown, syncs with server on shop fetch
+  // Updates every minute to reduce re-renders (seconds only shown when < 1 hour)
   useEffect(() => {
     const updateTimer = () => {
       const now = new Date()
@@ -85,11 +86,10 @@ export function ShopPreviewWidget({ maxItems = 4, className }: ShopPreviewWidget
       
       const hours = Math.floor(diff / (1000 * 60 * 60))
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
       
-      // Show seconds when under 1 hour for precision
+      // Only show hours and minutes to reduce update frequency
       if (hours === 0) {
-        setTimeUntilRefresh(`${minutes}m ${seconds}s`)
+        setTimeUntilRefresh(`${minutes}m`)
       } else {
         setTimeUntilRefresh(`${hours}h ${minutes}m`)
       }
@@ -101,10 +101,10 @@ export function ShopPreviewWidget({ maxItems = 4, className }: ShopPreviewWidget
     }
 
     updateTimer()
-    // Update every second for accurate countdown
-    const interval = setInterval(updateTimer, 1000)
+    // Update every minute instead of every second - reduces re-renders significantly
+    const interval = setInterval(updateTimer, 60000)
     return () => clearInterval(interval)
-  }, [fetchShop])
+  }, []) // Empty deps - fetchShop is stable
 
   const handleViewShop = () => {
     navigate('/shop')
@@ -198,7 +198,11 @@ interface ShopItemCardProps {
 
 function ShopItemCard({ item, onClick }: ShopItemCardProps) {
   const rarityColor = getRarityColor(item.rarity)
-  const isSkin = item.type === 'skin'
+  const isSkinOrRunner = item.type === 'skin' || item.type === 'runner'
+  
+  // Static thumbnail for display (PNG/WebP shop_preview_url, NOT .glb)
+  const hasStaticThumbnail = item.shop_preview_url && !item.shop_preview_url.endsWith('.glb')
+  const hasSpriteSheet = item.sprite_sheet_url
   const previewUrl = item.shop_preview_url || item.image_url
 
   return (
@@ -222,16 +226,23 @@ function ShopItemCard({ item, onClick }: ShopItemCardProps) {
           e.currentTarget.style.boxShadow = `0 0 0 0 ${rarityColor}00`
         }}
       >
-        {/* Use SkinPreview for skins to show sprite sheet frame */}
-        {isSkin && previewUrl ? (
+        {/* Priority: 1. Static thumbnail (PNG/WebP), 2. Sprite sheet, 3. Fallback image */}
+        {hasStaticThumbnail ? (
+          <img
+            src={item.shop_preview_url}
+            alt={item.name}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        ) : isSkinOrRunner && hasSpriteSheet ? (
           <SkinPreview
-            spriteSheetUrl={previewUrl}
+            spriteSheetUrl={item.sprite_sheet_url}
             size={80}
             animate={false}
             frameIndex={0}
             className="w-full h-full"
           />
-        ) : previewUrl ? (
+        ) : previewUrl && !previewUrl.endsWith('.glb') ? (
           <img
             src={previewUrl}
             alt={item.name}

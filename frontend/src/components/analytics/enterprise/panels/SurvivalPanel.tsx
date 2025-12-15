@@ -1,0 +1,195 @@
+/**
+ * SurvivalPanel - Game analytics for survival mode
+ */
+
+import { useEffect, useState } from 'react'
+import { MetricCard } from '../MetricCard'
+import { BarChart, FunnelChart, LineChart } from '../MiniChart'
+import { DataTable } from '../DataTable'
+import type { Column } from '../DataTable'
+import { useAnalyticsAPI } from '../useAnalyticsAPI'
+
+interface SurvivalOverview {
+  daily: Array<{
+    date: string
+    total_runs: number
+    unique_players: number
+    avg_distance: number
+    avg_score: number
+    max_distance: number
+  }>
+  totals: {
+    total_runs: number
+    unique_players: number
+    unique_visitors: number
+    avg_distance: number
+    avg_score: number
+    max_distance: number
+    max_score: number
+    max_combo: number
+  }
+}
+
+interface DifficultyCurve {
+  curve: Array<{
+    distance_bucket: number
+    distance_label: string
+    total_reached: number
+    total_deaths: number
+    survival_rate: number
+    avg_speed: number
+  }>
+}
+
+interface ObstacleAnalysis {
+  obstacles: Array<{
+    obstacle_type: string
+    total_encounters: number
+    total_deaths: number
+    death_rate: number
+    avg_distance: number
+  }>
+}
+
+interface FunnelData {
+  funnel: Array<{
+    step: string
+    label: string
+    count: number
+    conversion_rate: number
+    drop_off: number
+  }>
+}
+
+interface Props {
+  days?: number
+}
+
+export function SurvivalPanel({ days = 7 }: Props) {
+  const api = useAnalyticsAPI()
+  const [overview, setOverview] = useState<SurvivalOverview | null>(null)
+  const [difficulty, setDifficulty] = useState<DifficultyCurve | null>(null)
+  const [obstacles, setObstacles] = useState<ObstacleAnalysis | null>(null)
+  const [funnel, setFunnel] = useState<FunnelData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true)
+      const [ov, diff, obs, fun] = await Promise.all([
+        api.getSurvivalOverview(days),
+        api.getDifficultyCurve(days),
+        api.getObstacleAnalysis(days),
+        api.getSurvivalFunnel(days),
+      ])
+      setOverview(ov as SurvivalOverview)
+      setDifficulty(diff as DifficultyCurve)
+      setObstacles(obs as ObstacleAnalysis)
+      setFunnel(fun as FunnelData)
+      setLoading(false)
+    }
+    load()
+  }, [days])
+
+  if (loading) {
+    return <div className="flex items-center justify-center py-12">
+      <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  }
+
+  const totals = overview?.totals
+
+  const obstacleColumns: Column<ObstacleAnalysis['obstacles'][0]>[] = [
+    { key: 'obstacle_type', label: 'Obstacle', render: (r) => <span className="font-medium">{r.obstacle_type}</span> },
+    { key: 'total_encounters', label: 'Encounters', sortable: true, align: 'right' },
+    { key: 'total_deaths', label: 'Deaths', sortable: true, align: 'right', render: (r) => <span className="text-red-400">{r.total_deaths}</span> },
+    { 
+      key: 'death_rate', 
+      label: 'Death Rate', 
+      sortable: true, 
+      align: 'right',
+      render: (r) => (
+        <span className={r.death_rate > 20 ? 'text-red-400' : r.death_rate > 10 ? 'text-yellow-400' : 'text-green-400'}>
+          {r.death_rate.toFixed(1)}%
+        </span>
+      ),
+    },
+    { key: 'avg_distance', label: 'Avg Distance', sortable: true, align: 'right', render: (r) => `${r.avg_distance.toFixed(0)}m` },
+  ]
+
+  const dailyChartData = overview?.daily.map(d => ({
+    label: d.date.slice(5),
+    value: d.total_runs,
+  })) || []
+
+  const survivalCurveData = difficulty?.curve.map(c => ({
+    label: c.distance_label,
+    value: c.survival_rate,
+  })) || []
+
+  return (
+    <div className="space-y-6">
+      {/* Key Metrics */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <MetricCard label="Total Runs" value={totals?.total_runs} size="lg" />
+        <MetricCard label="Unique Players" value={totals?.unique_players} size="lg" />
+        <MetricCard label="Avg Distance" value={totals?.avg_distance?.toFixed(0)} unit="m" size="lg" />
+        <MetricCard label="Avg Score" value={totals?.avg_score?.toFixed(0)} size="lg" />
+      </div>
+
+      {/* Records */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <MetricCard label="Max Distance" value={totals?.max_distance?.toFixed(0)} unit="m" variant="success" />
+        <MetricCard label="Max Score" value={totals?.max_score} variant="success" />
+        <MetricCard label="Max Combo" value={totals?.max_combo} variant="success" />
+        <MetricCard label="Unique Visitors" value={totals?.unique_visitors} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Daily Runs Chart */}
+        <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+          <h3 className="text-sm font-medium text-neutral-400 mb-4">Daily Runs</h3>
+          {dailyChartData.length > 0 ? (
+            <LineChart data={dailyChartData} height={150} showLabels />
+          ) : (
+            <div className="text-neutral-500 text-sm">No data</div>
+          )}
+        </div>
+
+        {/* Survival Curve */}
+        <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+          <h3 className="text-sm font-medium text-neutral-400 mb-4">Survival Rate by Distance</h3>
+          {survivalCurveData.length > 0 ? (
+            <BarChart data={survivalCurveData.slice(0, 10)} height={150} color="#22c55e" />
+          ) : (
+            <div className="text-neutral-500 text-sm">No data</div>
+          )}
+        </div>
+      </div>
+
+      {/* Funnel */}
+      <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+        <h3 className="text-sm font-medium text-neutral-400 mb-4">Player Funnel</h3>
+        {funnel?.funnel && funnel.funnel.length > 0 ? (
+          <FunnelChart 
+            steps={funnel.funnel.map(f => ({ label: f.label, count: f.count, rate: f.conversion_rate }))} 
+          />
+        ) : (
+          <div className="text-neutral-500 text-sm">No funnel data</div>
+        )}
+      </div>
+
+      {/* Obstacle Analysis */}
+      <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+        <h3 className="text-sm font-medium text-neutral-400 mb-4">Obstacle Death Rates</h3>
+        <DataTable
+          columns={obstacleColumns}
+          data={obstacles?.obstacles || []}
+          keyField="obstacle_type"
+          maxHeight="300px"
+          emptyMessage="No obstacle data"
+        />
+      </div>
+    </div>
+  )
+}

@@ -120,14 +120,25 @@ const getBrowser = (): string => {
   return 'Other'
 }
 
-// Non-blocking POST
-const trackAsync = async (endpoint: string, data: Record<string, unknown>) => {
+// Non-blocking POST using sendBeacon when possible
+const trackAsync = (endpoint: string, data: Record<string, unknown>) => {
   try {
-    await fetch(`${API_BASE}/analytics/enterprise${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
+    const payload = JSON.stringify(data)
+    const url = `${API_BASE}/analytics/enterprise${endpoint}`
+    
+    // Prefer sendBeacon - truly non-blocking, doesn't wait for response
+    if (navigator.sendBeacon) {
+      const blob = new Blob([payload], { type: 'application/json' })
+      navigator.sendBeacon(url, blob)
+    } else {
+      // Fallback with keepalive for reliability
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {})
+    }
   } catch {
     // Silent fail - analytics should never break the app
   }
@@ -208,97 +219,96 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     })
   }, [isEnabled, trackPerformance])
 
-  // Auto-collect Web Vitals
+  // Auto-collect Web Vitals - batched into single report, uses requestIdleCallback
   useEffect(() => {
     if (!isEnabled || !trackPerformance) return
 
+    const observers: PerformanceObserver[] = []
+    const collectedMetrics: PerformanceMetrics = {}
+    let reportTimeout: ReturnType<typeof setTimeout> | null = null
+
+    // Batch all metrics and send once after 5 seconds
+    const scheduleReport = () => {
+      if (reportTimeout) return
+      reportTimeout = setTimeout(() => {
+        if (Object.keys(collectedMetrics).length > 0) {
+          trackPerformanceMetrics({ ...collectedMetrics })
+        }
+      }, 5000)
+    }
+
     const collectWebVitals = () => {
-      // Use PerformanceObserver for modern metrics
-      if ('PerformanceObserver' in window) {
-        // LCP
-        try {
-          const lcpObserver = new PerformanceObserver((list) => {
-            const entries = list.getEntries()
-            const lastEntry = entries[entries.length - 1] as PerformanceEntry & { startTime: number }
-            if (lastEntry) {
-              trackPerformanceMetrics({ lcp_ms: Math.round(lastEntry.startTime) })
-            }
-          })
-          lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
-        } catch { /* Not supported */ }
+      if (!('PerformanceObserver' in window)) return
 
-        // FID
-        try {
-          const fidObserver = new PerformanceObserver((list) => {
-            const entries = list.getEntries()
-            const firstEntry = entries[0] as PerformanceEntry & { processingStart: number; startTime: number }
-            if (firstEntry) {
-              trackPerformanceMetrics({ fid_ms: Math.round(firstEntry.processingStart - firstEntry.startTime) })
-            }
-          })
-          fidObserver.observe({ type: 'first-input', buffered: true })
-        } catch { /* Not supported */ }
+      // LCP - only capture final value
+      try {
+        const lcpObserver = new PerformanceObserver((list) => {
+          const entries = list.getEntries()
+          const lastEntry = entries[entries.length - 1] as PerformanceEntry & { startTime: number }
+          if (lastEntry) {
+            collectedMetrics.lcp_ms = Math.round(lastEntry.startTime)
+            scheduleReport()
+          }
+        })
+        lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true })
+        observers.push(lcpObserver)
+      } catch { /* Not supported */ }
 
-        // CLS
-        try {
-          let clsValue = 0
-          const clsObserver = new PerformanceObserver((list) => {
-            for (const entry of list.getEntries() as (PerformanceEntry & { hadRecentInput: boolean; value: number })[]) {
-              if (!entry.hadRecentInput) {
-                clsValue += entry.value
-              }
-            }
-          })
-          clsObserver.observe({ type: 'layout-shift', buffered: true })
-          
-          // Report CLS on page hide
-          document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-              trackPerformanceMetrics({ cls: Math.round(clsValue * 1000) / 1000 })
-            }
-          }, { once: true })
-        } catch { /* Not supported */ }
-      }
+      // FID - one-time capture
+      try {
+        const fidObserver = new PerformanceObserver((list) => {
+          const firstEntry = list.getEntries()[0] as PerformanceEntry & { processingStart: number; startTime: number }
+          if (firstEntry) {
+            collectedMetrics.fid_ms = Math.round(firstEntry.processingStart - firstEntry.startTime)
+            fidObserver.disconnect() // Only need first input
+            scheduleReport()
+          }
+        })
+        fidObserver.observe({ type: 'first-input', buffered: true })
+        observers.push(fidObserver)
+      } catch { /* Not supported */ }
 
-      // Navigation timing
-      setTimeout(() => {
+      // CLS - accumulate and report on page hide
+      try {
+        let clsValue = 0
+        const clsObserver = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries() as (PerformanceEntry & { hadRecentInput: boolean; value: number })[]) {
+            if (!entry.hadRecentInput) clsValue += entry.value
+          }
+          collectedMetrics.cls = Math.round(clsValue * 1000) / 1000
+        })
+        clsObserver.observe({ type: 'layout-shift', buffered: true })
+        observers.push(clsObserver)
+      } catch { /* Not supported */ }
+
+      // Navigation timing - use requestIdleCallback to avoid blocking
+      const collectNavTiming = () => {
         const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
         if (nav) {
-          const metrics: PerformanceMetrics = {
-            ttfb_ms: Math.round(nav.responseStart - nav.requestStart),
-            fcp_ms: Math.round(nav.domContentLoadedEventEnd - nav.fetchStart),
-            dom_interactive_ms: Math.round(nav.domInteractive - nav.fetchStart),
-            dom_complete_ms: Math.round(nav.domComplete - nav.fetchStart),
-            load_time_ms: Math.round(nav.loadEventEnd - nav.fetchStart),
-          }
-
-          // Resource count
-          const resources = performance.getEntriesByType('resource')
-          metrics.resource_count = resources.length
-          metrics.total_transfer_kb = Math.round(
-            resources.reduce((sum, r) => sum + ((r as PerformanceResourceTiming).transferSize || 0), 0) / 1024
-          )
-
-          // Connection info
-          const conn = (navigator as Navigator & { connection?: { effectiveType?: string; downlink?: number; rtt?: number } }).connection
-          if (conn) {
-            metrics.connection_type = conn.effectiveType
-            metrics.effective_bandwidth_mbps = conn.downlink
-            metrics.rtt_ms = conn.rtt
-          }
-
-          // JS heap (Chrome only)
-          const mem = (performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory
-          if (mem?.usedJSHeapSize) {
-            metrics.js_heap_mb = Math.round(mem.usedJSHeapSize / 1024 / 1024 * 100) / 100
-          }
-
-          trackPerformanceMetrics(metrics)
+          collectedMetrics.ttfb_ms = Math.round(nav.responseStart - nav.requestStart)
+          collectedMetrics.dom_complete_ms = Math.round(nav.domComplete - nav.fetchStart)
+          collectedMetrics.load_time_ms = Math.round(nav.loadEventEnd - nav.fetchStart)
+          
+          // Skip expensive resource enumeration - just get count
+          collectedMetrics.resource_count = performance.getEntriesByType('resource').length
+          
+          scheduleReport()
         }
-      }, 3000) // Wait for page to fully load
+      }
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(collectNavTiming, { timeout: 5000 })
+      } else {
+        setTimeout(collectNavTiming, 3000)
+      }
     }
 
     collectWebVitals()
+
+    return () => {
+      observers.forEach(o => o.disconnect())
+      if (reportTimeout) clearTimeout(reportTimeout)
+    }
   }, [isEnabled, trackPerformance, trackPerformanceMetrics])
 
   // ============================================
@@ -316,12 +326,27 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     })
   }, [isEnabled, trackClicks])
 
-  // Auto-track clicks
+  // Auto-track clicks - ONLY important interactive elements, debounced
   useEffect(() => {
     if (!isEnabled || !trackClicks) return
 
+    let pendingClick: ClickData | null = null
+    let flushTimeout: ReturnType<typeof setTimeout> | null = null
+
+    const flushClick = () => {
+      if (pendingClick) {
+        trackClick(pendingClick)
+        pendingClick = null
+      }
+    }
+
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement
+      
+      // ONLY track clicks on interactive elements - skip everything else
+      const interactive = target.closest('a, button, [role="button"], input, select, textarea')
+      if (!interactive) return
+      
       const now = Date.now()
 
       // Detect rage clicks (3+ clicks within 1 second)
@@ -329,46 +354,38 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
       clickTimes.current = clickTimes.current.filter(t => now - t < 1000)
       const isRageClick = clickTimes.current.length >= 3
 
-      // Detect dead clicks (click on non-interactive element)
-      const interactiveTags = ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'LABEL']
-      const isInteractive = interactiveTags.includes(target.tagName) ||
-        target.getAttribute('role') === 'button' ||
-        target.onclick !== null ||
-        target.closest('a, button, [role="button"]') !== null
-      const isDeadClick = !isInteractive
-
-      const rect = document.documentElement
+      // Minimal data capture - no expensive DOM traversal
       const clickData: ClickData = {
-        x_percent: Math.round((e.clientX / rect.clientWidth) * 10000) / 100,
-        y_percent: Math.round(((e.clientY + window.scrollY) / rect.scrollHeight) * 10000) / 100,
+        x_percent: Math.round((e.clientX / window.innerWidth) * 100),
+        y_percent: Math.round((e.clientY / window.innerHeight) * 100),
         x_px: e.clientX,
-        y_px: e.clientY + window.scrollY,
+        y_px: e.clientY,
         viewport_width: window.innerWidth,
         viewport_height: window.innerHeight,
         scroll_y: window.scrollY,
-        element_tag: target.tagName.toLowerCase(),
-        element_id: target.id || undefined,
-        element_class: target.className?.toString().slice(0, 512) || undefined,
-        element_text: target.textContent?.slice(0, 256) || undefined,
-        element_href: (target as HTMLAnchorElement).href || target.closest('a')?.href || undefined,
-        click_type: isRageClick ? 'rage_click' : isDeadClick ? 'dead_click' : 'click',
+        element_tag: interactive.tagName.toLowerCase(),
+        element_id: interactive.id || undefined,
+        element_class: undefined, // Skip - expensive and rarely useful
+        element_text: interactive.textContent?.slice(0, 50)?.trim() || undefined,
+        element_href: (interactive as HTMLAnchorElement).href || undefined,
+        click_type: isRageClick ? 'rage_click' : 'click',
         is_rage_click: isRageClick,
-        is_dead_click: isDeadClick,
+        is_dead_click: false,
       }
 
-      trackClick(clickData)
-
-      // Also track as journey step for important clicks
-      if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button, a')) {
-        trackJourneyStep('click', {
-          element_id: clickData.element_id || clickData.element_text?.slice(0, 50),
-        })
-      }
+      // Debounce - batch clicks within 100ms
+      pendingClick = clickData
+      if (flushTimeout) clearTimeout(flushTimeout)
+      flushTimeout = setTimeout(flushClick, 100)
     }
 
     document.addEventListener('click', handleClick, { passive: true })
-    return () => document.removeEventListener('click', handleClick)
-  }, [isEnabled, trackClicks, trackClick, trackJourneyStep])
+    return () => {
+      document.removeEventListener('click', handleClick)
+      if (flushTimeout) clearTimeout(flushTimeout)
+      flushClick()
+    }
+  }, [isEnabled, trackClicks, trackClick])
 
   // ============================================
   // Scroll Depth Tracking
@@ -388,23 +405,28 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     })
   }, [isEnabled, trackScroll])
 
-  // Auto-track scroll
+  // Auto-track scroll - heavily throttled, only update on significant changes
   useEffect(() => {
     if (!isEnabled || !trackScroll) return
 
-    let ticking = false
+    let scrollTimeout: ReturnType<typeof setTimeout> | null = null
+    let lastRecordedDepth = 0
 
     const handleScroll = () => {
-      if (ticking) return
-      ticking = true
-
-      requestAnimationFrame(() => {
+      // Throttle to max once per 500ms
+      if (scrollTimeout) return
+      
+      scrollTimeout = setTimeout(() => {
+        scrollTimeout = null
+        
         const scrollY = window.scrollY
         const docHeight = document.documentElement.scrollHeight - window.innerHeight
         const scrollPercent = docHeight > 0 ? Math.round((scrollY / docHeight) * 100) : 0
 
-        if (scrollPercent > maxScrollDepth.current) {
+        // Only update if we've scrolled at least 10% more
+        if (scrollPercent > maxScrollDepth.current && scrollPercent - lastRecordedDepth >= 10) {
           maxScrollDepth.current = scrollPercent
+          lastRecordedDepth = scrollPercent
 
           // Record milestones
           const milestones = [25, 50, 75, 100]
@@ -414,9 +436,7 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
             }
           }
         }
-
-        ticking = false
-      })
+      }, 500)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -424,13 +444,17 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     // Send scroll data on page leave
     const handleBeforeUnload = () => trackScrollDepth()
     window.addEventListener('beforeunload', handleBeforeUnload)
-    document.addEventListener('visibilitychange', () => {
+    
+    const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') trackScrollDepth()
-    })
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('beforeunload', handleBeforeUnload)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      if (scrollTimeout) clearTimeout(scrollTimeout)
     }
   }, [isEnabled, trackScroll, trackScrollDepth])
 
@@ -495,22 +519,36 @@ export function useEnterpriseAnalytics(options: UseEnterpriseAnalyticsOptions = 
     if (!isEnabled || heartbeatInterval <= 0) return
 
     const sendHeartbeat = () => {
-      trackAsync('/track/heartbeat', {
+      // Use sendBeacon for non-blocking delivery
+      const data = JSON.stringify({
         session_id: sessionId.current,
         visitor_id: visitorId.current,
         user_id: user?.id,
         current_page: currentPage.current,
         device_type: getDeviceType(),
       })
+      
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(`${API_BASE}/analytics/enterprise/track/heartbeat`, data)
+      } else {
+        // Fallback - but don't await
+        fetch(`${API_BASE}/analytics/enterprise/track/heartbeat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: data,
+          keepalive: true,
+        }).catch(() => {})
+      }
     }
 
-    // Initial heartbeat
-    sendHeartbeat()
+    // Delay initial heartbeat to not compete with page load
+    const initialTimeout = setTimeout(sendHeartbeat, 5000)
 
-    // Periodic heartbeat
-    heartbeatRef.current = setInterval(sendHeartbeat, heartbeatInterval)
+    // Periodic heartbeat - increase interval to 60s to reduce overhead
+    heartbeatRef.current = setInterval(sendHeartbeat, Math.max(heartbeatInterval, 60000))
 
     return () => {
+      clearTimeout(initialTimeout)
       if (heartbeatRef.current) clearInterval(heartbeatRef.current)
     }
   }, [isEnabled, heartbeatInterval, user?.id])

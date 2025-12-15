@@ -339,7 +339,7 @@ function createTriviaTexture(
   
   // Answer options - using pre-calculated metrics
   let optionY = y + SPACING.questionBottom - TYPOGRAPHY.question.lineHeight + 10
-  const letters = ['A', 'B', 'C', 'D']
+  const letters = ['1', '2', '3', '4']
   
   question.options.forEach((_option, idx) => {
     const optMetric = metrics.optionMetrics[idx]

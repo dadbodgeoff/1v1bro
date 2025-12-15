@@ -42,7 +42,6 @@ export class CollectibleManager {
     this.template = gemModel.clone()
     this.template.scale.set(this.GEM_SCALE, this.GEM_SCALE, this.GEM_SCALE)
     this.addEmissiveGlow(this.template)
-    console.log('[CollectibleManager] Initialized')
   }
 
   private addEmissiveGlow(mesh: THREE.Group): void {

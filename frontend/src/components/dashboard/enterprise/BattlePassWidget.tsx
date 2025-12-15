@@ -49,10 +49,10 @@ export function BattlePassWidget({ className }: BattlePassWidgetProps) {
   const navigate = useNavigate()
   const { season, progress, loading, fetchSeason, fetchProgress } = useBattlePass()
 
+  // Fetch data on mount - parallel fetches
   useEffect(() => {
-    fetchSeason()
-    fetchProgress()
-  }, [fetchSeason, fetchProgress])
+    Promise.all([fetchSeason(), fetchProgress()])
+  }, []) // Empty deps - only fetch on mount
 
   const handleClick = () => {
     navigate('/battlepass')

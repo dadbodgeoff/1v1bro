@@ -74,12 +74,11 @@ export function Shop() {
     return tomorrow
   }, [])
 
+  // Fetch data on mount - single effect, parallel fetches
   useEffect(() => {
-    fetchShop()
-    fetchInventory()
-    // Track shop view
+    Promise.all([fetchShop(), fetchInventory()])
     shopAnalytics.trackShopView()
-  }, [fetchShop, fetchInventory, shopAnalytics])
+  }, []) // Empty deps - only fetch on mount
 
   // Create set of owned cosmetic IDs
   const ownedIds = useMemo(() => {

@@ -38,7 +38,6 @@ export class GhostManager {
   startGhost(): void {
     if (this.deps.ghostReplay.getDuration() > 0) {
       this.deps.ghostReplay.start()
-      console.log('[GhostManager] Ghost replay started')
     }
   }
 
@@ -79,10 +78,9 @@ export class GhostManager {
       const pbData = await survivalApi.getPersonalBest()
       if (pbData?.ghost_data) {
         this.deps.ghostReplay.load(pbData.ghost_data)
-        console.log('[GhostManager] Personal best ghost reloaded')
       }
-    } catch (error) {
-      console.warn('[GhostManager] Failed to reload ghost:', error)
+    } catch {
+      // Ghost reload failed silently - not critical
     }
   }
 
