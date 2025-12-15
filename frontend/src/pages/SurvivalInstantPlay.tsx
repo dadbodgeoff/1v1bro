@@ -14,7 +14,6 @@ import { useAuthStore } from '@/stores/authStore'
 import { useSurvivalGame } from '@/survival/hooks/useSurvivalGame'
 import { useSurvivalAnalytics } from '@/survival/hooks/useSurvivalAnalytics'
 import { useMobileDetection } from '@/survival/hooks/useMobileDetection'
-import { useSurvivalTrivia } from '@/survival/hooks/useSurvivalTrivia'
 import { SurvivalErrorBoundary } from '@/survival'
 import {
   TransitionOverlay,
@@ -32,9 +31,13 @@ import {
   GameOverOverlay,
   PerformanceOverlay,
   type GuestRunStats,
+  type TriviaQuestion,
 } from '@/survival/components'
+import { useTriviaBillboards } from '@/survival/hooks/useTriviaBillboards'
 import { leaderboardService } from '@/survival/services/LeaderboardService'
 import { getSurvivalGuestSession, type SurvivalRunResult } from '@/survival/guest'
+import { getRandomQuestions } from '@/data/fortnite-quiz-data'
+import type { TriviaStats } from '@/survival/hooks/useSurvivalTrivia'
 
 function SurvivalInstantPlayContent() {
   const navigate = useNavigate()
@@ -47,6 +50,18 @@ function SurvivalInstantPlayContent() {
   const [lastRunStats, setLastRunStats] = useState<GuestRunStats | null>(null)
   const [showSavePrompt, setShowSavePrompt] = useState(false)
   const maxComboRef = useRef(0)
+  
+  // Trivia stats ref - accessible before trivia hook is called
+  const triviaStatsRef = useRef<TriviaStats>({
+    questionsAnswered: 0,
+    questionsCorrect: 0,
+    maxStreak: 0,
+    currentStreak: 0,
+    triviaScore: 0,
+  })
+  
+  // Mobile question pool
+  const usedQuestionsRef = useRef<Set<string>>(new Set())
 
   // Redirect if authenticated
   useEffect(() => {
@@ -89,18 +104,19 @@ function SurvivalInstantPlayContent() {
     return { rank, total: data.totalPlayers }
   }, [])
 
-  // Game over handler
+  // Game over handler - uses ref so it doesn't need trivia in deps
   const handleGameOver = useCallback((score: number, distance: number) => {
+    const stats = triviaStatsRef.current
     const runResult: SurvivalRunResult = {
       distance,
       score,
       maxCombo: maxComboRef.current,
       durationMs: 0,
       livesLost: 3,
-      questionsAnswered: trivia.stats.questionsAnswered,
-      questionsCorrect: trivia.stats.questionsCorrect,
-      triviaStreak: trivia.stats.maxStreak,
-      triviaScore: trivia.stats.triviaScore,
+      questionsAnswered: stats.questionsAnswered,
+      questionsCorrect: stats.questionsCorrect,
+      triviaStreak: stats.maxStreak,
+      triviaScore: stats.triviaScore,
     }
 
     const { isNewPB, previewXp } = guestSession.current.recordRunResult(runResult)
@@ -118,7 +134,7 @@ function SurvivalInstantPlayContent() {
     
     setLastRunStats({
       distance, score, maxCombo: maxComboRef.current, isNewPB, previewXp,
-      estimatedRank: rank, totalPlayers: total, triviaStats: { ...trivia.stats },
+      estimatedRank: rank, totalPlayers: total, triviaStats: { ...stats },
     })
     setShowGameOver(true)
     
@@ -141,15 +157,94 @@ function SurvivalInstantPlayContent() {
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
 
-  // Trivia hook
-  const trivia = useSurvivalTrivia({
-    engine,
-    enableBillboards: enableTriviaBillboards,
-    phase,
-    onAddScore: addScore,
-    onLoseLife: loseLife,
-    onSyncStats: setTriviaStats,
+  // Update trivia stats helper
+  const updateTriviaStats = useCallback((correct: boolean, points: number = 0) => {
+    triviaStatsRef.current.questionsAnswered += 1
+    
+    if (correct) {
+      triviaStatsRef.current.questionsCorrect += 1
+      triviaStatsRef.current.currentStreak += 1
+      triviaStatsRef.current.triviaScore += points
+      if (triviaStatsRef.current.currentStreak > triviaStatsRef.current.maxStreak) {
+        triviaStatsRef.current.maxStreak = triviaStatsRef.current.currentStreak
+      }
+    } else {
+      triviaStatsRef.current.currentStreak = 0
+    }
+    
+    setTriviaStats?.(triviaStatsRef.current.questionsCorrect, triviaStatsRef.current.questionsAnswered)
+  }, [setTriviaStats])
+
+  // Desktop billboards (only when enableTriviaBillboards is true)
+  const billboards = useTriviaBillboards(engine, {
+    category: 'fortnite',
+    enabled: enableTriviaBillboards,
+    onCorrectAnswer: (points) => {
+      updateTriviaStats(true, points)
+      addScore?.(points)
+    },
+    onWrongAnswer: () => {
+      updateTriviaStats(false)
+      loseLife?.()
+    },
+    onTimeout: () => {
+      updateTriviaStats(false)
+      loseLife?.()
+    },
   })
+
+  // Start/stop billboards based on game phase
+  useEffect(() => {
+    if (!enableTriviaBillboards) return
+    
+    if (phase === 'running' && !billboards.isActive) {
+      billboards.start()
+    } else if ((phase === 'paused' || phase === 'gameover' || phase === 'ready') && billboards.isActive) {
+      billboards.stop()
+    }
+  }, [phase, billboards, enableTriviaBillboards])
+
+  // Mobile: get next question
+  const getNextMobileQuestion = useCallback((): TriviaQuestion | null => {
+    const allQuestions = getRandomQuestions(50)
+    const unusedQuestions = allQuestions.filter(q => !usedQuestionsRef.current.has(q.id))
+    
+    if (unusedQuestions.length === 0) {
+      usedQuestionsRef.current.clear()
+      if (allQuestions.length === 0) return null
+    }
+    
+    const pool = unusedQuestions.length > 0 ? unusedQuestions : allQuestions
+    const quizQ = pool[Math.floor(Math.random() * pool.length)]
+    usedQuestionsRef.current.add(quizQ.id)
+    
+    return {
+      id: quizQ.id,
+      question: quizQ.question,
+      answers: quizQ.options,
+      correctIndex: quizQ.correctAnswer,
+      category: quizQ.category,
+      difficulty: quizQ.difficulty === 'casual' ? 'easy' : quizQ.difficulty === 'moderate' ? 'medium' : 'hard',
+    }
+  }, [])
+
+  // Mobile: handle answer
+  const handleMobileTriviaAnswer = useCallback((_questionId: string, _selectedIndex: number, isCorrect: boolean) => {
+    const points = isCorrect ? 100 + (triviaStatsRef.current.currentStreak * 25) : 0
+    updateTriviaStats(isCorrect, points)
+    
+    if (isCorrect) {
+      addScore?.(points)
+    } else {
+      loseLife?.()
+    }
+  }, [updateTriviaStats, addScore, loseLife])
+
+  // Mobile: handle timeout
+  const handleMobileTriviaTimeout = useCallback((_questionId: string) => {
+    updateTriviaStats(false)
+    loseLife?.()
+  }, [updateTriviaStats, loseLife])
 
   // Track max combo
   useEffect(() => {
@@ -157,24 +252,33 @@ function SurvivalInstantPlayContent() {
   }, [combo])
 
   // Reset handler
+  const resetTracking = useCallback(() => {
+    triviaStatsRef.current = {
+      questionsAnswered: 0,
+      questionsCorrect: 0,
+      maxStreak: 0,
+      currentStreak: 0,
+      triviaScore: 0,
+    }
+    maxComboRef.current = 0
+    usedQuestionsRef.current.clear()
+  }, [])
+
   const handleReset = useCallback(() => {
     setShowGameOver(false)
     setLastRunStats(null)
     setShowSavePrompt(false)
-    trivia.resetStats()
-    maxComboRef.current = 0
+    resetTracking()
     reset()
-  }, [reset, trivia])
+  }, [reset, resetTracking])
 
-  // Quick restart handler
   const handleQuickRestart = useCallback(() => {
     setShowGameOver(false)
     setLastRunStats(null)
     setShowSavePrompt(false)
-    trivia.resetStats()
-    maxComboRef.current = 0
+    resetTracking()
     quickRestart()
-  }, [quickRestart, trivia])
+  }, [quickRestart, resetTracking])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -190,8 +294,7 @@ function SurvivalInstantPlayContent() {
 
   const handleStart = () => {
     setShowGameOver(false)
-    trivia.resetStats()
-    maxComboRef.current = 0
+    resetTracking()
     survivalAnalytics.trackRunStart()
     start()
   }
@@ -236,15 +339,15 @@ function SurvivalInstantPlayContent() {
         />
       )}
 
-      {/* Trivia Stats (desktop) */}
+      {/* Trivia Stats (desktop only - billboards) */}
       {enableTriviaBillboards && !isLoading && !error && gameState && (phase === 'running' || phase === 'paused') && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
           <TriviaStatsBar
-            timeRemaining={trivia.billboards.stats?.timeRemaining}
-            totalScore={trivia.billboards.totalScore}
-            correctCount={trivia.billboards.correctCount}
-            wrongCount={trivia.billboards.wrongCount}
-            streak={trivia.billboards.streak}
+            timeRemaining={billboards.stats?.timeRemaining}
+            totalScore={billboards.totalScore}
+            correctCount={billboards.correctCount}
+            wrongCount={billboards.wrongCount}
+            streak={billboards.streak}
           />
         </div>
       )}
@@ -286,13 +389,14 @@ function SurvivalInstantPlayContent() {
           style={{ height: isMobile && phase === 'running' ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh' }}
         />
         
+        {/* Mobile Trivia Panel - 2D 2x2 grid, always on during gameplay */}
         {isMobile && !enableTriviaBillboards && phase === 'running' && (
           <TriviaPanel
             isActive={phase === 'running'}
-            getNextQuestion={trivia.getNextQuestion}
+            getNextQuestion={getNextMobileQuestion}
             timeLimit={30}
-            onAnswer={trivia.handleAnswer}
-            onTimeout={trivia.handleTimeout}
+            onAnswer={handleMobileTriviaAnswer}
+            onTimeout={handleMobileTriviaTimeout}
           />
         )}
       </div>
