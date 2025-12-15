@@ -89,8 +89,6 @@ export function useSurvivalGame(
     requestFullscreen, 
     requestWakeLock, 
     releaseWakeLock,
-    lockOrientation,
-    unlockOrientation,
   } = useMobileOptimization()
   
   // Engine state for external access (triggers re-render when engine is ready)
@@ -203,11 +201,10 @@ export function useSurvivalGame(
   // Cleanup mobile features on unmount
   useEffect(() => {
     return () => {
-      // Release wake lock and unlock orientation when component unmounts
+      // Release wake lock when component unmounts
       releaseWakeLock()
-      unlockOrientation()
     }
-  }, [releaseWakeLock, unlockOrientation])
+  }, [releaseWakeLock])
 
   // Update game state periodically - use requestAnimationFrame throttled to ~10fps
   // This decouples React rendering from the game loop
@@ -289,16 +286,9 @@ export function useSurvivalGame(
       }
     }
     
-    // Lock orientation to landscape for better gameplay (optional)
-    // Only on mobile, tablets can play in either orientation
-    if (isMobile) {
-      try {
-        await lockOrientation('landscape')
-      } catch {
-        // Orientation lock may not be supported - that's OK
-      }
-    }
-  }, [isMobile, isTablet, mobileConfig, requestFullscreen, requestWakeLock, lockOrientation])
+    // Portrait is optimal for runner games - don't force landscape
+    // Users can play in either orientation
+  }, [isMobile, isTablet, mobileConfig, requestFullscreen, requestWakeLock])
 
   // Game controls
   const start = useCallback(async () => {
