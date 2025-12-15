@@ -84,18 +84,50 @@ export class AssetLoader {
   }
 
   /**
-   * Load a single GLB model
+   * Load a single GLB model with retry logic
    */
-  private async loadModel(url: string, name: string): Promise<THREE.Group> {
+  private async loadModel(url: string, name: string, retries = 3): Promise<THREE.Group> {
     // Check cache first
     if (this.cache.has(url)) {
       return this.cache.get(url)!.clone()
     }
 
+    let lastError: Error | null = null
+    
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const model = await this.loadModelOnce(url, name)
+        return model
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error))
+        console.warn(`[AssetLoader] Attempt ${attempt}/${retries} failed for ${name}:`, error)
+        
+        if (attempt < retries) {
+          // Exponential backoff: 500ms, 1000ms, 2000ms
+          const delay = 500 * Math.pow(2, attempt - 1)
+          await new Promise(resolve => setTimeout(resolve, delay))
+        }
+      }
+    }
+    
+    throw lastError || new Error(`Failed to load ${name} after ${retries} attempts`)
+  }
+
+  /**
+   * Single attempt to load a GLB model
+   */
+  private loadModelOnce(url: string, name: string): Promise<THREE.Group> {
     return new Promise((resolve, reject) => {
+      // Add timeout for mobile (Safari can hang on large assets)
+      const timeout = this.isSafariMobile ? 30000 : 60000 // 30s for Safari, 60s otherwise
+      const timeoutId = setTimeout(() => {
+        reject(new Error(`Timeout loading ${name}`))
+      }, timeout)
+
       this.loader.load(
         url,
         (gltf: GLTF) => {
+          clearTimeout(timeoutId)
           const model = gltf.scene
           
           // Safari/iOS optimization: reduce texture sizes to prevent VRAM exhaustion
@@ -121,6 +153,7 @@ export class AssetLoader {
           }
         },
         (error: unknown) => {
+          clearTimeout(timeoutId)
           console.error(`[AssetLoader] Failed to load ${name}:`, error)
           reject(new Error(`Failed to load ${name}`))
         }

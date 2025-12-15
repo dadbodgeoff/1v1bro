@@ -40,9 +40,11 @@ export interface UseTriviaBillboardsReturn {
   correctCount: number
   wrongCount: number
   streak: number
+  hasActiveQuestion: boolean
   start: () => void
   stop: () => void
   setCategory: (category: TriviaCategory) => void
+  answerQuestion: (answerIndex: number) => boolean // For mobile tap input
 }
 
 export function useTriviaBillboards(
@@ -213,6 +215,17 @@ export function useTriviaBillboards(
     subsystemRef.current?.setCategory(newCategory)
   }, [])
 
+  // Answer question (for mobile tap input)
+  const answerQuestion = useCallback((answerIndex: number): boolean => {
+    if (!subsystemRef.current) return false
+    // Convert index to key string (0 -> '1', 1 -> '2', etc.)
+    const key = String(answerIndex + 1)
+    return subsystemRef.current.handleAnswerInput(key)
+  }, [])
+
+  // Check if there's an active question
+  const hasActiveQuestion = subsystemRef.current?.hasActiveQuestion() ?? false
+
   return {
     isActive,
     stats,
@@ -220,9 +233,11 @@ export function useTriviaBillboards(
     correctCount,
     wrongCount,
     streak,
+    hasActiveQuestion,
     start,
     stop,
     setCategory: setCategoryFn,
+    answerQuestion,
   }
 }
 

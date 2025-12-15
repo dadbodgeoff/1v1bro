@@ -374,7 +374,7 @@ function SurvivalGameContent() {
         </div>
       )}
       
-      {/* Mobile Touch Controls Hint */}
+      {/* Mobile Touch Controls Hint - shown before game starts */}
       {(isMobile || isTouch) && !isLoading && phase === 'ready' && showReadyCard && (
         <div className="absolute bottom-4 left-4 right-4 z-10">
           <div className="bg-black/70 backdrop-blur-sm rounded-xl border border-white/10 p-3">
@@ -384,7 +384,6 @@ function SurvivalGameContent() {
               <div><span className="text-cyan-400">Swipe Down</span> = Slide</div>
               <div><span className="text-cyan-400">Tap Left</span> = Move Left</div>
               <div><span className="text-cyan-400">Tap Right</span> = Move Right</div>
-              <div className="col-span-2"><span className="text-orange-400">Tap 1-4</span> = Answer Trivia</div>
             </div>
             <button
               onClick={() => setMuted(!isMuted)}
@@ -392,6 +391,26 @@ function SurvivalGameContent() {
             >
               {isMuted ? '🔇 Unmute' : '🔊 Mute'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Trivia Answer Buttons - shown during gameplay when question is active */}
+      {(isMobile || isTouch) && ENABLE_TRIVIA_BILLBOARDS && phase === 'running' && billboards.hasActiveQuestion && (
+        <div className="absolute bottom-20 left-0 right-0 z-20 flex justify-center">
+          <div className="flex gap-3 bg-black/80 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/20">
+            {[1, 2, 3, 4].map((num) => (
+              <button
+                key={num}
+                onClick={() => billboards.answerQuestion(num - 1)}
+                className="w-14 h-14 rounded-xl bg-gradient-to-b from-orange-500 to-orange-600 
+                         text-white font-bold text-2xl shadow-lg shadow-orange-500/30
+                         active:scale-95 active:from-orange-600 active:to-orange-700
+                         transition-all duration-100"
+              >
+                {num}
+              </button>
+            ))}
           </div>
         </div>
       )}
