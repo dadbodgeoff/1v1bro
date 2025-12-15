@@ -12,8 +12,6 @@ import { getDeviceCapabilities } from '../config/device'
 export interface LoadedAssets {
   track: {
     longTile: THREE.Group
-    gapped: THREE.Group
-    narrowBridge: THREE.Group
   }
   obstacles: {
     highBarrier: THREE.Group
@@ -261,9 +259,8 @@ export class AssetLoader {
       this.loadModelWithAnimations(runnerUrls.down, 'runner-down'),
     ])
 
-    // Use longTile for all track variants until we implement track variety
     const result: LoadedAssets = {
-      track: { longTile, gapped: longTile, narrowBridge: longTile },
+      track: { longTile },
       obstacles: { highBarrier, lowBarrier, laneBarrier, knowledgeGate, spikes },
       character: { runner: { run: runnerRun, jump: runnerJump, down: runnerDown } },
     }

@@ -68,11 +68,31 @@ export class RunManager {
   private deps: RunManagerDeps
   private callbacks: RunManagerCallbacks
   private baseSpeed: number
+  
+  // Trivia stats for XP calculation (set externally by page component)
+  private triviaCorrect: number = 0
+  private triviaAnswered: number = 0
 
   constructor(deps: RunManagerDeps, callbacks: RunManagerCallbacks, baseSpeed: number) {
     this.deps = deps
     this.callbacks = callbacks
     this.baseSpeed = baseSpeed
+  }
+  
+  /**
+   * Set trivia stats for the current run (called by page component)
+   */
+  setTriviaStats(correct: number, answered: number): void {
+    this.triviaCorrect = correct
+    this.triviaAnswered = answered
+  }
+  
+  /**
+   * Reset trivia stats (called on run start/reset)
+   */
+  private resetTriviaStats(): void {
+    this.triviaCorrect = 0
+    this.triviaAnswered = 0
   }
 
   /**
@@ -179,6 +199,9 @@ export class RunManager {
       totalNearMisses: stateManager.obstaclesCleared,
       perfectDodges: Math.floor(stateManager.obstaclesCleared * 0.3),
       obstaclesCleared: stateManager.obstaclesCleared,
+      // Trivia stats for XP calculation
+      triviaCorrect: this.triviaCorrect,
+      triviaAnswered: this.triviaAnswered,
       deathObstacleType: stateManager.lastDeathObstacleType ?? undefined,
       deathPosition: stateManager.lastDeathPosition ?? undefined,
       deathDistance: stateManager.lastDeathPosition 
@@ -230,6 +253,7 @@ export class RunManager {
 
     stateManager.reset()
     fixedUpdateLoop.resetSpeed()
+    this.resetTriviaStats()
     
     obstacleManager.setSpawningEnabled(false)
     obstacleManager.reset()

@@ -6,7 +6,11 @@
  * - Textures (based on dimensions and format)
  * - Total GPU memory estimate
  * 
+ * NOTE: Browser DevTools "Memory" shows JS Heap (800MB+ is normal for 3D games)
+ * This monitor tracks GPU VRAM which is what matters for mobile crashes.
+ * 
  * iOS Safari limit: ~256MB WebGL memory
+ * Desktop Chrome: ~2GB+ WebGL memory
  */
 
 import * as THREE from 'three'
@@ -228,23 +232,36 @@ export class MemoryMonitor {
   logDetailedBreakdown(): void {
     const stats = this.getStats(true)
     
-    console.group('🎮 WebGL Memory Usage')
-    console.log(`📊 Total Estimated: ${stats.totalEstimatedMB.toFixed(2)} MB / ${stats.budgetMB} MB (${stats.budgetUsedPercent}%)`)
+    // Get JS heap if available (Chrome only)
+    const perfWithMemory = performance as unknown as { memory?: { usedJSHeapSize: number } }
+    const jsHeapMB = perfWithMemory.memory
+      ? (perfWithMemory.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1)
+      : 'N/A'
+    
+    console.group('🎮 Memory Usage Breakdown')
     console.log('')
-    console.log('📐 Geometry:')
-    console.log(`   Count: ${stats.geometries}`)
-    console.log(`   Memory: ${stats.geometryMemoryMB.toFixed(2)} MB`)
-    console.log(`   Triangles: ${stats.triangles.toLocaleString()}`)
+    console.log('═══════════════════════════════════════════')
+    console.log('  GPU VRAM (what matters for mobile):')
+    console.log('═══════════════════════════════════════════')
+    console.log(`  📊 Total GPU: ${stats.totalEstimatedMB.toFixed(2)} MB / ${stats.budgetMB} MB (${stats.budgetUsedPercent}%)`)
+    console.log(`  🖼️ Textures: ${stats.textureMemoryMB.toFixed(2)} MB (${stats.textures} textures)`)
+    console.log(`  📐 Geometry: ${stats.geometryMemoryMB.toFixed(2)} MB (${stats.geometries} geometries)`)
+    console.log(`  🔺 Triangles: ${stats.triangles.toLocaleString()}`)
+    console.log(`  🎨 Shaders: ${stats.programs} programs`)
+    console.log(`  📞 Draw Calls: ${stats.drawCalls}`)
     console.log('')
-    console.log('🖼️ Textures:')
-    console.log(`   Count: ${stats.textures}`)
-    console.log(`   Memory: ${stats.textureMemoryMB.toFixed(2)} MB`)
+    console.log('═══════════════════════════════════════════')
+    console.log('  JS Heap (normal to be high for 3D games):')
+    console.log('═══════════════════════════════════════════')
+    console.log(`  💾 JS Heap: ${jsHeapMB} MB`)
+    console.log('  ℹ️  800MB+ is normal - includes Three.js objects,')
+    console.log('     React state, cached data, event handlers, etc.')
     console.log('')
-    console.log('🎨 Shaders: ${stats.programs} programs')
-    console.log(`📞 Draw Calls: ${stats.drawCalls}`)
     
     if (stats.isOverBudget) {
-      console.warn(`⚠️ OVER BUDGET by ${(stats.totalEstimatedMB - stats.budgetMB).toFixed(2)} MB!`)
+      console.warn(`⚠️ GPU OVER BUDGET by ${(stats.totalEstimatedMB - stats.budgetMB).toFixed(2)} MB!`)
+    } else {
+      console.log(`✅ GPU memory within budget`)
     }
     
     console.groupEnd()

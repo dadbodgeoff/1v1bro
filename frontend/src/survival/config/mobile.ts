@@ -108,15 +108,15 @@ const TOUCH_ZONES: Record<DeviceType, TouchZoneConfig> = {
     slideZone: { x: [0.35, 0.65], y: [0.65, 1] },
     pauseZone: { x: [0.85, 1], y: [0, 0.15] },
     
-    swipeThreshold: 20,         // Responsive but intentional (was 15)
-    swipeVelocity: 0.2,         // Quick swipes register (was 0.15)
-    tapTimeout: 200,            // Standard tap window
-    doubleTapTimeout: 300,
-    holdDuration: 500,
+    swipeThreshold: 12,         // Ultra-responsive - minimal drag needed
+    swipeVelocity: 0.12,        // Quick flicks register instantly
+    tapTimeout: 150,            // Snappy tap detection
+    doubleTapTimeout: 250,
+    holdDuration: 400,
     
     showTouchIndicators: true,
     hapticFeedback: true,
-    touchHighlightDuration: 150,
+    touchHighlightDuration: 100, // Faster visual feedback
   },
   
   tablet: {
@@ -206,12 +206,12 @@ const MOBILE_BALANCE: Record<DeviceType, MobileBalanceConfig> = {
   mobile: {
     speedMultiplier: 0.92,      // Slightly slower for touch (was 0.9)
     obstacleGapMultiplier: 1.1, // Slightly more space (was 1.15 - too easy)
-    hitboxTolerance: 0.08,      // Tighter hitbox - skill based (was 0.15)
-    inputBufferMs: 250,         // Good buffer for touch latency (was 300)
-    coyoteTimeMs: 175,          // Balanced edge jumps (was 200)
-    cameraDistance: 4.5,        // Closer camera for mobile (feels more connected)
-    cameraHeight: 5,            // Lower camera angle
-    fov: 65,                    // Narrower FOV for closer feel
+    hitboxTolerance: 0.12,      // Slightly forgiving for touch controls
+    inputBufferMs: 150,         // Tighter buffer - more responsive feel
+    coyoteTimeMs: 150,          // Snappier edge jumps
+    cameraDistance: 5.0,        // Pulled back slightly for better obstacle visibility
+    cameraHeight: 5.5,          // Raised slightly for better view ahead
+    fov: 68,                    // Slightly wider FOV for better peripheral vision
   },
   
   tablet: {

@@ -36,8 +36,11 @@ import {
   TriviaStatsBar,
   PlayerInfo,
   ErrorDisplay,
+  TriviaOverlay,
+  type TriviaQuestion,
 } from '@/survival/components'
 import { useTriviaBillboards } from '@/survival/hooks/useTriviaBillboards'
+import { getRandomQuestions } from '@/data/fortnite-quiz-data'
 import type { TriviaCategory } from '@/survival/world/TriviaQuestionProvider'
 import { useLeaderboard } from '@/survival/hooks/useLeaderboard'
 import { useMobileOptimization } from '@/survival/hooks/useMobileOptimization'
@@ -80,6 +83,12 @@ function SurvivalGameContent() {
   
   // Disable trivia billboards on mobile - too hard to interact with in 3D
   const enableTriviaBillboards = !isMobileDevice
+  
+  // Mobile trivia overlay state
+  const [mobileTriviaQuestion, setMobileTriviaQuestion] = useState<TriviaQuestion | null>(null)
+  const [isMobileTriviaOpen, setIsMobileTriviaOpen] = useState(false)
+  const mobileTriviaIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const usedMobileQuestionsRef = useRef<Set<string>>(new Set())
 
   // Fetch loadout on mount to get equipped runner skin
   useEffect(() => {
@@ -205,6 +214,7 @@ function SurvivalGameContent() {
     currentAchievement,
     dismissAchievement,
     quickRestart,
+    setTriviaStats,
     getMemoryStats,
     logMemoryBreakdown,
   } = useSurvivalGameWithAnalytics({
@@ -227,21 +237,34 @@ function SurvivalGameContent() {
     }
   }, [logMemoryBreakdown, getMemoryStats])
 
+  // Track trivia stats for XP calculation
+  const triviaStatsRef = useRef({ correct: 0, answered: 0 })
+  
   // Trivia billboards - category is dynamic based on user selection
   const billboards = useTriviaBillboards(engine, {
     category: selectedCategory,
     enabled: enableTriviaBillboards,
     onCorrectAnswer: (points) => {
       console.log(`[Billboards] Correct! +${points}pts`)
+      triviaStatsRef.current.correct += 1
+      triviaStatsRef.current.answered += 1
       addScore?.(points)
+      // Sync trivia stats to engine for XP calculation
+      setTriviaStats?.(triviaStatsRef.current.correct, triviaStatsRef.current.answered)
     },
     onWrongAnswer: () => {
       console.log('[Billboards] Wrong answer, losing life')
+      triviaStatsRef.current.answered += 1
       loseLife?.()
+      // Sync trivia stats to engine for XP calculation
+      setTriviaStats?.(triviaStatsRef.current.correct, triviaStatsRef.current.answered)
     },
     onTimeout: () => {
       console.log('[Billboards] Timeout, losing life')
+      triviaStatsRef.current.answered += 1
       loseLife?.()
+      // Sync trivia stats to engine for XP calculation
+      setTriviaStats?.(triviaStatsRef.current.correct, triviaStatsRef.current.answered)
     },
   })
   
@@ -264,6 +287,96 @@ function SurvivalGameContent() {
       bb.stop()
     }
   }, [phase])
+  
+  // Mobile trivia: get next question
+  const getNextMobileQuestion = useCallback((): TriviaQuestion | null => {
+    const allQuestions = getRandomQuestions(50)
+    const unusedQuestions = allQuestions.filter(q => !usedMobileQuestionsRef.current.has(q.id))
+    
+    if (unusedQuestions.length === 0) {
+      usedMobileQuestionsRef.current.clear()
+      if (allQuestions.length === 0) return null
+    }
+    
+    const pool = unusedQuestions.length > 0 ? unusedQuestions : allQuestions
+    const quizQ = pool[Math.floor(Math.random() * pool.length)]
+    usedMobileQuestionsRef.current.add(quizQ.id)
+    
+    return {
+      id: quizQ.id,
+      question: quizQ.question,
+      answers: quizQ.options,
+      correctIndex: quizQ.correctAnswer,
+      category: quizQ.category,
+      difficulty: quizQ.difficulty === 'casual' ? 'easy' : quizQ.difficulty === 'moderate' ? 'medium' : 'hard',
+    }
+  }, [])
+  
+  // Mobile trivia: trigger question
+  const triggerMobileTrivia = useCallback(() => {
+    if (isMobileTriviaOpen || phase !== 'running') return
+    
+    const question = getNextMobileQuestion()
+    if (question) {
+      setMobileTriviaQuestion(question)
+      setIsMobileTriviaOpen(true)
+    }
+  }, [isMobileTriviaOpen, phase, getNextMobileQuestion])
+  
+  // Mobile trivia: handle answer
+  const handleMobileTriviaAnswer = useCallback((_questionId: string, _selectedIndex: number, isCorrect: boolean) => {
+    triviaStatsRef.current.answered += 1
+    if (isCorrect) {
+      triviaStatsRef.current.correct += 1
+      addScore?.(100)
+    } else {
+      loseLife?.()
+    }
+    // Sync trivia stats to engine for XP calculation
+    setTriviaStats?.(triviaStatsRef.current.correct, triviaStatsRef.current.answered)
+  }, [addScore, loseLife, setTriviaStats])
+  
+  // Mobile trivia: handle timeout
+  const handleMobileTriviaTimeout = useCallback((_questionId: string) => {
+    triviaStatsRef.current.answered += 1
+    loseLife?.()
+    // Sync trivia stats to engine for XP calculation
+    setTriviaStats?.(triviaStatsRef.current.correct, triviaStatsRef.current.answered)
+  }, [loseLife, setTriviaStats])
+  
+  // Mobile trivia: handle complete
+  const handleMobileTriviaComplete = useCallback(() => {
+    setIsMobileTriviaOpen(false)
+    setMobileTriviaQuestion(null)
+  }, [])
+  
+  // Mobile trivia: start/stop interval based on game phase
+  useEffect(() => {
+    if (enableTriviaBillboards || !isMobileDevice) return
+    
+    if (phase === 'running' && !isMobileTriviaOpen) {
+      const initialDelay = setTimeout(() => {
+        triggerMobileTrivia()
+        
+        mobileTriviaIntervalRef.current = setInterval(() => {
+          triggerMobileTrivia()
+        }, 20000 + Math.random() * 10000)
+      }, 15000)
+      
+      return () => {
+        clearTimeout(initialDelay)
+        if (mobileTriviaIntervalRef.current) {
+          clearInterval(mobileTriviaIntervalRef.current)
+          mobileTriviaIntervalRef.current = null
+        }
+      }
+    } else if (phase !== 'running') {
+      if (mobileTriviaIntervalRef.current) {
+        clearInterval(mobileTriviaIntervalRef.current)
+        mobileTriviaIntervalRef.current = null
+      }
+    }
+  }, [phase, enableTriviaBillboards, isMobileDevice, isMobileTriviaOpen, triggerMobileTrivia])
 
   // Load personal best ghost when game is ready
   useEffect(() => {
@@ -277,6 +390,15 @@ function SurvivalGameContent() {
     setShowGameOver(false)
     setShowReadyCard(true) // Show ready card again on reset
     setLastRunStats(null)
+    // Reset mobile trivia state
+    setIsMobileTriviaOpen(false)
+    setMobileTriviaQuestion(null)
+    if (mobileTriviaIntervalRef.current) {
+      clearInterval(mobileTriviaIntervalRef.current)
+      mobileTriviaIntervalRef.current = null
+    }
+    // Reset trivia stats for XP calculation
+    triviaStatsRef.current = { correct: 0, answered: 0 }
     reset()
   }
 
@@ -286,6 +408,15 @@ function SurvivalGameContent() {
     setShowGameOver(false)
     setShowReadyCard(false) // Keep ready card hidden on quick restart
     setLastRunStats(null)
+    // Reset mobile trivia state
+    setIsMobileTriviaOpen(false)
+    setMobileTriviaQuestion(null)
+    if (mobileTriviaIntervalRef.current) {
+      clearInterval(mobileTriviaIntervalRef.current)
+      mobileTriviaIntervalRef.current = null
+    }
+    // Reset trivia stats for XP calculation
+    triviaStatsRef.current = { correct: 0, answered: 0 }
     quickRestart()
   }, [billboards, quickRestart, enableTriviaBillboards])
 
@@ -534,6 +665,18 @@ function SurvivalGameContent() {
           onPlayAgain={handleQuickRestart}
           onViewLeaderboard={handleViewLeaderboard}
           onBackToDashboard={handleBackToDashboard}
+        />
+      )}
+      
+      {/* Mobile Trivia Overlay - Portrait 2x2 grid */}
+      {isMobileDevice && !enableTriviaBillboards && (
+        <TriviaOverlay
+          isOpen={isMobileTriviaOpen}
+          question={mobileTriviaQuestion}
+          timeLimit={10}
+          onAnswer={handleMobileTriviaAnswer}
+          onTimeout={handleMobileTriviaTimeout}
+          onComplete={handleMobileTriviaComplete}
         />
       )}
       

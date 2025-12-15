@@ -13,6 +13,17 @@ import type {
   LeaderboardEntry 
 } from '../types/survival'
 
+// XP Award result from battle pass
+export interface XPAwardResult {
+  xp_awarded: number
+  new_total_xp: number
+  previous_tier: number
+  new_tier: number
+  tier_advanced: boolean
+  tiers_gained: number
+  new_claimable_rewards: number[]
+}
+
 // API response types
 export interface SurvivalRunResponse {
   id: string
@@ -33,6 +44,9 @@ export interface SurvivalRunResponse {
   // Validation info
   validation_status?: 'valid' | 'suspicious' | 'rejected'
   validation_confidence?: number
+  // XP Award info (from battle pass)
+  xp_awarded?: number
+  xp_result?: XPAwardResult
 }
 
 export interface RunValidationError {
@@ -137,6 +151,9 @@ export class SurvivalApiService {
           death_distance: runData.deathDistance,
           seed: runData.seed,
           ghost_data: runData.ghostData,
+          // Trivia stats for XP calculation
+          trivia_correct: runData.triviaCorrect ?? 0,
+          trivia_answered: runData.triviaAnswered ?? 0,
         }),
       })
       

@@ -64,6 +64,7 @@ interface UseSurvivalGameReturn {
   // Quiz integration
   loseLife: () => void
   addScore: (points: number) => void
+  setTriviaStats: (correct: number, answered: number) => void
   // Symphony monitoring
   getSymphonyState: () => unknown
   getOrchestratorDebug: () => object | null
@@ -352,6 +353,11 @@ export function useSurvivalGame(
   const addScore = useCallback((points: number) => {
     engineRef.current?.addScore(points)
   }, [])
+  
+  // Quiz integration - set trivia stats for XP calculation
+  const setTriviaStats = useCallback((correct: number, answered: number) => {
+    engineRef.current?.setTriviaStats(correct, answered)
+  }, [])
 
   // Load ghost from options if provided
   useEffect(() => {
@@ -433,6 +439,7 @@ export function useSurvivalGame(
     isGhostActive,
     loseLife,
     addScore,
+    setTriviaStats,
     getSymphonyState,
     getOrchestratorDebug,
     getObstacleRenderStats,

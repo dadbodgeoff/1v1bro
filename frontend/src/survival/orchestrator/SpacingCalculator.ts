@@ -47,6 +47,19 @@ const COMPLEXITY_RECOVERY: Record<number, number> = {
   5: 8,      // Five+ obstacles
 }
 
+/**
+ * Jump recovery distance - extra space needed between consecutive jumps
+ * 
+ * Physics calculation:
+ * - Jump duration: ~0.59s (apex + fall)
+ * - At 20 units/sec, player travels ~12 units during jump
+ * - Need minimal landing buffer to touch ground and re-jump
+ * 
+ * Keep it tight but fair - just enough to land and jump again
+ */
+const JUMP_RECOVERY_DISTANCE = 3  // Small extra distance for jump-to-jump transitions
+const DOUBLE_JUMP_LANDING_BUFFER = 2  // Minimal buffer - skilled players can chain jumps
+
 export class SpacingCalculator {
   private difficultyManager: DifficultyManager
   private baseReactionTimeMs: number
@@ -118,15 +131,21 @@ export class SpacingCalculator {
     const prevHasLateral = prevActions.has('laneLeft') || prevActions.has('laneRight') || prevActions.has('laneChange')
     const nextHasLateral = nextActions.has('laneLeft') || nextActions.has('laneRight') || nextActions.has('laneChange')
 
-    // Switching from vertical to lateral or vice versa needs extra time
-    if ((prevHasVertical && nextHasLateral) || (prevHasLateral && nextHasVertical)) {
-      return 3
+    // CRITICAL: Jump-to-jump transition needs extra space for landing and re-jumping
+    // Player must: complete first jump, land, have ground time, initiate second jump
+    if (prevActions.has('jump') && nextActions.has('jump')) {
+      return JUMP_RECOVERY_DISTANCE + DOUBLE_JUMP_LANDING_BUFFER
     }
 
     // Jump to slide or slide to jump is tricky
     if ((prevActions.has('jump') && nextActions.has('slide')) ||
         (prevActions.has('slide') && nextActions.has('jump'))) {
       return 4
+    }
+
+    // Switching from vertical to lateral or vice versa needs extra time
+    if ((prevHasVertical && nextHasLateral) || (prevHasLateral && nextHasVertical)) {
+      return 3
     }
 
     return 0
@@ -170,5 +189,37 @@ export class SpacingCalculator {
    */
   getBreatherGap(speed: number): number {
     return Math.min(MAX_GAP, BASE_REACTION_DISTANCE * 2.5 + speed * 0.5)
+  }
+
+  /**
+   * Calculate minimum safe distance for consecutive jump obstacles
+   * Ensures player has time to land and jump again
+   * 
+   * @param speed Current game speed (units/sec)
+   * @returns Minimum distance between consecutive jump obstacles
+   */
+  getMinJumpToJumpDistance(speed: number): number {
+    // Jump physics constants (from PhysicsController)
+    const jumpForce = 18
+    const gravity = 50
+    const gravityFallingScale = 1.6
+    
+    // Calculate jump duration
+    const timeToApex = jumpForce / gravity  // ~0.36s
+    const timeFalling = timeToApex / gravityFallingScale  // ~0.23s (faster fall)
+    const totalJumpTime = timeToApex + timeFalling  // ~0.59s
+    
+    // Distance traveled during jump at current speed
+    const jumpTravelDistance = speed * totalJumpTime
+    
+    // Landing buffer - minimal time to touch ground and re-jump
+    // Keep it tight - skilled players should be able to chain jumps quickly
+    const landingBufferTime = 0.1  // 100ms - just enough to register ground
+    const landingBufferDistance = speed * landingBufferTime
+    
+    // Total minimum distance - tight but fair
+    const minDistance = jumpTravelDistance + landingBufferDistance + DOUBLE_JUMP_LANDING_BUFFER
+    
+    return Math.max(MIN_ABSOLUTE_GAP, minDistance)
   }
 }

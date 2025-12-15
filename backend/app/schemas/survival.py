@@ -33,6 +33,10 @@ class SurvivalRunCreate(BaseSchema):
     perfect_dodges: int = Field(default=0, ge=0, description="Total perfect dodge events")
     obstacles_cleared: int = Field(default=0, ge=0, description="Total obstacles cleared")
     
+    # Trivia stats (for XP calculation)
+    trivia_correct: int = Field(default=0, ge=0, description="Correct trivia answers")
+    trivia_answered: int = Field(default=0, ge=0, description="Total trivia questions answered")
+    
     # Death info
     death_obstacle_type: Optional[str] = Field(None, description="Type of obstacle that killed player")
     death_position_x: Optional[float] = Field(None, description="X position at death")

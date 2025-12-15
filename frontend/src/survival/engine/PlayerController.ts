@@ -58,7 +58,7 @@ export class PlayerController {
   // Animation
   private runCycleSpeed: number = 8  // Cycles per second (dynamic based on speed)
   private bobAmount: number = 0.15   // Vertical bob while running
-  private tiltAmount: number = 0.15  // Lean into turns (increased for more feel)
+  private tiltAmount: number = 0.22  // Lean into turns (more dramatic for impactful feel)
 
   // AAA Feature: Dynamic run cycle speed sync
   private readonly BASE_RUN_CYCLE_SPEED: number = 6   // Min cycles/sec at base speed
@@ -84,6 +84,9 @@ export class PlayerController {
   private laneTransitionProgress: number = 1 // 0-1 progress through transition
   private laneTransitionStartX: number = 0
   private laneTransitionTargetX: number = 0
+  
+  // Mobile responsiveness boost
+  private readonly MOBILE_LANE_SPEED_MULTIPLIER: number = 1.8 // Faster lane changes on mobile
 
   constructor() {
     // Get movement config from dynamic config
@@ -234,13 +237,18 @@ export class PlayerController {
     // Note: previousX is now stored by storePreviousState() called from engine
     
     // AAA: Smooth lane transition with easing curve
+    // Mobile gets faster transitions for more responsive feel
     if (this.laneTransitionProgress < 1) {
-      // Progress the transition
-      this.laneTransitionProgress += this.laneSwitchSpeed * delta * 0.15
+      // Progress the transition - faster on mobile for snappier response
+      const isMobile = 'ontouchstart' in window
+      const speedMultiplier = isMobile ? this.MOBILE_LANE_SPEED_MULTIPLIER : 1.0
+      this.laneTransitionProgress += this.laneSwitchSpeed * delta * 0.15 * speedMultiplier
       this.laneTransitionProgress = Math.min(1, this.laneTransitionProgress)
       
-      // Apply easing (ease-out cubic for snappy start, smooth end)
-      const easedProgress = this.easeOutCubic(this.laneTransitionProgress)
+      // Apply easing (ease-out quart for even snappier start on mobile)
+      const easedProgress = isMobile 
+        ? this.easeOutQuart(this.laneTransitionProgress)
+        : this.easeOutCubic(this.laneTransitionProgress)
       
       // Interpolate position
       this.position.x = this.laneTransitionStartX + 
@@ -312,6 +320,14 @@ export class PlayerController {
    */
   private easeOutCubic(t: number): number {
     return 1 - Math.pow(1 - t, 3)
+  }
+
+  /**
+   * AAA Feature: Ease-out quart for snappier mobile lane transitions
+   * More aggressive initial movement, smoother settle
+   */
+  private easeOutQuart(t: number): number {
+    return 1 - Math.pow(1 - t, 4)
   }
 
   /**

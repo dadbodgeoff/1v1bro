@@ -19,8 +19,14 @@ from app.schemas.cosmetic import Cosmetic
 
 class XPSource(str, Enum):
     """Sources of XP gain. Requirements: 4.10"""
+    # Arena shooter sources
     MATCH_WIN = "match_win"
     MATCH_LOSS = "match_loss"
+    # Survival runner sources
+    SURVIVAL_RUN = "survival_run"
+    SURVIVAL_MILESTONE = "survival_milestone"
+    SURVIVAL_TRIVIA = "survival_trivia"
+    # General sources
     SEASON_CHALLENGE = "season_challenge"
     DAILY_BONUS = "daily_bonus"
 
@@ -161,6 +167,32 @@ class MatchXPCalculation(BaseSchema):
     kill_bonus: int = Field(default=0, description="+5 per kill")
     streak_bonus: int = Field(default=0, description="+10 per streak count")
     duration_bonus: int = Field(default=0, description="+0.1 per second")
+    total_xp: int = Field(..., description="Total XP (clamped 50-300)")
+    was_clamped: bool = Field(default=False, description="Whether XP was clamped")
+
+
+class SurvivalXPCalculation(BaseSchema):
+    """
+    XP calculation from a survival run.
+    
+    Balanced to match arena shooter XP rates (50-300 XP range).
+    A typical run should yield similar XP to an arena match.
+    
+    Formula:
+    - Base: 50 XP (participation)
+    - Distance: +0.1 XP per meter (100m = 10 XP, 500m = 50 XP, 1000m = 100 XP)
+    - Combo: +2 XP per max combo (10x = 20 XP, 25x = 50 XP)
+    - Trivia: +5 XP per correct answer
+    - Milestone: +10 XP per milestone reached (100m, 250m, 500m, 750m, 1000m)
+    
+    Clamped to [50, 300] to match arena shooter.
+    """
+    
+    base_xp: int = Field(default=50, description="Base participation XP")
+    distance_bonus: int = Field(default=0, description="+0.1 per meter")
+    combo_bonus: int = Field(default=0, description="+2 per max combo")
+    trivia_bonus: int = Field(default=0, description="+5 per correct trivia")
+    milestone_bonus: int = Field(default=0, description="+10 per milestone")
     total_xp: int = Field(..., description="Total XP (clamped 50-300)")
     was_clamped: bool = Field(default=False, description="Whether XP was clamped")
 

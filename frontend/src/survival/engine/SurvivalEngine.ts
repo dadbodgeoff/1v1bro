@@ -595,6 +595,13 @@ export class SurvivalEngine {
   addScore(points: number): void {
     this.stateManager.addScore(points)
   }
+  
+  /**
+   * Set trivia stats for XP calculation (called by page component)
+   */
+  setTriviaStats(correct: number, answered: number): void {
+    this.runManager.setTriviaStats(correct, answered)
+  }
 
   // Ghost methods (delegate to GhostManager)
   loadGhost(data: string): void {

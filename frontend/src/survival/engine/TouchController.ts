@@ -470,26 +470,29 @@ export class TouchController {
     
     let pattern: number | number[]
     
+    // Stronger, more impactful haptic patterns
     switch (gestureType) {
       case 'tap':
-        pattern = 10
+        pattern = 18 // Punchy tap feedback
         break
       case 'double-tap':
-        pattern = [10, 50, 10]
+        pattern = [15, 40, 15] // Quick double pulse
         break
       case 'swipe-left':
       case 'swipe-right':
-        pattern = 15
+        pattern = 25 // Strong lane change feedback
         break
       case 'swipe-up':
+        pattern = 35 // Powerful jump feedback
+        break
       case 'swipe-down':
-        pattern = 20
+        pattern = 30 // Solid slide feedback
         break
       case 'hold':
-        pattern = [20, 30, 20]
+        pattern = [25, 25, 25]
         break
       default:
-        pattern = 10
+        pattern = 15
     }
     
     try {

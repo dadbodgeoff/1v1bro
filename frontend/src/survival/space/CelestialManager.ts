@@ -8,14 +8,14 @@ import type { CelestialObject, CelestialType, CelestialSpawnConfig } from './typ
 
 /**
  * Default spawn configurations for celestial objects
- * Scales reduced 15% from previous, spawns at random positions in sky
+ * Scales reduced ~50% total from original for better visual balance
  */
 const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'planet-volcanic',
     weight: 1.5,
-    minScale: 34,
-    maxScale: 60,
+    minScale: 18,
+    maxScale: 31,
     minDistance: 25,
     maxDistance: 50,
     rotationSpeedRange: [0.05, 0.15],
@@ -23,8 +23,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'planet-ice',
     weight: 1.5,
-    minScale: 30,
-    maxScale: 51,
+    minScale: 16,
+    maxScale: 26,
     minDistance: 25,
     maxDistance: 50,
     rotationSpeedRange: [0.03, 0.1],
@@ -32,8 +32,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'planet-gas-giant',
     weight: 1.2,
-    minScale: 51,
-    maxScale: 85,
+    minScale: 26,
+    maxScale: 44,
     minDistance: 40,
     maxDistance: 70,
     rotationSpeedRange: [0.02, 0.08],
@@ -41,8 +41,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'planet-earth-like',
     weight: 1.2,
-    minScale: 26,
-    maxScale: 43,
+    minScale: 14,
+    maxScale: 22,
     minDistance: 22,
     maxDistance: 45,
     rotationSpeedRange: [0.04, 0.12],
@@ -50,8 +50,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'asteroid-cluster',
     weight: 1.5,
-    minScale: 13,
-    maxScale: 26,
+    minScale: 6,
+    maxScale: 14,
     minDistance: 15,
     maxDistance: 30,
     rotationSpeedRange: [0.1, 0.3],
@@ -59,8 +59,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'space-station',
     weight: 1.0,
-    minScale: 17,
-    maxScale: 30,
+    minScale: 9,
+    maxScale: 16,
     minDistance: 18,
     maxDistance: 35,
     rotationSpeedRange: [0.02, 0.05],
@@ -68,8 +68,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'comet',
     weight: 1.2,
-    minScale: 10,
-    maxScale: 21,
+    minScale: 6,
+    maxScale: 11,
     minDistance: 15,
     maxDistance: 30,
     rotationSpeedRange: [0.05, 0.15],
@@ -78,8 +78,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'space-whale',
     weight: 0.4, // Very rare
-    minScale: 40,
-    maxScale: 70,
+    minScale: 21,
+    maxScale: 37,
     minDistance: 30,
     maxDistance: 60,
     rotationSpeedRange: [0.01, 0.03], // Slow majestic movement
@@ -87,8 +87,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'ring-portal',
     weight: 0.5, // Rare
-    minScale: 50,
-    maxScale: 80,
+    minScale: 26,
+    maxScale: 42,
     minDistance: 25,
     maxDistance: 45,
     rotationSpeedRange: [0.02, 0.06],
@@ -96,8 +96,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'crystal-formation',
     weight: 0.8, // Uncommon
-    minScale: 25,
-    maxScale: 45,
+    minScale: 13,
+    maxScale: 23,
     minDistance: 20,
     maxDistance: 40,
     rotationSpeedRange: [0.03, 0.08],
@@ -105,8 +105,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'orbital-defense',
     weight: 0.6, // Rare
-    minScale: 30,
-    maxScale: 50,
+    minScale: 16,
+    maxScale: 26,
     minDistance: 25,
     maxDistance: 45,
     rotationSpeedRange: [0.04, 0.1], // Rotating radar dishes
@@ -114,8 +114,8 @@ const DEFAULT_SPAWN_CONFIGS: CelestialSpawnConfig[] = [
   {
     type: 'derelict-ship',
     weight: 0.5, // Rare
-    minScale: 45,
-    maxScale: 75,
+    minScale: 23,
+    maxScale: 39,
     minDistance: 35,
     maxDistance: 60,
     rotationSpeedRange: [0.005, 0.02], // Slow tumble

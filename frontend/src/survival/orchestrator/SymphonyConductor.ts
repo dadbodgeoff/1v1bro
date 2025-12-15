@@ -323,15 +323,23 @@ export class SymphonyConductor {
   ): number {
     const currentTier = this.difficultyManager.getCurrentTier()
     const currentPhase = this.pacingController.getCurrentPhase()
+    const lastPattern = this.getLastPattern()
 
     // Base gap from spacing calculator
     let gap = this.spacingCalculator.calculateGap({
       currentSpeed,
       difficultyTier: currentTier,
       pacingPhase: currentPhase,
-      previousPattern: this.getLastPattern(),
+      previousPattern: lastPattern,
       nextPattern: pattern,
     })
+
+    // CRITICAL: Enforce minimum jump-to-jump distance for consecutive jumps
+    // This ensures player can land and re-jump between obstacles
+    if (lastPattern && this.isJumpPattern(lastPattern) && this.isJumpPattern(pattern)) {
+      const minJumpGap = this.spacingCalculator.getMinJumpToJumpDistance(currentSpeed)
+      gap = Math.max(gap, minJumpGap)
+    }
 
     // Apply tension modifier (higher tension = tighter gaps)
     const tension = this.tensionCurve.calculate(distance)
@@ -347,6 +355,13 @@ export class SymphonyConductor {
     gap *= this.dynamicBreather.getGapMultiplier()
 
     return gap
+  }
+
+  /**
+   * Check if a pattern requires jumping
+   */
+  private isJumpPattern(pattern: ObstaclePattern): boolean {
+    return pattern.requiredActions.includes('jump')
   }
 
   /**

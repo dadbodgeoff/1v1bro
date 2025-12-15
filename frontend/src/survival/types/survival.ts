@@ -59,15 +59,15 @@ export interface TrackTile {
 export interface SurvivalAssets {
   track: {
     longTile: string
-    narrowBridge: string
-    gapped: string
-    icyTile?: string
+    // Future track variants (not currently loaded to save memory)
+    // narrowBridge?: string
+    // gapped?: string
+    // icyTile?: string
   }
   obstacles: {
     highBarrier: string
     lowBarrier: string
     laneBarrier: string
-    sidewall: string
     knowledgeGate: string
     spikes: string
   }
@@ -271,6 +271,10 @@ export interface SurvivalRunData {
   totalNearMisses: number
   perfectDodges: number
   obstaclesCleared: number
+  
+  // Trivia stats (for XP calculation)
+  triviaCorrect?: number
+  triviaAnswered?: number
   
   // Death info
   deathObstacleType?: string

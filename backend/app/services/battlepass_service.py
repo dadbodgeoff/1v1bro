@@ -20,6 +20,7 @@ from app.schemas.battlepass import (
     XPSource,
     XPAwardResult,
     MatchXPCalculation,
+    SurvivalXPCalculation,
     ClaimResult,
     SeasonResponse,
 )
@@ -28,7 +29,7 @@ from app.schemas.cosmetic import Cosmetic
 logger = logging.getLogger(__name__)
 
 
-# XP Constants (Requirements: 4.3, 4.4)
+# XP Constants - Arena Shooter (Requirements: 4.3, 4.4)
 XP_WIN = 100
 XP_LOSS = 50
 XP_PER_KILL = 5
@@ -36,6 +37,14 @@ XP_PER_STREAK = 10
 XP_PER_SECOND = 0.1
 XP_MIN = 50
 XP_MAX = 300
+
+# XP Constants - Survival Runner (balanced to match arena shooter)
+SURVIVAL_XP_BASE = 50  # Participation XP
+SURVIVAL_XP_PER_METER = 0.1  # 100m = 10 XP, 500m = 50 XP, 1000m = 100 XP
+SURVIVAL_XP_PER_COMBO = 2  # 10x combo = 20 XP, 25x = 50 XP
+SURVIVAL_XP_PER_TRIVIA = 5  # Per correct trivia answer
+SURVIVAL_XP_PER_MILESTONE = 10  # Per milestone reached
+SURVIVAL_MILESTONES = [100, 250, 500, 750, 1000, 1500, 2000]  # Distance milestones
 
 # Default tier settings
 DEFAULT_MAX_TIER = 35  # Default max tier (can be overridden per season)
@@ -519,6 +528,93 @@ class BattlePassService:
         result = await self.award_xp(user_id, calc.total_xp, source, match_id)
         if result:
             logger.info(f"[XP] Successfully awarded {result.xp_awarded} XP to {user_id}, tier {result.previous_tier}->{result.new_tier}")
+        else:
+            logger.warning(f"[XP] award_xp returned None for {user_id}")
+        return result
+    
+    # ============================================
+    # Survival Runner XP Operations
+    # ============================================
+    
+    def calculate_survival_xp(
+        self,
+        distance: float,
+        max_combo: int,
+        trivia_correct: int = 0,
+    ) -> SurvivalXPCalculation:
+        """
+        Calculate XP from a survival run.
+        
+        Balanced to match arena shooter XP rates (50-300 XP range).
+        
+        Formula:
+        - Base: 50 XP (participation)
+        - Distance: +0.1 XP per meter
+        - Combo: +2 XP per max combo
+        - Trivia: +5 XP per correct answer
+        - Milestone: +10 XP per milestone reached
+        
+        Example runs:
+        - Short run (100m, 5x combo): 50 + 10 + 10 + 10 = 80 XP
+        - Medium run (500m, 15x combo): 50 + 50 + 30 + 30 = 160 XP
+        - Long run (1000m, 25x combo, 5 trivia): 50 + 100 + 50 + 25 + 50 = 275 XP
+        """
+        # Base XP
+        base_xp = SURVIVAL_XP_BASE
+        
+        # Distance bonus
+        distance_bonus = int(distance * SURVIVAL_XP_PER_METER)
+        
+        # Combo bonus
+        combo_bonus = max_combo * SURVIVAL_XP_PER_COMBO
+        
+        # Trivia bonus
+        trivia_bonus = trivia_correct * SURVIVAL_XP_PER_TRIVIA
+        
+        # Milestone bonus - count how many milestones were reached
+        milestones_reached = sum(1 for m in SURVIVAL_MILESTONES if distance >= m)
+        milestone_bonus = milestones_reached * SURVIVAL_XP_PER_MILESTONE
+        
+        # Total before clamping
+        raw_total = base_xp + distance_bonus + combo_bonus + trivia_bonus + milestone_bonus
+        
+        # Clamp to bounds (same as arena shooter)
+        total_xp = max(XP_MIN, min(XP_MAX, raw_total))
+        was_clamped = total_xp != raw_total
+        
+        return SurvivalXPCalculation(
+            base_xp=base_xp,
+            distance_bonus=distance_bonus,
+            combo_bonus=combo_bonus,
+            trivia_bonus=trivia_bonus,
+            milestone_bonus=milestone_bonus,
+            total_xp=total_xp,
+            was_clamped=was_clamped,
+        )
+    
+    async def award_survival_xp(
+        self,
+        user_id: str,
+        distance: float,
+        max_combo: int,
+        trivia_correct: int = 0,
+        run_id: Optional[str] = None,
+    ) -> Optional[XPAwardResult]:
+        """
+        Calculate and award XP from a survival run.
+        
+        Combines calculate_survival_xp and award_xp.
+        """
+        logger.info(f"[XP] award_survival_xp called: user={user_id}, distance={distance}m, combo={max_combo}x, trivia={trivia_correct}, run={run_id}")
+        
+        # Calculate XP
+        calc = self.calculate_survival_xp(distance, max_combo, trivia_correct)
+        logger.info(f"[XP] Calculated survival XP for {user_id}: base={calc.base_xp}, distance={calc.distance_bonus}, combo={calc.combo_bonus}, trivia={calc.trivia_bonus}, milestone={calc.milestone_bonus}, total={calc.total_xp}")
+        
+        # Award XP
+        result = await self.award_xp(user_id, calc.total_xp, XPSource.SURVIVAL_RUN, run_id)
+        if result:
+            logger.info(f"[XP] Successfully awarded {result.xp_awarded} survival XP to {user_id}, tier {result.previous_tier}->{result.new_tier}")
         else:
             logger.warning(f"[XP] award_xp returned None for {user_id}")
         return result

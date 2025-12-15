@@ -20,16 +20,13 @@ const STORAGE_BASE = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object
  */
 export const SURVIVAL_ASSETS: SurvivalAssets = {
   track: {
+    // Only longTile is currently used - others reserved for future track variety
     longTile: `${STORAGE_BASE}/track-optimized.glb`,
-    narrowBridge: `${STORAGE_BASE}/narrowbridge-optimized.glb`,
-    gapped: `${STORAGE_BASE}/gapped-optimized.glb`,
-    icyTile: `${STORAGE_BASE}/icytile-optimized.glb`,
   },
   obstacles: {
     highBarrier: `${STORAGE_BASE}/slideee-optimized.glb`, // Slide under obstacle
     lowBarrier: `${STORAGE_BASE}/jump-optimized.glb`, // Futuristic neon gate - jump over
     laneBarrier: `${STORAGE_BASE}/lane-barrier-optimized.glb`,
-    sidewall: `${STORAGE_BASE}/sidewall.glb`,
     knowledgeGate: `${STORAGE_BASE}/knowledge-gate-optimized.glb`,
     spikes: `${STORAGE_BASE}/spikes-optimized.glb`,
   },

@@ -22,8 +22,14 @@ from app.schemas.survival import (
     SurvivalLeaderboardResponse,
     GhostDataResponse,
 )
+from app.schemas.battlepass import XPAwardResult
 from app.services.survival_service import SurvivalService
+from app.services.battlepass_service import BattlePassService
+from app.services.cosmetics_service import CosmeticsService
 from app.cache.cache_manager import CacheManager
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/survival", tags=["survival"])
 
@@ -38,6 +44,14 @@ def get_survival_service(
 ) -> SurvivalService:
     """Dependency to get survival service."""
     return SurvivalService(client, cache)
+
+
+def get_battlepass_service(
+    client=Depends(get_supabase_client),
+) -> BattlePassService:
+    """Dependency to get battlepass service for XP awarding."""
+    cosmetics_service = CosmeticsService(client)
+    return BattlePassService(client, cosmetics_service)
 
 
 # ============================================
@@ -61,11 +75,18 @@ async def check_rate_limit(user_id: str, client) -> bool:
         return True
 
 
-@router.post("/runs", response_model=SurvivalRunResponse, status_code=status.HTTP_201_CREATED)
+class SurvivalRunResponseWithXP(SurvivalRunResponse):
+    """Extended response that includes XP award info."""
+    xp_awarded: Optional[int] = None
+    xp_result: Optional[XPAwardResult] = None
+
+
+@router.post("/runs", response_model=SurvivalRunResponseWithXP, status_code=status.HTTP_201_CREATED)
 async def submit_run(
     run_data: SurvivalRunCreate,
     current_user = Depends(get_current_user),
     service: SurvivalService = Depends(get_survival_service),
+    battlepass_service: BattlePassService = Depends(get_battlepass_service),
     client = Depends(get_supabase_client),
 ):
     """
@@ -80,6 +101,7 @@ async def submit_run(
     3. Replay the run using ghost data to verify score/distance
     4. Check for statistical anomalies
     5. Store server-verified values (not client-claimed)
+    6. Award Battle Pass XP based on run performance
     
     Returns:
     - 201: Run accepted (may be flagged as suspicious)
@@ -112,7 +134,33 @@ async def submit_run(
             },
         )
     
-    return result
+    # Award Battle Pass XP for the run
+    xp_result = None
+    xp_awarded = None
+    try:
+        # Extract trivia correct count from run data if available
+        trivia_correct = getattr(run_data, 'trivia_correct', 0) or 0
+        
+        xp_result = await battlepass_service.award_survival_xp(
+            user_id=user_id,
+            distance=result.distance,
+            max_combo=result.max_combo or 0,
+            trivia_correct=trivia_correct,
+            run_id=result.id,
+        )
+        if xp_result:
+            xp_awarded = xp_result.xp_awarded
+            logger.info(f"[Survival] Awarded {xp_awarded} XP to {user_id} for run {result.id}")
+    except Exception as e:
+        # Don't fail the run submission if XP award fails
+        logger.error(f"[Survival] Failed to award XP for run {result.id}: {e}")
+    
+    # Return extended response with XP info
+    return SurvivalRunResponseWithXP(
+        **result.model_dump(),
+        xp_awarded=xp_awarded,
+        xp_result=xp_result,
+    )
 
 
 @router.get("/runs/personal-best", response_model=Optional[SurvivalPersonalBest])

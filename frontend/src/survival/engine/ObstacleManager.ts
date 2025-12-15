@@ -422,34 +422,34 @@ export class ObstacleManager {
     
     // Y offset must match visual positioning in spawnClonedObstacle
     // All obstacles sit on track surface at Y=0
+    // Player feet at Y≈2.05 when grounded (due to character foot offset)
     const yOffset = 0
 
     switch (type) {
       case 'highBarrier':
         // High barrier (slideee.glb) - must slide under
-        // Collision at chest/head height - player must slide to avoid
-        // Player feet at Y≈2.05, sliding player is ~0.8 height
-        // Collision starts above sliding height, extends up high
+        // Sliding player height is ~0.8 (40% of 2.0)
+        // Collision starts at Y=1.5 - sliding player (0.8 height) fits under
+        // Standing/jumping player (2.0+ height) will collide
         return {
-          minX: x - 1.8, // Same width as lowBarrier for consistency
+          minX: x - 1.8,
           maxX: x + 1.8,
-          minY: 2.8, // Above sliding player height - slide to pass under
+          minY: 1.5, // Slide clearance - 0.8 height player fits under
           maxY: 6.0, // Extends high - can't jump over
           minZ: z - 0.5,
           maxZ: z + 0.5,
         }
       case 'lowBarrier':
         // Low barrier (neon gate) - horizontal beam to jump over
-        // Player feet are at Y≈2.05 when grounded (due to character foot offset)
-        // Collision box must extend above player feet to trigger collision
-        // Player must jump to clear this obstacle
+        // Player feet at Y≈2.05 grounded, need to jump to clear
+        // maxY=2.4 means a small jump clears it (more forgiving)
         return {
-          minX: x - 1.8, // ~3.5 units wide centered on lane
+          minX: x - 1.8,
           maxX: x + 1.8,
-          minY: 0, // Ground level
-          maxY: 2.8, // Above player feet (2.05) - must jump to clear
-          minZ: z - 0.5,
-          maxZ: z + 0.5, // Slightly deeper for reliable collision
+          minY: 0,
+          maxY: 2.4, // Lowered from 2.8 - easier to clear with jump
+          minZ: z - 0.4,
+          maxZ: z + 0.4,
         }
       case 'laneBarrier':
         return {
@@ -457,8 +457,8 @@ export class ObstacleManager {
           maxX: x + this.laneWidth * 0.5,
           minY: yOffset,
           maxY: yOffset + 3.0,
-          minZ: z - 1.2,
-          maxZ: z + 1.2,
+          minZ: z - 1.0,
+          maxZ: z + 1.0,
         }
       case 'knowledgeGate':
         return {
@@ -466,21 +466,20 @@ export class ObstacleManager {
           maxX: x + this.laneWidth * 1.5,
           minY: yOffset,
           maxY: yOffset + 5.0,
-          minZ: z - 0.8,
-          maxZ: z + 0.8,
+          minZ: z - 0.6,
+          maxZ: z + 0.6,
         }
       case 'spikes':
-        // Ground spikes - dodge obstacle (pass on sides, don't touch spikes)
-        // Spikes are in center, player can pass on left or right
-        // Collision box covers the actual spike geometry area only
-        // Player feet at Y≈2.05, spikes extend up from ground
+        // Ground spikes - dodge obstacle (change lanes to avoid)
+        // Narrow collision box - only the spike area
+        // Player can pass on left or right lane
         return {
-          minX: x - 0.8, // Narrow collision - only the spike area (~1.6 units wide)
-          maxX: x + 0.8,
-          minY: 0, // Ground level
-          maxY: 3.5, // Tall enough to hit running player (feet at 2.05)
-          minZ: z - 0.4,
-          maxZ: z + 0.4, // Thin depth
+          minX: x - 0.7, // Slightly narrower for more forgiving dodge
+          maxX: x + 0.7,
+          minY: 0,
+          maxY: 3.2, // Lowered slightly
+          minZ: z - 0.35,
+          maxZ: z + 0.35,
         }
       default:
         return {
