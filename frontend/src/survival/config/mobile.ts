@@ -209,9 +209,9 @@ const MOBILE_BALANCE: Record<DeviceType, MobileBalanceConfig> = {
     hitboxTolerance: 0.15,      // More forgiving collisions
     inputBufferMs: 200,         // Longer input buffer
     coyoteTimeMs: 150,          // Longer coyote time
-    cameraDistance: 7,          // Slightly further camera
-    cameraHeight: 7,            // Slightly higher camera
-    fov: 75,                    // Wider FOV for mobile
+    cameraDistance: 4.5,        // Closer camera for mobile (feels more connected)
+    cameraHeight: 5,            // Lower camera angle
+    fov: 65,                    // Narrower FOV for closer feel
   },
   
   tablet: {
@@ -220,9 +220,9 @@ const MOBILE_BALANCE: Record<DeviceType, MobileBalanceConfig> = {
     hitboxTolerance: 0.1,
     inputBufferMs: 175,
     coyoteTimeMs: 125,
-    cameraDistance: 6.5,
-    cameraHeight: 6.5,
-    fov: 72,
+    cameraDistance: 5,
+    cameraHeight: 5.5,
+    fov: 68,
   },
   
   desktop: {
@@ -277,7 +277,7 @@ export function generateMobileConfig(caps?: DeviceCapabilities): MobileConfig {
   if (capabilities.screenWidth < BREAKPOINTS.xs) {
     uiConfig.compactMode = true
     uiConfig.hudScale *= 0.9
-    balanceConfig.cameraDistance += 0.5 // Pull camera back on tiny screens
+    // Keep camera close on tiny screens - don't pull back
   }
   
   // Determine target FPS based on device
