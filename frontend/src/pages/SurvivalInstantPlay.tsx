@@ -381,8 +381,8 @@ function SurvivalInstantPlayContent() {
         </div>
       )}
 
-      {/* Guest Mode Indicator */}
-      {!isLoading && !error && (
+      {/* Guest Mode Indicator - Only show before/after gameplay, not during */}
+      {!isLoading && !error && phase !== 'running' && (
         <div className="absolute top-4 left-4 z-10">
           <GuestIndicator onSignUp={handleCreateAccount} />
         </div>
@@ -418,7 +418,7 @@ function SurvivalInstantPlayContent() {
       
       {/* Performance Stats */}
       {!isLoading && performanceMetrics && (
-        <PerformanceOverlay metrics={performanceMetrics} />
+        <PerformanceOverlay metrics={performanceMetrics} isMobile={isMobileDevice} />
       )}
 
       {/* Controls moved to Ready card - no longer shown during gameplay */}
@@ -732,11 +732,24 @@ function GuestGameOverOverlay({
 }
 
 /**
- * Performance overlay - Enterprise styled
+ * Performance overlay - Minimal text for mobile, enterprise styled for desktop
  */
-function PerformanceOverlay({ metrics }: { metrics: PerformanceMetrics }) {
+function PerformanceOverlay({ metrics, isMobile }: { metrics: PerformanceMetrics; isMobile: boolean }) {
   const fpsColor = metrics.fps >= 55 ? '#22c55e' : metrics.fps >= 30 ? '#eab308' : '#ef4444'
   
+  // Mobile: minimal text on left side, no box
+  if (isMobile) {
+    return (
+      <div className="absolute bottom-3 left-3 z-10">
+        <div className="text-[10px] font-mono opacity-60 space-y-0.5">
+          <div style={{ color: fpsColor }}>{metrics.fps} fps</div>
+          <div className="text-gray-500">{metrics.avgFrameTime.toFixed(1)}ms</div>
+        </div>
+      </div>
+    )
+  }
+  
+  // Desktop: full enterprise styled overlay
   return (
     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
       <div className="bg-black/70 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10 text-xs flex items-center gap-4">

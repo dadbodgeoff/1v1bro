@@ -151,10 +151,12 @@ const HealthHearts = memo(({
   lives, 
   maxLives = 3,
   onDamage,
+  compact = false,
 }: { 
   lives: number
   maxLives?: number
   onDamage?: () => void
+  compact?: boolean
 }) => {
   const prevLivesRef = useRef(lives)
   const shakeRef = useRef({ x: 0, y: 0, active: false })
@@ -209,7 +211,7 @@ const HealthHearts = memo(({
     hearts.push(
       <span
         key={i}
-        className="text-2xl transition-all duration-200"
+        className={`${compact ? 'text-base' : 'text-2xl'} transition-all duration-200`}
         style={{
           filter: isFilled ? 'drop-shadow(0 0 6px #ef4444)' : 'grayscale(1) opacity(0.4)',
           transform: isLost 
@@ -224,7 +226,7 @@ const HealthHearts = memo(({
   
   return (
     <div 
-      className="flex gap-1"
+      className={`flex ${compact ? 'gap-0.5' : 'gap-1'}`}
       style={{
         transform: shakeRef.current.active 
           ? `translate(${shakeRef.current.x * 0.5}px, ${shakeRef.current.y * 0.5}px)`
@@ -354,30 +356,40 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
     const { ui } = mobileConfig
     const safeArea = viewportState.safeAreaInsets
     
-    // Scale factor for HUD elements
-    const scale = ui.hudScale
-    const isCompact = ui.compactMode
+    // Determine if portrait mobile (most important for sizing)
+    const isPortraitMobile = isMobile && window.innerHeight > window.innerWidth
     
-    // Safe area padding
-    const safeTop = Math.max(safeArea.top, ui.hudMargin)
-    const safeRight = Math.max(safeArea.right, ui.hudMargin)
-    const safeLeft = Math.max(safeArea.left, ui.hudMargin)
+    // Scale factor for HUD elements - smaller on portrait mobile
+    const scale = isPortraitMobile ? 0.85 : ui.hudScale
+    const isCompact = ui.compactMode || isPortraitMobile
+    
+    // Safe area padding - tighter on mobile
+    const safeTop = Math.max(safeArea.top, isPortraitMobile ? 8 : ui.hudMargin)
+    const safeRight = Math.max(safeArea.right, isPortraitMobile ? 8 : ui.hudMargin)
+    const safeLeft = Math.max(safeArea.left, isPortraitMobile ? 8 : ui.hudMargin)
+    
+    // Reserve bottom space for future trivia overlay (200px on mobile)
+    const bottomReserved = isPortraitMobile ? 200 : 0
     
     return {
       scale,
       isCompact,
+      isPortraitMobile,
       safeTop,
       safeRight,
       safeLeft,
-      padding: isCompact ? 'p-3' : 'p-4',
-      minWidth: isCompact ? 'min-w-[140px]' : 'min-w-[180px]',
-      spacing: isCompact ? 'space-y-1' : 'space-y-2',
-      // Font size classes for mobile
-      distanceSize: isCompact ? 'text-4xl' : 'text-5xl',
-      scoreSize: isCompact ? 'text-3xl' : 'text-4xl',
-      comboSize: isCompact ? 'text-2xl' : 'text-3xl',
+      bottomReserved,
+      padding: isCompact ? 'p-2' : 'p-4',
+      minWidth: isCompact ? 'min-w-[120px]' : 'min-w-[180px]',
+      spacing: isCompact ? 'space-y-0.5' : 'space-y-2',
+      // Font size classes for mobile - more compact
+      distanceSize: isCompact ? 'text-3xl' : 'text-5xl',
+      scoreSize: isCompact ? 'text-xl' : 'text-4xl',
+      comboSize: isCompact ? 'text-lg' : 'text-3xl',
+      // Hearts size
+      heartSize: isCompact ? 'text-lg' : 'text-2xl',
     }
-  }, [mobileConfig, viewportState.safeAreaInsets])
+  }, [mobileConfig, viewportState.safeAreaInsets, isMobile])
   
   // Calculate milestone celebration progress
   const celebrationProgress = currentMilestone 
@@ -398,7 +410,7 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
         onComplete={onAchievementDismiss} 
       />
       
-      {/* Top-left: Lives, lane indicator, and ghost status */}
+      {/* Top-left: Lives only on portrait mobile, full panel on desktop */}
       <div 
         className="absolute z-10"
         style={{ 
@@ -408,16 +420,23 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
           transformOrigin: 'top left',
         }}
       >
-        <div className={`bg-black/70 backdrop-blur-sm ${responsiveStyles.padding} rounded-xl border border-white/10 ${responsiveStyles.spacing}`}>
-          <HealthHearts lives={player.lives} onDamage={onDamage} />
-          {/* Hide lane indicator on compact mobile */}
-          {!responsiveStyles.isCompact && (
-            <div className="text-xs text-gray-500 font-medium">
-              Lane: {player.targetLane === -1 ? '← Left' : player.targetLane === 0 ? '● Center' : 'Right →'}
-            </div>
-          )}
-          <GhostIndicator isActive={isGhostActive} />
-        </div>
+        {responsiveStyles.isPortraitMobile ? (
+          // Portrait mobile: minimal lives display, no box
+          <div className="flex items-center gap-1">
+            <HealthHearts lives={player.lives} onDamage={onDamage} compact />
+          </div>
+        ) : (
+          // Desktop/tablet: full panel
+          <div className={`bg-black/70 backdrop-blur-sm ${responsiveStyles.padding} rounded-xl border border-white/10 ${responsiveStyles.spacing}`}>
+            <HealthHearts lives={player.lives} onDamage={onDamage} />
+            {!responsiveStyles.isCompact && (
+              <div className="text-xs text-gray-500 font-medium">
+                Lane: {player.targetLane === -1 ? '← Left' : player.targetLane === 0 ? '● Center' : 'Right →'}
+              </div>
+            )}
+            <GhostIndicator isActive={isGhostActive} />
+          </div>
+        )}
       </div>
       
       {/* Top-right: Score, distance, speed, combo */}
@@ -430,37 +449,65 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
           transformOrigin: 'top right',
         }}
       >
-        <div className={`bg-black/70 backdrop-blur-sm ${responsiveStyles.padding} rounded-xl border border-white/10 text-right ${responsiveStyles.minWidth} ${responsiveStyles.spacing}`}>
-          <DistanceMeter distance={distance} compact={responsiveStyles.isCompact} />
-          <ScoreCounter score={score} compact={responsiveStyles.isCompact} />
-          <div className="pt-2 border-t border-white/10">
-            <SpeedIndicator speed={speed} />
+        {responsiveStyles.isPortraitMobile ? (
+          // Portrait mobile: compact stats, minimal styling
+          <div className="bg-black/60 backdrop-blur-sm p-2 rounded-lg border border-white/5 text-right space-y-0.5">
+            {/* Distance - primary stat */}
+            <div className="flex items-baseline justify-end gap-0.5">
+              <span className="text-2xl font-black tabular-nums text-white">
+                {Math.round(distance)}
+              </span>
+              <span className="text-xs text-white/40 font-bold">m</span>
+            </div>
+            {/* Score - secondary */}
+            <div className="flex items-baseline justify-end gap-0.5">
+              <span className="text-lg font-bold tabular-nums text-orange-400">
+                {Math.round(score).toLocaleString()}
+              </span>
+              <span className="text-[10px] text-orange-400/50">pts</span>
+            </div>
+            {/* Combo - only if active */}
+            {combo > 0 && (
+              <div className="text-sm font-bold text-cyan-400">
+                {combo}x
+              </div>
+            )}
           </div>
-          {/* Hide phase indicator on compact mobile during running */}
-          {!(responsiveStyles.isCompact && phase === 'running') && (
-            <PhaseIndicator phase={phase} />
-          )}
-          {combo > 0 && (
+        ) : (
+          // Desktop/tablet: full panel
+          <div className={`bg-black/70 backdrop-blur-sm ${responsiveStyles.padding} rounded-xl border border-white/10 text-right ${responsiveStyles.minWidth} ${responsiveStyles.spacing}`}>
+            <DistanceMeter distance={distance} compact={responsiveStyles.isCompact} />
+            <ScoreCounter score={score} compact={responsiveStyles.isCompact} />
             <div className="pt-2 border-t border-white/10">
-              <ComboDisplay combo={combo} multiplier={multiplier} compact={responsiveStyles.isCompact} />
+              <SpeedIndicator speed={speed} />
             </div>
-          )}
-          {/* Milestone progress bar */}
-          {phase === 'running' && (
-            <div className="pt-2 border-t border-white/10">
-              <MilestoneProgress 
-                currentDistance={distance}
-                nextMilestone={nextMilestone}
-                progress={milestoneProgress}
-              />
-            </div>
-          )}
-        </div>
+            {!(responsiveStyles.isCompact && phase === 'running') && (
+              <PhaseIndicator phase={phase} />
+            )}
+            {combo > 0 && (
+              <div className="pt-2 border-t border-white/10">
+                <ComboDisplay combo={combo} multiplier={multiplier} compact={responsiveStyles.isCompact} />
+              </div>
+            )}
+            {phase === 'running' && (
+              <div className="pt-2 border-t border-white/10">
+                <MilestoneProgress 
+                  currentDistance={distance}
+                  nextMilestone={nextMilestone}
+                  progress={milestoneProgress}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
       
-      {/* Mobile touch hint - show briefly on first play */}
+      {/* Mobile touch hint - show briefly on first play (above reserved trivia area) */}
       {(isMobile || isTablet) && phase === 'ready' && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div 
+          className="absolute left-1/2 -translate-x-1/2 z-10"
+          style={{ bottom: responsiveStyles.bottomReserved + 32 }}
+        >
           <div className="bg-black/80 backdrop-blur-sm px-6 py-3 rounded-full border border-white/20 text-center">
             <p className="text-white/80 text-sm font-medium">
               Swipe ↑ Jump • Swipe ↓ Slide • Tap sides to move
@@ -468,6 +515,18 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
           </div>
         </div>
       )}
+      
+      {/* Reserved trivia area indicator (dev only - remove in production) */}
+      {/* {responsiveStyles.isPortraitMobile && phase === 'running' && (
+        <div 
+          className="absolute bottom-0 left-0 right-0 z-5 border-t border-dashed border-white/10"
+          style={{ height: responsiveStyles.bottomReserved }}
+        >
+          <div className="flex items-center justify-center h-full text-white/20 text-xs">
+            Trivia Area (200px reserved)
+          </div>
+        </div>
+      )} */}
     </>
   )
 })
