@@ -115,6 +115,27 @@ export function useSurvivalGame(
   const [nextMilestone, setNextMilestone] = useState(500)
   const [currentAchievement, setCurrentAchievement] = useState<UnlockedAchievement | null>(null)
 
+  // Global error handler for unhandled errors (iOS Safari crashes)
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      console.error('[useSurvivalGame] Unhandled error:', event.error)
+      setError(`Unhandled error: ${event.message}`)
+    }
+    
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      console.error('[useSurvivalGame] Unhandled rejection:', event.reason)
+      setError(`Unhandled rejection: ${event.reason}`)
+    }
+    
+    window.addEventListener('error', handleError)
+    window.addEventListener('unhandledrejection', handleRejection)
+    
+    return () => {
+      window.removeEventListener('error', handleError)
+      window.removeEventListener('unhandledrejection', handleRejection)
+    }
+  }, [])
+
   // Initialize engine with loading progress callback
   useEffect(() => {
     if (!containerRef.current) return
@@ -281,9 +302,14 @@ export function useSurvivalGame(
 
   // Game controls
   const start = useCallback(async () => {
-    await initAudio() // Initialize audio on first start
-    await setupMobile() // Setup mobile features on first start
-    engineRef.current?.start()
+    try {
+      await initAudio() // Initialize audio on first start
+      await setupMobile() // Setup mobile features on first start
+      engineRef.current?.start()
+    } catch (err) {
+      console.error('[useSurvivalGame] Start failed:', err)
+      setError(err instanceof Error ? err.message : 'Failed to start game')
+    }
   }, [initAudio, setupMobile])
 
   const pause = useCallback(() => {
