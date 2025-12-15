@@ -293,8 +293,14 @@ export class AssetLoader {
 
   /**
    * Load celestial models asynchronously (for space background)
+   * Skipped on Safari mobile to save ~12MB GPU memory
    */
   async loadCelestialsAsync(): Promise<LoadedAssets['celestials'] | null> {
+    // Skip celestials on Safari mobile - saves significant GPU memory
+    if (this.isSafariMobile) {
+      console.log('[AssetLoader] Skipping celestials on Safari mobile to save memory')
+      return null
+    }
     if (!SURVIVAL_ASSETS.celestials) return null
 
     try {
@@ -360,8 +366,14 @@ export class AssetLoader {
 
   /**
    * Load city model asynchronously (for skyline below track)
+   * Skipped on Safari mobile to save GPU memory
    */
   async loadCityAsync(): Promise<THREE.Group | null> {
+    // Skip city on Safari mobile - saves GPU memory
+    if (this.isSafariMobile) {
+      console.log('[AssetLoader] Skipping city on Safari mobile to save memory')
+      return null
+    }
     if (!SURVIVAL_ASSETS.environment?.city) return null
 
     try {

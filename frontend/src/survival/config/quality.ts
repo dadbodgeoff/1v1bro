@@ -459,13 +459,15 @@ class QualityManager {
         },
         space: {
           ...profile.space,
-          starCount: Math.floor(profile.space.starCount * 0.3), // 30% stars
+          starCount: Math.floor(profile.space.starCount * 0.2), // 20% stars only
           nebulaEnabled: false, // Nebula shader is expensive
           shootingStarsEnabled: false,
-          celestialCount: Math.min(profile.space.celestialCount, 2),
+          celestialCount: 0, // NO celestials on iOS - saves ~12MB GPU memory
+          celestialLOD: 0,
           spaceParticlesEnabled: false,
           cosmicDustCount: 0,
           auroraCount: 0,
+          cityEnabled: false, // No city skyline - saves more memory
         },
         animation: {
           ...profile.animation,
