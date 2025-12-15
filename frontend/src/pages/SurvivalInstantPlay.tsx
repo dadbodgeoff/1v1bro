@@ -10,7 +10,7 @@
  * @module pages/SurvivalInstantPlay
  */
 
-import { useEffect, useCallback, useState, useRef } from 'react'
+import { useEffect, useCallback, useState, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { useSurvivalGame } from '@/survival/hooks/useSurvivalGame'
@@ -32,11 +32,11 @@ import {
   RankDisplay,
   XPDisplay,
   EnterpriseDivider,
-  ControlsPanel,
   TriviaStatsBar,
   GuestIndicator,
   ErrorDisplay,
 } from '@/survival/components'
+import { useMobileOptimization } from '@/survival/hooks/useMobileOptimization'
 import { leaderboardService } from '@/survival/services/LeaderboardService'
 import { getSurvivalGuestSession, type SurvivalRunResult } from '@/survival/guest'
 import type { PerformanceMetrics } from '@/survival/engine/PerformanceMonitor'
@@ -48,6 +48,19 @@ function SurvivalInstantPlayContent() {
   const { isAuthenticated } = useAuthStore()
   const guestSession = useRef(getSurvivalGuestSession())
   const survivalAnalytics = useSurvivalAnalytics()
+  const { isTouch, deviceCapabilities } = useMobileOptimization()
+  
+  // Use multiple detection methods for reliable mobile detection
+  const isMobileDevice = useMemo(() => {
+    const ua = navigator.userAgent.toLowerCase()
+    const uaIsMobile = /iphone|ipad|ipod|android|mobile|webos|blackberry|opera mini|iemobile/.test(ua)
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    const isSmallScreen = window.innerWidth < 768
+    return uaIsMobile || deviceCapabilities.isMobile || isTouch || (hasTouch && isSmallScreen)
+  }, [deviceCapabilities.isMobile, isTouch])
+  
+  // Disable trivia billboards on mobile - too hard to interact with in 3D
+  const enableTriviaBillboards = !isMobileDevice
   
   const [showGameOver, setShowGameOver] = useState(false)
   const [lastRunStats, setLastRunStats] = useState<{
@@ -233,10 +246,10 @@ function SurvivalInstantPlayContent() {
   // Trivia category - default to fortnite for guest play
   const selectedCategory: TriviaCategory = 'fortnite'
 
-  // Trivia billboards integration
+  // Trivia billboards integration - disabled on mobile
   const billboards = useTriviaBillboards(engine, {
     category: selectedCategory,
-    enabled: true,
+    enabled: enableTriviaBillboards,
     onCorrectAnswer: (points) => {
       console.log(`[SurvivalInstantPlay] Correct! +${points}pts`)
       // Track trivia stats
@@ -265,12 +278,14 @@ function SurvivalInstantPlayContent() {
 
   // Start/stop billboards based on game phase
   useEffect(() => {
+    if (!enableTriviaBillboards) return
+    
     if (phase === 'running' && !billboards.isActive) {
       billboards.start()
     } else if ((phase === 'paused' || phase === 'gameover' || phase === 'ready') && billboards.isActive) {
       billboards.stop()
     }
-  }, [phase, billboards])
+  }, [phase, billboards, enableTriviaBillboards])
 
   // Track max combo during the run
   useEffect(() => {
@@ -388,8 +403,8 @@ function SurvivalInstantPlayContent() {
         />
       )}
 
-      {/* Trivia Stats - shown during gameplay */}
-      {!isLoading && !error && gameState && (phase === 'running' || phase === 'paused') && (
+      {/* Trivia Stats - shown during gameplay (desktop only) */}
+      {enableTriviaBillboards && !isLoading && !error && gameState && (phase === 'running' || phase === 'paused') && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
           <TriviaStatsBar
             timeRemaining={billboards.stats?.timeRemaining}
@@ -406,30 +421,11 @@ function SurvivalInstantPlayContent() {
         <PerformanceOverlay metrics={performanceMetrics} />
       )}
 
-      {/* Controls */}
-      <div className="absolute bottom-4 left-4 z-10">
-        <ControlsPanel
-          controls={[
-            { key: 'SPACE/W', action: 'Start / Jump' },
-            { key: 'A / ←', action: 'Move Left' },
-            { key: 'D / →', action: 'Move Right' },
-            { key: 'S / ↓', action: 'Slide' },
-            { key: 'ESC / P', action: 'Pause' },
-            { key: 'R', action: 'Quick Restart' },
-          ]}
-          onMuteToggle={() => setMuted(!isMuted)}
-          isMuted={isMuted}
-        />
-      </div>
+      {/* Controls moved to Ready card - no longer shown during gameplay */}
 
-      {/* Action Buttons */}
-      {!isLoading && gameState && (
+      {/* Action Buttons - Only during gameplay */}
+      {!isLoading && gameState && phase !== 'ready' && (
         <div className="absolute bottom-4 right-4 z-10 flex gap-2">
-          {phase === 'ready' && (
-            <EnterpriseButton onClick={handleStart} variant="primary">
-              Start Run
-            </EnterpriseButton>
-          )}
           {phase === 'running' && (
             <EnterpriseButton onClick={pause} variant="secondary" size="sm">
               ⏸ Pause
@@ -448,10 +444,10 @@ function SurvivalInstantPlayContent() {
         </div>
       )}
 
-      {/* Ready State */}
+      {/* Ready State - Pre-game lobby with controls */}
       {phase === 'ready' && !isLoading && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
-          <EnterpriseCard maxWidth="sm" glow="subtle">
+        <div className="absolute inset-0 z-20 flex items-center justify-center p-4">
+          <EnterpriseCard maxWidth="md" glow="subtle">
             <EnterpriseTitle size="lg">Survival Runner</EnterpriseTitle>
             <p className="text-gray-400 text-sm text-center mb-4">
               How far can you go?
@@ -477,6 +473,56 @@ function SurvivalInstantPlayContent() {
                 />
               </div>
             )}
+
+            {/* Controls Section */}
+            <div className="mb-4">
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-3 font-medium">
+                {isMobileDevice ? 'Touch Controls' : 'Keyboard Controls'}
+              </p>
+              
+              {isMobileDevice ? (
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { action: 'Jump', control: 'Swipe Up' },
+                    { action: 'Slide', control: 'Swipe Down' },
+                    { action: 'Move Left', control: 'Tap Left' },
+                    { action: 'Move Right', control: 'Tap Right' },
+                  ].map(({ action, control }) => (
+                    <div key={action} className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2">
+                      <span className="text-gray-400 text-sm">{action}</span>
+                      <span className="text-orange-400 text-sm font-medium">{control}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { key: 'SPACE / W', action: 'Jump' },
+                    { key: 'S / ↓', action: 'Slide' },
+                    { key: 'A / ←', action: 'Move Left' },
+                    { key: 'D / →', action: 'Move Right' },
+                    { key: 'ESC / P', action: 'Pause' },
+                    { key: 'R', action: 'Quick Restart' },
+                  ].map(({ key, action }) => (
+                    <div key={key} className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2">
+                      <span className="text-gray-400 text-sm">{action}</span>
+                      <kbd className="bg-gray-800 text-orange-400 text-xs font-mono px-2 py-1 rounded border border-gray-700">
+                        {key}
+                      </kbd>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Sound Toggle */}
+            <button
+              onClick={() => setMuted(!isMuted)}
+              className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 
+                       rounded-lg px-4 py-2 mb-4 text-sm text-gray-400 transition-colors"
+            >
+              {isMuted ? '🔇 Sound Off' : '🔊 Sound On'}
+            </button>
             
             <div className="space-y-3">
               <EnterpriseButton onClick={handleStart} variant="primary" fullWidth>
