@@ -389,6 +389,13 @@ function SurvivalInstantPlayContent() {
           style={{ height: isMobile && phase === 'running' ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh' }}
         />
         
+        {/* Debug: Show trivia conditions */}
+        {phase === 'running' && (
+          <div className="fixed top-20 right-2 z-50 bg-black/80 text-white text-[10px] p-1 rounded">
+            M:{isMobile ? 'Y' : 'N'} B:{enableTriviaBillboards ? 'Y' : 'N'} P:{phase}
+          </div>
+        )}
+        
         {/* Mobile Trivia Panel - 2D 2x2 grid, always on during gameplay */}
         {isMobile && !enableTriviaBillboards && phase === 'running' && (
           <TriviaPanel
