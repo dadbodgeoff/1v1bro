@@ -72,20 +72,22 @@ const SPACING = {
 
 /**
  * Holographic billboard shader material
+ * Falls back to basic material if shader compilation fails (Safari)
  */
-function createHologramMaterial(): THREE.ShaderMaterial {
-  return new THREE.ShaderMaterial({
-    uniforms: {
-      uTime: { value: 0 },
-      uTexture: { value: null },
-      uGlowColor: { value: new THREE.Color(COLORS.brandIndigo) },
-      uEdgeColor: { value: new THREE.Color(COLORS.brandOrange) },
-      uOpacity: { value: 0.85 },
-      uScanlineIntensity: { value: 0.08 },
-      uFlicker: { value: 0 },
-      uReveal: { value: 0 }, // 0-1 for spawn animation
-    },
-    vertexShader: `
+function createHologramMaterial(): THREE.ShaderMaterial | THREE.MeshBasicMaterial {
+  try {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uTexture: { value: null },
+        uGlowColor: { value: new THREE.Color(COLORS.brandIndigo) },
+        uEdgeColor: { value: new THREE.Color(COLORS.brandOrange) },
+        uOpacity: { value: 0.85 },
+        uScanlineIntensity: { value: 0.08 },
+        uFlicker: { value: 0 },
+        uReveal: { value: 0 }, // 0-1 for spawn animation
+      },
+      vertexShader: `
       varying vec2 vUv;
       varying vec3 vPosition;
       
@@ -160,11 +162,21 @@ function createHologramMaterial(): THREE.ShaderMaterial {
         gl_FragColor = vec4(finalColor, alpha);
       }
     `,
-    transparent: true,
-    side: THREE.DoubleSide,
-    depthWrite: false,
-    blending: THREE.NormalBlending,
-  })
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.NormalBlending,
+    })
+  } catch (error) {
+    // Fallback to basic material if shader fails (Safari compatibility)
+    console.warn('[TriviaBillboard] Shader compilation failed, using fallback material:', error)
+    return new THREE.MeshBasicMaterial({
+      transparent: true,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      opacity: 0.9,
+    }) as unknown as THREE.ShaderMaterial
+  }
 }
 
 /**
@@ -429,7 +441,8 @@ function createTriviaTexture(
 export class TriviaBillboard {
   private group: THREE.Group
   private mesh: THREE.Mesh
-  private material: THREE.ShaderMaterial
+  private material: THREE.ShaderMaterial | THREE.MeshBasicMaterial
+  private isShaderMaterial: boolean = true
   private config: TriviaBillboardConfig
   private question: TriviaQuestion | null = null
   private contentMetrics: ContentMetrics | null = null
@@ -452,6 +465,7 @@ export class TriviaBillboard {
     // Create billboard geometry
     const geometry = new THREE.PlaneGeometry(this.config.width, this.config.height)
     this.material = createHologramMaterial()
+    this.isShaderMaterial = this.material instanceof THREE.ShaderMaterial
     this.mesh = new THREE.Mesh(geometry, this.material)
     
     // No glow mesh - it was causing visual artifacts
@@ -501,9 +515,11 @@ export class TriviaBillboard {
     // Show
     this.group.visible = true
     
-    // Reset material uniforms
-    this.material.uniforms.uReveal.value = 0
-    this.material.uniforms.uFlicker.value = this.config.flickerIntensity
+    // Reset material uniforms (only for shader material)
+    if (this.isShaderMaterial && 'uniforms' in this.material) {
+      this.material.uniforms.uReveal.value = 0
+      this.material.uniforms.uFlicker.value = this.config.flickerIntensity
+    }
   }
 
   /**
@@ -522,11 +538,20 @@ export class TriviaBillboard {
     )
     
     // Dispose old texture
-    if (this.material.uniforms.uTexture.value) {
-      this.material.uniforms.uTexture.value.dispose()
+    if (this.isShaderMaterial && 'uniforms' in this.material) {
+      if (this.material.uniforms.uTexture.value) {
+        this.material.uniforms.uTexture.value.dispose()
+      }
+      this.material.uniforms.uTexture.value = texture
+    } else {
+      // For fallback material, set the map
+      const basicMat = this.material as THREE.MeshBasicMaterial
+      if (basicMat.map) {
+        basicMat.map.dispose()
+      }
+      basicMat.map = texture
+      basicMat.needsUpdate = true
     }
-    
-    this.material.uniforms.uTexture.value = texture
   }
 
   /**
@@ -561,21 +586,30 @@ export class TriviaBillboard {
     
     const time = performance.now() / 1000
     
-    // Update shader time
-    this.material.uniforms.uTime.value = time
-    
-    // Reveal animation (spawn in)
-    if (this.revealProgress < 1) {
-      this.revealProgress += delta * 2 // 0.5 second reveal
-      this.revealProgress = Math.min(1, this.revealProgress)
-      this.material.uniforms.uReveal.value = this.easeOutCubic(this.revealProgress)
-    }
-    
-    // Flicker decay
-    if (this.flickerTimer < 1) {
-      this.flickerTimer += delta * 2
-      const flickerDecay = 1 - this.easeOutCubic(Math.min(1, this.flickerTimer))
-      this.material.uniforms.uFlicker.value = this.config.flickerIntensity * flickerDecay
+    // Only update shader uniforms if using shader material
+    if (this.isShaderMaterial && 'uniforms' in this.material) {
+      // Update shader time
+      this.material.uniforms.uTime.value = time
+      
+      // Reveal animation (spawn in)
+      if (this.revealProgress < 1) {
+        this.revealProgress += delta * 2 // 0.5 second reveal
+        this.revealProgress = Math.min(1, this.revealProgress)
+        this.material.uniforms.uReveal.value = this.easeOutCubic(this.revealProgress)
+      }
+      
+      // Flicker decay
+      if (this.flickerTimer < 1) {
+        this.flickerTimer += delta * 2
+        const flickerDecay = 1 - this.easeOutCubic(Math.min(1, this.flickerTimer))
+        this.material.uniforms.uFlicker.value = this.config.flickerIntensity * flickerDecay
+      }
+    } else {
+      // For fallback material, just track reveal progress
+      if (this.revealProgress < 1) {
+        this.revealProgress += delta * 2
+        this.revealProgress = Math.min(1, this.revealProgress)
+      }
     }
     
     // Subtle rotation to face player as they pass
@@ -646,8 +680,15 @@ export class TriviaBillboard {
   dispose(): void {
     this.material.dispose()
     this.mesh.geometry.dispose()
-    if (this.material.uniforms.uTexture.value) {
-      this.material.uniforms.uTexture.value.dispose()
+    if (this.isShaderMaterial && 'uniforms' in this.material) {
+      if (this.material.uniforms.uTexture.value) {
+        this.material.uniforms.uTexture.value.dispose()
+      }
+    } else {
+      const basicMat = this.material as THREE.MeshBasicMaterial
+      if (basicMat.map) {
+        basicMat.map.dispose()
+      }
     }
     if (this.glowMesh) {
       ;(this.glowMesh.material as THREE.Material).dispose()
