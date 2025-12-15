@@ -60,11 +60,10 @@ export interface TriviaOverlayLegacyProps {
 type TimerId = ReturnType<typeof setTimeout>
 
 // Panel height constant - export for parent layout
-// 120px is compact enough to not cut off character while still being usable
-export const TRIVIA_PANEL_HEIGHT = 120
+export const TRIVIA_PANEL_HEIGHT = 124
 
 // ============================================
-// Compact Answer Button
+// Answer Button - Clean, professional styling
 // ============================================
 
 interface AnswerButtonProps {
@@ -86,19 +85,23 @@ const AnswerButton = memo(({
 }: AnswerButtonProps) => {
   const labels = ['A', 'B', 'C', 'D']
   
-  let bgColor = 'bg-zinc-700'
-  let borderColor = 'border-zinc-600'
-  let textColor = 'text-white'
+  // State-based styling
+  let containerStyle = 'bg-zinc-800/90 border-zinc-600/50'
+  let labelStyle = 'bg-zinc-700 text-zinc-300'
+  let textStyle = 'text-zinc-100'
   
   if (isCorrect === true) {
-    bgColor = 'bg-emerald-600'
-    borderColor = 'border-emerald-400'
+    containerStyle = 'bg-emerald-600/90 border-emerald-400/60'
+    labelStyle = 'bg-emerald-500 text-white'
+    textStyle = 'text-white'
   } else if (isCorrect === false && isSelected) {
-    bgColor = 'bg-red-600'
-    borderColor = 'border-red-400'
+    containerStyle = 'bg-red-600/90 border-red-400/60'
+    labelStyle = 'bg-red-500 text-white'
+    textStyle = 'text-white'
   } else if (isSelected) {
-    bgColor = 'bg-orange-500'
-    borderColor = 'border-orange-400'
+    containerStyle = 'bg-orange-600/90 border-orange-400/60'
+    labelStyle = 'bg-orange-500 text-white'
+    textStyle = 'text-white'
   }
   
   return (
@@ -106,42 +109,50 @@ const AnswerButton = memo(({
       onClick={() => !isDisabled && onSelect(index)}
       disabled={isDisabled}
       className={`
-        ${bgColor} ${borderColor} ${textColor}
-        border rounded-md
-        px-2 py-1
-        text-xs font-semibold
-        transition-all duration-100
-        active:scale-95
-        disabled:opacity-60
+        ${containerStyle}
+        border rounded-lg
+        px-2 py-1.5
+        transition-colors duration-75
+        active:scale-[0.98]
+        disabled:opacity-50
         touch-manipulation
-        flex items-center gap-1
+        flex items-center gap-2
         min-w-0
-        h-[30px]
+        h-[32px]
       `}
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
-      <span className="text-[10px] text-orange-400 font-bold shrink-0">{labels[index]}</span>
-      <span className="truncate text-left flex-1">{answer}</span>
-      {isCorrect === true && <span className="shrink-0 text-emerald-300">✓</span>}
-      {isCorrect === false && isSelected && <span className="shrink-0 text-red-300">✗</span>}
+      {/* Letter badge */}
+      <span className={`
+        ${labelStyle}
+        w-5 h-5 rounded
+        flex items-center justify-center
+        text-[11px] font-bold
+        shrink-0
+      `}>
+        {labels[index]}
+      </span>
+      
+      {/* Answer text */}
+      <span className={`
+        ${textStyle}
+        text-[13px] font-medium tracking-tight
+        truncate text-left flex-1
+      `}>
+        {answer}
+      </span>
+      
+      {/* Result indicator */}
+      {isCorrect === true && (
+        <span className="shrink-0 text-emerald-200 text-sm font-bold">✓</span>
+      )}
+      {isCorrect === false && isSelected && (
+        <span className="shrink-0 text-red-200 text-sm font-bold">✗</span>
+      )}
     </button>
   )
 })
 AnswerButton.displayName = 'AnswerButton'
-
-// ============================================
-// Timer Display
-// ============================================
-
-const TimerDisplay = memo(({ seconds, isUrgent }: { seconds: number; isUrgent: boolean }) => (
-  <div className={`
-    text-sm font-bold tabular-nums
-    ${isUrgent ? 'text-red-400 animate-pulse' : 'text-orange-400'}
-  `}>
-    {Math.ceil(seconds)}s
-  </div>
-))
-TimerDisplay.displayName = 'TimerDisplay'
 
 // ============================================
 // Main Trivia Panel Component (Always-On)
@@ -248,27 +259,57 @@ export const TriviaPanel: React.FC<TriviaOverlayProps> = memo(({
   if (!isActive || !question) return null
   
   const isUrgent = timeRemaining <= 5
+  const timerPercent = (timeRemaining / timeLimit) * 100
   
   return (
     <div 
-      className="bg-zinc-900 border-t-2 border-orange-500/50 px-2 py-1.5"
+      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-2"
       style={{ height: TRIVIA_PANEL_HEIGHT }}
     >
       {/* Question row with timer */}
-      <div className="flex items-center gap-2 mb-1.5">
-        <div className={`
-          px-1.5 py-0.5 rounded font-bold text-xs tabular-nums shrink-0
-          ${isUrgent ? 'bg-red-500 text-white animate-pulse' : 'bg-orange-500 text-white'}
-        `}>
-          {Math.ceil(timeRemaining)}s
+      <div className="flex items-start gap-3 mb-2">
+        {/* Timer with progress ring */}
+        <div className="relative shrink-0">
+          <div className={`
+            w-10 h-10 rounded-full flex items-center justify-center
+            ${isUrgent ? 'bg-red-500/20' : 'bg-orange-500/20'}
+          `}>
+            {/* Progress ring (CSS-only, no animation overhead) */}
+            <svg className="absolute inset-0 w-10 h-10 -rotate-90" viewBox="0 0 40 40">
+              <circle
+                cx="20" cy="20" r="17"
+                fill="none"
+                stroke={isUrgent ? '#ef4444' : '#f97316'}
+                strokeWidth="3"
+                strokeDasharray={`${timerPercent * 1.07} 107`}
+                strokeLinecap="round"
+                className="opacity-80"
+              />
+            </svg>
+            <span className={`
+              text-sm font-bold tabular-nums relative z-10
+              ${isUrgent ? 'text-red-400' : 'text-orange-400'}
+            `}>
+              {Math.ceil(timeRemaining)}
+            </span>
+          </div>
         </div>
-        <p className="text-white text-xs font-medium leading-tight line-clamp-2 flex-1">
-          {question.question}
-        </p>
+        
+        {/* Question text */}
+        <div className="flex-1 min-w-0">
+          <p className="text-white text-[14px] font-semibold leading-snug line-clamp-2 tracking-tight">
+            {question.question}
+          </p>
+          {question.category && (
+            <span className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider">
+              {question.category}
+            </span>
+          )}
+        </div>
       </div>
       
-      {/* 2x2 Answer grid - compact */}
-      <div className="grid grid-cols-2 gap-1.5">
+      {/* 2x2 Answer grid */}
+      <div className="grid grid-cols-2 gap-2">
         {question.answers.slice(0, 4).map((answer, index) => (
           <AnswerButton
             key={index}
@@ -364,20 +405,49 @@ export const TriviaOverlay: React.FC<TriviaOverlayLegacyProps> = memo(({
   if (!isOpen || !question) return null
   
   const isUrgent = timeRemaining <= 5
+  const timerPercent = (timeRemaining / timeLimit) * 100
   
   return (
     <div 
-      className="bg-zinc-900/95 border-t border-zinc-700/50 px-2 py-2"
+      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-2"
       style={{ height: TRIVIA_PANEL_HEIGHT }}
     >
-      <div className="flex items-start gap-2 mb-2">
-        <TimerDisplay seconds={timeRemaining} isUrgent={isUrgent} />
-        <p className="text-white text-xs font-medium leading-tight line-clamp-2 flex-1">
+      {/* Question row with timer */}
+      <div className="flex items-start gap-3 mb-2">
+        {/* Timer with progress ring */}
+        <div className="relative shrink-0">
+          <div className={`
+            w-10 h-10 rounded-full flex items-center justify-center
+            ${isUrgent ? 'bg-red-500/20' : 'bg-orange-500/20'}
+          `}>
+            <svg className="absolute inset-0 w-10 h-10 -rotate-90" viewBox="0 0 40 40">
+              <circle
+                cx="20" cy="20" r="17"
+                fill="none"
+                stroke={isUrgent ? '#ef4444' : '#f97316'}
+                strokeWidth="3"
+                strokeDasharray={`${timerPercent * 1.07} 107`}
+                strokeLinecap="round"
+                className="opacity-80"
+              />
+            </svg>
+            <span className={`
+              text-sm font-bold tabular-nums relative z-10
+              ${isUrgent ? 'text-red-400' : 'text-orange-400'}
+            `}>
+              {Math.ceil(timeRemaining)}
+            </span>
+          </div>
+        </div>
+        
+        {/* Question text */}
+        <p className="text-white text-[14px] font-semibold leading-snug line-clamp-2 tracking-tight flex-1">
           {question.question}
         </p>
       </div>
       
-      <div className="grid grid-cols-2 gap-1.5">
+      {/* 2x2 Answer grid */}
+      <div className="grid grid-cols-2 gap-2">
         {question.answers.slice(0, 4).map((answer, index) => (
           <AnswerButton
             key={index}
