@@ -308,8 +308,12 @@ function SurvivalInstantPlayContent() {
 
   if (isAuthenticated) return null
 
+  // Calculate game area height for mobile with trivia panel
+  const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
+  const gameAreaHeight = showMobileTrivia ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh'
+
   return (
-    <div className="min-h-screen bg-[#09090b] text-white">
+    <div className="fixed inset-0 bg-[#09090b] text-white overflow-hidden">
       {/* Loading */}
       {isLoading && loadingProgress && (
         <EnterpriseLoadingScreen progress={loadingProgress} onRetry={() => window.location.reload()} />
@@ -329,14 +333,25 @@ function SurvivalInstantPlayContent() {
         </div>
       )}
 
-      {/* HUD */}
+      {/* Game Canvas Container - takes remaining space above trivia */}
+      <div 
+        ref={containerRef} 
+        className="absolute top-0 left-0 right-0"
+        style={{ height: gameAreaHeight }}
+      />
+
+      {/* HUD - positioned within game area */}
       {!isLoading && !error && gameState && (
-        <SurvivalHUD 
-          gameState={gameState} combo={combo} multiplier={multiplier} isGhostActive={false}
-          currentMilestone={currentMilestone} milestoneProgress={milestoneProgress}
-          nextMilestone={nextMilestone} currentAchievement={currentAchievement}
-          onAchievementDismiss={dismissAchievement}
-        />
+        <div style={{ height: gameAreaHeight }} className="absolute top-0 left-0 right-0 pointer-events-none">
+          <div className="pointer-events-auto">
+            <SurvivalHUD 
+              gameState={gameState} combo={combo} multiplier={multiplier} isGhostActive={false}
+              currentMilestone={currentMilestone} milestoneProgress={milestoneProgress}
+              nextMilestone={nextMilestone} currentAchievement={currentAchievement}
+              onAchievementDismiss={dismissAchievement}
+            />
+          </div>
+        </div>
       )}
 
       {/* Trivia Stats (desktop only - billboards) */}
@@ -352,14 +367,16 @@ function SurvivalInstantPlayContent() {
         </div>
       )}
       
-      {/* Performance Stats */}
+      {/* Performance Stats - position above trivia panel on mobile */}
       {!isLoading && performanceMetrics && (
-        <PerformanceOverlay metrics={performanceMetrics} memoryStats={getMemoryStats()} isMobile={isMobile} />
+        <div className="absolute left-2 z-10" style={{ bottom: showMobileTrivia ? `${TRIVIA_PANEL_HEIGHT + 8}px` : '8px' }}>
+          <PerformanceOverlay metrics={performanceMetrics} memoryStats={getMemoryStats()} isMobile={isMobile} />
+        </div>
       )}
 
-      {/* Action Buttons */}
+      {/* Action Buttons - position above trivia panel on mobile */}
       {!isLoading && gameState && phase !== 'ready' && (
-        <div className="absolute bottom-4 right-4 z-10 flex gap-2">
+        <div className="absolute right-4 z-10 flex gap-2" style={{ bottom: showMobileTrivia ? `${TRIVIA_PANEL_HEIGHT + 8}px` : '16px' }}>
           {phase === 'running' && (
             <EnterpriseButton onClick={pause} variant="secondary" size="sm">⏸ Pause</EnterpriseButton>
           )}
@@ -381,23 +398,9 @@ function SurvivalInstantPlayContent() {
         />
       )}
 
-      {/* Game Layout */}
-      <div className="flex flex-col h-screen">
-        <div 
-          ref={containerRef} 
-          className="w-full flex-1"
-          style={{ height: isMobile && phase === 'running' ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh' }}
-        />
-        
-        {/* Debug: Show trivia conditions */}
-        {phase === 'running' && (
-          <div className="fixed top-20 right-2 z-50 bg-black/80 text-white text-[10px] p-1 rounded">
-            M:{isMobile ? 'Y' : 'N'} B:{enableTriviaBillboards ? 'Y' : 'N'} P:{phase}
-          </div>
-        )}
-        
-        {/* Mobile Trivia Panel - 2D 2x2 grid, always on during gameplay */}
-        {isMobile && !enableTriviaBillboards && phase === 'running' && (
+      {/* Mobile Trivia Panel - fixed at bottom */}
+      {showMobileTrivia && (
+        <div className="absolute bottom-0 left-0 right-0 z-20">
           <TriviaPanel
             isActive={phase === 'running'}
             getNextQuestion={getNextMobileQuestion}
@@ -405,8 +408,8 @@ function SurvivalInstantPlayContent() {
             onAnswer={handleMobileTriviaAnswer}
             onTimeout={handleMobileTriviaTimeout}
           />
-        )}
-      </div>
+        </div>
+      )}
       
       {/* Pause Overlay */}
       {phase === 'paused' && !showGameOver && (

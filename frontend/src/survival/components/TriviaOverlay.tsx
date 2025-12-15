@@ -60,7 +60,8 @@ export interface TriviaOverlayLegacyProps {
 type TimerId = ReturnType<typeof setTimeout>
 
 // Panel height constant - export for parent layout
-export const TRIVIA_PANEL_HEIGHT = 120
+// Increased to 140px to ensure visibility on all devices
+export const TRIVIA_PANEL_HEIGHT = 140
 
 // ============================================
 // Compact Answer Button
@@ -85,8 +86,9 @@ const AnswerButton = memo(({
 }: AnswerButtonProps) => {
   const labels = ['A', 'B', 'C', 'D']
   
-  let bgColor = 'bg-zinc-800'
-  let borderColor = 'border-zinc-700'
+  let bgColor = 'bg-zinc-700'
+  let borderColor = 'border-zinc-600'
+  let textColor = 'text-white'
   
   if (isCorrect === true) {
     bgColor = 'bg-emerald-600'
@@ -104,23 +106,24 @@ const AnswerButton = memo(({
       onClick={() => !isDisabled && onSelect(index)}
       disabled={isDisabled}
       className={`
-        ${bgColor} ${borderColor}
-        border rounded-lg
-        px-2 py-1.5
-        text-xs font-medium text-white
+        ${bgColor} ${borderColor} ${textColor}
+        border-2 rounded-lg
+        px-2 py-2
+        text-sm font-semibold
         transition-all duration-100
         active:scale-95
         disabled:opacity-60
         touch-manipulation
-        flex items-center gap-1
+        flex items-center gap-1.5
         min-w-0
+        min-h-[36px]
       `}
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
-      <span className="text-[10px] text-zinc-400 font-bold shrink-0">{labels[index]}</span>
-      <span className="truncate">{answer}</span>
-      {isCorrect === true && <span className="shrink-0">✓</span>}
-      {isCorrect === false && isSelected && <span className="shrink-0">✗</span>}
+      <span className="text-xs text-orange-400 font-bold shrink-0 w-4">{labels[index]}</span>
+      <span className="truncate text-left flex-1">{answer}</span>
+      {isCorrect === true && <span className="shrink-0 text-emerald-300">✓</span>}
+      {isCorrect === false && isSelected && <span className="shrink-0 text-red-300">✗</span>}
     </button>
   )
 })
@@ -248,19 +251,24 @@ export const TriviaPanel: React.FC<TriviaOverlayProps> = memo(({
   
   return (
     <div 
-      className="bg-zinc-900/95 border-t border-zinc-700/50 px-2 py-2"
+      className="bg-zinc-900 border-t-2 border-orange-500/50 px-3 py-2"
       style={{ height: TRIVIA_PANEL_HEIGHT }}
     >
       {/* Question row with timer */}
       <div className="flex items-start gap-2 mb-2">
-        <TimerDisplay seconds={timeRemaining} isUrgent={isUrgent} />
-        <p className="text-white text-xs font-medium leading-tight line-clamp-2 flex-1">
+        <div className={`
+          px-2 py-0.5 rounded-full font-bold text-sm tabular-nums
+          ${isUrgent ? 'bg-red-500 text-white animate-pulse' : 'bg-orange-500 text-white'}
+        `}>
+          {Math.ceil(timeRemaining)}s
+        </div>
+        <p className="text-white text-sm font-medium leading-tight line-clamp-2 flex-1">
           {question.question}
         </p>
       </div>
       
-      {/* 2x2 Answer grid - compact */}
-      <div className="grid grid-cols-2 gap-1.5">
+      {/* 2x2 Answer grid */}
+      <div className="grid grid-cols-2 gap-2">
         {question.answers.slice(0, 4).map((answer, index) => (
           <AnswerButton
             key={index}
