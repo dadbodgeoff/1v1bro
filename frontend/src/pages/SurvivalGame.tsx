@@ -53,7 +53,9 @@ function SurvivalGameContent() {
   const { user, token, isAuthenticated } = useAuthStore()
   const { loadoutWithDetails, fetchLoadout } = useCosmeticsStore()
   const { leaderboard, refresh: refreshRank } = useLeaderboard({ autoStart: true })
-  const { isMobile, isTouch } = useMobileOptimization()
+  const { isTouch, deviceCapabilities } = useMobileOptimization()
+  // Use UA-based mobile detection for UI decisions (more reliable than screen-size based)
+  const isMobileDevice = deviceCapabilities.isMobile || isTouch
   const playerRank = leaderboard?.playerEntry
   const [showGameOver, setShowGameOver] = useState(false)
   const [showReadyCard, setShowReadyCard] = useState(true)
@@ -356,7 +358,7 @@ function SurvivalGameContent() {
       )}
 
       {/* Controls - Desktop only */}
-      {!isMobile && !isTouch && (
+      {!isMobileDevice && (
         <div className="absolute bottom-4 left-4 z-10">
           <ControlsPanel
             controls={[
@@ -375,7 +377,7 @@ function SurvivalGameContent() {
       )}
       
       {/* Mobile Touch Controls Hint - shown before game starts */}
-      {(isMobile || isTouch) && !isLoading && phase === 'ready' && showReadyCard && (
+      {isMobileDevice && !isLoading && phase === 'ready' && showReadyCard && (
         <div className="absolute bottom-4 left-4 right-4 z-10">
           <div className="bg-black/70 backdrop-blur-sm rounded-xl border border-white/10 p-3">
             <p className="text-gray-300 font-semibold mb-2 text-sm">Touch Controls</p>
@@ -396,7 +398,7 @@ function SurvivalGameContent() {
       )}
 
       {/* Mobile Trivia Answer Buttons - shown during gameplay when question is active */}
-      {(isMobile || isTouch) && ENABLE_TRIVIA_BILLBOARDS && phase === 'running' && billboards.hasActiveQuestion && (
+      {isMobileDevice && ENABLE_TRIVIA_BILLBOARDS && phase === 'running' && billboards.hasActiveQuestion && (
         <div className="absolute bottom-20 left-0 right-0 z-20 flex justify-center">
           <div className="flex gap-3 bg-black/80 backdrop-blur-sm rounded-2xl px-4 py-3 border border-white/20">
             {[1, 2, 3, 4].map((num) => (
@@ -447,7 +449,7 @@ function SurvivalGameContent() {
           <EnterpriseCard maxWidth="sm" glow="subtle">
             <EnterpriseTitle size="lg">Ready to Run</EnterpriseTitle>
             <p className="text-gray-400 text-sm text-center mb-6">
-              {isMobile || isTouch ? 'Tap Start to begin' : 'Press SPACE or tap Start to begin'}
+              {isMobileDevice ? 'Tap Start to begin' : 'Press SPACE or tap Start to begin'}
             </p>
             
             <div className="space-y-3">
