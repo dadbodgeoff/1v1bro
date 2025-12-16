@@ -255,7 +255,7 @@ export class RunManager {
             trackManager, physicsController, collisionSystem, inputBuffer,
             playerController, cameraController, performanceMonitor, particleSystem,
             transitionSystem, comboSystem, inputRecorder, milestoneSystem,
-            achievementSystem, ghostManager, gameLoop, fixedUpdateLoop } = this.deps
+            achievementSystem, ghostManager, gameLoop, fixedUpdateLoop, renderer } = this.deps
 
     stateManager.reset()
     fixedUpdateLoop.resetSpeed()
@@ -281,6 +281,9 @@ export class RunManager {
     cameraController.reset()
     transitionSystem.reset()
     gameLoop.setTimeScale(1)
+    
+    // Reset space background (fixes mobile city red tint issue)
+    renderer.getSpaceBackground()?.reset()
     
     cameraController.initialize(8)
     transitionSystem.startFadeIn()

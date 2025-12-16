@@ -210,7 +210,7 @@ export class SpaceBackground {
   }
 
   /**
-   * Trigger damage effect (subtle nebula shift)
+   * Trigger damage effect (subtle nebula shift + city tint)
    */
   triggerDamageEffect(): void {
     // Briefly shift nebula to red tones
@@ -228,6 +228,9 @@ export class SpaceBackground {
         }
       }, 500)
     }
+    
+    // Also trigger city damage effect
+    this.cityScape?.triggerDamageEffect()
   }
 
   /**
@@ -313,6 +316,18 @@ export class SpaceBackground {
   reset(): void {
     this.lastMilestone = 0
     this.celestialManager?.reset()
+    
+    // Ensure city colors are restored (fixes mobile red tint issue)
+    this.cityScape?.forceRestoreColors()
+    
+    // Also restore nebula colors in case they were stuck
+    if (this.config.nebulaColors && this.nebula) {
+      this.nebula.setColors(
+        this.config.nebulaColors[0],
+        this.config.nebulaColors[1],
+        this.config.nebulaColors[2]
+      )
+    }
   }
 
   /**

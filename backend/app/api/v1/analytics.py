@@ -736,3 +736,128 @@ async def get_pageviews(
         return APIResponse.ok({"pageviews": pageviews.data or []})
     except Exception as e:
         return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/session/{session_id}/events")
+async def get_session_events(
+    session_id: str,
+    _admin=Depends(require_admin)
+):
+    """
+    Get all events and details for a specific session.
+    Used by the Session Explorer modal.
+    
+    Requirements: 2.2, 2.3 - Display session context and chronological event timeline
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        # Get session details
+        session_result = supabase.table("analytics_sessions").select(
+            "session_id, visitor_id, device_type, browser, os, "
+            "screen_width, screen_height, locale, timezone, "
+            "utm_source, utm_medium, utm_campaign, first_referrer, "
+            "first_seen, last_seen, converted_to_signup, converted_at"
+        ).eq("session_id", session_id).single().execute()
+        
+        if not session_result.data:
+            return APIResponse.fail("Session not found", "NOT_FOUND")
+        
+        session_data = session_result.data
+        
+        # Format session details for frontend
+        session_details = {
+            "sessionId": session_data.get("session_id"),
+            "visitorId": session_data.get("visitor_id"),
+            "deviceType": session_data.get("device_type", "desktop"),
+            "browser": session_data.get("browser", "Unknown"),
+            "os": session_data.get("os", "Unknown"),
+            "screenSize": f"{session_data.get('screen_width', 0)}x{session_data.get('screen_height', 0)}",
+            "locale": session_data.get("locale", "Unknown"),
+            "timezone": session_data.get("timezone", "Unknown"),
+            "utmSource": session_data.get("utm_source"),
+            "utmMedium": session_data.get("utm_medium"),
+            "utmCampaign": session_data.get("utm_campaign"),
+            "firstReferrer": session_data.get("first_referrer"),
+            "startedAt": session_data.get("first_seen"),
+            "endedAt": session_data.get("last_seen"),
+            "converted": session_data.get("converted_to_signup", False),
+            "convertedAt": session_data.get("converted_at"),
+        }
+        
+        # Get all events for this session
+        events_result = supabase.table("analytics_events").select(
+            "id, event_name, page, metadata, created_at"
+        ).eq("session_id", session_id).order("created_at", desc=False).execute()
+        
+        # Get all page views for this session
+        pageviews_result = supabase.table("analytics_page_views").select(
+            "id, page, viewed_at, time_on_page, scroll_depth, load_time_ms"
+        ).eq("session_id", session_id).order("viewed_at", desc=False).execute()
+        
+        # Determine conversion events (signup, purchase, etc.)
+        conversion_event_names = {"signup", "purchase", "subscribe", "conversion", "register"}
+        
+        # Format events for frontend - combine events and pageviews into timeline
+        events = []
+        
+        # Add page views as events
+        for pv in pageviews_result.data or []:
+            events.append({
+                "id": f"pv-{pv.get('id')}",
+                "type": "pageview",
+                "timestamp": pv.get("viewed_at"),
+                "page": pv.get("page", "/"),
+                "eventName": None,
+                "metadata": {
+                    "loadTimeMs": pv.get("load_time_ms"),
+                    "scrollDepth": pv.get("scroll_depth"),
+                },
+                "duration": pv.get("time_on_page"),
+                "isConversion": False,
+            })
+        
+        # Add custom events
+        for ev in events_result.data or []:
+            event_name = ev.get("event_name", "")
+            is_conversion = event_name.lower() in conversion_event_names
+            events.append({
+                "id": f"ev-{ev.get('id')}",
+                "type": "conversion" if is_conversion else "event",
+                "timestamp": ev.get("created_at"),
+                "page": ev.get("page", "/"),
+                "eventName": event_name,
+                "metadata": ev.get("metadata"),
+                "duration": None,
+                "isConversion": is_conversion,
+            })
+        
+        # Sort all events chronologically (ascending by timestamp)
+        events.sort(key=lambda x: x.get("timestamp", ""))
+        
+        # Format page journey from pageviews
+        pageviews = []
+        pv_list = pageviews_result.data or []
+        for i, pv in enumerate(pv_list):
+            # Calculate exit time from next pageview or session end
+            exit_time = None
+            if i + 1 < len(pv_list):
+                exit_time = pv_list[i + 1].get("viewed_at")
+            elif session_data.get("last_seen"):
+                exit_time = session_data.get("last_seen")
+            
+            pageviews.append({
+                "page": pv.get("page", "/"),
+                "enteredAt": pv.get("viewed_at"),
+                "exitedAt": exit_time,
+                "duration": pv.get("time_on_page", 0),
+                "scrollDepth": pv.get("scroll_depth"),
+            })
+        
+        return APIResponse.ok({
+            "session": session_details,
+            "events": events,
+            "pageviews": pageviews,
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")

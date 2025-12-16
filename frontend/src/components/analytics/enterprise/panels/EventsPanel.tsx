@@ -1,10 +1,14 @@
 /**
  * EventsPanel - Raw event explorer
+ * 
+ * Requirements: 2.1 - Clickable session IDs with Session Explorer modal
  */
 
 import { useEffect, useState } from 'react'
 import { DataTable } from '../DataTable'
 import type { Column } from '../DataTable'
+import { SessionLink } from '../SessionLink'
+import { SessionExplorer } from '../SessionExplorer'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
 import type { DateRange } from '../types'
 
@@ -28,6 +32,20 @@ export function EventsPanel({ dateRange }: Props) {
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  
+  // Session Explorer state
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
+  const [isExplorerOpen, setIsExplorerOpen] = useState(false)
+  
+  const handleSessionClick = (sessionId: string) => {
+    setSelectedSessionId(sessionId)
+    setIsExplorerOpen(true)
+  }
+  
+  const handleCloseExplorer = () => {
+    setIsExplorerOpen(false)
+    setSelectedSessionId(null)
+  }
 
   useEffect(() => {
     const load = async () => {
@@ -67,6 +85,16 @@ export function EventsPanel({ dateRange }: Props) {
       label: 'Time', 
       width: '140px',
       render: (r) => <span className="text-xs text-neutral-400">{formatTime(r.created_at)}</span> 
+    },
+    {
+      key: 'session_id',
+      label: 'Session',
+      render: (r) => (
+        <SessionLink 
+          sessionId={r.session_id} 
+          onClick={handleSessionClick}
+        />
+      )
     },
     { 
       key: 'event_name', 
@@ -160,6 +188,15 @@ export function EventsPanel({ dateRange }: Props) {
             {JSON.stringify(events.find(e => e.id === expandedId)?.metadata, null, 2)}
           </pre>
         </div>
+      )}
+      
+      {/* Session Explorer Modal */}
+      {selectedSessionId && (
+        <SessionExplorer
+          sessionId={selectedSessionId}
+          isOpen={isExplorerOpen}
+          onClose={handleCloseExplorer}
+        />
       )}
     </div>
   )

@@ -1,20 +1,43 @@
 /**
  * UTMPanel - Campaign tracking with UTM parameters
+ * 
+ * Requirements: 14.2, 14.4 - Conversion rate calculation and trend comparison
  */
 
 import { useEffect, useState } from 'react'
 import { DataTable } from '../DataTable'
 import type { Column } from '../DataTable'
-import { BarChart, DonutChart } from '../MiniChart'
+import { DonutChart } from '../MiniChart'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
 import type { DateRange } from '../types'
 
 interface UTMData {
-  sources: Array<{ name: string; count: number }>
-  mediums: Array<{ name: string; count: number }>
-  campaigns: Array<{ name: string; count: number }>
+  sources: Array<{ name: string; count: number; conversions?: number; previous_count?: number }>
+  mediums: Array<{ name: string; count: number; conversions?: number; previous_count?: number }>
+  campaigns: Array<{ name: string; count: number; conversions?: number; previous_count?: number }>
   terms: Array<{ name: string; count: number }>
   contents: Array<{ name: string; count: number }>
+}
+
+/**
+ * Calculates conversion rate for a campaign
+ * Property 16: Campaign conversion rate calculation
+ * 
+ * @param conversions Number of conversions
+ * @param visitors Number of visitors
+ * @returns Conversion rate as percentage (0-100)
+ */
+export function calculateConversionRate(conversions: number, visitors: number): number {
+  if (visitors <= 0) return 0
+  return (conversions / visitors) * 100
+}
+
+/**
+ * Calculates trend percentage between current and previous period
+ */
+export function calculateTrendPercentage(current: number, previous: number): number | null {
+  if (previous <= 0) return current > 0 ? 100 : null
+  return ((current - previous) / previous) * 100
 }
 
 interface Props {
@@ -44,11 +67,63 @@ export function UTMPanel({ dateRange }: Props) {
 
   const sourceData = data?.sources.slice(0, 6).map(s => ({ label: s.name || 'direct', value: s.count })) || []
   const mediumData = data?.mediums.slice(0, 6).map(m => ({ label: m.name || 'none', value: m.count })) || []
-  const campaignData = data?.campaigns.slice(0, 8).map(c => ({ label: c.name || 'none', value: c.count })) || []
 
   const columns: Column<{ name: string; count: number }>[] = [
     { key: 'name', label: 'Value', render: (r) => <span className="font-mono text-xs">{r.name || '(none)'}</span> },
     { key: 'count', label: 'Sessions', sortable: true, align: 'right', render: (r) => <span className="text-orange-400">{r.count.toLocaleString()}</span> },
+  ]
+
+  // Campaign columns with conversion rate and trend
+  const campaignColumns: Column<{ name: string; count: number; conversions?: number; previous_count?: number }>[] = [
+    { 
+      key: 'name', 
+      label: 'Campaign', 
+      render: (r) => <span className="font-mono text-xs">{r.name || '(none)'}</span> 
+    },
+    { 
+      key: 'count', 
+      label: 'Visitors', 
+      sortable: true, 
+      align: 'right', 
+      render: (r) => <span className="text-white">{r.count.toLocaleString()}</span> 
+    },
+    { 
+      key: 'conversions', 
+      label: 'Conversions', 
+      sortable: true, 
+      align: 'right', 
+      render: (r) => <span className="text-green-400">{(r.conversions || 0).toLocaleString()}</span> 
+    },
+    { 
+      key: 'conversion_rate', 
+      label: 'Conv. Rate', 
+      sortable: true, 
+      align: 'right', 
+      render: (r) => {
+        const rate = calculateConversionRate(r.conversions || 0, r.count)
+        return (
+          <span className={rate > 5 ? 'text-green-400' : rate > 2 ? 'text-yellow-400' : 'text-neutral-400'}>
+            {rate.toFixed(2)}%
+          </span>
+        )
+      }
+    },
+    { 
+      key: 'trend', 
+      label: 'Trend', 
+      align: 'right', 
+      render: (r) => {
+        const trend = calculateTrendPercentage(r.count, r.previous_count || 0)
+        if (trend === null) return <span className="text-neutral-500">—</span>
+        const isPositive = trend > 0
+        return (
+          <span className={`flex items-center justify-end gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+            <span>{isPositive ? '↑' : '↓'}</span>
+            <span>{Math.abs(trend).toFixed(1)}%</span>
+          </span>
+        )
+      }
+    },
   ]
 
   return (
@@ -74,11 +149,17 @@ export function UTMPanel({ dateRange }: Props) {
         </div>
       </div>
 
-      {/* Campaigns Bar Chart */}
+      {/* Campaigns with Conversion Rates */}
       <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-        <h3 className="text-sm font-medium text-neutral-400 mb-4">Campaigns</h3>
-        {campaignData.length > 0 ? (
-          <BarChart data={campaignData} height={140} horizontal color="#f97316" />
+        <h3 className="text-sm font-medium text-neutral-400 mb-4">Campaign Performance</h3>
+        {data?.campaigns && data.campaigns.length > 0 ? (
+          <DataTable
+            columns={campaignColumns}
+            data={data.campaigns}
+            keyField="name"
+            maxHeight="300px"
+            emptyMessage="No campaign data"
+          />
         ) : (
           <div className="text-neutral-500 text-sm">No campaign data</div>
         )}

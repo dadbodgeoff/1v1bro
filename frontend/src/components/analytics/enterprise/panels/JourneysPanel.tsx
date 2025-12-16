@@ -1,10 +1,14 @@
 /**
  * JourneysPanel - User journey visualization and analysis
+ * 
+ * Requirements: 2.1, 2.2 - Clickable session IDs with Session Explorer modal
  */
 
 import { useEffect, useState } from 'react'
 import { DataTable } from '../DataTable'
 import type { Column } from '../DataTable'
+import { SessionLink } from '../SessionLink'
+import { SessionExplorer } from '../SessionExplorer'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
 import type { DateRange } from '../types'
 
@@ -39,6 +43,20 @@ export function JourneysPanel({ dateRange }: Props) {
   const [steps, setSteps] = useState<JourneyStep[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingSteps, setLoadingSteps] = useState(false)
+  
+  // Session Explorer state
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
+  const [isExplorerOpen, setIsExplorerOpen] = useState(false)
+  
+  const handleSessionClick = (sessionId: string) => {
+    setSelectedSessionId(sessionId)
+    setIsExplorerOpen(true)
+  }
+  
+  const handleCloseExplorer = () => {
+    setIsExplorerOpen(false)
+    setSelectedSessionId(null)
+  }
 
   useEffect(() => {
     const load = async () => {
@@ -77,6 +95,16 @@ export function JourneysPanel({ dateRange }: Props) {
   }
 
   const columns: Column<Journey>[] = [
+    {
+      key: 'session_id',
+      label: 'Session',
+      render: (r) => (
+        <SessionLink 
+          sessionId={r.session_id} 
+          onClick={handleSessionClick}
+        />
+      )
+    },
     { 
       key: 'started_at', 
       label: 'Started', 
@@ -196,6 +224,15 @@ export function JourneysPanel({ dateRange }: Props) {
             </div>
           )}
         </div>
+      )}
+      
+      {/* Session Explorer Modal */}
+      {selectedSessionId && (
+        <SessionExplorer
+          sessionId={selectedSessionId}
+          isOpen={isExplorerOpen}
+          onClose={handleCloseExplorer}
+        />
       )}
     </div>
   )

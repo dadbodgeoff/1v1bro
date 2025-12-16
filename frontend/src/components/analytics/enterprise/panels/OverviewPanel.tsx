@@ -1,11 +1,14 @@
 /**
  * OverviewPanel - Main analytics overview with key metrics
+ * 
+ * Requirements: 1.1, 1.2, 1.3, 10.4 - Advertiser metrics with device breakdown and trends
  */
 
 import { useEffect, useState } from 'react'
 import { MetricCard } from '../MetricCard'
 import { LineChart, DonutChart } from '../MiniChart'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
+import { calculateDevicePercentages, calculateCampaignConversionRate } from '../analyticsUtils'
 import type { DateRange } from '../types'
 
 interface OverviewData {
@@ -23,7 +26,7 @@ interface OverviewData {
     conversion_rate: number
   }
   devices: { mobile: number; tablet: number; desktop: number }
-  top_referrers: Array<{ source: string; count: number }>
+  top_referrers: Array<{ source: string; count: number; conversions?: number }>
 }
 
 interface DailyData {
@@ -64,6 +67,9 @@ export function OverviewPanel({ dateRange }: Props) {
     return <div className="text-neutral-500 text-center py-12">Failed to load overview data</div>
   }
 
+  // Calculate device percentages (Property 1: sum to 100%)
+  const devicePercentages = calculateDevicePercentages(overview.devices)
+  
   const deviceData = [
     { label: 'Desktop', value: overview.devices.desktop },
     { label: 'Mobile', value: overview.devices.mobile },
@@ -134,24 +140,60 @@ export function OverviewPanel({ dateRange }: Props) {
           )}
         </div>
 
-        {/* Device Breakdown */}
+        {/* Device Breakdown with Percentages */}
         <div className="bg-white/5 rounded-xl border border-white/10 p-5">
           <h3 className="text-sm font-medium text-neutral-400 mb-4">Devices</h3>
-          <DonutChart data={deviceData} size={120} />
+          <div className="flex items-center gap-4">
+            <DonutChart data={deviceData} size={100} />
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-blue-500" />
+                  <span className="text-neutral-300">Desktop</span>
+                </span>
+                <span className="text-white font-medium">{devicePercentages.desktop}%</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-orange-500" />
+                  <span className="text-neutral-300">Mobile</span>
+                </span>
+                <span className="text-white font-medium">{devicePercentages.mobile}%</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-green-500" />
+                  <span className="text-neutral-300">Tablet</span>
+                </span>
+                <span className="text-white font-medium">{devicePercentages.tablet}%</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Top Referrers & Events */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Top Traffic Sources with Conversion Rates */}
         <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-          <h3 className="text-sm font-medium text-neutral-400 mb-4">Top Referrers</h3>
+          <h3 className="text-sm font-medium text-neutral-400 mb-4">Top Traffic Sources</h3>
           <div className="space-y-2">
-            {overview.top_referrers.slice(0, 8).map((ref, i) => (
-              <div key={i} className="flex items-center justify-between text-sm">
-                <span className="text-neutral-300 truncate">{ref.source || 'Direct'}</span>
-                <span className="text-orange-400 font-medium">{ref.count}</span>
-              </div>
-            ))}
+            {overview.top_referrers.slice(0, 8).map((ref, i) => {
+              const conversionRate = ref.conversions !== undefined 
+                ? calculateCampaignConversionRate(ref.conversions, ref.count)
+                : null
+              return (
+                <div key={i} className="flex items-center justify-between text-sm">
+                  <span className="text-neutral-300 truncate flex-1">{ref.source || 'Direct'}</span>
+                  <span className="text-orange-400 font-medium w-16 text-right">{ref.count}</span>
+                  {conversionRate !== null && (
+                    <span className="text-green-400 font-medium w-16 text-right">
+                      {conversionRate.toFixed(1)}%
+                    </span>
+                  )}
+                </div>
+              )
+            })}
             {overview.top_referrers.length === 0 && (
               <div className="text-neutral-500 text-sm">No referrer data</div>
             )}

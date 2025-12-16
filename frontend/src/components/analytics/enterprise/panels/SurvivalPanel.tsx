@@ -1,5 +1,7 @@
 /**
  * SurvivalPanel - Game analytics for survival mode
+ * 
+ * Requirements: 9.4 - Player progression funnel visualization
  */
 
 import { useEffect, useState } from 'react'
@@ -8,6 +10,44 @@ import { BarChart, FunnelChart, LineChart } from '../MiniChart'
 import { DataTable } from '../DataTable'
 import type { Column } from '../DataTable'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
+
+/**
+ * Validates that a funnel is monotonically decreasing
+ * Property 10: Survival funnel is monotonically decreasing
+ * 
+ * Each step's count should be less than or equal to the previous step's count
+ */
+export function isFunnelMonotonicallyDecreasing(
+  steps: Array<{ count: number }>
+): boolean {
+  if (!steps || steps.length === 0) return true
+  for (let i = 1; i < steps.length; i++) {
+    if (steps[i].count > steps[i - 1].count) {
+      return false
+    }
+  }
+  return true
+}
+
+/**
+ * Finds the first step where the funnel increases (violation)
+ * Returns null if funnel is valid
+ */
+export function findFunnelViolation(
+  steps: Array<{ step: string; count: number }>
+): { step: string; previousCount: number; currentCount: number } | null {
+  if (!steps || steps.length < 2) return null
+  for (let i = 1; i < steps.length; i++) {
+    if (steps[i].count > steps[i - 1].count) {
+      return {
+        step: steps[i].step,
+        previousCount: steps[i - 1].count,
+        currentCount: steps[i].count,
+      }
+    }
+  }
+  return null
+}
 
 interface SurvivalOverview {
   daily: Array<{
@@ -169,11 +209,41 @@ export function SurvivalPanel({ days = 7 }: Props) {
 
       {/* Funnel */}
       <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-        <h3 className="text-sm font-medium text-neutral-400 mb-4">Player Funnel</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-neutral-400">Player Progression Funnel</h3>
+          {funnel?.funnel && !isFunnelMonotonicallyDecreasing(funnel.funnel) && (
+            <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded">
+              ⚠️ Data anomaly detected
+            </span>
+          )}
+        </div>
         {funnel?.funnel && funnel.funnel.length > 0 ? (
-          <FunnelChart 
-            steps={funnel.funnel.map(f => ({ label: f.label, count: f.count, rate: f.conversion_rate }))} 
-          />
+          <>
+            <FunnelChart 
+              steps={funnel.funnel.map(f => ({ label: f.label, count: f.count, rate: f.conversion_rate }))} 
+            />
+            {/* Funnel step details */}
+            <div className="mt-4 space-y-2">
+              {funnel.funnel.map((step, i) => (
+                <div key={step.step} className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-orange-500/20 text-orange-400 text-xs flex items-center justify-center">
+                      {i + 1}
+                    </span>
+                    <span className="text-neutral-300">{step.label}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-white font-medium">{step.count.toLocaleString()}</span>
+                    {i > 0 && (
+                      <span className={`text-xs ${step.drop_off > 50 ? 'text-red-400' : 'text-neutral-500'}`}>
+                        -{step.drop_off.toFixed(1)}%
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         ) : (
           <div className="text-neutral-500 text-sm">No funnel data</div>
         )}

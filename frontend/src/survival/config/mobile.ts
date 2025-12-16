@@ -101,16 +101,16 @@ export interface MobileConfig {
  */
 const TOUCH_ZONES: Record<DeviceType, TouchZoneConfig> = {
   mobile: {
-    // Portrait-optimized zones
-    leftZone: { x: [0, 0.35], y: [0.3, 1] },
-    rightZone: { x: [0.65, 1], y: [0.3, 1] },
-    jumpZone: { x: [0.35, 0.65], y: [0.3, 0.65] },
-    slideZone: { x: [0.35, 0.65], y: [0.65, 1] },
+    // Portrait-optimized zones - expanded jump zone for easier access
+    leftZone: { x: [0, 0.3], y: [0.3, 1] },
+    rightZone: { x: [0.7, 1], y: [0.3, 1] },
+    jumpZone: { x: [0.2, 0.8], y: [0.2, 0.7] },  // Much larger jump zone (was 0.3-0.65)
+    slideZone: { x: [0.2, 0.8], y: [0.7, 1] },
     pauseZone: { x: [0.85, 1], y: [0, 0.15] },
     
     swipeThreshold: 12,         // Ultra-responsive - minimal drag needed
-    swipeVelocity: 0.12,        // Quick flicks register instantly
-    tapTimeout: 150,            // Snappy tap detection
+    swipeVelocity: 0.10,        // Even quicker flicks register (was 0.12)
+    tapTimeout: 180,            // Slightly more forgiving tap detection (was 150)
     doubleTapTimeout: 250,
     holdDuration: 400,
     
@@ -208,7 +208,7 @@ const MOBILE_BALANCE: Record<DeviceType, MobileBalanceConfig> = {
     obstacleGapMultiplier: 1.1, // Slightly more space (was 1.15 - too easy)
     hitboxTolerance: 0.12,      // Slightly forgiving for touch controls
     inputBufferMs: 150,         // Tighter buffer - more responsive feel
-    coyoteTimeMs: 150,          // Snappier edge jumps
+    coyoteTimeMs: 180,          // More forgiving edge jumps (was 150)
     cameraDistance: 5.0,        // Pulled back slightly for better obstacle visibility
     cameraHeight: 5.5,          // Raised slightly for better view ahead
     fov: 68,                    // Slightly wider FOV for better peripheral vision
@@ -219,7 +219,7 @@ const MOBILE_BALANCE: Record<DeviceType, MobileBalanceConfig> = {
     obstacleGapMultiplier: 1.1,
     hitboxTolerance: 0.1,
     inputBufferMs: 175,
-    coyoteTimeMs: 125,
+    coyoteTimeMs: 160,          // More forgiving (was 125)
     cameraDistance: 5,
     cameraHeight: 5.5,
     fov: 68,
@@ -252,11 +252,11 @@ export function generateMobileConfig(caps?: DeviceCapabilities): MobileConfig {
   
   // Apply portrait/landscape adjustments
   if (capabilities.isPortrait && deviceType === 'mobile') {
-    // Adjust zones for portrait mode
-    touchConfig.leftZone = { x: [0, 0.4], y: [0.5, 1] }
-    touchConfig.rightZone = { x: [0.6, 1], y: [0.5, 1] }
-    touchConfig.jumpZone = { x: [0.2, 0.8], y: [0.3, 0.5] }
-    touchConfig.slideZone = { x: [0.2, 0.8], y: [0.7, 0.9] }
+    // Adjust zones for portrait mode - larger jump zone for easier access
+    touchConfig.leftZone = { x: [0, 0.35], y: [0.5, 1] }
+    touchConfig.rightZone = { x: [0.65, 1], y: [0.5, 1] }
+    touchConfig.jumpZone = { x: [0.15, 0.85], y: [0.2, 0.6] }  // Much larger (was 0.3-0.5)
+    touchConfig.slideZone = { x: [0.15, 0.85], y: [0.65, 0.95] }
   }
   
   // Apply safe area insets

@@ -1,5 +1,7 @@
 /**
  * CohortsPanel - Retention cohort analysis
+ * 
+ * Requirements: 7.3, 7.4 - Retention percentages and visual retention matrix
  */
 
 import { useEffect, useState } from 'react'
@@ -17,6 +19,31 @@ interface Cohort {
   day_30_retention?: number
   day_60_retention?: number
   day_90_retention?: number
+}
+
+/**
+ * Validates that a retention percentage is bounded between 0 and 100
+ * Property 8: Cohort retention percentages are bounded
+ */
+export function isValidRetentionPercentage(value: number | undefined | null): boolean {
+  if (value === undefined || value === null) return true // Missing values are valid
+  return value >= 0 && value <= 100
+}
+
+/**
+ * Validates all retention values in a cohort
+ */
+export function validateCohortRetention(cohort: Cohort): boolean {
+  const retentionFields = [
+    cohort.day_1_retention,
+    cohort.day_3_retention,
+    cohort.day_7_retention,
+    cohort.day_14_retention,
+    cohort.day_30_retention,
+    cohort.day_60_retention,
+    cohort.day_90_retention,
+  ]
+  return retentionFields.every(isValidRetentionPercentage)
 }
 
 interface Props {

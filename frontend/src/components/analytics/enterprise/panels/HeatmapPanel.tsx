@@ -1,5 +1,7 @@
 /**
  * HeatmapPanel - Click heatmap visualization
+ * 
+ * Requirements: 12.3 - Scroll depth milestone display
  */
 
 import { useEffect, useState } from 'react'
@@ -11,6 +13,47 @@ interface HeatmapData {
   total_clicks: number
   rage_clicks: Array<{ x_percent: number; y_percent: number; element_text?: string }>
   dead_clicks: Array<{ x_percent: number; y_percent: number; element_text?: string }>
+  scroll_milestones?: {
+    reached_25_pct: number
+    reached_50_pct: number
+    reached_75_pct: number
+    reached_100_pct: number
+    total_views: number
+  }
+}
+
+/**
+ * Validates that scroll depth milestones are monotonically decreasing
+ * Property 13: Scroll depth milestones are monotonically decreasing
+ * 
+ * The percentage of users reaching each milestone should decrease as depth increases
+ */
+export function areScrollMilestonesMonotonicallyDecreasing(
+  milestones: { reached_25_pct: number; reached_50_pct: number; reached_75_pct: number; reached_100_pct: number }
+): boolean {
+  return (
+    milestones.reached_25_pct >= milestones.reached_50_pct &&
+    milestones.reached_50_pct >= milestones.reached_75_pct &&
+    milestones.reached_75_pct >= milestones.reached_100_pct
+  )
+}
+
+/**
+ * Calculates scroll depth percentages from raw counts
+ */
+export function calculateScrollPercentages(
+  milestones: { reached_25_pct: number; reached_50_pct: number; reached_75_pct: number; reached_100_pct: number },
+  totalViews: number
+): { pct_25: number; pct_50: number; pct_75: number; pct_100: number } {
+  if (totalViews <= 0) {
+    return { pct_25: 0, pct_50: 0, pct_75: 0, pct_100: 0 }
+  }
+  return {
+    pct_25: (milestones.reached_25_pct / totalViews) * 100,
+    pct_50: (milestones.reached_50_pct / totalViews) * 100,
+    pct_75: (milestones.reached_75_pct / totalViews) * 100,
+    pct_100: (milestones.reached_100_pct / totalViews) * 100,
+  }
 }
 
 interface Props {
@@ -121,6 +164,14 @@ export function HeatmapPanel({ dateRange }: Props) {
             </div>
           </div>
 
+          {/* Scroll Depth Milestones */}
+          {data?.scroll_milestones && data.scroll_milestones.total_views > 0 && (
+            <ScrollDepthMilestones 
+              milestones={data.scroll_milestones} 
+              totalViews={data.scroll_milestones.total_views} 
+            />
+          )}
+
           {/* Problem Clicks */}
           {(data?.rage_clicks.length || data?.dead_clicks.length) ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -154,6 +205,71 @@ export function HeatmapPanel({ dateRange }: Props) {
           ) : null}
         </>
       )}
+    </div>
+  )
+}
+
+/**
+ * ScrollDepthMilestones - Displays scroll depth milestone percentages
+ * Requirement 12.3: Show 25%, 50%, 75%, 100% milestone percentages
+ */
+interface ScrollDepthMilestonesProps {
+  milestones: {
+    reached_25_pct: number
+    reached_50_pct: number
+    reached_75_pct: number
+    reached_100_pct: number
+  }
+  totalViews: number
+}
+
+function ScrollDepthMilestones({ milestones, totalViews }: ScrollDepthMilestonesProps) {
+  const percentages = calculateScrollPercentages(milestones, totalViews)
+  const isValid = areScrollMilestonesMonotonicallyDecreasing(milestones)
+
+  const milestoneData = [
+    { label: '25%', value: percentages.pct_25, count: milestones.reached_25_pct },
+    { label: '50%', value: percentages.pct_50, count: milestones.reached_50_pct },
+    { label: '75%', value: percentages.pct_75, count: milestones.reached_75_pct },
+    { label: '100%', value: percentages.pct_100, count: milestones.reached_100_pct },
+  ]
+
+  return (
+    <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-neutral-400">Scroll Depth Milestones</h3>
+        {!isValid && (
+          <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-1 rounded">
+            ⚠️ Data anomaly
+          </span>
+        )}
+      </div>
+      
+      <div className="grid grid-cols-4 gap-4">
+        {milestoneData.map((m) => (
+          <div key={m.label} className="text-center">
+            <div className="text-xs text-neutral-500 mb-1">Reached {m.label}</div>
+            <div className="text-2xl font-bold text-white">{m.value.toFixed(1)}%</div>
+            <div className="text-xs text-neutral-500">{m.count.toLocaleString()} users</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Visual bar representation */}
+      <div className="mt-4 space-y-2">
+        {milestoneData.map((m) => (
+          <div key={m.label} className="flex items-center gap-3">
+            <span className="text-xs text-neutral-500 w-12">{m.label}</span>
+            <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-blue-500 to-green-500 transition-all"
+                style={{ width: `${Math.min(m.value, 100)}%` }}
+              />
+            </div>
+            <span className="text-xs text-neutral-400 w-16 text-right">{m.value.toFixed(1)}%</span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

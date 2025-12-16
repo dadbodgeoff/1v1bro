@@ -1,10 +1,14 @@
 /**
  * SessionsPanel - Session explorer with export functionality
+ * 
+ * Requirements: 2.1, 2.2 - Clickable session IDs with Session Explorer modal
  */
 
 import { useEffect, useState, useCallback } from 'react'
 import { DataTable } from '../DataTable'
 import type { Column } from '../DataTable'
+import { SessionLink } from '../SessionLink'
+import { SessionExplorer } from '../SessionExplorer'
 import { useAuthStore } from '@/stores/authStore'
 import { API_BASE } from '@/utils/constants'
 import type { DateRange } from '../types'
@@ -35,6 +39,20 @@ export function SessionsPanel({ dateRange }: Props) {
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [exporting, setExporting] = useState(false)
+  
+  // Session Explorer state
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
+  const [isExplorerOpen, setIsExplorerOpen] = useState(false)
+  
+  const handleSessionClick = (sessionId: string) => {
+    setSelectedSessionId(sessionId)
+    setIsExplorerOpen(true)
+  }
+  
+  const handleCloseExplorer = () => {
+    setIsExplorerOpen(false)
+    setSelectedSessionId(null)
+  }
 
   const fetchSessions = useCallback(async () => {
     setLoading(true)
@@ -109,6 +127,16 @@ export function SessionsPanel({ dateRange }: Props) {
   }
 
   const columns: Column<Session>[] = [
+    {
+      key: 'session_id',
+      label: 'Session',
+      render: (r) => (
+        <SessionLink 
+          sessionId={r.session_id} 
+          onClick={handleSessionClick}
+        />
+      )
+    },
     { 
       key: 'started_at', 
       label: 'Started', 
@@ -240,6 +268,15 @@ export function SessionsPanel({ dateRange }: Props) {
           </>
         )}
       </div>
+      
+      {/* Session Explorer Modal */}
+      {selectedSessionId && (
+        <SessionExplorer
+          sessionId={selectedSessionId}
+          isOpen={isExplorerOpen}
+          onClose={handleCloseExplorer}
+        />
+      )}
     </div>
   )
 }

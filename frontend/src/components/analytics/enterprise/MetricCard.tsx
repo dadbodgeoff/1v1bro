@@ -1,34 +1,91 @@
 /**
  * MetricCard - Reusable metric display component
+ * 
+ * Requirements: 10.4 - Display value, label, trend indicator, and comparison to previous period
  */
 
 import type { ReactNode } from 'react'
 
-interface MetricCardProps {
+export type MetricFormat = 'number' | 'percent' | 'duration' | 'currency'
+
+export interface MetricCardProps {
   label: string
   value: number | string | null | undefined
+  previousValue?: number // For trend calculation
   unit?: string
-  change?: number // percentage change
+  change?: number // percentage change (overrides calculated trend)
+  format?: MetricFormat
+  trend?: 'up' | 'down' | 'neutral' // Override calculated trend direction
+  trendLabel?: string // Custom label for trend (e.g., "vs last week")
   icon?: ReactNode
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'success' | 'warning' | 'danger'
+  loading?: boolean
+}
+
+/**
+ * Calculates the percentage change between current and previous values
+ * Returns null if calculation is not possible
+ */
+export function calculateTrendPercentage(
+  currentValue: number | string | null | undefined,
+  previousValue: number | undefined
+): number | null {
+  if (previousValue === undefined || previousValue === null) return null
+  if (currentValue === null || currentValue === undefined) return null
+  if (typeof currentValue === 'string') return null
+  if (previousValue === 0) {
+    // If previous was 0 and current is positive, it's infinite growth
+    // Return 100% as a reasonable cap
+    return currentValue > 0 ? 100 : 0
+  }
+  return ((currentValue - previousValue) / Math.abs(previousValue)) * 100
+}
+
+/**
+ * Determines trend direction based on percentage change
+ */
+export function getTrendDirection(change: number | null): 'up' | 'down' | 'neutral' {
+  if (change === null || Math.abs(change) < 0.1) return 'neutral'
+  return change > 0 ? 'up' : 'down'
 }
 
 export function MetricCard({ 
   label, 
   value, 
+  previousValue,
   unit = '', 
   change,
+  format = 'number',
+  trend,
+  trendLabel,
   icon,
   size = 'md',
   variant = 'default',
+  loading = false,
 }: MetricCardProps) {
+  // Calculate trend from previousValue if change not provided
+  const calculatedChange = change ?? calculateTrendPercentage(value, previousValue)
+  const trendDirection = trend ?? getTrendDirection(calculatedChange)
+
   const formatValue = (v: number | string | null | undefined) => {
     if (v === null || v === undefined) return '—'
     if (typeof v === 'string') return v
-    if (v >= 1000000) return `${(v / 1000000).toFixed(1)}M`
-    if (v >= 1000) return `${(v / 1000).toFixed(1)}K`
-    return v.toLocaleString()
+    
+    switch (format) {
+      case 'percent':
+        return `${v.toFixed(1)}%`
+      case 'duration':
+        if (v < 60) return `${Math.round(v)}s`
+        if (v < 3600) return `${Math.floor(v / 60)}m ${Math.round(v % 60)}s`
+        return `${Math.floor(v / 3600)}h ${Math.floor((v % 3600) / 60)}m`
+      case 'currency':
+        return `$${v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      default:
+        if (v >= 1000000) return `${(v / 1000000).toFixed(1)}M`
+        if (v >= 1000) return `${(v / 1000).toFixed(1)}K`
+        return v.toLocaleString()
+    }
   }
 
   const sizeClasses = {
@@ -50,6 +107,27 @@ export function MetricCard({
     danger: 'text-red-400',
   }
 
+  const trendColors = {
+    up: 'text-green-400',
+    down: 'text-red-400',
+    neutral: 'text-neutral-500',
+  }
+
+  const trendIcons = {
+    up: '↑',
+    down: '↓',
+    neutral: '→',
+  }
+
+  if (loading) {
+    return (
+      <div className={`bg-white/5 rounded-xl border border-white/10 ${sizeClasses[size]} animate-pulse`}>
+        <div className="h-3 bg-white/10 rounded w-1/2 mb-3" />
+        <div className="h-8 bg-white/10 rounded w-3/4" />
+      </div>
+    )
+  }
+
   return (
     <div className={`bg-white/5 rounded-xl border border-white/10 ${sizeClasses[size]}`}>
       <div className="flex items-center justify-between mb-2">
@@ -62,9 +140,11 @@ export function MetricCard({
         </span>
         {unit && <span className="text-sm text-neutral-500">{unit}</span>}
       </div>
-      {change !== undefined && (
-        <div className={`text-xs mt-1 ${change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-          {change >= 0 ? '↑' : '↓'} {Math.abs(change).toFixed(1)}%
+      {calculatedChange !== null && (
+        <div className={`text-xs mt-1 flex items-center gap-1 ${trendColors[trendDirection]}`}>
+          <span>{trendIcons[trendDirection]}</span>
+          <span>{Math.abs(calculatedChange).toFixed(1)}%</span>
+          {trendLabel && <span className="text-neutral-500">{trendLabel}</span>}
         </div>
       )}
     </div>

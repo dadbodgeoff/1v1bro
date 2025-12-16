@@ -41,6 +41,10 @@ export class CityScape {
   private cityModel: THREE.Group | null = null
   private instances: THREE.Group[] = []
   private initialized: boolean = false
+  
+  // Damage effect state
+  private damageEffectActive: boolean = false
+  private damageEffectTimeout: ReturnType<typeof setTimeout> | null = null
 
   constructor(scene: THREE.Scene, config: Partial<CityScapeConfig> = {}) {
     this.scene = scene
@@ -112,6 +116,9 @@ export class CityScape {
           if (mat instanceof THREE.MeshStandardMaterial) {
             mat.envMapIntensity = 0.3 // Reduce reflection intensity
             mat.roughness = Math.max(mat.roughness, 0.5) // Less shiny = less GPU work
+            // Ensure emissive starts at zero (fixes mobile red tint issue)
+            mat.emissive.setHex(0x000000)
+            mat.emissiveIntensity = 0
           }
           // Disable features we don't need for background scenery
           mat.fog = false // Cities don't need fog
@@ -193,9 +200,90 @@ export class CityScape {
   }
 
   /**
+   * Trigger damage effect - briefly tint city red
+   * Matches the nebula damage effect timing
+   */
+  triggerDamageEffect(): void {
+    if (!this.initialized || this.damageEffectActive) return
+    
+    this.damageEffectActive = true
+    
+    // Apply red tint to all city materials
+    this.instances.forEach(city => {
+      city.traverse(obj => {
+        if (obj instanceof THREE.Mesh && obj.material) {
+          const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
+          materials.forEach(mat => {
+            if (mat instanceof THREE.MeshStandardMaterial) {
+              // Shift toward red
+              mat.emissive.setHex(0x330000)
+              mat.emissiveIntensity = 0.3
+              mat.needsUpdate = true
+            }
+          })
+        }
+      })
+    })
+    
+    // Clear any existing timeout
+    if (this.damageEffectTimeout) {
+      clearTimeout(this.damageEffectTimeout)
+    }
+    
+    // Reset after delay (matches nebula's 500ms)
+    this.damageEffectTimeout = setTimeout(() => {
+      this.restoreColors()
+      this.damageEffectActive = false
+      this.damageEffectTimeout = null
+    }, 500)
+  }
+
+  /**
+   * Restore original material colors after damage effect
+   * Note: Cloned instances share materials with the source model,
+   * so we just need to clear the emissive tint
+   */
+  restoreColors(): void {
+    this.instances.forEach(city => {
+      city.traverse(obj => {
+        if (obj instanceof THREE.Mesh && obj.material) {
+          const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
+          materials.forEach(mat => {
+            if (mat instanceof THREE.MeshStandardMaterial) {
+              // Clear the red emissive tint
+              mat.emissive.setHex(0x000000)
+              mat.emissiveIntensity = 0
+              mat.needsUpdate = true
+            }
+          })
+        }
+      })
+    })
+  }
+
+  /**
+   * Force restore colors - call this to ensure city is not stuck in red state
+   * Useful for game reset or when switching modes
+   */
+  forceRestoreColors(): void {
+    if (this.damageEffectTimeout) {
+      clearTimeout(this.damageEffectTimeout)
+      this.damageEffectTimeout = null
+    }
+    this.damageEffectActive = false
+    this.restoreColors()
+  }
+
+  /**
    * Dispose all resources
    */
   dispose(): void {
+    // Clear any pending damage effect timeout
+    if (this.damageEffectTimeout) {
+      clearTimeout(this.damageEffectTimeout)
+      this.damageEffectTimeout = null
+    }
+    
     this.instances.forEach(inst => {
       this.scene.remove(inst)
       inst.traverse(obj => {
@@ -212,5 +300,6 @@ export class CityScape {
     this.instances = []
     this.cityModel = null
     this.initialized = false
+    this.damageEffectActive = false
   }
 }

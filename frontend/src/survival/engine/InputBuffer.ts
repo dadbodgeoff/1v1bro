@@ -55,15 +55,28 @@ export class InputBuffer {
 
   /**
    * Add an input to the buffer
+   * For jump actions, we allow refreshing the timestamp to support mashing
    */
   push(action: InputAction): void {
-    // Don't buffer if already in buffer (prevent spam)
-    const existing = this.buffer.find(b => b.action === action && !b.consumed)
-    if (existing) return
+    const now = performance.now()
+    
+    // For jump/slide, refresh timestamp if already buffered (supports mashing)
+    // This makes repeated taps feel more responsive
+    if (action === 'jump' || action === 'slide') {
+      const existing = this.buffer.find(b => b.action === action && !b.consumed)
+      if (existing) {
+        existing.timestamp = now // Refresh the buffer time
+        return
+      }
+    } else {
+      // For other actions, don't buffer if already present (prevent spam)
+      const existing = this.buffer.find(b => b.action === action && !b.consumed)
+      if (existing) return
+    }
     
     this.buffer.push({
       action,
-      timestamp: performance.now(),
+      timestamp: now,
       consumed: false,
     })
     

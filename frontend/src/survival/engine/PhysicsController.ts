@@ -75,7 +75,7 @@ export class PhysicsController {
 
   // AAA Feature: Jump Buffering - queue jump before landing
   private jumpBufferTimer: number = 0
-  private readonly JUMP_BUFFER_TIME: number = 0.15 // 150ms buffer window
+  private readonly JUMP_BUFFER_TIME: number = 0.18 // 180ms buffer window (more forgiving)
 
   // AAA Feature: Landing detection for squash/stretch
   private justLanded: boolean = false
