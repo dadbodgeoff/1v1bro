@@ -50,7 +50,7 @@ function SurvivalGameContent() {
   const { user, token, isAuthenticated } = useAuthStore()
   const { loadoutWithDetails, fetchLoadout } = useCosmeticsStore()
   const { leaderboard, refresh: refreshRank } = useLeaderboard({ autoStart: true })
-  const { isMobile, enableTriviaBillboards } = useMobileDetection()
+  const { isMobile, enableTriviaBillboards, isMobileBrowser } = useMobileDetection()
   
   const playerRank = leaderboard?.playerEntry
   const [showGameOver, setShowGameOver] = useState(false)
@@ -336,8 +336,17 @@ function SurvivalGameContent() {
 
   if (!isAuthenticated) return null
 
+  // Use dvh (dynamic viewport height) on mobile browsers to account for browser chrome
+  // PWA/standalone mode can use regular vh since there's no browser UI
+  const containerStyle = isMobileBrowser 
+    ? { height: '100dvh', minHeight: '-webkit-fill-available' } 
+    : { height: '100vh' }
+
   return (
-    <div className="fixed inset-0 bg-[#09090b] text-white overflow-hidden flex flex-col">
+    <div 
+      className="fixed inset-x-0 top-0 bg-[#09090b] text-white overflow-hidden flex flex-col"
+      style={containerStyle}
+    >
       {/* Loading */}
       {isLoading && loadingProgress && (
         <EnterpriseLoadingScreen progress={loadingProgress} onRetry={() => window.location.reload()} />

@@ -44,7 +44,7 @@ function SurvivalInstantPlayContent() {
   const { isAuthenticated } = useAuthStore()
   const guestSession = useRef(getSurvivalGuestSession())
   const survivalAnalytics = useSurvivalAnalytics()
-  const { isMobile, enableTriviaBillboards } = useMobileDetection()
+  const { isMobile, enableTriviaBillboards, isMobileBrowser } = useMobileDetection()
   
   const [showGameOver, setShowGameOver] = useState(false)
   const [showReadyCard, setShowReadyCard] = useState(true)
@@ -325,14 +325,17 @@ function SurvivalInstantPlayContent() {
 
   if (isAuthenticated) return null
 
-  // Calculate game area height for mobile with trivia panel
-  // Account for iOS safe area (home indicator) on top of panel height
-  const gameAreaHeight = showMobileTrivia 
-    ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px - env(safe-area-inset-bottom, 0px))` 
-    : '100vh'
+  // Use dvh (dynamic viewport height) on mobile browsers to account for browser chrome
+  // PWA/standalone mode can use regular vh since there's no browser UI
+  const containerStyle = isMobileBrowser 
+    ? { height: '100dvh', minHeight: '-webkit-fill-available' } 
+    : { height: '100vh' }
 
   return (
-    <div className="fixed inset-0 bg-[#09090b] text-white overflow-hidden">
+    <div 
+      className="fixed inset-x-0 top-0 bg-[#09090b] text-white overflow-hidden flex flex-col"
+      style={containerStyle}
+    >
       {/* Loading */}
       {isLoading && loadingProgress && (
         <EnterpriseLoadingScreen progress={loadingProgress} onRetry={() => window.location.reload()} />
@@ -352,18 +355,17 @@ function SurvivalInstantPlayContent() {
         </div>
       )}
 
-      {/* Game Canvas Container - takes remaining space above trivia */}
+      {/* Game Canvas Container - flex-1 takes remaining space above trivia */}
       <div 
         ref={containerRef} 
-        className="absolute top-0 left-0 right-0 overflow-hidden"
-        style={{ height: gameAreaHeight }}
+        className="relative flex-1 overflow-hidden"
       />
 
-      {/* HUD - positioned within game area */}
+      {/* HUD - positioned within game area (above trivia panel) */}
       {!isLoading && !error && gameState && (
         <div 
-          style={{ height: gameAreaHeight }} 
           className="absolute top-0 left-0 right-0 pointer-events-none overflow-hidden"
+          style={{ bottom: showMobileTrivia ? `calc(${TRIVIA_PANEL_HEIGHT}px + env(safe-area-inset-bottom, 0px))` : '0' }}
         >
           <div className="relative w-full h-full pointer-events-auto">
             <SurvivalHUD 
@@ -391,14 +393,20 @@ function SurvivalInstantPlayContent() {
       
       {/* Performance Stats - position above trivia panel on mobile */}
       {!isLoading && performanceMetrics && (
-        <div className="absolute left-2 z-10" style={{ bottom: showMobileTrivia ? `${TRIVIA_PANEL_HEIGHT + 8}px` : '8px' }}>
+        <div 
+          className="absolute left-2 z-10" 
+          style={{ bottom: showMobileTrivia ? `calc(${TRIVIA_PANEL_HEIGHT}px + env(safe-area-inset-bottom, 0px) + 8px)` : '8px' }}
+        >
           <PerformanceOverlay metrics={performanceMetrics} memoryStats={getMemoryStats()} isMobile={isMobile} />
         </div>
       )}
 
       {/* Action Buttons - position above trivia panel on mobile */}
       {!isLoading && gameState && phase !== 'ready' && (
-        <div className="absolute right-4 z-10 flex gap-2" style={{ bottom: showMobileTrivia ? `${TRIVIA_PANEL_HEIGHT + 8}px` : '16px' }}>
+        <div 
+          className="absolute right-4 z-10 flex gap-2" 
+          style={{ bottom: showMobileTrivia ? `calc(${TRIVIA_PANEL_HEIGHT}px + env(safe-area-inset-bottom, 0px) + 8px)` : '16px' }}
+        >
           {phase === 'running' && (
             <EnterpriseButton onClick={pause} variant="secondary" size="sm">⏸ Pause</EnterpriseButton>
           )}
@@ -426,12 +434,9 @@ function SurvivalInstantPlayContent() {
         />
       )}
 
-      {/* Mobile Trivia Panel - fixed at bottom, high z-index for touch priority */}
+      {/* Mobile Trivia Panel - flex item at bottom, not overlapping game area */}
       {showMobileTrivia && (
-        <div 
-          className="absolute bottom-0 left-0 right-0 z-50"
-          style={{ touchAction: 'manipulation' }}
-        >
+        <div className="flex-shrink-0 z-20">
           <TriviaPanel
             isActive={phase === 'running'}
             getNextQuestion={getNextMobileQuestion}
