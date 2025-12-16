@@ -19,10 +19,39 @@ const DEFAULT_SETTINGS: SoundSettings = {
   muted: false,
 }
 
+const STORAGE_KEY = '1v1bro_sound_settings'
+
+/**
+ * Load saved sound settings from localStorage
+ */
+function loadSavedSettings(): SoundSettings {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      return { ...DEFAULT_SETTINGS, ...parsed }
+    }
+  } catch {
+    // Ignore parse errors
+  }
+  return { ...DEFAULT_SETTINGS }
+}
+
+/**
+ * Save sound settings to localStorage
+ */
+function saveSettings(settings: SoundSettings): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
+  } catch {
+    // Ignore storage errors (private browsing, etc)
+  }
+}
+
 export class SynthSoundManager {
   private ctx: AudioContext | null = null
   private masterGain: GainNode | null = null
-  private settings: SoundSettings = { ...DEFAULT_SETTINGS }
+  private settings: SoundSettings = loadSavedSettings()
   
   // Continuous sounds
   private windSource: AudioBufferSourceNode | null = null
@@ -1132,10 +1161,13 @@ export class SynthSoundManager {
   // ============================================
 
   /**
-   * Update settings
+   * Update settings (persists to localStorage)
    */
   setSettings(settings: Partial<SoundSettings>): void {
     this.settings = { ...this.settings, ...settings }
+    
+    // Persist to localStorage so preference is remembered
+    saveSettings(this.settings)
     
     if (this.masterGain) {
       const volume = this.settings.muted ? 0 : this.settings.masterVolume * this.settings.sfxVolume
