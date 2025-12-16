@@ -103,10 +103,25 @@ export class PlayerController {
     this.mesh = mesh
     this.height = height
     
-    // Set initial position
+    // Set initial position - Y will be set properly by setInitialY() after track loads
     this.position.y = height / 2 + 0.5
     this.position.previousY = this.position.y
     
+    this.updateMeshPosition(0)
+  }
+
+  // Track surface height for proper Y positioning
+  private trackSurfaceHeight: number = 0
+
+  /**
+   * Set initial Y position based on track surface height
+   * Called after track is loaded to ensure player starts at correct height
+   */
+  setInitialY(trackSurfaceHeight: number): void {
+    this.trackSurfaceHeight = trackSurfaceHeight
+    this.position.y = trackSurfaceHeight
+    this.position.previousY = trackSurfaceHeight
+    console.log(`[PlayerController] Initial Y set to track surface: ${trackSurfaceHeight}`)
     this.updateMeshPosition(0)
   }
 
@@ -450,9 +465,11 @@ export class PlayerController {
    * Reset to initial state
    */
   reset(): void {
+    // Use track surface height if set, otherwise fall back to old calculation
+    const initialY = this.trackSurfaceHeight > 0 ? this.trackSurfaceHeight : this.height / 2 + 0.5
     this.position = {
-      x: 0, y: this.height / 2 + 0.5, z: 8,
-      previousX: 0, previousY: this.height / 2 + 0.5, previousZ: 8,
+      x: 0, y: initialY, z: 8,
+      previousX: 0, previousY: initialY, previousZ: 8,
     }
     this.currentLane = 0
     this.targetLane = 0
@@ -478,7 +495,7 @@ export class PlayerController {
     this.runCycleSpeed = this.BASE_RUN_CYCLE_SPEED
     
     if (this.mesh) {
-      this.mesh.position.set(0, this.height / 2 + 0.5, 8)
+      this.mesh.position.set(0, initialY, 8)
       this.mesh.rotation.set(0, Math.PI / 2, 0)
       this.mesh.scale.set(
         this.runnerScale,

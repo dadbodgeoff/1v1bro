@@ -114,6 +114,20 @@ export class PlayerManager {
   }
 
   /**
+   * Set initial Y position based on track surface height
+   * Called after track is loaded to ensure player starts at correct height for collision
+   */
+  setInitialY(trackSurfaceHeight: number): void {
+    this.playerController.setInitialY(trackSurfaceHeight)
+    
+    // Also update animation controller position if it exists
+    if (this.animationController) {
+      const playerPos = this.playerController.getPosition()
+      this.animationController.setPosition(playerPos.x, playerPos.y, playerPos.z)
+    }
+  }
+
+  /**
    * Respawn player after death
    */
   respawnPlayer(state: SurvivalGameState): void {
