@@ -1,6 +1,10 @@
 /**
  * GameOverOverlay - Game over screen with stats
- * Supports both guest and authenticated modes
+ * 
+ * Enterprise-grade component following brand guidelines:
+ * - No hardcoded strings - all text configurable via props
+ * - Consistent typography from EnterpriseOverlays
+ * - Brand colors from COLORS constant
  */
 
 import { memo } from 'react'
@@ -17,6 +21,10 @@ import {
   XPDisplay,
 } from '../EnterpriseOverlays'
 import type { TriviaStats } from '@/survival/hooks/useSurvivalTrivia'
+
+// ============================================
+// Types
+// ============================================
 
 // Base stats shared between guest and auth modes
 export interface BaseRunStats {
@@ -46,6 +54,14 @@ interface GameOverOverlayBaseProps {
   onViewLeaderboard: () => void
   onBack: () => void
   backLabel?: string
+  /** Custom title for new PB - defaults to "New Personal Best!" */
+  newPBTitle?: string
+  /** Custom title for game over - defaults to "Game Over" */
+  gameOverTitle?: string
+  /** Play again button label */
+  playAgainLabel?: string
+  /** View leaderboard button label */
+  leaderboardLabel?: string
 }
 
 interface GuestGameOverOverlayProps extends GameOverOverlayBaseProps {
@@ -64,12 +80,29 @@ interface AuthGameOverOverlayProps extends GameOverOverlayBaseProps {
 
 type GameOverOverlayProps = GuestGameOverOverlayProps | AuthGameOverOverlayProps
 
+// ============================================
+// Component
+// ============================================
+
 export const GameOverOverlay = memo((props: GameOverOverlayProps) => {
-  const { stats, onPlayAgain, onViewLeaderboard, onBack, backLabel = 'Back' } = props
+  const { 
+    stats, 
+    onPlayAgain, 
+    onViewLeaderboard, 
+    onBack, 
+    backLabel = 'Back',
+    newPBTitle = 'New Personal Best!',
+    gameOverTitle = 'Game Over',
+    playAgainLabel = 'Play Again',
+    leaderboardLabel = 'View Leaderboard',
+  } = props
   
   const triviaAccuracy = stats.triviaStats.questionsAnswered > 0 
     ? Math.round((stats.triviaStats.questionsCorrect / stats.triviaStats.questionsAnswered) * 100) 
     : 0
+
+  // Determine title based on PB status
+  const title = stats.isNewPB ? `🎉 ${newPBTitle.toUpperCase()}` : gameOverTitle.toUpperCase()
 
   return (
     <OverlayContainer blur="md" darkness={70}>
@@ -83,7 +116,7 @@ export const GameOverOverlay = memo((props: GameOverOverlayProps) => {
           size="lg"
           glow={stats.isNewPB}
         >
-          {stats.isNewPB ? '🎉 NEW PERSONAL BEST!' : 'GAME OVER'}
+          {title}
         </EnterpriseTitle>
 
         {/* Run Stats - Distance & Score */}
@@ -152,10 +185,10 @@ export const GameOverOverlay = memo((props: GameOverOverlayProps) => {
         {/* Actions */}
         <div className="space-y-3">
           <EnterpriseButton onClick={onPlayAgain} variant="primary" fullWidth shortcut="R">
-            Play Again
+            {playAgainLabel}
           </EnterpriseButton>
           <EnterpriseButton onClick={onViewLeaderboard} variant="secondary" fullWidth>
-            View Leaderboard
+            {leaderboardLabel}
           </EnterpriseButton>
           <EnterpriseButton onClick={onBack} variant="ghost" fullWidth>
             {backLabel}
@@ -186,7 +219,7 @@ const GuestContent = memo(({
         <RankDisplay 
           rank={stats.estimatedRank}
           totalPlayers={stats.totalPlayers}
-          label="This run would rank"
+          label="Your Rank"
           size="md"
         />
       </div>
@@ -206,10 +239,10 @@ const GuestContent = memo(({
       <>
         <EnterpriseDivider />
         <HighlightBox gradient="orange" animate>
-          <p className="text-white font-medium text-center mb-2">
+          <p className="text-white font-semibold text-center mb-2">
             Want to save this run?
           </p>
-          <p className="text-gray-400 text-sm text-center mb-3">
+          <p className="text-neutral-400 text-sm text-center mb-3 font-medium">
             Create an account to save your progress, compete on leaderboards, and unlock rewards!
           </p>
           <EnterpriseButton onClick={onCreateAccount} variant="primary" fullWidth size="sm">

@@ -115,6 +115,16 @@ function SurvivalGameContent() {
   // Track previous rank for change detection
   const previousRankRef = useRef<number | undefined>(playerRank?.rank)
   const previousBestRef = useRef<number | undefined>(playerRank?.bestDistance)
+  
+  // Update refs when playerRank loads (fixes isNewPB always being true on first load)
+  useEffect(() => {
+    if (playerRank?.bestDistance !== undefined && previousBestRef.current === undefined) {
+      previousBestRef.current = playerRank.bestDistance
+    }
+    if (playerRank?.rank !== undefined && previousRankRef.current === undefined) {
+      previousRankRef.current = playerRank.rank
+    }
+  }, [playerRank?.bestDistance, playerRank?.rank])
 
   // Game over handler - uses ref so it doesn't need trivia in deps
   const handleGameOver = useCallback(async (score: number, distance: number) => {

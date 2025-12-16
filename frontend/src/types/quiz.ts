@@ -4,7 +4,17 @@
  */
 
 export type QuizDifficulty = 'casual' | 'moderate' | 'expert' | 'legendary' | 'impossible'
-export type QuizCategory = 'seasons' | 'events' | 'skins' | 'weapons' | 'esports' | 'collabs' | 'maps' | 'mixed' | 'nfl' | 'general' | 'history' | 'cosmetics' | 'gameplay' | 'lore' | 'competitive' | 'movies'
+// Fortnite categories
+export type FortniteCategory = 'seasons' | 'events' | 'skins' | 'weapons' | 'esports' | 'collabs' | 'maps' | 'cosmetics' | 'gameplay' | 'lore' | 'competitive'
+
+// Movie categories  
+export type MovieCategory = 'classic' | 'blockbuster' | 'directors' | 'awards' | 'quotes' | 'horror' | 'scifi' | 'animation' | 'franchise' | 'mcu' | 'dc' | 'actors' | '90s' | '2000s' | '2010s' | '2020s' | 'comedy' | 'action' | 'romance' | 'musical' | 'thriller' | 'anime' | 'biopic' | 'war' | 'sports' | 'crime' | 'western' | 'fantasy' | 'pixar'
+
+// NFL categories
+export type NFLCategory = 'nfl'
+
+// Combined category type
+export type QuizCategory = FortniteCategory | MovieCategory | NFLCategory | 'mixed' | 'general' | 'history' | 'movies'
 export type QuizMode = 'classic' | 'speed' | 'era-battle' | 'timeline' | 'personality'
 
 export interface QuizQuestion {
