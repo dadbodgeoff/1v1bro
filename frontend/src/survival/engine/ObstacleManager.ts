@@ -376,48 +376,29 @@ export class ObstacleManager {
   }
 
   /**
-   * Add emissive glow and rim lighting to obstacle materials for better visibility
-   * This helps obstacles stand out against the track color scheme
-   * Uses emissive materials (zero runtime cost) + slight hue shift for silhouette
+   * Boost obstacle visibility by adding subtle emissive glow using original colors
+   * Only applies to barriers - keeps original GLB colors, just makes them brighter
    */
   private addEmissiveGlow(mesh: THREE.Group, type: ObstacleType): void {
-    // Define emissive/rim colors for each obstacle type
-    // Using brand-compliant colors (no cyan/teal/purple per BRAND_SYSTEM.md)
-    // Colors: orange (#F97316), indigo (#6366F1), emerald (#10B981), rose (#F43F5E), amber (#F59E0B)
-    const emissiveConfig: Record<ObstacleType, { color: number; intensity: number; rimColor?: number }> = {
-      highBarrier: { color: 0xf43f5e, intensity: 0.4, rimColor: 0xef4444 },  // Rose/red - danger, slide under
-      lowBarrier: { color: 0x6366f1, intensity: 0.5, rimColor: 0x4f46e5 },   // Indigo - action, jump over
-      spikes: { color: 0xf97316, intensity: 0.5, rimColor: 0xea580c },       // Brand orange - warning
-      laneBarrier: { color: 0xf59e0b, intensity: 0.3, rimColor: 0xd97706 },  // Amber - caution
-      knowledgeGate: { color: 0x10b981, intensity: 0.4, rimColor: 0x059669 }, // Emerald - trivia gate
-      gap: { color: 0xef4444, intensity: 0.6 },                               // Red warning
+    // Only boost visibility for barriers (the ones that spawn)
+    if (type !== 'highBarrier' && type !== 'lowBarrier') {
+      return
     }
-    
-    const config = emissiveConfig[type]
-    if (!config) return
     
     mesh.traverse((child) => {
       if (child instanceof THREE.Mesh && child.material) {
         const materials = Array.isArray(child.material) ? child.material : [child.material]
         materials.forEach((mat) => {
           if (mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.MeshPhysicalMaterial) {
-            // Add emissive glow for visibility
-            mat.emissive = new THREE.Color(config.color)
-            mat.emissiveIntensity = config.intensity
-            
-            // Slight hue shift on base color for better silhouette
-            // This makes obstacles visually distinct from track
-            if (config.rimColor) {
-              const rimColor = new THREE.Color(config.rimColor)
-              // Blend rim color into existing color (20% mix)
-              if (mat.color) {
-                mat.color.lerp(rimColor, 0.15)
-              }
+            // Use the material's existing color for emissive (keeps original look)
+            // Just add a subtle glow of the same color for visibility
+            if (mat.color) {
+              mat.emissive = mat.color.clone()
+              mat.emissiveIntensity = 0.15 // Subtle glow, not overpowering
             }
             
-            // Boost metalness slightly for better light reflection
-            mat.metalness = Math.min(1, (mat.metalness || 0) + 0.2)
-            mat.roughness = Math.max(0.2, (mat.roughness || 0.5) - 0.1)
+            // Slightly boost brightness by reducing roughness
+            mat.roughness = Math.max(0.2, (mat.roughness || 0.5) - 0.15)
           }
         })
       }

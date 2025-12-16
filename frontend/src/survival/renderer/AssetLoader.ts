@@ -432,7 +432,7 @@ export class AssetLoader {
 
   /**
    * Load city model asynchronously (for skyline below track)
-   * Now enabled on mobile with aggressive optimizations
+   * Now enabled on mobile - only downscales textures, preserves original lighting
    */
   async loadCityAsync(): Promise<THREE.Group | null> {
     if (!SURVIVAL_ASSETS.environment?.city) return null
@@ -440,14 +440,14 @@ export class AssetLoader {
     try {
       const city = await this.loadModel(SURVIVAL_ASSETS.environment.city, 'city')
       
-      // Aggressive optimization for mobile - downscale textures to 256px
+      // Only downscale textures on mobile - preserve original lighting/materials
+      // Don't call optimizeModelForMobile() as it strips lighting properties
       if (this.isSafariMobile) {
         this.downscaleModelTextures(city, 256)
-        this.optimizeModelForMobile(city)
-        console.log('[AssetLoader] City loaded with mobile optimizations (256px textures)')
+        console.log('[AssetLoader] City loaded with 256px textures (original lighting preserved)')
       } else if (this.maxTextureSize <= 1024) {
         this.downscaleModelTextures(city, 512)
-        console.log('[AssetLoader] City loaded with reduced textures (512px)')
+        console.log('[AssetLoader] City loaded with 512px textures')
       }
       
       return city
