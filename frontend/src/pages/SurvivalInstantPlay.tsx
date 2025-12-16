@@ -152,7 +152,7 @@ function SurvivalInstantPlayContent() {
     start, pause, resume, reset, setMuted, isMuted,
     currentMilestone, milestoneProgress, nextMilestone,
     currentAchievement, dismissAchievement, quickRestart,
-    loseLife, addScore, setTriviaStats, getMemoryStats,
+    loseLife, addScore, setTriviaStats, getMemoryStats, resize,
   } = useSurvivalGame({ onGameOver: handleGameOver })
 
   const phase = gameState?.phase ?? 'loading'
@@ -161,8 +161,15 @@ function SurvivalInstantPlayContent() {
   // Calculate if mobile trivia should show
   const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
   
-  // Note: Renderer uses ResizeObserver to automatically detect container size changes
-  // No manual resize handling needed here - the renderer handles it
+  // Trigger resize when trivia panel shows/hides
+  // ResizeObserver should handle this, but we also trigger manually for reliability
+  useEffect(() => {
+    // Small delay to let CSS update the container height first
+    const timer = setTimeout(() => {
+      resize?.()
+    }, 50)
+    return () => clearTimeout(timer)
+  }, [showMobileTrivia, resize])
 
   // Update trivia stats helper
   const updateTriviaStats = useCallback((correct: boolean, points: number = 0) => {

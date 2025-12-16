@@ -156,7 +156,7 @@ function SurvivalGameContent() {
     loadPersonalBestGhost, isGhostActive,
     currentMilestone, milestoneProgress, nextMilestone,
     currentAchievement, dismissAchievement, quickRestart,
-    setTriviaStats, getMemoryStats,
+    setTriviaStats, getMemoryStats, resize,
   } = useSurvivalGameWithAnalytics({
     onGameOver: handleGameOver,
     analyticsEnabled: true,
@@ -169,8 +169,15 @@ function SurvivalGameContent() {
   // Calculate if mobile trivia should show
   const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
   
-  // Note: Renderer uses ResizeObserver to automatically detect container size changes
-  // No manual resize handling needed here - the renderer handles it
+  // Trigger resize when trivia panel shows/hides
+  // ResizeObserver should handle this, but we also trigger manually for reliability
+  useEffect(() => {
+    // Small delay to let CSS update the container height first
+    const timer = setTimeout(() => {
+      resize?.()
+    }, 50)
+    return () => clearTimeout(timer)
+  }, [showMobileTrivia, resize])
 
   // Update trivia stats helper
   const updateTriviaStats = useCallback((correct: boolean, points: number = 0) => {
@@ -330,7 +337,10 @@ function SurvivalGameContent() {
   if (!isAuthenticated) return null
 
   // Calculate game area height for mobile with trivia panel
-  const gameAreaHeight = showMobileTrivia ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh'
+  // Must account for safe area inset (iOS home indicator) which the trivia panel uses
+  const gameAreaHeight = showMobileTrivia 
+    ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px - env(safe-area-inset-bottom, 0px))` 
+    : '100vh'
 
   return (
     <div className="fixed inset-0 bg-[#09090b] text-white overflow-hidden">

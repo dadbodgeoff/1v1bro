@@ -157,10 +157,15 @@ export class CityScape {
    * Preserves original colors while optimizing for performance
    */
   private optimizeModelMaterials(model: THREE.Group): void {
+    let materialCount = 0
+    let resetCount = 0
+    
     model.traverse(obj => {
       if (obj instanceof THREE.Mesh && obj.material) {
         const materials = Array.isArray(obj.material) ? obj.material : [obj.material]
         materials.forEach(mat => {
+          materialCount++
+          
           // Reduce precision for distant background objects
           if (mat instanceof THREE.MeshStandardMaterial) {
             mat.envMapIntensity = 0.3 // Reduce reflection intensity
@@ -168,15 +173,25 @@ export class CityScape {
             
             // CRITICAL: Reset emissive to black to prevent red tint
             // The model may have emissive baked in from export or previous damage effects
+            const hadEmissive = mat.emissive.r > 0 || mat.emissive.g > 0 || mat.emissive.b > 0
             mat.emissive.setHex(0x000000)
             mat.emissiveIntensity = 0
             
+            // Log original color for debugging
+            const origColor = `rgb(${Math.round(mat.color.r * 255)}, ${Math.round(mat.color.g * 255)}, ${Math.round(mat.color.b * 255)})`
+            
             // Ensure color is not tinted red (preserve original or reset to white)
             // This fixes mobile rendering issues where color gets corrupted
-            if (mat.color.r > 0.8 && mat.color.g < 0.3 && mat.color.b < 0.3) {
-              // Material is mostly red - likely corrupted, reset to neutral
-              console.warn('[CityScape] Detected red-tinted material, resetting color')
-              mat.color.setHex(0xffffff)
+            // More aggressive check: if red channel dominates significantly
+            if (mat.color.r > 0.6 && mat.color.r > mat.color.g * 2 && mat.color.r > mat.color.b * 2) {
+              // Material is mostly red - likely corrupted, reset to neutral gray
+              console.warn(`[CityScape] Detected red-tinted material (${origColor}), resetting to gray`)
+              mat.color.setHex(0x888888)
+              resetCount++
+            }
+            
+            if (hadEmissive) {
+              console.log(`[CityScape] Reset emissive on material with color ${origColor}`)
             }
           }
           // Disable features we don't need for background scenery
@@ -185,6 +200,8 @@ export class CityScape {
         })
       }
     })
+    
+    console.log(`[CityScape] Optimized ${materialCount} materials, reset ${resetCount} red-tinted colors`)
   }
 
   /**

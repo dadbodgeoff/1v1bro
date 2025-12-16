@@ -432,7 +432,10 @@ export class AssetLoader {
 
   /**
    * Load city model asynchronously (for skyline below track)
-   * Now enabled on mobile - only downscales textures, preserves original lighting
+   * 
+   * NOTE: Texture downscaling DISABLED on mobile - it causes color shift (red tint)
+   * due to iOS Safari canvas not properly handling sRGB colorSpace.
+   * The city is a background element so original textures are acceptable.
    */
   async loadCityAsync(): Promise<THREE.Group | null> {
     if (!SURVIVAL_ASSETS.environment?.city) return null
@@ -440,15 +443,17 @@ export class AssetLoader {
     try {
       const city = await this.loadModel(SURVIVAL_ASSETS.environment.city, 'city')
       
-      // Only downscale textures on mobile - preserve original lighting/materials
-      // Don't call optimizeModelForMobile() as it strips lighting properties
-      if (this.isSafariMobile) {
-        this.downscaleModelTextures(city, 256)
-        console.log('[AssetLoader] City loaded with 256px textures (original lighting preserved)')
-      } else if (this.maxTextureSize <= 1024) {
-        this.downscaleModelTextures(city, 512)
-        console.log('[AssetLoader] City loaded with 512px textures')
-      }
+      // DISABLED: Texture downscaling causes red/pink color shift on iOS Safari
+      // The canvas-based downscaling doesn't preserve sRGB colorSpace properly
+      // City is a background element so original textures are fine
+      // 
+      // if (this.isSafariMobile) {
+      //   this.downscaleModelTextures(city, 256)
+      // } else if (this.maxTextureSize <= 1024) {
+      //   this.downscaleModelTextures(city, 512)
+      // }
+      
+      console.log('[AssetLoader] City loaded (no texture downscaling to preserve colors)')
       
       return city
     } catch (error) {
