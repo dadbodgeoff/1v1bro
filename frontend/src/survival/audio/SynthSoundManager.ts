@@ -45,47 +45,72 @@ export class SynthSoundManager {
   
   /**
    * Setup handler to resume audio on user interaction
-   * Browsers require user gesture to start audio
+   * iOS Safari requires AudioContext to be created/resumed SYNCHRONOUSLY during user gesture
    */
   private setupInteractionHandler(): void {
-    const resumeAudio = async () => {
-      if (this.ctx?.state === 'suspended') {
+    const resumeAudio = () => {
+      // iOS Safari: Create context during user gesture if not exists
+      if (!this.ctx) {
         try {
-          await this.ctx.resume()
-          console.log('[SynthSoundManager] Audio context resumed via user interaction')
+          this.ctx = new AudioContext()
+          this.masterGain = this.ctx.createGain()
+          this.masterGain.gain.value = this.settings.masterVolume * this.settings.sfxVolume
+          this.masterGain.connect(this.ctx.destination)
+          this.setupWindSound()
+          console.log('[SynthSoundManager] Audio context created via user interaction')
         } catch (e) {
-          // Ignore errors
+          console.error('[SynthSoundManager] Failed to create audio context:', e)
         }
+      }
+      
+      // Resume if suspended (must be synchronous for iOS)
+      if (this.ctx?.state === 'suspended') {
+        this.ctx.resume().then(() => {
+          console.log('[SynthSoundManager] Audio context resumed via user interaction')
+        }).catch(() => {
+          // Ignore errors
+        })
       }
     }
     
-    // Listen for any user interaction
-    const events = ['click', 'touchstart', 'keydown']
+    // Listen for any user interaction - use capture phase for earliest possible handling
+    const events = ['touchstart', 'touchend', 'click', 'keydown']
     const handler = () => {
       resumeAudio()
-      // Remove listeners after first interaction
-      events.forEach(e => document.removeEventListener(e, handler))
+      // Keep listeners active - iOS may suspend audio again when tab loses focus
     }
     
-    events.forEach(e => document.addEventListener(e, handler, { once: true }))
+    events.forEach(e => document.addEventListener(e, handler, { capture: true, passive: true }))
   }
 
   /**
    * Initialize audio context (must be called after user interaction)
+   * Note: On iOS, context may already be created by interaction handler
    */
   async initialize(): Promise<void> {
-    if (this.ctx) return
+    // Context may already exist from interaction handler
+    if (this.ctx && this.masterGain) {
+      console.log('[SynthSoundManager] Already initialized')
+      return
+    }
 
     try {
-      this.ctx = new AudioContext()
+      // Only create if not already created by interaction handler
+      if (!this.ctx) {
+        this.ctx = new AudioContext()
+      }
       
-      // Create master gain
-      this.masterGain = this.ctx.createGain()
-      this.masterGain.gain.value = this.settings.masterVolume * this.settings.sfxVolume
-      this.masterGain.connect(this.ctx.destination)
+      // Create master gain if not exists
+      if (!this.masterGain) {
+        this.masterGain = this.ctx.createGain()
+        this.masterGain.gain.value = this.settings.masterVolume * this.settings.sfxVolume
+        this.masterGain.connect(this.ctx.destination)
+      }
 
-      // Setup continuous wind sound
-      this.setupWindSound()
+      // Setup continuous wind sound if not already setup
+      if (!this.windSource) {
+        this.setupWindSound()
+      }
 
       console.log('[SynthSoundManager] Initialized')
     } catch (error) {

@@ -449,21 +449,32 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
         }}
       >
         {responsiveStyles.isPortraitMobile ? (
-          // Portrait mobile: ultra-compact stats
-          <div className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg text-right">
-            {/* Distance - primary */}
-            <div className="flex items-baseline justify-end gap-0.5">
-              <span className="text-xl font-black tabular-nums text-white">
+          // Portrait mobile: ultra-compact stats - scales with viewport
+          <div className="bg-black/50 backdrop-blur-sm px-1.5 py-1 rounded-lg text-right">
+            {/* Distance - primary, responsive sizing */}
+            <div className="flex items-baseline justify-end">
+              <span 
+                className="font-black tabular-nums text-white"
+                style={{ fontSize: 'clamp(16px, 4.5vw, 24px)' }}
+              >
                 {Math.round(distance)}
               </span>
             </div>
-            {/* Score - secondary, smaller */}
-            <div className="text-sm font-bold tabular-nums text-orange-400">
+            {/* Score - secondary, responsive */}
+            <div 
+              className="font-bold tabular-nums text-orange-400"
+              style={{ fontSize: 'clamp(12px, 3.5vw, 18px)' }}
+            >
               {Math.round(score).toLocaleString()}
             </div>
-            {/* Combo - tiny */}
+            {/* Combo - responsive */}
             {combo > 0 && (
-              <div className="text-xs font-bold text-cyan-400">{combo}x</div>
+              <div 
+                className="font-bold text-cyan-400"
+                style={{ fontSize: 'clamp(10px, 3vw, 14px)' }}
+              >
+                {combo}x
+              </div>
             )}
           </div>
         ) : (
