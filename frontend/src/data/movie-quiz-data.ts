@@ -17,7 +17,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic']
   },
@@ -28,7 +28,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic', 'directors']
   },
@@ -39,7 +39,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic']
   },
@@ -50,7 +50,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic']
   },
@@ -61,7 +61,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic', 'actors']
   },
@@ -72,7 +72,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic']
   },
@@ -83,7 +83,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic', 'directors']
   },
@@ -94,7 +94,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: classic',
     difficulty: 'expert',
-    category: 'classic',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'classic']
   },
@@ -105,7 +105,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic', 'actors']
   },
@@ -116,7 +116,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic', 'animation']
   },
@@ -127,7 +127,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic', 'actors']
   },
@@ -138,7 +138,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic']
   },
@@ -149,7 +149,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: classic',
     difficulty: 'expert',
-    category: 'classic',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'classic', 'directors']
   },
@@ -160,7 +160,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'expert',
-    category: 'classic',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'classic']
   },
@@ -171,7 +171,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic', 'actors']
   },
@@ -182,7 +182,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic', 'quotes']
   },
@@ -193,7 +193,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic', 'directors']
   },
@@ -204,7 +204,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic']
   },
@@ -215,7 +215,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic', 'directors']
   },
@@ -226,7 +226,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic']
   },
@@ -238,7 +238,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic', 'actors']
   },
@@ -249,7 +249,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic']
   },
@@ -260,7 +260,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic', 'directors']
   },
@@ -271,7 +271,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: classic',
     difficulty: 'casual',
-    category: 'classic',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'classic']
   },
@@ -282,7 +282,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: classic',
     difficulty: 'moderate',
-    category: 'classic',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'classic', 'actors']
   },
@@ -297,7 +297,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'scifi']
   },
@@ -308,7 +308,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'directors']
   },
@@ -319,7 +319,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: blockbuster',
     difficulty: 'moderate',
-    category: 'blockbuster',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'blockbuster']
   },
@@ -330,7 +330,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'actors']
   },
@@ -341,7 +341,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster']
   },
@@ -352,7 +352,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'directors']
   },
@@ -363,7 +363,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'scifi']
   },
@@ -374,7 +374,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster']
   },
@@ -385,7 +385,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'moderate',
-    category: 'blockbuster',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'blockbuster']
   },
@@ -396,7 +396,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'actors']
   },
@@ -407,7 +407,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'moderate',
-    category: 'blockbuster',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'blockbuster']
   },
@@ -418,7 +418,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'directors']
   },
@@ -429,7 +429,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'moderate',
-    category: 'blockbuster',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'blockbuster']
   },
@@ -440,7 +440,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'scifi']
   },
@@ -451,7 +451,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'actors']
   },
@@ -462,7 +462,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster']
   },
@@ -473,7 +473,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'directors']
   },
@@ -484,7 +484,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'actors']
   },
@@ -495,7 +495,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster']
   },
@@ -506,7 +506,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'directors']
   },
@@ -518,7 +518,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'moderate',
-    category: 'blockbuster',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'blockbuster']
   },
@@ -529,7 +529,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'mcu']
   },
@@ -540,7 +540,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'mcu']
   },
@@ -551,7 +551,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'moderate',
-    category: 'blockbuster',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'blockbuster', 'mcu']
   },
@@ -562,7 +562,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: blockbuster',
     difficulty: 'casual',
-    category: 'blockbuster',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'blockbuster', 'mcu']
   },
@@ -577,7 +577,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors']
   },
@@ -588,7 +588,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors']
   },
@@ -599,7 +599,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors', 'scifi']
   },
@@ -610,7 +610,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors', 'horror']
   },
@@ -621,7 +621,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors']
   },
@@ -632,7 +632,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors']
   },
@@ -643,7 +643,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -654,7 +654,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors', 'scifi']
   },
@@ -665,7 +665,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors', 'scifi']
   },
@@ -676,7 +676,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors', 'scifi']
   },
@@ -687,7 +687,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors', 'fantasy']
   },
@@ -698,7 +698,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -709,7 +709,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -720,7 +720,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -731,7 +731,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -742,7 +742,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors']
   },
@@ -753,7 +753,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors']
   },
@@ -764,7 +764,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -775,7 +775,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -786,7 +786,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -798,7 +798,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors', 'scifi']
   },
@@ -809,7 +809,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -820,7 +820,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors', 'scifi']
   },
@@ -831,7 +831,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'casual',
-    category: 'directors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'directors', 'scifi']
   },
@@ -842,7 +842,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: directors',
     difficulty: 'moderate',
-    category: 'directors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'directors']
   },
@@ -857,7 +857,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards']
   },
@@ -868,7 +868,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'expert',
-    category: 'awards',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'awards', 'directors']
   },
@@ -879,7 +879,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 3,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards']
   },
@@ -890,7 +890,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards']
   },
@@ -901,7 +901,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards', 'actors']
   },
@@ -912,7 +912,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'expert',
-    category: 'awards',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'awards', 'actors']
   },
@@ -923,7 +923,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards', 'actors']
   },
@@ -934,7 +934,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards', 'actors']
   },
@@ -945,7 +945,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards']
   },
@@ -956,7 +956,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards', 'actors']
   },
@@ -967,7 +967,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards']
   },
@@ -978,7 +978,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards', 'directors']
   },
@@ -989,7 +989,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards', 'actors']
   },
@@ -1000,7 +1000,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards', 'animation']
   },
@@ -1011,7 +1011,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards', 'actors']
   },
@@ -1022,7 +1022,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards']
   },
@@ -1033,7 +1033,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'moderate',
-    category: 'awards',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'awards', 'actors']
   },
@@ -1044,7 +1044,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards']
   },
@@ -1055,7 +1055,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards', 'directors']
   },
@@ -1066,7 +1066,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: awards',
     difficulty: 'casual',
-    category: 'awards',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'awards', 'actors']
   },
@@ -1082,7 +1082,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1093,7 +1093,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'scifi']
   },
@@ -1104,7 +1104,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'moderate',
-    category: 'quotes',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'quotes']
   },
@@ -1115,7 +1115,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1126,7 +1126,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'horror']
   },
@@ -1137,7 +1137,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1148,7 +1148,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1159,7 +1159,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1170,7 +1170,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1181,7 +1181,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'scifi']
   },
@@ -1192,7 +1192,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'animation']
   },
@@ -1203,7 +1203,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'fantasy']
   },
@@ -1214,7 +1214,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1225,7 +1225,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1236,7 +1236,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'fantasy']
   },
@@ -1247,7 +1247,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'moderate',
-    category: 'quotes',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'quotes']
   },
@@ -1258,7 +1258,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes']
   },
@@ -1269,7 +1269,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'classic']
   },
@@ -1280,7 +1280,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'moderate',
-    category: 'quotes',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'quotes', 'classic']
   },
@@ -1291,7 +1291,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: quotes',
     difficulty: 'casual',
-    category: 'quotes',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'quotes', 'mcu']
   },
@@ -1306,7 +1306,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror']
   },
@@ -1317,7 +1317,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror', 'directors']
   },
@@ -1328,7 +1328,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror']
   },
@@ -1339,7 +1339,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror']
   },
@@ -1350,7 +1350,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror', 'directors']
   },
@@ -1362,7 +1362,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror']
   },
@@ -1373,7 +1373,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror', 'directors']
   },
@@ -1384,7 +1384,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror']
   },
@@ -1395,7 +1395,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror', 'directors']
   },
@@ -1406,7 +1406,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror']
   },
@@ -1417,7 +1417,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror', 'directors']
   },
@@ -1428,7 +1428,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror']
   },
@@ -1439,7 +1439,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror', 'actors']
   },
@@ -1450,7 +1450,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror']
   },
@@ -1461,7 +1461,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror', 'directors']
   },
@@ -1472,7 +1472,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror']
   },
@@ -1483,7 +1483,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror']
   },
@@ -1494,7 +1494,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'moderate',
-    category: 'horror',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'horror', 'directors']
   },
@@ -1505,7 +1505,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror']
   },
@@ -1516,7 +1516,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: horror',
     difficulty: 'casual',
-    category: 'horror',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'horror']
   },
@@ -1531,7 +1531,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi']
   },
@@ -1542,7 +1542,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi', 'directors']
   },
@@ -1553,7 +1553,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi']
   },
@@ -1564,7 +1564,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi', 'actors']
   },
@@ -1575,7 +1575,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi']
   },
@@ -1586,7 +1586,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1597,7 +1597,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi', 'actors']
   },
@@ -1608,7 +1608,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1619,7 +1619,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1630,7 +1630,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi', 'directors']
   },
@@ -1642,7 +1642,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1653,7 +1653,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1664,7 +1664,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi']
   },
@@ -1675,7 +1675,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi', 'actors']
   },
@@ -1686,7 +1686,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'casual',
-    category: 'scifi',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'scifi']
   },
@@ -1697,7 +1697,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1708,7 +1708,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi', 'actors']
   },
@@ -1719,7 +1719,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1730,7 +1730,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi']
   },
@@ -1741,7 +1741,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: scifi',
     difficulty: 'moderate',
-    category: 'scifi',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'scifi', 'directors']
   },
@@ -1756,7 +1756,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1767,7 +1767,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1778,7 +1778,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1789,7 +1789,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1800,7 +1800,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1811,7 +1811,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1822,7 +1822,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1833,7 +1833,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1844,7 +1844,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1855,7 +1855,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1866,7 +1866,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1877,7 +1877,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1888,7 +1888,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1899,7 +1899,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1910,7 +1910,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1922,7 +1922,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1933,7 +1933,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'casual',
-    category: 'animation',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'animation']
   },
@@ -1944,7 +1944,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation', 'actors']
   },
@@ -1955,7 +1955,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation']
   },
@@ -1966,7 +1966,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation']
   },
@@ -1977,7 +1977,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation']
   },
@@ -1988,7 +1988,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: animation',
     difficulty: 'expert',
-    category: 'animation',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'animation']
   },
@@ -1999,7 +1999,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation']
   },
@@ -2010,7 +2010,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation', 'actors']
   },
@@ -2021,7 +2021,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: animation',
     difficulty: 'moderate',
-    category: 'animation',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'animation']
   },
@@ -2036,7 +2036,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'fantasy']
   },
@@ -2047,7 +2047,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2058,7 +2058,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise']
   },
@@ -2069,7 +2069,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'fantasy']
   },
@@ -2080,7 +2080,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2091,7 +2091,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2102,7 +2102,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: franchise',
     difficulty: 'moderate',
-    category: 'franchise',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'franchise']
   },
@@ -2113,7 +2113,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2124,7 +2124,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: franchise',
     difficulty: 'moderate',
-    category: 'franchise',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'franchise']
   },
@@ -2135,7 +2135,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2146,7 +2146,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: franchise',
     difficulty: 'moderate',
-    category: 'franchise',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'franchise']
   },
@@ -2157,7 +2157,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'moderate',
-    category: 'franchise',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2168,7 +2168,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2179,7 +2179,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'moderate',
-    category: 'franchise',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'franchise']
   },
@@ -2190,7 +2190,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: franchise',
     difficulty: 'casual',
-    category: 'franchise',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'franchise', 'actors']
   },
@@ -2206,7 +2206,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2217,7 +2217,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2228,7 +2228,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2239,7 +2239,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2250,7 +2250,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2261,7 +2261,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2272,7 +2272,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2283,7 +2283,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'moderate',
-    category: 'mcu',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'mcu', 'directors']
   },
@@ -2294,7 +2294,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2305,7 +2305,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2316,7 +2316,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2327,7 +2327,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2338,7 +2338,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2349,7 +2349,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'moderate',
-    category: 'mcu',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2360,7 +2360,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2371,7 +2371,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2382,7 +2382,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2393,7 +2393,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2404,7 +2404,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu']
   },
@@ -2415,7 +2415,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: mcu',
     difficulty: 'casual',
-    category: 'mcu',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'mcu', 'actors']
   },
@@ -2430,7 +2430,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'moderate',
-    category: 'actors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'actors', 'awards']
   },
@@ -2441,7 +2441,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2452,7 +2452,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2463,7 +2463,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2474,7 +2474,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2486,7 +2486,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'moderate',
-    category: 'actors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'actors']
   },
@@ -2497,7 +2497,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2508,7 +2508,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2519,7 +2519,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2530,7 +2530,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2541,7 +2541,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2552,7 +2552,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2563,7 +2563,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2574,7 +2574,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2585,7 +2585,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2596,7 +2596,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'moderate',
-    category: 'actors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'actors']
   },
@@ -2607,7 +2607,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2618,7 +2618,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2629,7 +2629,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: actors',
     difficulty: 'casual',
-    category: 'actors',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'actors']
   },
@@ -2640,7 +2640,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: actors',
     difficulty: 'moderate',
-    category: 'actors',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'actors']
   },
@@ -2655,7 +2655,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2666,7 +2666,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2677,7 +2677,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2688,7 +2688,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2699,7 +2699,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2710,7 +2710,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2721,7 +2721,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2732,7 +2732,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2743,7 +2743,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2754,7 +2754,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2766,7 +2766,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2777,7 +2777,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2788,7 +2788,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s', 'directors']
   },
@@ -2799,7 +2799,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2810,7 +2810,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 90s',
     difficulty: 'moderate',
-    category: '90s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '90s']
   },
@@ -2825,7 +2825,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s']
   },
@@ -2836,7 +2836,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'casual',
-    category: '2000s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2000s', 'fantasy']
   },
@@ -2847,7 +2847,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s', 'fantasy']
   },
@@ -2858,7 +2858,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s']
   },
@@ -2869,7 +2869,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s']
   },
@@ -2880,7 +2880,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s']
   },
@@ -2891,7 +2891,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s']
   },
@@ -2902,7 +2902,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s']
   },
@@ -2913,7 +2913,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s', 'directors']
   },
@@ -2924,7 +2924,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2000s',
     difficulty: 'moderate',
-    category: '2000s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2000s']
   },
@@ -2939,7 +2939,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'casual',
-    category: '2010s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2010s']
   },
@@ -2950,7 +2950,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -2961,7 +2961,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -2972,7 +2972,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -2983,7 +2983,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -2994,7 +2994,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -3005,7 +3005,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'casual',
-    category: '2010s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2010s']
   },
@@ -3016,7 +3016,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -3027,7 +3027,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -3038,7 +3038,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2010s',
     difficulty: 'moderate',
-    category: '2010s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2010s']
   },
@@ -3054,7 +3054,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s']
   },
@@ -3065,7 +3065,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s']
   },
@@ -3076,7 +3076,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s', 'actors']
   },
@@ -3087,7 +3087,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s']
   },
@@ -3098,7 +3098,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s']
   },
@@ -3109,7 +3109,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s']
   },
@@ -3120,7 +3120,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s', 'directors']
   },
@@ -3131,7 +3131,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s', 'actors']
   },
@@ -3142,7 +3142,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s', 'actors']
   },
@@ -3153,7 +3153,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'moderate',
-    category: '2020s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2020s']
   },
@@ -3164,7 +3164,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'moderate',
-    category: '2020s',
+    category: 'movies',
     points: 2,
     tags: ['movies', '2020s', 'awards']
   },
@@ -3175,7 +3175,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s', 'mcu']
   },
@@ -3186,7 +3186,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s']
   },
@@ -3197,7 +3197,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s']
   },
@@ -3208,7 +3208,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: 2020s',
     difficulty: 'casual',
-    category: '2020s',
+    category: 'movies',
     points: 1,
     tags: ['movies', '2020s', 'actors']
   },
@@ -3393,7 +3393,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'casual',
-    category: 'dc',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3404,7 +3404,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'directors']
   },
@@ -3415,7 +3415,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'casual',
-    category: 'dc',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3426,7 +3426,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'directors']
   },
@@ -3437,7 +3437,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'directors']
   },
@@ -3448,7 +3448,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'casual',
-    category: 'dc',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3459,7 +3459,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3470,7 +3470,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'casual',
-    category: 'dc',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'dc']
   },
@@ -3481,7 +3481,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc']
   },
@@ -3492,7 +3492,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3503,7 +3503,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3514,7 +3514,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 3,
     explanation: 'Category: dc',
     difficulty: 'casual',
-    category: 'dc',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3525,7 +3525,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3536,7 +3536,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'moderate',
-    category: 'dc',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'dc', 'actors']
   },
@@ -3547,7 +3547,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: dc',
     difficulty: 'casual',
-    category: 'dc',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'dc']
   },
@@ -3562,7 +3562,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3573,7 +3573,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'casual',
-    category: 'comedy',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'comedy']
   },
@@ -3584,7 +3584,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3595,7 +3595,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'expert',
-    category: 'comedy',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'comedy', 'directors']
   },
@@ -3606,7 +3606,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3618,7 +3618,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy', 'actors']
   },
@@ -3629,7 +3629,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3640,7 +3640,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'casual',
-    category: 'comedy',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'comedy', 'actors']
   },
@@ -3651,7 +3651,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3662,7 +3662,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'casual',
-    category: 'comedy',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'comedy', 'actors']
   },
@@ -3673,7 +3673,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3684,7 +3684,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'casual',
-    category: 'comedy',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'comedy', 'actors']
   },
@@ -3695,7 +3695,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3706,7 +3706,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy', 'directors']
   },
@@ -3717,7 +3717,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3728,7 +3728,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'casual',
-    category: 'comedy',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'comedy', 'actors']
   },
@@ -3739,7 +3739,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3750,7 +3750,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'casual',
-    category: 'comedy',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'comedy', 'actors']
   },
@@ -3761,7 +3761,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'moderate',
-    category: 'comedy',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'comedy']
   },
@@ -3772,7 +3772,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: comedy',
     difficulty: 'casual',
-    category: 'comedy',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'comedy', 'actors']
   },
@@ -3787,7 +3787,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3798,7 +3798,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'casual',
-    category: 'action',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'action', 'actors']
   },
@@ -3809,7 +3809,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3820,7 +3820,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3831,7 +3831,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action', 'actors']
   },
@@ -3842,7 +3842,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3853,7 +3853,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'casual',
-    category: 'action',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'action', 'actors']
   },
@@ -3864,7 +3864,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3875,7 +3875,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3886,7 +3886,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'expert',
-    category: 'action',
+    category: 'movies',
     points: 3,
     tags: ['movies', 'action', 'directors']
   },
@@ -3898,7 +3898,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3909,7 +3909,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3920,7 +3920,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action']
   },
@@ -3931,7 +3931,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'moderate',
-    category: 'action',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'action', 'actors']
   },
@@ -3942,7 +3942,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: action',
     difficulty: 'casual',
-    category: 'action',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'action', 'actors']
   },
@@ -3957,7 +3957,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance']
   },
@@ -3968,7 +3968,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'casual',
-    category: 'romance',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'romance', 'actors']
   },
@@ -3979,7 +3979,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance']
   },
@@ -3990,7 +3990,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'casual',
-    category: 'romance',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'romance', 'actors']
   },
@@ -4001,7 +4001,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance']
   },
@@ -4012,7 +4012,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: romance',
     difficulty: 'casual',
-    category: 'romance',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'romance', 'actors']
   },
@@ -4023,7 +4023,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance']
   },
@@ -4034,7 +4034,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: romance',
     difficulty: 'casual',
-    category: 'romance',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'romance', 'actors']
   },
@@ -4045,7 +4045,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance']
   },
@@ -4056,7 +4056,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 0,
     explanation: 'Category: romance',
     difficulty: 'casual',
-    category: 'romance',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'romance', 'actors']
   },
@@ -4067,7 +4067,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance']
   },
@@ -4078,7 +4078,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 3,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance', 'actors']
   },
@@ -4089,7 +4089,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'casual',
-    category: 'romance',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'romance']
   },
@@ -4100,7 +4100,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'casual',
-    category: 'romance',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'romance', 'actors']
   },
@@ -4111,7 +4111,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: romance',
     difficulty: 'moderate',
-    category: 'romance',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'romance', 'directors']
   },
@@ -4126,7 +4126,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'casual',
-    category: 'musical',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'musical']
   },
@@ -4137,7 +4137,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical', 'directors']
   },
@@ -4148,7 +4148,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'casual',
-    category: 'musical',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'musical', 'actors']
   },
@@ -4159,7 +4159,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical']
   },
@@ -4170,7 +4170,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'casual',
-    category: 'musical',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'musical', 'actors']
   },
@@ -4182,7 +4182,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical']
   },
@@ -4193,7 +4193,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical', 'actors']
   },
@@ -4204,7 +4204,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical']
   },
@@ -4215,7 +4215,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'casual',
-    category: 'musical',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'musical', 'actors']
   },
@@ -4226,7 +4226,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical']
   },
@@ -4237,7 +4237,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical', 'directors']
   },
@@ -4248,7 +4248,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical', 'actors']
   },
@@ -4259,7 +4259,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical']
   },
@@ -4270,7 +4270,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical', 'actors']
   },
@@ -4281,7 +4281,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: musical',
     difficulty: 'moderate',
-    category: 'musical',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'musical']
   },
@@ -4296,7 +4296,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller']
   },
@@ -4307,7 +4307,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'directors']
   },
@@ -4318,7 +4318,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'actors']
   },
@@ -4329,7 +4329,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller']
   },
@@ -4340,7 +4340,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'directors']
   },
@@ -4351,7 +4351,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller']
   },
@@ -4362,7 +4362,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 2,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'directors']
   },
@@ -4373,7 +4373,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'actors']
   },
@@ -4384,7 +4384,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller']
   },
@@ -4395,7 +4395,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'directors']
   },
@@ -4406,7 +4406,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'casual',
-    category: 'thriller',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'thriller', 'actors']
   },
@@ -4417,7 +4417,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller']
   },
@@ -4428,7 +4428,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'directors']
   },
@@ -4439,7 +4439,7 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'moderate',
-    category: 'thriller',
+    category: 'movies',
     points: 2,
     tags: ['movies', 'thriller', 'actors']
   },
@@ -4450,7 +4450,1262 @@ export const movieQuizQuestions: QuizQuestion[] = [
     correctAnswer: 1,
     explanation: 'Category: thriller',
     difficulty: 'casual',
-    category: 'thriller',
+    category: 'movies',
     points: 1,
     tags: ['movies', 'thriller']
   },
+
+  {
+    id: 'movie_396',
+    question: 'Who directed "Knives Out"?',
+    options: ['Christopher Nolan', 'Rian Johnson', 'David Fincher', 'Edgar Wright'],
+    correctAnswer: 1,
+    explanation: 'Category: thriller',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+  {
+    id: 'movie_397',
+    question: 'Who plays the detective in "Knives Out"?',
+    options: ['Chris Evans', 'Daniel Craig', 'Jamie Lee Curtis', 'Michael Shannon'],
+    correctAnswer: 1,
+    explanation: 'Category: thriller',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'thriller', 'actors']
+  },
+  {
+    id: 'movie_398',
+    question: 'What year was "Glass Onion" released?',
+    options: ['2020', '2022', '2023', '2024'],
+    correctAnswer: 1,
+    explanation: 'Category: thriller',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'thriller']
+  },
+  {
+    id: 'movie_399',
+    question: 'What year was "The Prestige" released?',
+    options: ['2004', '2006', '2008', '2010'],
+    correctAnswer: 1,
+    explanation: 'Category: thriller',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'thriller']
+  },
+  {
+    id: 'movie_400',
+    question: 'Who directed "The Prestige"?',
+    options: ['David Fincher', 'Christopher Nolan', 'Denis Villeneuve', 'Ridley Scott'],
+    correctAnswer: 1,
+    explanation: 'Category: thriller',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+
+  // ============================================================================
+  // STUDIO GHIBLI & ANIME FILMS (401-430)
+  // ============================================================================
+  {
+    id: 'movie_401',
+    question: 'Who founded Studio Ghibli?',
+    options: ['Makoto Shinkai', 'Hayao Miyazaki', 'Satoshi Kon', 'Mamoru Hosoda'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_402',
+    question: 'What year was "Spirited Away" released?',
+    options: ['1999', '2001', '2003', '2005'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_403',
+    question: 'What is the name of the main character in "Spirited Away"?',
+    options: ['Kiki', 'Chihiro', 'Sophie', 'San'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_404',
+    question: 'What year was "My Neighbor Totoro" released?',
+    options: ['1986', '1988', '1990', '1992'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_405',
+    question: 'What year was "Princess Mononoke" released?',
+    options: ['1995', '1997', '1999', '2001'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_406',
+    question: 'Who directed "Your Name"?',
+    options: ['Hayao Miyazaki', 'Makoto Shinkai', 'Mamoru Hosoda', 'Satoshi Kon'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'directors']
+  },
+  {
+    id: 'movie_407',
+    question: 'What year was "Your Name" released?',
+    options: ['2014', '2016', '2018', '2020'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_408',
+    question: 'What year was "Akira" released?',
+    options: ['1986', '1988', '1990', '1992'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_409',
+    question: 'What city is "Akira" set in?',
+    options: ['Tokyo', 'Neo Tokyo', 'Osaka', 'Kyoto'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime']
+  },
+  {
+    id: 'movie_410',
+    question: 'What year was "Howl\'s Moving Castle" released?',
+    options: ['2002', '2004', '2006', '2008'],
+    correctAnswer: 1,
+    explanation: 'Category: anime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+
+  // ============================================================================
+  // BIOGRAPHICAL FILMS (411-450)
+  // ============================================================================
+  {
+    id: 'movie_411',
+    question: 'Who played Mark Zuckerberg in "The Social Network"?',
+    options: ['Andrew Garfield', 'Jesse Eisenberg', 'Justin Timberlake', 'Armie Hammer'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_412',
+    question: 'Who played Steve Jobs in "Steve Jobs" (2015)?',
+    options: ['Ashton Kutcher', 'Michael Fassbender', 'Christian Bale', 'Leonardo DiCaprio'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_413',
+    question: 'Who played Freddie Mercury in "Bohemian Rhapsody"?',
+    options: ['Ben Whishaw', 'Rami Malek', 'Sacha Baron Cohen', 'Eddie Redmayne'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_414',
+    question: 'What year was "Bohemian Rhapsody" released?',
+    options: ['2016', '2018', '2020', '2022'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'biopic']
+  },
+  {
+    id: 'movie_415',
+    question: 'Who played Elton John in "Rocketman"?',
+    options: ['Rami Malek', 'Taron Egerton', 'Eddie Redmayne', 'Tom Hardy'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_416',
+    question: 'Who played Ray Charles in "Ray"?',
+    options: ['Denzel Washington', 'Jamie Foxx', 'Will Smith', 'Forest Whitaker'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_417',
+    question: 'Who played Muhammad Ali in "Ali"?',
+    options: ['Denzel Washington', 'Jamie Foxx', 'Will Smith', 'Michael B. Jordan'],
+    correctAnswer: 2,
+    explanation: 'Category: biopic',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_418',
+    question: 'Who played J. Robert Oppenheimer in "Oppenheimer"?',
+    options: ['Robert Downey Jr.', 'Cillian Murphy', 'Matt Damon', 'Josh Hartnett'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_419',
+    question: 'Who played Elvis in "Elvis" (2022)?',
+    options: ['Timothée Chalamet', 'Austin Butler', 'Tom Holland', 'Ansel Elgort'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_420',
+    question: 'Who directed "Elvis" (2022)?',
+    options: ['Damien Chazelle', 'Baz Luhrmann', 'Tom Hooper', 'Bradley Cooper'],
+    correctAnswer: 1,
+    explanation: 'Category: biopic',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'biopic', 'directors']
+  },
+
+
+  // ============================================================================
+  // WAR FILMS (421-450)
+  // ============================================================================
+  {
+    id: 'movie_421',
+    question: 'What year was "Saving Private Ryan" released?',
+    options: ['1996', '1998', '2000', '2002'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war']
+  },
+  {
+    id: 'movie_422',
+    question: 'Who directed "Saving Private Ryan"?',
+    options: ['Ridley Scott', 'Steven Spielberg', 'Oliver Stone', 'Clint Eastwood'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'war', 'directors']
+  },
+  {
+    id: 'movie_423',
+    question: 'Who plays Captain Miller in "Saving Private Ryan"?',
+    options: ['Matt Damon', 'Tom Hanks', 'Tom Sizemore', 'Edward Burns'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'war', 'actors']
+  },
+  {
+    id: 'movie_424',
+    question: 'What year was "Dunkirk" released?',
+    options: ['2015', '2017', '2019', '2021'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war']
+  },
+  {
+    id: 'movie_425',
+    question: 'What year was "1917" released?',
+    options: ['2017', '2019', '2021', '2023'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war']
+  },
+  {
+    id: 'movie_426',
+    question: 'Who directed "1917"?',
+    options: ['Christopher Nolan', 'Sam Mendes', 'Steven Spielberg', 'Ridley Scott'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war', 'directors']
+  },
+  {
+    id: 'movie_427',
+    question: 'What year was "Apocalypse Now" released?',
+    options: ['1977', '1979', '1981', '1983'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war']
+  },
+  {
+    id: 'movie_428',
+    question: 'Who directed "Apocalypse Now"?',
+    options: ['Stanley Kubrick', 'Francis Ford Coppola', 'Oliver Stone', 'Martin Scorsese'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war', 'directors']
+  },
+  {
+    id: 'movie_429',
+    question: 'What year was "Full Metal Jacket" released?',
+    options: ['1985', '1987', '1989', '1991'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war']
+  },
+  {
+    id: 'movie_430',
+    question: 'Who directed "Full Metal Jacket"?',
+    options: ['Francis Ford Coppola', 'Stanley Kubrick', 'Oliver Stone', 'Brian De Palma'],
+    correctAnswer: 1,
+    explanation: 'Category: war',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'war', 'directors']
+  },
+
+  // ============================================================================
+  // SPORTS FILMS (431-460)
+  // ============================================================================
+  {
+    id: 'movie_431',
+    question: 'What year was "Rocky" released?',
+    options: ['1974', '1976', '1978', '1980'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'sports']
+  },
+  {
+    id: 'movie_432',
+    question: 'Who plays Rocky Balboa?',
+    options: ['Arnold Schwarzenegger', 'Sylvester Stallone', 'Carl Weathers', 'Dolph Lundgren'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+  {
+    id: 'movie_433',
+    question: 'What year was "Creed" released?',
+    options: ['2013', '2015', '2017', '2019'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'sports']
+  },
+  {
+    id: 'movie_434',
+    question: 'Who plays Adonis Creed?',
+    options: ['Chadwick Boseman', 'Michael B. Jordan', 'John Boyega', 'Lakeith Stanfield'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+  {
+    id: 'movie_435',
+    question: 'What year was "Remember the Titans" released?',
+    options: ['1998', '2000', '2002', '2004'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'sports']
+  },
+  {
+    id: 'movie_436',
+    question: 'Who stars in "Remember the Titans"?',
+    options: ['Will Smith', 'Denzel Washington', 'Jamie Foxx', 'Morgan Freeman'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+  {
+    id: 'movie_437',
+    question: 'What year was "The Blind Side" released?',
+    options: ['2007', '2009', '2011', '2013'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'sports']
+  },
+  {
+    id: 'movie_438',
+    question: 'Who won Best Actress for "The Blind Side"?',
+    options: ['Meryl Streep', 'Sandra Bullock', 'Julia Roberts', 'Reese Witherspoon'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'sports', 'awards']
+  },
+  {
+    id: 'movie_439',
+    question: 'What year was "Moneyball" released?',
+    options: ['2009', '2011', '2013', '2015'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'sports']
+  },
+  {
+    id: 'movie_440',
+    question: 'Who stars in "Moneyball"?',
+    options: ['Matt Damon', 'Brad Pitt', 'George Clooney', 'Leonardo DiCaprio'],
+    correctAnswer: 1,
+    explanation: 'Category: sports',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+
+  // ============================================================================
+  // CRIME & GANGSTER (441-480)
+  // ============================================================================
+  {
+    id: 'movie_441',
+    question: 'What year was "The Godfather Part II" released?',
+    options: ['1972', '1974', '1976', '1978'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime']
+  },
+  {
+    id: 'movie_442',
+    question: 'Who plays young Vito Corleone in "The Godfather Part II"?',
+    options: ['Al Pacino', 'Robert De Niro', 'James Caan', 'John Cazale'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime', 'actors']
+  },
+  {
+    id: 'movie_443',
+    question: 'What year was "Scarface" released?',
+    options: ['1981', '1983', '1985', '1987'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime']
+  },
+  {
+    id: 'movie_444',
+    question: 'Who plays Tony Montana in "Scarface"?',
+    options: ['Robert De Niro', 'Al Pacino', 'Joe Pesci', 'Ray Liotta'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'crime', 'actors']
+  },
+  {
+    id: 'movie_445',
+    question: 'Who directed "Scarface" (1983)?',
+    options: ['Martin Scorsese', 'Brian De Palma', 'Francis Ford Coppola', 'Oliver Stone'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime', 'directors']
+  },
+  {
+    id: 'movie_446',
+    question: 'What year was "Casino" released?',
+    options: ['1993', '1995', '1997', '1999'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime']
+  },
+  {
+    id: 'movie_447',
+    question: 'Who directed "Casino"?',
+    options: ['Brian De Palma', 'Martin Scorsese', 'Francis Ford Coppola', 'Quentin Tarantino'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime', 'directors']
+  },
+  {
+    id: 'movie_448',
+    question: 'What year was "Heat" released?',
+    options: ['1993', '1995', '1997', '1999'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime']
+  },
+  {
+    id: 'movie_449',
+    question: 'Who directed "Heat"?',
+    options: ['Martin Scorsese', 'Michael Mann', 'Brian De Palma', 'Ridley Scott'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime', 'directors']
+  },
+  {
+    id: 'movie_450',
+    question: 'Who stars in "Heat"?',
+    options: ['Tom Hanks & Leonardo DiCaprio', 'Al Pacino & Robert De Niro', 'Brad Pitt & George Clooney', 'Matt Damon & Ben Affleck'],
+    correctAnswer: 1,
+    explanation: 'Category: crime',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'crime', 'actors']
+  },
+
+
+  // ============================================================================
+  // WESTERN FILMS (451-470)
+  // ============================================================================
+  {
+    id: 'movie_451',
+    question: 'Who directed "The Good, the Bad and the Ugly"?',
+    options: ['John Ford', 'Sergio Leone', 'Clint Eastwood', 'Sam Peckinpah'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western', 'directors']
+  },
+  {
+    id: 'movie_452',
+    question: 'What year was "The Good, the Bad and the Ugly" released?',
+    options: ['1964', '1966', '1968', '1970'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western']
+  },
+  {
+    id: 'movie_453',
+    question: 'Who stars in "The Good, the Bad and the Ugly"?',
+    options: ['John Wayne', 'Clint Eastwood', 'James Stewart', 'Gary Cooper'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western', 'actors']
+  },
+  {
+    id: 'movie_454',
+    question: 'What year was "Unforgiven" released?',
+    options: ['1990', '1992', '1994', '1996'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western']
+  },
+  {
+    id: 'movie_455',
+    question: 'Who directed "Unforgiven"?',
+    options: ['Kevin Costner', 'Clint Eastwood', 'Sam Raimi', 'Quentin Tarantino'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western', 'directors']
+  },
+  {
+    id: 'movie_456',
+    question: 'What year was "True Grit" (2010) released?',
+    options: ['2008', '2010', '2012', '2014'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western']
+  },
+  {
+    id: 'movie_457',
+    question: 'Who directed "True Grit" (2010)?',
+    options: ['Quentin Tarantino', 'The Coen Brothers', 'Clint Eastwood', 'Sam Raimi'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western', 'directors']
+  },
+  {
+    id: 'movie_458',
+    question: 'What year was "The Hateful Eight" released?',
+    options: ['2013', '2015', '2017', '2019'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western']
+  },
+  {
+    id: 'movie_459',
+    question: 'Who directed "The Hateful Eight"?',
+    options: ['The Coen Brothers', 'Quentin Tarantino', 'Clint Eastwood', 'Taylor Sheridan'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'western', 'directors']
+  },
+  {
+    id: 'movie_460',
+    question: 'What year was "No Country for Old Men" released?',
+    options: ['2005', '2007', '2009', '2011'],
+    correctAnswer: 1,
+    explanation: 'Category: western',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'western']
+  },
+
+  // ============================================================================
+  // FANTASY FILMS (461-490)
+  // ============================================================================
+  {
+    id: 'movie_461',
+    question: 'What year was "The Princess Bride" released?',
+    options: ['1985', '1987', '1989', '1991'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy']
+  },
+  {
+    id: 'movie_462',
+    question: 'Who plays Westley in "The Princess Bride"?',
+    options: ['Robin Wright', 'Cary Elwes', 'Mandy Patinkin', 'Chris Sarandon'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy', 'actors']
+  },
+  {
+    id: 'movie_463',
+    question: 'What year was "Labyrinth" released?',
+    options: ['1984', '1986', '1988', '1990'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy']
+  },
+  {
+    id: 'movie_464',
+    question: 'Who plays the Goblin King in "Labyrinth"?',
+    options: ['Tim Curry', 'David Bowie', 'Gary Oldman', 'Alan Rickman'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy', 'actors']
+  },
+  {
+    id: 'movie_465',
+    question: 'What year was "Pan\'s Labyrinth" released?',
+    options: ['2004', '2006', '2008', '2010'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy']
+  },
+  {
+    id: 'movie_466',
+    question: 'Who directed "Pan\'s Labyrinth"?',
+    options: ['Alfonso Cuarón', 'Guillermo del Toro', 'Alejandro González Iñárritu', 'Pedro Almodóvar'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy', 'directors']
+  },
+  {
+    id: 'movie_467',
+    question: 'What year was "The NeverEnding Story" released?',
+    options: ['1982', '1984', '1986', '1988'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy']
+  },
+  {
+    id: 'movie_468',
+    question: 'What is the name of the luck dragon in "The NeverEnding Story"?',
+    options: ['Artax', 'Falkor', 'Morla', 'Gmork'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy']
+  },
+  {
+    id: 'movie_469',
+    question: 'What year was "Willow" released?',
+    options: ['1986', '1988', '1990', '1992'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'fantasy']
+  },
+  {
+    id: 'movie_470',
+    question: 'Who directed "Willow"?',
+    options: ['George Lucas', 'Ron Howard', 'Steven Spielberg', 'Robert Zemeckis'],
+    correctAnswer: 1,
+    explanation: 'Category: fantasy',
+    difficulty: 'expert',
+    category: 'movies',
+    points: 3,
+    tags: ['movies', 'fantasy', 'directors']
+  },
+
+  // ============================================================================
+  // PIXAR FILMS (471-500)
+  // ============================================================================
+  {
+    id: 'movie_471',
+    question: 'What year was "The Incredibles" released?',
+    options: ['2002', '2004', '2006', '2008'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_472',
+    question: 'Who directed "The Incredibles"?',
+    options: ['John Lasseter', 'Brad Bird', 'Pete Docter', 'Andrew Stanton'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'directors']
+  },
+  {
+    id: 'movie_473',
+    question: 'What year was "Ratatouille" released?',
+    options: ['2005', '2007', '2009', '2011'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_474',
+    question: 'What is the rat\'s name in "Ratatouille"?',
+    options: ['Emile', 'Remy', 'Alfredo', 'Gusteau'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_475',
+    question: 'What year was "Monsters, Inc." released?',
+    options: ['1999', '2001', '2003', '2005'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_476',
+    question: 'Who voices Sulley in "Monsters, Inc."?',
+    options: ['Billy Crystal', 'John Goodman', 'Steve Buscemi', 'James Coburn'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'actors']
+  },
+  {
+    id: 'movie_477',
+    question: 'Who voices Mike Wazowski in "Monsters, Inc."?',
+    options: ['John Goodman', 'Billy Crystal', 'Steve Buscemi', 'James Coburn'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'actors']
+  },
+  {
+    id: 'movie_478',
+    question: 'What year was "Brave" released?',
+    options: ['2010', '2012', '2014', '2016'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_479',
+    question: 'What is the main character\'s name in "Brave"?',
+    options: ['Moana', 'Merida', 'Elsa', 'Rapunzel'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'casual',
+    category: 'movies',
+    points: 1,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_480',
+    question: 'What year was "Soul" released?',
+    options: ['2018', '2020', '2022', '2024'],
+    correctAnswer: 1,
+    explanation: 'Category: pixar',
+    difficulty: 'moderate',
+    category: 'movies',
+    points: 2,
+    tags: ['movies', 'pixar', 'animation']
+  },
+
+
+  // ============================================================================
+  // MORE GENERAL TRIVIA (481-500)
+  // ============================================================================
+  {
+    id: 'movie_481',
+    question: 'What is the name of the fictional newspaper in "Spider-Man"?',
+    options: ['The Gotham Times', 'The Daily Bugle', 'The Daily Planet', 'The New York Gazette'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_482',
+    question: 'What is the name of the fictional newspaper in "Superman"?',
+    options: ['The Gotham Times', 'The Daily Bugle', 'The Daily Planet', 'The Metropolis Post'],
+    correctAnswer: 2,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_483',
+    question: 'What is Batman\'s real name?',
+    options: ['Clark Kent', 'Bruce Wayne', 'Peter Parker', 'Tony Stark'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_484',
+    question: 'What is Superman\'s real name?',
+    options: ['Bruce Wayne', 'Clark Kent', 'Kal-El', 'Barry Allen'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_485',
+    question: 'What is Spider-Man\'s real name?',
+    options: ['Bruce Wayne', 'Clark Kent', 'Peter Parker', 'Tony Stark'],
+    correctAnswer: 2,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_486',
+    question: 'What city does Batman protect?',
+    options: ['Metropolis', 'Gotham City', 'Central City', 'Star City'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_487',
+    question: 'What city does Superman protect?',
+    options: ['Gotham City', 'Metropolis', 'Central City', 'Star City'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_488',
+    question: 'What is the name of James Bond\'s boss?',
+    options: ['Q', 'M', 'Moneypenny', 'Felix'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'moderate',
+    category: 'general',
+    points: 2,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_489',
+    question: 'What is James Bond\'s code number?',
+    options: ['001', '007', '008', '009'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_490',
+    question: 'What is the name of the robot in "The Iron Giant"?',
+    options: ['Optimus', 'The Iron Giant', 'Megatron', 'Bumblebee'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_491',
+    question: 'What year was "The Iron Giant" released?',
+    options: ['1997', '1999', '2001', '2003'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'moderate',
+    category: 'general',
+    points: 2,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_492',
+    question: 'Who directed "The Iron Giant"?',
+    options: ['Pete Docter', 'Brad Bird', 'John Lasseter', 'Andrew Stanton'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'expert',
+    category: 'general',
+    points: 3,
+    tags: ['movies', 'general', 'directors']
+  },
+  {
+    id: 'movie_493',
+    question: 'What is the name of the dog in "Up"?',
+    options: ['Max', 'Dug', 'Buddy', 'Rex'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_494',
+    question: 'What is the name of the bird in "Up"?',
+    options: ['Kevin', 'Russell', 'Carl', 'Charles'],
+    correctAnswer: 0,
+    explanation: 'Category: general',
+    difficulty: 'moderate',
+    category: 'general',
+    points: 2,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_495',
+    question: 'What is the name of the fish in "Finding Nemo" who forgets things?',
+    options: ['Nemo', 'Marlin', 'Dory', 'Gill'],
+    correctAnswer: 2,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_496',
+    question: 'What is the name of Nemo\'s father?',
+    options: ['Gill', 'Marlin', 'Bruce', 'Crush'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_497',
+    question: 'What is the name of the sea turtle in "Finding Nemo"?',
+    options: ['Squirt', 'Crush', 'Bruce', 'Gill'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'moderate',
+    category: 'general',
+    points: 2,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_498',
+    question: 'What is the name of the shark in "Finding Nemo"?',
+    options: ['Crush', 'Gill', 'Bruce', 'Anchor'],
+    correctAnswer: 2,
+    explanation: 'Category: general',
+    difficulty: 'moderate',
+    category: 'general',
+    points: 2,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_499',
+    question: 'What is the name of Woody\'s owner in "Toy Story"?',
+    options: ['Sid', 'Andy', 'Bonnie', 'Al'],
+    correctAnswer: 1,
+    explanation: 'Category: general',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general', 'animation']
+  },
+  {
+    id: 'movie_500',
+    question: 'What is the name of the villain in "Toy Story 2"?',
+    options: ['Sid', 'Lotso', 'Al', 'Stinky Pete'],
+    correctAnswer: 2,
+    explanation: 'Category: general',
+    difficulty: 'moderate',
+    category: 'general',
+    points: 2,
+    tags: ['movies', 'general', 'animation']
+  }
+]
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Get random questions from the movie quiz pool
+ * @param count Number of questions to return
+ * @param category Optional category filter
+ * @param difficulty Optional difficulty filter
+ * @returns Array of random quiz questions
+ */
+export function getRandomMovieQuestions(
+  count: number = 10,
+  category?: string,
+  difficulty?: 'casual' | 'moderate' | 'expert'
+): QuizQuestion[] {
+  let filtered = [...movieQuizQuestions]
+  
+  if (category) {
+    filtered = filtered.filter(q => q.category === category || q.tags.includes(category))
+  }
+  
+  if (difficulty) {
+    filtered = filtered.filter(q => q.difficulty === difficulty)
+  }
+  
+  // Shuffle and return requested count
+  const shuffled = filtered.sort(() => Math.random() - 0.5)
+  return shuffled.slice(0, Math.min(count, shuffled.length))
+}
+
+/**
+ * Get questions by specific category
+ */
+export function getMovieQuestionsByCategory(category: string): QuizQuestion[] {
+  return movieQuizQuestions.filter(q => q.category === category || q.tags.includes(category))
+}
+
+/**
+ * Get all available categories
+ */
+export function getMovieCategories(): string[] {
+  const categories = new Set<string>()
+  movieQuizQuestions.forEach(q => {
+    categories.add(q.category)
+    q.tags.forEach(tag => categories.add(tag))
+  })
+  return Array.from(categories).filter(c => c !== 'movies')
+}
+
+/**
+ * Get total question count
+ */
+export function getMovieQuestionCount(): number {
+  return movieQuizQuestions.length
+}
+
+export default movieQuizQuestions

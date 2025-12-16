@@ -4,7 +4,7 @@
  */
 
 export type QuizDifficulty = 'casual' | 'moderate' | 'expert' | 'legendary' | 'impossible'
-export type QuizCategory = 'seasons' | 'events' | 'skins' | 'weapons' | 'esports' | 'collabs' | 'maps' | 'mixed' | 'nfl' | 'general' | 'history' | 'cosmetics' | 'gameplay' | 'lore' | 'competitive'
+export type QuizCategory = 'seasons' | 'events' | 'skins' | 'weapons' | 'esports' | 'collabs' | 'maps' | 'mixed' | 'nfl' | 'general' | 'history' | 'cosmetics' | 'gameplay' | 'lore' | 'competitive' | 'movies'
 export type QuizMode = 'classic' | 'speed' | 'era-battle' | 'timeline' | 'personality'
 
 export interface QuizQuestion {

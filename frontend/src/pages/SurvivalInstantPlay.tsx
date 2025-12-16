@@ -404,8 +404,14 @@ function SurvivalInstantPlayContent() {
       {/* Ready Overlay */}
       {phase === 'ready' && !isLoading && showReadyCard && (
         <ReadyOverlay
-          isMobile={isMobile} isMuted={isMuted} onToggleMute={() => setMuted(!isMuted)}
-          onStart={handleStart} onBack={handleBackToHome} backLabel="← Back to Home"
+          title="Ready to Run"
+          subtitle="How far can you go?"
+          isMobile={isMobile} 
+          isMuted={isMuted} 
+          onToggleMute={() => setMuted(!isMuted)}
+          onStart={handleStart} 
+          onBack={handleBackToHome} 
+          backLabel="← Back to Home"
           sessionStats={guestSession.current.getSession()}
         />
       )}
