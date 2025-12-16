@@ -18,6 +18,7 @@
 import * as THREE from 'three'
 import type { Obstacle, ObstacleType, Lane } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
+import { WorldConfig } from '../config/WorldConfig'
 import type { LoadedAssets } from '../renderer/AssetLoader'
 import type { Collidable, CollisionBox } from './CollisionSystem'
 import { ObstacleOrchestrator, type SpawnRequest, type DifficultyTier, type PacingPhase } from '../orchestrator'
@@ -78,10 +79,6 @@ export class ObstacleManager {
 
   // Control flag - set to true to enable obstacle spawning
   private spawningEnabled: boolean = false
-  
-  // Enterprise: Track surface height for obstacle Y positioning
-  // Set via setTrackSurfaceHeight() from InitializationManager
-  private trackSurfaceHeight: number = 0
 
   // Config values (from dynamic config)
   private obstacleScale: number
@@ -98,12 +95,12 @@ export class ObstacleManager {
   }
 
   /**
-   * Enterprise: Set track surface height for obstacle Y positioning
-   * Obstacles are placed relative to this height
+   * @deprecated Use WorldConfig.getInstance().setTrackSurfaceHeight() instead
+   * Kept for backward compatibility during migration
    */
-  setTrackSurfaceHeight(surfaceHeight: number): void {
-    this.trackSurfaceHeight = surfaceHeight
-    console.log(`[ObstacleManager] Track surface height set to: ${surfaceHeight}`)
+  setTrackSurfaceHeight(_surfaceHeight: number): void {
+    console.warn('[ObstacleManager] setTrackSurfaceHeight() is deprecated. Use WorldConfig instead.')
+    // No-op: WorldConfig is now the single source of truth
   }
 
   /**
@@ -269,7 +266,7 @@ export class ObstacleManager {
   
   /**
    * Spawn obstacle using clone
-   * Enterprise: Y positions are relative to trackSurfaceHeight
+   * Enterprise: Y positions are relative to WorldConfig.trackSurfaceHeight
    */
   private spawnClonedObstacle(
     request: SpawnRequest,
@@ -278,9 +275,9 @@ export class ObstacleManager {
   ): CollidableObstacle {
     const mesh = template.model.clone()
     
-    // Enterprise: Calculate Y position relative to track surface
+    // Enterprise: Calculate Y position relative to track surface from WorldConfig
     // All obstacles are positioned relative to trackSurfaceHeight
-    const baseY = this.trackSurfaceHeight
+    const baseY = WorldConfig.getInstance().getTrackSurfaceHeight()
     let yOffset = 0
     
     // High barrier (slideee.glb) - slide under it
@@ -401,14 +398,15 @@ export class ObstacleManager {
   /**
    * Create collision box for an obstacle
    * Y offset is applied to match visual positioning
+   * Enterprise: Uses WorldConfig as single source of truth for track surface height
    */
   private createCollisionBox(type: ObstacleType, lane: Lane, z: number): CollisionBox {
     const x = lane * this.laneWidth
     
     // Y offset must match visual positioning in spawnClonedObstacle
     // All obstacles sit on track surface at Y=0
-    // Enterprise: All collision Y values are relative to track surface
-    const baseY = this.trackSurfaceHeight
+    // Enterprise: All collision Y values are relative to track surface from WorldConfig
+    const baseY = WorldConfig.getInstance().getTrackSurfaceHeight()
 
     switch (type) {
       case 'highBarrier':

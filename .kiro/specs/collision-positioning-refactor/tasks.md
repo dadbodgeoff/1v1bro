@@ -27,7 +27,7 @@
     - **Property 1: Track surface height storage**
     - **Validates: Requirements 1.1**
 
-- [-] 3. Migrate PhysicsController to read from WorldConfig
+- [x] 3. Migrate PhysicsController to read from WorldConfig
   - [x] 3.1 Update PhysicsController to read trackSurfaceHeight from WorldConfig
     - Import WorldConfig in PhysicsController.ts
     - Remove `private trackSurfaceHeight: number` field
@@ -35,7 +35,7 @@
     - Update `checkGround()` to read from `WorldConfig.getInstance().getTrackSurfaceHeight()`
     - _Requirements: 5.1_
 
-  - [-] 3.2 Write property tests for AAA physics features
+  - [x] 3.2 Write property tests for AAA physics features
     - **Property 6: Coyote time jump allowance**
     - **Property 7: Jump buffer execution**
     - **Property 8: Variable jump height gravity**
@@ -43,8 +43,8 @@
     - **Property 10: Air control influence**
     - **Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5**
 
-- [ ] 4. Migrate ObstacleManager to read from WorldConfig
-  - [ ] 4.1 Update ObstacleManager to read trackSurfaceHeight from WorldConfig
+- [x] 4. Migrate ObstacleManager to read from WorldConfig
+  - [x] 4.1 Update ObstacleManager to read trackSurfaceHeight from WorldConfig
     - Import WorldConfig in ObstacleManager.ts
     - Remove `private trackSurfaceHeight: number` field
     - Remove `setTrackSurfaceHeight()` method
@@ -52,11 +52,11 @@
     - Update `spawnClonedObstacle()` to read from WorldConfig
     - _Requirements: 2.4, 5.2_
 
-  - [ ] 4.2 Write property test for collision box Y offset
+  - [x] 4.2 Write property test for collision box Y offset
     - **Property 3: Collision box Y offset**
     - **Validates: Requirements 2.4**
 
-- [ ] 5. Checkpoint - Verify track surface height migration
+- [-] 5. Checkpoint - Verify track surface height migration
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Migrate PlayerController to read from WorldConfig

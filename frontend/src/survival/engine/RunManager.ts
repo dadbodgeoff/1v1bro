@@ -34,6 +34,7 @@ import type { LoadingOrchestrator } from '../core/LoadingOrchestrator'
 import type { SurvivalRenderer } from '../renderer/SurvivalRenderer'
 import type { GameLoop } from './GameLoop'
 import type { FixedUpdateLoop } from './FixedUpdateLoop'
+import { WorldConfig } from '../config/WorldConfig'
 
 export interface RunManagerDeps {
   stateManager: GameStateManager
@@ -67,16 +68,21 @@ export interface RunManagerCallbacks {
 export class RunManager {
   private deps: RunManagerDeps
   private callbacks: RunManagerCallbacks
-  private baseSpeed: number
   
   // Trivia stats for XP calculation (set externally by page component)
   private triviaCorrect: number = 0
   private triviaAnswered: number = 0
 
-  constructor(deps: RunManagerDeps, callbacks: RunManagerCallbacks, baseSpeed: number) {
+  constructor(deps: RunManagerDeps, callbacks: RunManagerCallbacks) {
     this.deps = deps
     this.callbacks = callbacks
-    this.baseSpeed = baseSpeed
+  }
+  
+  /**
+   * Get base speed from WorldConfig (single source of truth)
+   */
+  private getBaseSpeed(): number {
+    return WorldConfig.getInstance().getBaseSpeed()
   }
   
   /**
@@ -108,7 +114,7 @@ export class RunManager {
       obstacleManager.setSeed(seed)
       inputRecorder.start(seed)
       stateManager.resetRunTracking()
-      fixedUpdateLoop.setSpeed(this.baseSpeed)
+      fixedUpdateLoop.setSpeed(this.getBaseSpeed())
       
       // Reset camera to proper position before starting
       renderer.resetOrbitControls()
@@ -142,7 +148,7 @@ export class RunManager {
     if (stateManager.getPhase() === 'ready' || stateManager.getPhase() === 'paused') {
       loadingOrchestrator.startRunning()
       stateManager.setPhase('running')
-      fixedUpdateLoop.setSpeed(this.baseSpeed)
+      fixedUpdateLoop.setSpeed(this.getBaseSpeed())
       playerController.setVisualState({ isRunning: true })
       obstacleManager.setSpawningEnabled(true)
       collectibleManager.setSpawningEnabled(true)
@@ -296,7 +302,7 @@ export class RunManager {
     obstacleManager.setSeed(seed)
     inputRecorder.start(seed)
     stateManager.resetRunTracking()
-    fixedUpdateLoop.setSpeed(this.baseSpeed)
+    fixedUpdateLoop.setSpeed(this.getBaseSpeed())
     
     // Initialize camera for new run
     cameraController.initialize(8)

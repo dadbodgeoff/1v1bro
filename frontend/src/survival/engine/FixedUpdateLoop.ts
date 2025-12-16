@@ -7,6 +7,7 @@
 
 import type { SurvivalGameState, Lane } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
+import { WorldConfig } from '../config/WorldConfig'
 import { PlayerController } from './PlayerController'
 import { PhysicsController } from './PhysicsController'
 import { CameraController } from './CameraController'
@@ -55,22 +56,18 @@ export class FixedUpdateLoop {
   private pendingLifeLoss: boolean = false // Guard against multiple life losses per fall
   private lastSnapshotTime: number = 0 // For ghost position snapshots
 
-  // Config values (from dynamic config)
-  private baseSpeed: number
-  private maxSpeed: number
-  private speedIncreaseRate: number
+  // Config values (laneWidth from static config, speed from WorldConfig)
   private laneWidth: number
 
   constructor(deps: FixedUpdateDeps) {
     this.deps = deps
     
-    // Get config values
+    // Get lane width from static config
     const config = getSurvivalConfig()
-    this.baseSpeed = config.baseSpeed
-    this.maxSpeed = config.maxSpeed
-    this.speedIncreaseRate = config.speedIncreaseRate
     this.laneWidth = config.laneWidth
-    this.currentSpeed = this.baseSpeed
+    
+    // Initialize speed from WorldConfig (single source of truth)
+    this.currentSpeed = WorldConfig.getInstance().getBaseSpeed()
   }
 
   /**
@@ -91,7 +88,7 @@ export class FixedUpdateLoop {
    * Reset speed to base
    */
   resetSpeed(): void {
-    this.currentSpeed = this.baseSpeed
+    this.currentSpeed = WorldConfig.getInstance().getBaseSpeed()
     this.slideTimer = 0
     this.pendingLifeLoss = false
     this.lastSnapshotTime = 0
@@ -154,10 +151,11 @@ export class FixedUpdateLoop {
     // Process inputs
     const { wantsJump, wantsSlide } = this.processInputs(state)
 
-    // Increase speed over time
+    // Increase speed over time (read from WorldConfig - single source of truth)
+    const worldConfig = WorldConfig.getInstance()
     this.currentSpeed = Math.min(
-      this.currentSpeed + this.speedIncreaseRate * delta,
-      this.maxSpeed
+      this.currentSpeed + worldConfig.getSpeedIncreaseRate() * delta,
+      worldConfig.getMaxSpeed()
     )
     stateManager.setSpeed(this.currentSpeed)
     stateManager.updateMaxSpeed(this.currentSpeed)

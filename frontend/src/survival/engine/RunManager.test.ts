@@ -130,7 +130,7 @@ describe('RunManager', () => {
       onGameOver: vi.fn(),
     }
 
-    runManager = new RunManager(mockDeps as never, mockCallbacks, 15)
+    runManager = new RunManager(mockDeps as never, mockCallbacks)
   })
 
   describe('start', () => {

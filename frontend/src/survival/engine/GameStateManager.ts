@@ -7,12 +7,12 @@
 
 import type { SurvivalGameState, SurvivalCallbacks } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
+import { WorldConfig } from '../config/WorldConfig'
 
 export type GamePhase = 'loading' | 'ready' | 'running' | 'paused' | 'gameover'
 
 export interface GameStateConfig {
   initialLives: number
-  baseSpeed: number
 }
 
 export class GameStateManager {
@@ -20,7 +20,6 @@ export class GameStateManager {
   private callbacks: SurvivalCallbacks
   
   // Config values (from dynamic config)
-  private baseSpeed: number
   private initialLives: number
   
   // Run tracking
@@ -36,7 +35,6 @@ export class GameStateManager {
     
     // Get config values
     const config = getSurvivalConfig()
-    this.baseSpeed = config.baseSpeed
     this.initialLives = config.initialLives
     
     this.state = this.createInitialState()
@@ -49,7 +47,7 @@ export class GameStateManager {
     return {
       phase: 'loading',
       distance: 0,
-      speed: this.baseSpeed,
+      speed: WorldConfig.getInstance().getBaseSpeed(),
       score: 0,
       streak: 0,
       player: {

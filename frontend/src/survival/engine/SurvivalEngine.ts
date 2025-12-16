@@ -46,6 +46,7 @@ import { GhostRenderer } from '../renderer/GhostRenderer'
 import { MilestoneSystem } from '../systems/MilestoneSystem'
 import { AchievementSystem } from '../systems/AchievementSystem'
 import { LoadingOrchestrator, type LoadingProgress } from '../core/LoadingOrchestrator'
+import { WorldConfig } from '../config/WorldConfig'
 
 // Modular subsystems (enterprise pattern)
 import { GameStateManager } from './GameStateManager'
@@ -111,9 +112,6 @@ export class SurvivalEngine {
   // Enterprise loading orchestrator
   private loadingOrchestrator: LoadingOrchestrator
   private onLoadingProgress?: (progress: LoadingProgress) => void
-  
-  // Dynamic config values
-  private readonly baseSpeed: number
 
   constructor(
     container: HTMLElement, 
@@ -123,9 +121,13 @@ export class SurvivalEngine {
   ) {
     this.onLoadingProgress = onLoadingProgress
     
-    // Load dynamic config
+    // Load dynamic config and set WorldConfig speed values
     const config = getSurvivalConfig()
-    this.baseSpeed = config.baseSpeed
+    WorldConfig.getInstance().setSpeedConfig(
+      config.baseSpeed,
+      config.maxSpeed,
+      config.speedIncreaseRate
+    )
     
     // Initialize state manager
     this.stateManager = new GameStateManager(callbacks)
@@ -342,8 +344,7 @@ export class SurvivalEngine {
               onGameOver: (score, distance) => {
                 this.stateManager.getCallbacks().onGameOver?.(score, distance)
               },
-            },
-            this.baseSpeed
+            }
           )
         },
         onLoadingProgress: this.onLoadingProgress,
