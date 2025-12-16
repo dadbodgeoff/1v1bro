@@ -30,6 +30,11 @@ class SessionData(BaseModel):
     utm_source: Optional[str] = None
     utm_medium: Optional[str] = None
     utm_campaign: Optional[str] = None
+    # Geolocation (from client-side or IP lookup)
+    country: Optional[str] = None
+    country_code: Optional[str] = None
+    region: Optional[str] = None
+    city: Optional[str] = None
 
 
 class PageViewData(BaseModel):
@@ -89,6 +94,32 @@ async def track_session(data: SessionData, request: Request):
                 ).eq("visitor_id", data.visitor_id).execute()
                 is_returning = (prev_visits.count or 0) > 0
             
+            # Get country from IP if not provided by client
+            country = data.country
+            country_code = data.country_code
+            region = data.region
+            city = data.city
+            
+            if not country:
+                # Try to get from request IP using free geolocation
+                try:
+                    client_ip = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+                    if not client_ip or client_ip in ("127.0.0.1", "localhost"):
+                        client_ip = request.client.host if request.client else None
+                    
+                    if client_ip and client_ip not in ("127.0.0.1", "localhost", "::1"):
+                        import httpx
+                        async with httpx.AsyncClient(timeout=2.0) as client:
+                            geo_resp = await client.get(f"http://ip-api.com/json/{client_ip}?fields=country,countryCode,regionName,city")
+                            if geo_resp.status_code == 200:
+                                geo_data = geo_resp.json()
+                                country = geo_data.get("country")
+                                country_code = geo_data.get("countryCode")
+                                region = geo_data.get("regionName")
+                                city = geo_data.get("city")
+                except Exception:
+                    pass  # Silent fail - geo is optional
+            
             # Create new session
             supabase.table("analytics_sessions").insert({
                 "session_id": data.session_id,
@@ -105,6 +136,10 @@ async def track_session(data: SessionData, request: Request):
                 "utm_source": data.utm_source,
                 "utm_medium": data.utm_medium,
                 "utm_campaign": data.utm_campaign,
+                "country": country,
+                "country_code": country_code,
+                "region": region,
+                "city": city,
             }).execute()
         
         return APIResponse.ok({"tracked": True})
@@ -945,6 +980,426 @@ async def get_session_events(
             "session": session_details,
             "events": events,
             "pageviews": pageviews,
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/engagement")
+async def get_engagement_metrics(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    _admin=Depends(require_admin)
+):
+    """
+    Get engagement metrics: DAU/MAU, stickiness, retention, session frequency.
+    Key metrics for advertisers.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        if not end_date:
+            end_date = datetime.utcnow().date().isoformat()
+        if not start_date:
+            start_date = (datetime.utcnow().date() - __import__('datetime').timedelta(days=30)).isoformat()
+        
+        today = datetime.utcnow().date().isoformat()
+        thirty_days_ago = (datetime.utcnow().date() - __import__('datetime').timedelta(days=30)).isoformat()
+        seven_days_ago = (datetime.utcnow().date() - __import__('datetime').timedelta(days=7)).isoformat()
+        
+        # DAU - unique visitors today
+        dau_result = supabase.table("analytics_sessions").select(
+            "visitor_id"
+        ).gte("first_seen", today).execute()
+        dau_visitors = set(s.get("visitor_id") for s in (dau_result.data or []) if s.get("visitor_id"))
+        dau = len(dau_visitors)
+        
+        # WAU - unique visitors last 7 days
+        wau_result = supabase.table("analytics_sessions").select(
+            "visitor_id"
+        ).gte("first_seen", seven_days_ago).execute()
+        wau_visitors = set(s.get("visitor_id") for s in (wau_result.data or []) if s.get("visitor_id"))
+        wau = len(wau_visitors)
+        
+        # MAU - unique visitors last 30 days
+        mau_result = supabase.table("analytics_sessions").select(
+            "visitor_id"
+        ).gte("first_seen", thirty_days_ago).execute()
+        mau_visitors = set(s.get("visitor_id") for s in (mau_result.data or []) if s.get("visitor_id"))
+        mau = len(mau_visitors)
+        
+        # Stickiness (DAU/MAU ratio)
+        stickiness = round((dau / mau * 100), 1) if mau > 0 else 0
+        
+        # Sessions per user (last 7 days)
+        sessions_7d = supabase.table("analytics_sessions").select(
+            "visitor_id", count="exact"
+        ).gte("first_seen", seven_days_ago).execute()
+        total_sessions_7d = sessions_7d.count or 0
+        sessions_per_user = round(total_sessions_7d / wau, 2) if wau > 0 else 0
+        
+        # Average session duration (last 7 days)
+        duration_result = supabase.table("analytics_sessions").select(
+            "first_seen, last_seen"
+        ).gte("first_seen", seven_days_ago).not_.is_("last_seen", "null").execute()
+        
+        total_duration = 0
+        duration_count = 0
+        for s in duration_result.data or []:
+            try:
+                first = datetime.fromisoformat(s["first_seen"].replace("Z", "+00:00"))
+                last = datetime.fromisoformat(s["last_seen"].replace("Z", "+00:00"))
+                duration = (last - first).total_seconds()
+                if 0 < duration < 7200:  # Cap at 2 hours to filter outliers
+                    total_duration += duration
+                    duration_count += 1
+            except:
+                pass
+        
+        avg_session_duration = round(total_duration / duration_count) if duration_count > 0 else 0
+        
+        # Retention: D1, D7, D30
+        # Get visitors from 1, 7, 30 days ago and check if they returned
+        def calculate_retention(days_ago: int) -> float:
+            target_date = (datetime.utcnow().date() - __import__('datetime').timedelta(days=days_ago)).isoformat()
+            next_date = (datetime.utcnow().date() - __import__('datetime').timedelta(days=days_ago - 1)).isoformat()
+            
+            # Visitors who first visited on target_date
+            cohort = supabase.table("analytics_sessions").select(
+                "visitor_id"
+            ).gte("first_seen", target_date).lt("first_seen", next_date).execute()
+            
+            cohort_visitors = set(s.get("visitor_id") for s in (cohort.data or []) if s.get("visitor_id"))
+            if not cohort_visitors:
+                return 0
+            
+            # Check how many returned after target_date
+            returned = supabase.table("analytics_sessions").select(
+                "visitor_id"
+            ).in_("visitor_id", list(cohort_visitors)).gt("first_seen", next_date).execute()
+            
+            returned_visitors = set(s.get("visitor_id") for s in (returned.data or []) if s.get("visitor_id"))
+            
+            return round(len(returned_visitors) / len(cohort_visitors) * 100, 1)
+        
+        d1_retention = calculate_retention(1) if datetime.utcnow().date() > datetime.fromisoformat(start_date).date() else 0
+        d7_retention = calculate_retention(7) if (datetime.utcnow().date() - datetime.fromisoformat(start_date).date()).days >= 7 else 0
+        d30_retention = calculate_retention(30) if (datetime.utcnow().date() - datetime.fromisoformat(start_date).date()).days >= 30 else 0
+        
+        # Bounce rate (single page sessions)
+        single_page_sessions = 0
+        total_sessions_for_bounce = 0
+        
+        bounce_sessions = supabase.table("analytics_sessions").select(
+            "session_id"
+        ).gte("first_seen", seven_days_ago).execute()
+        
+        for s in bounce_sessions.data or []:
+            sid = s.get("session_id")
+            pv_count = supabase.table("analytics_page_views").select(
+                "id", count="exact"
+            ).eq("session_id", sid).execute()
+            total_sessions_for_bounce += 1
+            if (pv_count.count or 0) <= 1:
+                single_page_sessions += 1
+        
+        bounce_rate = round(single_page_sessions / total_sessions_for_bounce * 100, 1) if total_sessions_for_bounce > 0 else 0
+        
+        return APIResponse.ok({
+            "dau": dau,
+            "wau": wau,
+            "mau": mau,
+            "stickiness": stickiness,
+            "sessions_per_user_weekly": sessions_per_user,
+            "avg_session_duration_seconds": avg_session_duration,
+            "bounce_rate": bounce_rate,
+            "retention": {
+                "d1": d1_retention,
+                "d7": d7_retention,
+                "d30": d30_retention,
+            },
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/countries")
+async def get_country_breakdown(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    _admin=Depends(require_admin)
+):
+    """
+    Get geographic breakdown by country.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        if not end_date:
+            end_date = datetime.utcnow().date().isoformat()
+        if not start_date:
+            start_date = (datetime.utcnow().date() - __import__('datetime').timedelta(days=7)).isoformat()
+        
+        end_date_inclusive = (datetime.fromisoformat(end_date) + __import__('datetime').timedelta(days=1)).isoformat()[:10]
+        
+        sessions = supabase.table("analytics_sessions").select(
+            "country, country_code, region, city, converted_to_signup"
+        ).gte("first_seen", start_date).lt("first_seen", end_date_inclusive).execute()
+        
+        countries = {}
+        cities = {}
+        
+        for s in sessions.data or []:
+            country = s.get("country") or "Unknown"
+            country_code = s.get("country_code") or ""
+            city = s.get("city")
+            converted = s.get("converted_to_signup", False)
+            
+            if country not in countries:
+                countries[country] = {"count": 0, "conversions": 0, "code": country_code}
+            countries[country]["count"] += 1
+            if converted:
+                countries[country]["conversions"] += 1
+            
+            if city:
+                if city not in cities:
+                    cities[city] = {"count": 0, "country": country}
+                cities[city]["count"] += 1
+        
+        # Sort by count
+        sorted_countries = sorted(
+            [{"name": k, "code": v["code"], "count": v["count"], "conversions": v["conversions"], 
+              "conversion_rate": round(v["conversions"] / v["count"] * 100, 1) if v["count"] > 0 else 0}
+             for k, v in countries.items()],
+            key=lambda x: x["count"],
+            reverse=True
+        )
+        
+        sorted_cities = sorted(
+            [{"name": k, "country": v["country"], "count": v["count"]} for k, v in cities.items()],
+            key=lambda x: x["count"],
+            reverse=True
+        )[:20]
+        
+        return APIResponse.ok({
+            "countries": sorted_countries,
+            "cities": sorted_cities,
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/revenue")
+async def get_revenue_metrics(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    _admin=Depends(require_admin)
+):
+    """
+    Get revenue and monetization metrics from shop events.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        if not end_date:
+            end_date = datetime.utcnow().date().isoformat()
+        if not start_date:
+            start_date = (datetime.utcnow().date() - __import__('datetime').timedelta(days=30)).isoformat()
+        
+        end_date_inclusive = (datetime.fromisoformat(end_date) + __import__('datetime').timedelta(days=1)).isoformat()[:10]
+        
+        # Get shop events
+        shop_events = supabase.table("analytics_shop_events").select(
+            "event_type, item_id, item_type, item_rarity, price, currency, visitor_id, user_id, created_at"
+        ).gte("created_at", start_date).lt("created_at", end_date_inclusive).execute()
+        
+        events = shop_events.data or []
+        
+        # Calculate metrics
+        total_revenue = 0
+        purchases = []
+        paying_users = set()
+        all_users = set()
+        items_sold = {}
+        daily_revenue = {}
+        
+        for e in events:
+            visitor = e.get("visitor_id") or e.get("user_id")
+            if visitor:
+                all_users.add(visitor)
+            
+            if e.get("event_type") == "purchase_complete":
+                price = e.get("price", 0) or 0
+                total_revenue += price
+                purchases.append(e)
+                
+                if visitor:
+                    paying_users.add(visitor)
+                
+                item_id = e.get("item_id", "unknown")
+                if item_id not in items_sold:
+                    items_sold[item_id] = {"count": 0, "revenue": 0, "type": e.get("item_type"), "rarity": e.get("item_rarity")}
+                items_sold[item_id]["count"] += 1
+                items_sold[item_id]["revenue"] += price
+                
+                # Daily breakdown
+                day = e.get("created_at", "")[:10]
+                if day:
+                    if day not in daily_revenue:
+                        daily_revenue[day] = {"revenue": 0, "transactions": 0}
+                    daily_revenue[day]["revenue"] += price
+                    daily_revenue[day]["transactions"] += 1
+        
+        # Funnel metrics
+        views = len([e for e in events if e.get("event_type") == "view"])
+        item_views = len([e for e in events if e.get("event_type") == "item_view"])
+        previews = len([e for e in events if e.get("event_type") == "preview"])
+        purchase_starts = len([e for e in events if e.get("event_type") == "purchase_start"])
+        purchase_completes = len(purchases)
+        
+        # Calculate rates
+        arpu = round(total_revenue / len(all_users), 2) if all_users else 0
+        arppu = round(total_revenue / len(paying_users), 2) if paying_users else 0
+        conversion_rate = round(len(paying_users) / len(all_users) * 100, 2) if all_users else 0
+        
+        # Top items
+        top_items = sorted(
+            [{"item_id": k, **v} for k, v in items_sold.items()],
+            key=lambda x: x["revenue"],
+            reverse=True
+        )[:10]
+        
+        # Daily data for chart
+        daily_data = sorted(
+            [{"date": k, **v} for k, v in daily_revenue.items()],
+            key=lambda x: x["date"]
+        )
+        
+        return APIResponse.ok({
+            "total_revenue": total_revenue,
+            "total_transactions": len(purchases),
+            "unique_buyers": len(paying_users),
+            "total_users": len(all_users),
+            "arpu": arpu,
+            "arppu": arppu,
+            "conversion_rate": conversion_rate,
+            "funnel": {
+                "shop_views": views,
+                "item_views": item_views,
+                "previews": previews,
+                "purchase_starts": purchase_starts,
+                "purchase_completes": purchase_completes,
+            },
+            "top_items": top_items,
+            "daily": daily_data,
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/advertiser-summary")
+async def get_advertiser_summary(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    _admin=Depends(require_admin)
+):
+    """
+    Get a comprehensive summary for advertisers - all key metrics in one call.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        if not end_date:
+            end_date = datetime.utcnow().date().isoformat()
+        if not start_date:
+            start_date = (datetime.utcnow().date() - __import__('datetime').timedelta(days=30)).isoformat()
+        
+        end_date_inclusive = (datetime.fromisoformat(end_date) + __import__('datetime').timedelta(days=1)).isoformat()[:10]
+        today = datetime.utcnow().date().isoformat()
+        thirty_days_ago = (datetime.utcnow().date() - __import__('datetime').timedelta(days=30)).isoformat()
+        
+        # Reach metrics
+        sessions = supabase.table("analytics_sessions").select(
+            "visitor_id, device_type, country, converted_to_signup, first_seen"
+        ).gte("first_seen", start_date).lt("first_seen", end_date_inclusive).execute()
+        
+        visitors = set()
+        devices = {"mobile": 0, "tablet": 0, "desktop": 0}
+        countries = {}
+        conversions = 0
+        
+        for s in sessions.data or []:
+            vid = s.get("visitor_id")
+            if vid:
+                visitors.add(vid)
+            
+            device = s.get("device_type", "desktop")
+            if device in devices:
+                devices[device] += 1
+            
+            country = s.get("country") or "Unknown"
+            countries[country] = countries.get(country, 0) + 1
+            
+            if s.get("converted_to_signup"):
+                conversions += 1
+        
+        total_visitors = len(visitors)
+        total_sessions = len(sessions.data or [])
+        
+        # Page views
+        page_views = supabase.table("analytics_page_views").select(
+            "id", count="exact"
+        ).gte("viewed_at", start_date).lt("viewed_at", end_date_inclusive).execute()
+        
+        # DAU/MAU
+        dau_result = supabase.table("analytics_sessions").select(
+            "visitor_id"
+        ).gte("first_seen", today).execute()
+        dau = len(set(s.get("visitor_id") for s in (dau_result.data or []) if s.get("visitor_id")))
+        
+        mau_result = supabase.table("analytics_sessions").select(
+            "visitor_id"
+        ).gte("first_seen", thirty_days_ago).execute()
+        mau = len(set(s.get("visitor_id") for s in (mau_result.data or []) if s.get("visitor_id")))
+        
+        # Top countries
+        top_countries = sorted(
+            [{"name": k, "count": v} for k, v in countries.items()],
+            key=lambda x: x["count"],
+            reverse=True
+        )[:5]
+        
+        # Device percentages
+        total_device = sum(devices.values())
+        device_pct = {
+            k: round(v / total_device * 100, 1) if total_device > 0 else 0
+            for k, v in devices.items()
+        }
+        
+        return APIResponse.ok({
+            "period": {
+                "start": start_date,
+                "end": end_date,
+            },
+            "reach": {
+                "unique_visitors": total_visitors,
+                "total_sessions": total_sessions,
+                "page_views": page_views.count or 0,
+                "pages_per_session": round((page_views.count or 0) / total_sessions, 1) if total_sessions > 0 else 0,
+            },
+            "engagement": {
+                "dau": dau,
+                "mau": mau,
+                "stickiness": round(dau / mau * 100, 1) if mau > 0 else 0,
+            },
+            "conversion": {
+                "total_conversions": conversions,
+                "conversion_rate": round(conversions / total_visitors * 100, 2) if total_visitors > 0 else 0,
+            },
+            "audience": {
+                "devices": device_pct,
+                "top_countries": top_countries,
+            },
         })
     except Exception as e:
         return APIResponse.fail(str(e), "ANALYTICS_ERROR")

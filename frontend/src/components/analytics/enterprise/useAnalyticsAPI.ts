@@ -160,6 +160,19 @@ export function useAnalyticsAPI() {
   const getPageviews = (range: DateRange, page = 1) =>
     fetchAPI(`/analytics/dashboard/pageviews?${buildParams(range, { page, per_page: 100 })}`)
 
+  // New Advertiser Metrics
+  const getEngagement = (range: DateRange) =>
+    fetchAPI(`/analytics/dashboard/engagement?${buildParams(range)}`)
+
+  const getCountries = (range: DateRange) =>
+    fetchAPI(`/analytics/dashboard/countries?${buildParams(range)}`)
+
+  const getRevenue = (range: DateRange) =>
+    fetchAPI(`/analytics/dashboard/revenue?${buildParams(range)}`)
+
+  const getAdvertiserSummary = (range: DateRange) =>
+    fetchAPI(`/analytics/dashboard/advertiser-summary?${buildParams(range)}`)
+
   return {
     // Basic
     getOverview,
@@ -198,5 +211,10 @@ export function useAnalyticsAPI() {
     getTimeOnPageReport,
     getEvents,
     getPageviews,
+    // Advertiser Metrics
+    getEngagement,
+    getCountries,
+    getRevenue,
+    getAdvertiserSummary,
   }
 }

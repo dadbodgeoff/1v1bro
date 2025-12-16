@@ -28,18 +28,22 @@ import {
   FunnelsPanel,
   ExperimentsPanel,
   CohortsPanel,
+  EngagementPanel,
+  RevenuePanel,
+  GeographyPanel,
+  AdvertiserSummaryPanel,
 } from '@/components/analytics/enterprise'
 
 // Admin emails
 const ADMIN_EMAILS = ['dadbodgeoff@gmail.com']
 
-type Tab = 'overview' | 'pages' | 'tech' | 'utm' | 'journeys' | 'sessions' | 'performance' | 'realtime' | 'errors' | 'heatmap' | 'events' | 'funnels' | 'experiments' | 'cohorts' | 'survival'
+type Tab = 'summary' | 'overview' | 'engagement' | 'revenue' | 'geography' | 'pages' | 'tech' | 'utm' | 'journeys' | 'sessions' | 'performance' | 'realtime' | 'errors' | 'heatmap' | 'events' | 'funnels' | 'experiments' | 'cohorts' | 'survival'
 
 export function AnalyticsDashboard() {
   const navigate = useNavigate()
   const { isAuthenticated, user } = useAuthStore()
   
-  const [activeTab, setActiveTab] = useState<Tab>('overview')
+  const [activeTab, setActiveTab] = useState<Tab>('summary')
   const [dateRange, setDateRange] = useState(() => {
     const end = new Date()
     const start = new Date()
@@ -63,7 +67,11 @@ export function AnalyticsDashboard() {
   }, [isAuthenticated, user?.email, navigate])
 
   const tabs: { id: Tab; label: string; badge?: string }[] = [
+    { id: 'summary', label: 'Summary', badge: '📊' },
     { id: 'overview', label: 'Overview' },
+    { id: 'engagement', label: 'Engagement', badge: '🔥' },
+    { id: 'revenue', label: 'Revenue', badge: '💰' },
+    { id: 'geography', label: 'Geography', badge: '🌍' },
     { id: 'pages', label: 'Pages' },
     { id: 'tech', label: 'Tech' },
     { id: 'utm', label: 'Campaigns' },
@@ -182,7 +190,11 @@ export function AnalyticsDashboard() {
 
         {/* Panel Content */}
         <main>
+          {activeTab === 'summary' && <AdvertiserSummaryPanel dateRange={dateRange} />}
           {activeTab === 'overview' && <OverviewPanel dateRange={dateRange} />}
+          {activeTab === 'engagement' && <EngagementPanel dateRange={dateRange} />}
+          {activeTab === 'revenue' && <RevenuePanel dateRange={dateRange} />}
+          {activeTab === 'geography' && <GeographyPanel dateRange={dateRange} />}
           {activeTab === 'pages' && <PagesPanel dateRange={dateRange} />}
           {activeTab === 'tech' && <TechPanel dateRange={dateRange} />}
           {activeTab === 'utm' && <UTMPanel dateRange={dateRange} />}

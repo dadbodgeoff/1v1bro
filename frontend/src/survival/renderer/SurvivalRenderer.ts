@@ -100,7 +100,9 @@ export class SurvivalRenderer {
       // Safari/iOS: prefer failIfMajorPerformanceCaveat to avoid software rendering
       failIfMajorPerformanceCaveat: isSafariMobile,
     })
-    this.renderer.setSize(container.clientWidth, container.clientHeight)
+    // Set renderer size - pass false to let CSS handle the canvas element size
+    // This prevents the canvas from overflowing its container
+    this.renderer.setSize(container.clientWidth, container.clientHeight, false)
     
     // Use quality-based pixel ratio
     // Safari/iOS: cap at 2x max to prevent VRAM exhaustion (Retina can be 3x)
@@ -121,6 +123,14 @@ export class SurvivalRenderer {
       this.renderer.toneMapping = THREE.NoToneMapping
     }
 
+    // Style canvas to fill container and prevent overflow
+    this.renderer.domElement.style.display = 'block'
+    this.renderer.domElement.style.width = '100%'
+    this.renderer.domElement.style.height = '100%'
+    this.renderer.domElement.style.position = 'absolute'
+    this.renderer.domElement.style.top = '0'
+    this.renderer.domElement.style.left = '0'
+    
     container.appendChild(this.renderer.domElement)
 
     // Orbit controls (for debug/paused state)
@@ -612,8 +622,13 @@ export class SurvivalRenderer {
     this.camera.aspect = width / height
     this.camera.updateProjectionMatrix()
     
-    // Update renderer size
-    this.renderer.setSize(width, height)
+    // Update renderer size - pass false to let CSS handle the canvas element size
+    // This prevents the canvas from overflowing its container
+    this.renderer.setSize(width, height, false)
+    
+    // Ensure canvas stays within container bounds via CSS
+    this.renderer.domElement.style.width = `${width}px`
+    this.renderer.domElement.style.height = `${height}px`
     
     // Force a render to apply changes immediately
     this.renderer.render(this.scene, this.camera)
