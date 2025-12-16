@@ -105,9 +105,11 @@ export class InitializationManager {
       const raycastMeshes = trackManager.getRaycastMeshes()
       physicsController.setTrackMeshes(raycastMeshes)
       
-      // Enterprise: Pass track surface height to physics for proper ground placement
+      // Enterprise: Pass track surface height to physics and obstacles
+      // This ensures all systems use the same reference point for Y positioning
       const trackSurfaceHeight = trackManager.getTrackSurfaceHeight()
       physicsController.setTrackSurfaceHeight(trackSurfaceHeight)
+      obstacleManager.setTrackSurfaceHeight(trackSurfaceHeight)
 
       cameraController.initialize(8) // Initial player Z
 

@@ -78,6 +78,10 @@ export class ObstacleManager {
 
   // Control flag - set to true to enable obstacle spawning
   private spawningEnabled: boolean = false
+  
+  // Enterprise: Track surface height for obstacle Y positioning
+  // Set via setTrackSurfaceHeight() from InitializationManager
+  private trackSurfaceHeight: number = 0
 
   // Config values (from dynamic config)
   private obstacleScale: number
@@ -91,6 +95,15 @@ export class ObstacleManager {
     const config = getSurvivalConfig()
     this.obstacleScale = config.obstacleScale
     this.laneWidth = config.laneWidth
+  }
+
+  /**
+   * Enterprise: Set track surface height for obstacle Y positioning
+   * Obstacles are placed relative to this height
+   */
+  setTrackSurfaceHeight(surfaceHeight: number): void {
+    this.trackSurfaceHeight = surfaceHeight
+    console.log(`[ObstacleManager] Track surface height set to: ${surfaceHeight}`)
   }
 
   /**
@@ -256,6 +269,7 @@ export class ObstacleManager {
   
   /**
    * Spawn obstacle using clone
+   * Enterprise: Y positions are relative to trackSurfaceHeight
    */
   private spawnClonedObstacle(
     request: SpawnRequest,
@@ -264,63 +278,42 @@ export class ObstacleManager {
   ): CollidableObstacle {
     const mesh = template.model.clone()
     
-    // Calculate Y position based on obstacle type
-    // Most obstacles sit on the track surface at Y=0
+    // Enterprise: Calculate Y position relative to track surface
+    // All obstacles are positioned relative to trackSurfaceHeight
+    const baseY = this.trackSurfaceHeight
     let yOffset = 0
     
     // High barrier (slideee.glb) - slide under it
-    // This is the "oh shit I need to slide" obstacle
-    // Scale similar to lowBarrier (0.35) for consistency
+    // Positioned at chest/head height above track surface
     if (request.type === 'highBarrier') {
-      // Force to center lane - bridge is narrow
-      request.lane = 0
-      
-      // Rotate 90 degrees around Y axis so it faces the player properly
+      request.lane = 0 // Force to center lane
       mesh.rotation.y = Math.PI / 2
-      // Scale similar to lowBarrier for visual consistency
       mesh.scale.multiplyScalar(0.35)
-      // Position at player chest/head height - must slide under
-      // Player feet at Y≈2.05, player height ~2 units, so head at ~4
-      yOffset = 2.5
+      // Position above track surface at chest height (~0.5 units above surface)
+      yOffset = 0.5
     }
     
     // Low barrier (neon gate) - jump over it
-    // This is the futuristic floating energy barrier gate (jump.glb)
-    // Model dimensions after scale 10: 0.3x3.1x10.0 (very thin, tall, deep)
-    // Rotate 90° so the 10-unit side faces the player (becomes width)
+    // Positioned at knee height - player must jump to clear
     if (request.type === 'lowBarrier') {
-      // Force to center lane - bridge is narrow, side lanes are off the platform
-      request.lane = 0
-      
-      // Rotate 90 degrees around Y axis so the wide part faces the player
+      request.lane = 0 // Force to center lane
       mesh.rotation.y = Math.PI / 2
-      // Scale down to fit the bridge (~3.5 units wide)
       mesh.scale.multiplyScalar(0.35)
-      // Raise it up to knee/waist height - player must jump over
-      // Player feet are at Y≈2.05, so this should be visible at that level
-      yOffset = 1.8
-      
-      // Keep original GLB materials - no color/emissive modifications
-      // The GLB has its own lighting baked in
+      // Position slightly below track surface (obstacle sits on track)
+      yOffset = -0.2
     }
     
     // Spikes - dodge obstacle (pass on sides, don't touch)
-    // Force to center lane, player dodges left or right
     if (request.type === 'spikes') {
-      // Force to center lane - spikes block the middle, dodge to sides
-      request.lane = 0
-      
-      // Scale to fit nicely on bridge
+      request.lane = 0 // Force to center lane
       mesh.scale.multiplyScalar(0.5)
-      // Raise slightly so spikes are at player level
-      yOffset = 1.5
-      
-      // Keep original GLB materials - no color/emissive modifications
+      // Position at track surface level
+      yOffset = -0.5
     }
     
     mesh.position.set(
       request.lane * this.laneWidth,
-      yOffset,
+      baseY + yOffset,
       request.z
     )
     
@@ -414,32 +407,29 @@ export class ObstacleManager {
     
     // Y offset must match visual positioning in spawnClonedObstacle
     // All obstacles sit on track surface at Y=0
-    // Player feet at Y≈2.05 when grounded (due to character foot offset)
-    const yOffset = 0
+    // Enterprise: All collision Y values are relative to track surface
+    const baseY = this.trackSurfaceHeight
 
     switch (type) {
       case 'highBarrier':
-        // High barrier (slideee.glb) - must slide under
-        // Sliding player height is ~0.8 (40% of 2.0)
-        // Collision starts at Y=1.5 - sliding player (0.8 height) fits under
-        // Standing/jumping player (2.0+ height) will collide
+        // High barrier - must slide under
+        // Collision starts above slide height, extends high
         return {
           minX: x - 1.8,
           maxX: x + 1.8,
-          minY: 1.5, // Slide clearance - 0.8 height player fits under
-          maxY: 6.0, // Extends high - can't jump over
+          minY: baseY + 0.8, // Above slide height (~0.8 units above surface)
+          maxY: baseY + 4.0, // Extends high - can't jump over
           minZ: z - 0.5,
           maxZ: z + 0.5,
         }
       case 'lowBarrier':
-        // Low barrier (neon gate) - horizontal beam to jump over
-        // Player grounded Y is ~0.1, jump reaches ~3.3 max
-        // maxY=1.5 means player needs to be mid-jump to clear (feet at 1.5+)
+        // Low barrier - must jump over
+        // Collision from track surface to jump clearance height
         return {
           minX: x - 1.8,
           maxX: x + 1.8,
-          minY: 0,
-          maxY: 1.5, // Player must jump - feet need to be above this
+          minY: baseY - 0.5,
+          maxY: baseY + 1.2, // Player must jump to clear
           minZ: z - 0.4,
           maxZ: z + 0.4,
         }
@@ -447,8 +437,8 @@ export class ObstacleManager {
         return {
           minX: x - this.laneWidth * 0.5,
           maxX: x + this.laneWidth * 0.5,
-          minY: yOffset,
-          maxY: yOffset + 3.0,
+          minY: baseY,
+          maxY: baseY + 3.0,
           minZ: z - 1.0,
           maxZ: z + 1.0,
         }
@@ -456,20 +446,18 @@ export class ObstacleManager {
         return {
           minX: x - this.laneWidth * 1.5,
           maxX: x + this.laneWidth * 1.5,
-          minY: yOffset,
-          maxY: yOffset + 5.0,
+          minY: baseY,
+          maxY: baseY + 5.0,
           minZ: z - 0.6,
           maxZ: z + 0.6,
         }
       case 'spikes':
         // Ground spikes - dodge obstacle (change lanes to avoid)
-        // Narrow collision box - only the spike area
-        // Player can pass on left or right lane
         return {
-          minX: x - 0.7, // Slightly narrower for more forgiving dodge
+          minX: x - 0.7,
           maxX: x + 0.7,
-          minY: 0,
-          maxY: 3.2, // Lowered slightly
+          minY: baseY - 0.5,
+          maxY: baseY + 2.0,
           minZ: z - 0.35,
           maxZ: z + 0.35,
         }
@@ -477,8 +465,8 @@ export class ObstacleManager {
         return {
           minX: x - 1,
           maxX: x + 1,
-          minY: yOffset,
-          maxY: yOffset + 2,
+          minY: baseY,
+          maxY: baseY + 2,
           minZ: z - 1,
           maxZ: z + 1,
         }
