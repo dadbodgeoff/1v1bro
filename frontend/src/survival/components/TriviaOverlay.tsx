@@ -17,9 +17,33 @@
  * - New question immediately after answering
  * - Compact auto-sizing answer buttons
  * - Risk/reward: answer for points or focus on running
+ * - Polished UI with subtle animations and cyan accent
  */
 
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
+
+// Brand colors from BRAND_SYSTEM.md
+const ACCENT_COLOR = '#6366f1' // indigo-500 (action primary)
+const ACCENT_GLOW = 'rgba(99, 102, 241, 0.3)' // indigo glow
+
+// Inject keyframes for animations (only once)
+if (typeof document !== 'undefined' && !document.getElementById('trivia-animations')) {
+  const style = document.createElement('style')
+  style.id = 'trivia-animations'
+  style.textContent = `
+    @keyframes triviaSlideUp {
+      from { transform: translateY(20px); opacity: 0.8; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes triviaPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-slideUp { animation: triviaSlideUp 0.2s ease-out; }
+    .animate-triviaPulse { animation: triviaPulse 0.5s ease-in-out infinite; }
+  `
+  document.head.appendChild(style)
+}
 
 // ============================================
 // Types
@@ -94,8 +118,8 @@ const AnswerButton = memo(({
     return 'text-[11px]'
   }
   
-  // State-based styling
-  let containerStyle = 'bg-zinc-800/90 border-zinc-600/50'
+  // State-based styling - using brand indigo accent
+  let containerStyle = 'bg-zinc-800/90 border-zinc-600/50 hover:border-indigo-500/40'
   let labelStyle = 'bg-zinc-700 text-zinc-300'
   let textStyle = 'text-zinc-100'
   
@@ -104,12 +128,12 @@ const AnswerButton = memo(({
     labelStyle = 'bg-emerald-500 text-white'
     textStyle = 'text-white'
   } else if (isCorrect === false && isSelected) {
-    containerStyle = 'bg-red-600/90 border-red-400/60'
-    labelStyle = 'bg-red-500 text-white'
+    containerStyle = 'bg-rose-600/90 border-rose-400/60'
+    labelStyle = 'bg-rose-500 text-white'
     textStyle = 'text-white'
   } else if (isSelected) {
-    containerStyle = 'bg-orange-600/90 border-orange-400/60'
-    labelStyle = 'bg-orange-500 text-white'
+    containerStyle = 'bg-indigo-600/90 border-indigo-400/60'
+    labelStyle = 'bg-indigo-500 text-white'
     textStyle = 'text-white'
   }
   
@@ -290,40 +314,53 @@ export const TriviaPanel: React.FC<TriviaOverlayProps> = memo(({
   
   return (
     <div 
-      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 pt-2"
+      className="bg-gradient-to-t from-zinc-900 via-zinc-900/95 to-zinc-800/90 border-t border-indigo-500/20 px-3 pt-2 animate-slideUp"
       style={{ 
         minHeight: TRIVIA_PANEL_HEIGHT, 
         paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
         touchAction: 'manipulation',
+        boxShadow: `0 -4px 20px ${ACCENT_GLOW}`,
       }}
     >
       {/* Question row with timer */}
       <div className="flex items-center gap-2 mb-1.5">
-        {/* Timer - minimal */}
+        {/* Timer with icon - brand indigo accent */}
         <div className="relative shrink-0">
           <div className={`
             w-8 h-8 rounded-full flex items-center justify-center
-            ${isUrgent ? 'bg-red-500/20' : 'bg-orange-500/20'}
+            ${isUrgent ? 'bg-red-500/20' : 'bg-indigo-500/20'}
+            transition-colors duration-200
           `}>
             <svg className="absolute inset-0 w-8 h-8 -rotate-90" viewBox="0 0 32 32">
+              {/* Background track */}
               <circle
                 cx="16" cy="16" r="13"
                 fill="none"
-                stroke={isUrgent ? '#ef4444' : '#f97316'}
+                stroke="rgba(255,255,255,0.1)"
+                strokeWidth="2"
+              />
+              {/* Progress arc */}
+              <circle
+                cx="16" cy="16" r="13"
+                fill="none"
+                stroke={isUrgent ? '#ef4444' : ACCENT_COLOR}
                 strokeWidth="2"
                 strokeDasharray={`${timerPercent * 0.82} 82`}
                 strokeLinecap="round"
-                className="opacity-80"
+                className="transition-all duration-100"
               />
             </svg>
             <span className={`
               text-[11px] font-bold tabular-nums relative z-10
-              ${isUrgent ? 'text-red-400' : 'text-orange-400'}
+              ${isUrgent ? 'text-red-400 animate-pulse' : 'text-indigo-400'}
             `}>
               {Math.ceil(timeRemaining)}
             </span>
           </div>
         </div>
+        
+        {/* Question icon */}
+        <span className="text-indigo-400 text-sm shrink-0">❓</span>
         
         {/* Question text - single line */}
         <p className="text-white text-[12px] font-semibold leading-tight line-clamp-1 tracking-tight flex-1 min-w-0">
@@ -432,36 +469,52 @@ export const TriviaOverlay: React.FC<TriviaOverlayLegacyProps> = memo(({
   
   return (
     <div 
-      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-1.5"
-      style={{ height: TRIVIA_PANEL_HEIGHT, touchAction: 'manipulation' }}
+      className="bg-gradient-to-t from-zinc-900 via-zinc-900/95 to-zinc-800/90 border-t border-indigo-500/20 px-3 py-1.5 animate-slideUp"
+      style={{ 
+        height: TRIVIA_PANEL_HEIGHT, 
+        touchAction: 'manipulation',
+        boxShadow: `0 -4px 20px ${ACCENT_GLOW}`,
+      }}
     >
       {/* Question row with timer - compact */}
       <div className="flex items-center gap-2 mb-1.5">
-        {/* Timer with progress ring - smaller */}
+        {/* Timer with progress ring - brand indigo accent */}
         <div className="relative shrink-0">
           <div className={`
             w-9 h-9 rounded-full flex items-center justify-center
-            ${isUrgent ? 'bg-red-500/20' : 'bg-orange-500/20'}
+            ${isUrgent ? 'bg-red-500/20' : 'bg-indigo-500/20'}
+            transition-colors duration-200
           `}>
             <svg className="absolute inset-0 w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+              {/* Background track */}
               <circle
                 cx="18" cy="18" r="15"
                 fill="none"
-                stroke={isUrgent ? '#ef4444' : '#f97316'}
+                stroke="rgba(255,255,255,0.1)"
+                strokeWidth="2.5"
+              />
+              {/* Progress arc */}
+              <circle
+                cx="18" cy="18" r="15"
+                fill="none"
+                stroke={isUrgent ? '#ef4444' : ACCENT_COLOR}
                 strokeWidth="2.5"
                 strokeDasharray={`${timerPercent * 0.94} 94`}
                 strokeLinecap="round"
-                className="opacity-80"
+                className="transition-all duration-100"
               />
             </svg>
             <span className={`
               text-xs font-bold tabular-nums relative z-10
-              ${isUrgent ? 'text-red-400' : 'text-orange-400'}
+              ${isUrgent ? 'text-red-400 animate-triviaPulse' : 'text-indigo-400'}
             `}>
               {Math.ceil(timeRemaining)}
             </span>
           </div>
         </div>
+        
+        {/* Question icon */}
+        <span className="text-indigo-400 text-sm shrink-0">❓</span>
         
         {/* Question text - single line to save space */}
         <p className="text-white text-[13px] font-semibold leading-tight line-clamp-1 tracking-tight flex-1 min-w-0">

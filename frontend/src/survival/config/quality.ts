@@ -139,7 +139,7 @@ export const QUALITY_PRESETS: Record<PerformanceTier, QualityProfile> = {
       shootingStarRate: 0,
       celestialCount: 2,
       celestialLOD: 0,
-      cityEnabled: false,
+      cityEnabled: true, // Re-enabled with optimizations
       spaceParticlesEnabled: false,
       cosmicDustCount: 0,
       auroraCount: 0,
@@ -467,7 +467,7 @@ class QualityManager {
           spaceParticlesEnabled: false,
           cosmicDustCount: 0,
           auroraCount: 0,
-          cityEnabled: false, // No city skyline - saves more memory
+          cityEnabled: true, // Re-enabled with aggressive texture optimization (256px)
         },
         animation: {
           ...profile.animation,

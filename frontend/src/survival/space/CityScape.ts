@@ -18,7 +18,21 @@ const DEFAULT_CONFIG: CityScapeConfig = {
   yOffset: -25, // Lower so buildings don't poke through bridge
   xOffset: 15, // Close to track/bridge
   zSpacing: 120, // Tighter spacing
-  instanceCount: 8, // Good coverage
+  instanceCount: 8, // Good coverage (reduced on mobile via getMobileConfig)
+}
+
+// Mobile-optimized config - fewer instances, wider spacing
+const MOBILE_CONFIG: Partial<CityScapeConfig> = {
+  instanceCount: 4, // Half the instances
+  zSpacing: 180, // Wider spacing to cover same area
+}
+
+/**
+ * Get config optimized for mobile devices
+ */
+export function getMobileCityConfig(): Partial<CityScapeConfig> {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  return isMobile ? MOBILE_CONFIG : {}
 }
 
 export class CityScape {

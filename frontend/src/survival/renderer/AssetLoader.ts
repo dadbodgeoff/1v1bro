@@ -432,18 +432,24 @@ export class AssetLoader {
 
   /**
    * Load city model asynchronously (for skyline below track)
-   * Skipped on Safari mobile to save GPU memory
+   * Now enabled on mobile with aggressive optimizations
    */
   async loadCityAsync(): Promise<THREE.Group | null> {
-    // Skip city on Safari mobile - saves GPU memory
-    if (this.isSafariMobile) {
-      console.log('[AssetLoader] Skipping city on Safari mobile to save memory')
-      return null
-    }
     if (!SURVIVAL_ASSETS.environment?.city) return null
 
     try {
       const city = await this.loadModel(SURVIVAL_ASSETS.environment.city, 'city')
+      
+      // Aggressive optimization for mobile - downscale textures to 256px
+      if (this.isSafariMobile) {
+        this.downscaleModelTextures(city, 256)
+        this.optimizeModelForMobile(city)
+        console.log('[AssetLoader] City loaded with mobile optimizations (256px textures)')
+      } else if (this.maxTextureSize <= 1024) {
+        this.downscaleModelTextures(city, 512)
+        console.log('[AssetLoader] City loaded with reduced textures (512px)')
+      }
+      
       return city
     } catch (error) {
       console.error('[AssetLoader] City loading failed:', error)
