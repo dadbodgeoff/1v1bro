@@ -57,6 +57,7 @@ import { RenderUpdateLoop } from './RenderUpdateLoop'
 import { InitializationManager } from './InitializationManager'
 import { RunManager } from './RunManager'
 import { GhostManager } from './GhostManager'
+import { LifeEnforcer } from './LifeEnforcer'
 
 // Event system
 import { GameEventBus } from '../core/GameEventBus'
@@ -112,6 +113,7 @@ export class SurvivalEngine {
   private initializationManager!: InitializationManager
   private runManager!: RunManager
   private ghostManager: GhostManager
+  private lifeEnforcer!: LifeEnforcer
 
   // Event system
   private eventBus: GameEventBus
@@ -388,6 +390,19 @@ export class SurvivalEngine {
    * Initialize modular subsystems
    */
   private initializeModularSystems(callbacks: SurvivalCallbacks): void {
+    // Initialize LifeEnforcer - centralized life management
+    this.lifeEnforcer = new LifeEnforcer({
+      getCurrentLives: () => this.stateManager.getMutableState().player.lives,
+      onRespawn: () => {
+        console.log('[LifeEnforcer] Triggering respawn')
+        this.playerManager.respawnPlayer(this.stateManager.getMutableState())
+      },
+      onGameOver: () => {
+        console.log('[LifeEnforcer] Triggering game over')
+        this.runManager.gameOver()
+      },
+    })
+
     // Collision handler (reduced deps - most effects now in EventWiring)
     this.collisionHandler = new CollisionHandler({
       collisionSystem: this.collisionSystem,
@@ -401,12 +416,15 @@ export class SurvivalEngine {
     // NOTE: onObstacleCleared and onScoreUpdate are now handled by EventWiring
     this.collisionHandler.setHandlers({
       onLifeLost: () => {
+        console.log('[SurvivalEngine] onLifeLost callback triggered')
         const lives = this.stateManager.loseLife()
+        console.log('[SurvivalEngine] Lives remaining:', lives)
         // Emit life lost event - EventWiring handles invincibility, death animation, etc.
         this.eventBus.emit('player:lifeLost', { livesRemaining: lives })
-        if (lives > 0) {
-          setTimeout(() => this.playerManager.respawnPlayer(this.stateManager.getMutableState()), 1200)
-        }
+        // Trigger invincibility immediately
+        this.collisionSystem.triggerInvincibility()
+        // Delegate to LifeEnforcer for respawn/game over handling
+        this.lifeEnforcer.onLifeLost()
       },
       onDeathRecord: (type, pos) => {
         // Emit collision event - EventWiring handles combo reset, camera effects, feedback, etc.
@@ -481,6 +499,12 @@ export class SurvivalEngine {
     
     if (!isRunning || isGamePaused) return
     
+    // Safety check: enforce life state (catches any missed life loss events)
+    this.lifeEnforcer.checkLives()
+    
+    // Don't continue if game over was triggered
+    if (this.lifeEnforcer.isGameOver()) return
+    
     this.stateManager.gameTimeMs += delta * 1000
     this.fixedUpdateLoop.update(delta)
     
@@ -525,9 +549,11 @@ export class SurvivalEngine {
 
   reset(): void {
     this.runManager.reset()
+    this.lifeEnforcer.reset()
   }
 
   quickRestart(): void {
+    this.lifeEnforcer.reset() // Reset BEFORE quickRestart to unblock game loop
     this.runManager.quickRestart()
   }
 

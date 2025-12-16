@@ -259,6 +259,9 @@ export class ObstacleManager {
    * Spawn obstacle using clone
    * Enterprise: Y positions are relative to WorldConfig.trackSurfaceHeight
    */
+  // Track geometry offset - see createCollisionBox for explanation
+  private static readonly TRACK_GEOMETRY_OFFSET = 2.05
+  
   private spawnClonedObstacle(
     request: SpawnRequest,
     template: ObstacleTemplate,
@@ -267,8 +270,9 @@ export class ObstacleManager {
     const mesh = template.model.clone()
     
     // Enterprise: Calculate Y position relative to track surface from WorldConfig
-    // All obstacles are positioned relative to trackSurfaceHeight
-    const baseY = WorldConfig.getInstance().getTrackSurfaceHeight()
+    // Add TRACK_GEOMETRY_OFFSET to account for model's internal geometry offset
+    const rawBaseY = WorldConfig.getInstance().getTrackSurfaceHeight()
+    const baseY = rawBaseY + ObstacleManager.TRACK_GEOMETRY_OFFSET
     let yOffset = 0
     
     // High barrier (slideee.glb) - slide under it
@@ -281,22 +285,33 @@ export class ObstacleManager {
       yOffset = 0.5
     }
     
-    // Low barrier (neon gate) - jump over it
-    // Positioned at knee height - player must jump to clear
+    // Low barrier (neon gate) - MUST jump over, spans ALL lanes
+    // Positioned horizontally across track - no dodging allowed
     if (request.type === 'lowBarrier') {
-      request.lane = 0 // Force to center lane
-      mesh.rotation.y = Math.PI / 2
-      mesh.scale.multiplyScalar(0.35)
-      // Position slightly below track surface (obstacle sits on track)
-      yOffset = -0.2
+      request.lane = 0 // Always center (spans all lanes anyway)
+      mesh.rotation.y = Math.PI / 2 // Horizontal orientation
+      mesh.scale.multiplyScalar(0.5) // Slightly larger to visually span track
+      // Position slightly below track so it sits ON the track
+      yOffset = -0.3
     }
     
     // Spikes - dodge obstacle (pass on sides, don't touch)
     if (request.type === 'spikes') {
       request.lane = 0 // Force to center lane
-      mesh.scale.multiplyScalar(0.5)
+      mesh.scale.multiplyScalar(0.35) // Reduced from 0.5 - was too large
       // Position at track surface level
       yOffset = -0.5
+    }
+    
+    // Lane barrier - dodge obstacle (change lanes to avoid)
+    // Vertical orientation - blocks ONE lane only
+    // Can spawn in any lane, player must be in different lane
+    if (request.type === 'laneBarrier') {
+      // No rotation - keep vertical to block single lane
+      mesh.rotation.y = 0
+      mesh.scale.multiplyScalar(0.45) // Increased from 0.35 for better visibility
+      // Position slightly below track so it sits ON the track
+      yOffset = -0.3
     }
     
     mesh.position.set(
@@ -310,7 +325,7 @@ export class ObstacleManager {
     this.addEmissiveGlow(mesh, request.type)
     
     // Extra material enhancements for barriers (metalness, reflections)
-    if (request.type === 'highBarrier' || request.type === 'lowBarrier' || request.type === 'spikes') {
+    if (request.type === 'highBarrier' || request.type === 'lowBarrier' || request.type === 'spikes' || request.type === 'laneBarrier') {
       this.enhanceBarrierMaterials(mesh, request.type)
     }
     
@@ -357,14 +372,17 @@ export class ObstacleManager {
   }
 
   /**
-   * Boost obstacle visibility by adding subtle emissive glow using original colors
-   * Only applies to barriers - keeps original GLB colors, just makes them brighter
+   * Boost obstacle visibility by adding very subtle emissive glow
+   * Preserves original GLB colors while adding slight visibility boost
    */
   private addEmissiveGlow(mesh: THREE.Group, type: ObstacleType): void {
     // Only boost visibility for barriers (the ones that spawn)
-    if (type !== 'highBarrier' && type !== 'lowBarrier') {
+    if (type !== 'highBarrier' && type !== 'lowBarrier' && type !== 'laneBarrier') {
       return
     }
+    
+    // Very subtle glow - just enough to help visibility without washing out colors
+    const emissiveIntensity = type === 'laneBarrier' ? 0.08 : 0.05
     
     mesh.traverse((child) => {
       if (child instanceof THREE.Mesh && child.material) {
@@ -372,14 +390,11 @@ export class ObstacleManager {
         materials.forEach((mat) => {
           if (mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.MeshPhysicalMaterial) {
             // Use the material's existing color for emissive (keeps original look)
-            // Just add a subtle glow of the same color for visibility
             if (mat.color) {
               mat.emissive = mat.color.clone()
-              mat.emissiveIntensity = 0.15 // Subtle glow, not overpowering
+              mat.emissiveIntensity = emissiveIntensity
             }
-            
-            // Slightly boost brightness by reducing roughness
-            mat.roughness = Math.max(0.2, (mat.roughness || 0.5) - 0.15)
+            // Don't modify roughness - keep original material properties
           }
         })
       }
@@ -394,10 +409,10 @@ export class ObstacleManager {
   private createCollisionBox(type: ObstacleType, lane: Lane, z: number): CollisionBox {
     const x = lane * this.laneWidth
     
-    // Y offset must match visual positioning in spawnClonedObstacle
-    // All obstacles sit on track surface at Y=0
-    // Enterprise: All collision Y values are relative to track surface from WorldConfig
-    const baseY = WorldConfig.getInstance().getTrackSurfaceHeight()
+    // Use the same offset as visual positioning
+    const worldConfig = WorldConfig.getInstance()
+    const rawBaseY = worldConfig.getTrackSurfaceHeight()
+    const baseY = rawBaseY + ObstacleManager.TRACK_GEOMETRY_OFFSET // Actual ground level
 
     switch (type) {
       case 'highBarrier':
@@ -412,26 +427,28 @@ export class ObstacleManager {
           maxZ: z + 0.5,
         }
       case 'lowBarrier':
-        // Low barrier - must jump over
-        // Visual is at baseY - 0.2, collision should match
-        // Player feet are at ~trackSurfaceHeight when grounded
-        // Player must jump high enough that feet clear maxY
+        // Low barrier - MUST jump over (spans ALL lanes, no dodging)
+        // Collision box spans entire track width
+        // Player feet must be ABOVE maxY to clear (requires jumping)
         return {
-          minX: x - 1.8,
-          maxX: x + 1.8,
-          minY: baseY - 0.3, // Slightly below track surface (matches visual)
-          maxY: baseY + 0.8, // Player feet must be above this to clear
+          minX: -this.laneWidth * 1.5, // Spans all 3 lanes
+          maxX: this.laneWidth * 1.5,
+          minY: baseY - 0.5, // Start below track to catch any grounded player
+          maxY: baseY + 1.2, // Player must jump to clear
           minZ: z - 0.8,
           maxZ: z + 0.8,
         }
       case 'laneBarrier':
+        // Lane barrier - blocks ONE lane only (vertical orientation)
+        // Player must dodge to a different lane to avoid
+        // Collision box is narrow, only covers the lane it's in
         return {
-          minX: x - this.laneWidth * 0.5,
-          maxX: x + this.laneWidth * 0.5,
-          minY: baseY,
-          maxY: baseY + 3.0,
-          minZ: z - 1.0,
-          maxZ: z + 1.0,
+          minX: x - this.laneWidth * 0.4, // Narrow - only blocks one lane
+          maxX: x + this.laneWidth * 0.4,
+          minY: baseY - 0.5, // Start below track to catch any player
+          maxY: baseY + 3.0, // Tall enough player can't jump over
+          minZ: z - 0.6,
+          maxZ: z + 0.6,
         }
       case 'knowledgeGate':
         return {
@@ -443,14 +460,15 @@ export class ObstacleManager {
           maxZ: z + 0.6,
         }
       case 'spikes':
-        // Ground spikes - dodge obstacle (change lanes to avoid)
+        // Ground spikes - can dodge left/right OR jump over
+        // Smaller collision box to match reduced visual scale (0.35)
         return {
-          minX: x - 0.7,
-          maxX: x + 0.7,
+          minX: x - 0.5,
+          maxX: x + 0.5,
           minY: baseY - 0.5,
-          maxY: baseY + 2.0,
-          minZ: z - 0.35,
-          maxZ: z + 0.35,
+          maxY: baseY + 1.5, // Reduced height - easier to jump over
+          minZ: z - 0.3,
+          maxZ: z + 0.3,
         }
       default:
         return {

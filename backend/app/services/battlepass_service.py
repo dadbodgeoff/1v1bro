@@ -439,13 +439,15 @@ class BattlePassService:
         
         Handles different reward types:
         - cosmetic: Add to inventory
-        - coins: Credit to balance (future)
+        - coins: Credit to balance
         - xp: Award XP (future)
         """
+        from app.services.balance_service import BalanceService
+        
         reward_type = reward_data.get("type")
         reward_value = reward_data.get("value")
         
-        if not reward_type or not reward_value:
+        if not reward_type or reward_value is None:
             return False
         
         if reward_type == "cosmetic" and self.cosmetics_service:
@@ -460,7 +462,31 @@ class BattlePassService:
             except Exception as e:
                 logger.error(f"Failed to grant cosmetic {reward_value}: {e}")
         
-        # TODO: Handle coins and XP rewards when needed
+        elif reward_type == "coins":
+            # Credit coins to user's balance
+            try:
+                coin_amount = int(reward_value)
+                if coin_amount <= 0:
+                    logger.warning(f"Invalid coin amount {coin_amount} for user {user_id}")
+                    return False
+                
+                balance_service = BalanceService(self._client)
+                # Generate unique transaction ID for idempotency
+                import uuid
+                transaction_id = f"battlepass_reward_{user_id}_{uuid.uuid4().hex[:8]}"
+                
+                await balance_service.credit_coins(
+                    user_id=user_id,
+                    amount=coin_amount,
+                    transaction_id=transaction_id,
+                    source="battlepass_reward",
+                )
+                logger.info(f"Granted {coin_amount} coins to user {user_id}")
+                return True
+            except Exception as e:
+                logger.error(f"Failed to grant {reward_value} coins to user {user_id}: {e}")
+        
+        # TODO: Handle XP rewards when needed
         
         return False
     

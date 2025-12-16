@@ -140,7 +140,10 @@ export class GameStateManager {
    * Lose a life
    */
   loseLife(): number {
-    this.state.player.lives--
+    // Don't go below 0 lives
+    if (this.state.player.lives > 0) {
+      this.state.player.lives--
+    }
     this.state.streak = 0
     return this.state.player.lives
   }

@@ -2,11 +2,11 @@
  * PatternLibrary - Defines all obstacle patterns as data
  * Patterns are pre-designed sequences that create intentional gameplay moments
  * 
- * Obstacle types:
- * - laneBarrier: Dodge left/right
- * - lowBarrier: Jump over (futuristic neon gate)
- * - spikes: Jump over (ground hazard)
- * - knowledgeGate: Trivia trigger
+ * Obstacle types and behaviors:
+ * - laneBarrier: Blocks ONE lane (vertical), dodge left/right to avoid
+ * - lowBarrier: Spans ALL lanes, MUST jump over (no dodging)
+ * - spikes: Center lane hazard, can dodge left/right OR jump over
+ * - knowledgeGate: Trivia trigger (not a damage obstacle)
  * 
  * NOTE: highBarrier removed - only using laneBarrier, lowBarrier, spikes, knowledgeGate
  */
@@ -120,7 +120,7 @@ export const PATTERN_LIBRARY: ObstaclePattern[] = [
   {
     id: 'single-jump-gate',
     name: 'Jump Gate',
-    description: 'Neon gate in center - jump over',
+    description: 'Neon gate spanning all lanes - MUST jump over',
     placements: [placement('lowBarrier', 0, 0)],
     length: 5,
     minDifficulty: 'rookie',
@@ -129,34 +129,6 @@ export const PATTERN_LIBRARY: ObstaclePattern[] = [
     allowedAfter: [],
     forbiddenAfter: [],
     baseWeight: 0.9,
-    cooldownPatterns: 2,
-  },
-  {
-    id: 'jump-gate-left',
-    name: 'Left Jump Gate',
-    description: 'Neon gate on left lane',
-    placements: [placement('lowBarrier', -1, 0)],
-    length: 5,
-    minDifficulty: 'rookie',
-    maxDifficulty: null,
-    requiredActions: ['jump', 'laneChange'],
-    allowedAfter: [],
-    forbiddenAfter: [],
-    baseWeight: 0.8,
-    cooldownPatterns: 2,
-  },
-  {
-    id: 'jump-gate-right',
-    name: 'Right Jump Gate',
-    description: 'Neon gate on right lane',
-    placements: [placement('lowBarrier', 1, 0)],
-    length: 5,
-    minDifficulty: 'rookie',
-    maxDifficulty: null,
-    requiredActions: ['jump', 'laneChange'],
-    allowedAfter: [],
-    forbiddenAfter: [],
-    baseWeight: 0.8,
     cooldownPatterns: 2,
   },
 
@@ -198,6 +170,40 @@ export const PATTERN_LIBRARY: ObstaclePattern[] = [
     cooldownPatterns: 3,
   },
   {
+    id: 'left-center-block',
+    name: 'Left & Center Block',
+    description: 'Left and center lanes blocked, go right',
+    placements: [
+      placement('laneBarrier', -1, 0),
+      placement('laneBarrier', 0, 0),
+    ],
+    length: 5,
+    minDifficulty: 'intermediate',
+    maxDifficulty: null,
+    requiredActions: ['laneRight'],
+    allowedAfter: [],
+    forbiddenAfter: ['right-center-block'],
+    baseWeight: 0.6,
+    cooldownPatterns: 3,
+  },
+  {
+    id: 'right-center-block',
+    name: 'Right & Center Block',
+    description: 'Right and center lanes blocked, go left',
+    placements: [
+      placement('laneBarrier', 1, 0),
+      placement('laneBarrier', 0, 0),
+    ],
+    length: 5,
+    minDifficulty: 'intermediate',
+    maxDifficulty: null,
+    requiredActions: ['laneLeft'],
+    allowedAfter: [],
+    forbiddenAfter: ['left-center-block'],
+    baseWeight: 0.6,
+    cooldownPatterns: 3,
+  },
+  {
     id: 'double-spikes',
     name: 'Double Spikes',
     description: 'Two spike patches in sequence',
@@ -234,12 +240,12 @@ export const PATTERN_LIBRARY: ObstaclePattern[] = [
   {
     id: 'double-jump',
     name: 'Double Jump',
-    description: 'Two jump gates in sequence',
+    description: 'Two jump gates in sequence - must jump both',
     placements: [
       placement('lowBarrier', 0, 0),
-      placement('lowBarrier', 0, 10),
+      placement('lowBarrier', 0, 12),
     ],
-    length: 15,
+    length: 17,
     minDifficulty: 'intermediate',
     maxDifficulty: null,
     requiredActions: ['jump'],
@@ -251,12 +257,12 @@ export const PATTERN_LIBRARY: ObstaclePattern[] = [
   {
     id: 'jump-then-dodge',
     name: 'Jump then Dodge',
-    description: 'Jump gate then lane barrier',
+    description: 'Jump gate (all lanes) then lane barrier',
     placements: [
       placement('lowBarrier', 0, 0),
-      placement('laneBarrier', 0, 12),
+      placement('laneBarrier', 0, 14),
     ],
-    length: 17,
+    length: 19,
     minDifficulty: 'intermediate',
     maxDifficulty: null,
     requiredActions: ['jump', 'laneChange'],

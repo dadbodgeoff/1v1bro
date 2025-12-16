@@ -213,7 +213,7 @@ export class CollisionSystem {
           break
 
         case 'lowBarrier':
-          // Low barrier on ground - must jump over
+          // Low barrier - MUST jump over (spans all lanes, no dodging allowed)
           // Player Y is feet position, check if feet clear the obstacle top
           // Must be clearly above the obstacle (no tolerance - strict check)
           if (playerBox.minY >= obstacleBox.maxY) {
@@ -226,17 +226,14 @@ export class CollisionSystem {
             }
             return this.noCollisionResult
           }
-          // Player didn't clear - collision!
+          // Player didn't clear - collision! (no X check - spans all lanes)
           break
           
         case 'spikes':
-          // Spikes - dodge obstacle (pass on sides, don't touch)
-          // Spikes are in center lane, player dodges left or right
-          // Check if player X position is outside the spike collision box
-          // The collision box is narrow (~1.6 units wide centered on lane 0)
+          // Spikes - can dodge left/right OR jump over
+          // Check X dodge first (player to the side of spikes)
           if (playerBox.maxX < obstacleBox.minX || playerBox.minX > obstacleBox.maxX) {
             // Player is to the side of the spikes - safe!
-            // AAA: Near-miss detection - barely dodged
             const dodgeMargin = Math.min(
               Math.abs(playerBox.maxX - obstacleBox.minX),
               Math.abs(playerBox.minX - obstacleBox.maxX)
@@ -247,7 +244,17 @@ export class CollisionSystem {
             }
             return this.noCollisionResult
           }
-          // Player is in the spike zone - collision!
+          // Check Y jump (player jumped over spikes)
+          if (playerBox.minY >= obstacleBox.maxY) {
+            // Player jumped over the spikes - safe!
+            const clearance = playerBox.minY - obstacleBox.maxY
+            if (clearance < this.NEAR_MISS_THRESHOLD && clearance >= 0) {
+              this.triggerNearMiss(clearance, obstacle.type)
+              return { ...this.noCollisionResult, nearMiss: true, nearMissDistance: clearance }
+            }
+            return this.noCollisionResult
+          }
+          // Player is in the spike zone and not high enough - collision!
           break
 
         case 'laneBarrier':
