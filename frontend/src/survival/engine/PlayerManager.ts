@@ -131,12 +131,27 @@ export class PlayerManager {
   /**
    * Sync animation controller position with player controller
    * Called after track is loaded to ensure animation is at correct position
+   * Also updates player Y position from WorldConfig in case track was loaded after player
    */
   syncAnimationPosition(): void {
+    // Update player Y position from WorldConfig (track may have set it after player init)
+    const worldConfig = WorldConfig.getInstance()
+    const trackSurfaceHeight = worldConfig.getTrackSurfaceHeight()
+    this.playerController.setY(trackSurfaceHeight)
+    this.physicsController.forceGrounded(trackSurfaceHeight)
+    
     if (this.animationController) {
       const playerPos = this.playerController.getPosition()
       this.animationController.setPosition(playerPos.x, playerPos.y, playerPos.z)
     }
+    
+    // Debug logging
+    const playerPos = this.playerController.getPosition()
+    console.log(`%c[PlayerManager] 🏃 PLAYER SPAWN POSITION`, 'color: #00ffff; font-weight: bold')
+    console.log(`  Player X: ${playerPos.x.toFixed(3)}`)
+    console.log(`  Player Y: ${playerPos.y.toFixed(3)} (track surface: ${trackSurfaceHeight.toFixed(3)})`)
+    console.log(`  Player Z: ${playerPos.z.toFixed(3)}`)
+    console.log(`  Character height: ${this.characterHeight.toFixed(3)}`)
   }
 
   /**

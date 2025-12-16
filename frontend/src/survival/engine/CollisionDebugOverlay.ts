@@ -79,7 +79,8 @@ class CollisionDebugOverlay {
   private maxEvents: number = 20
   
   // Track geometry offset (must match ObstacleManager)
-  private readonly TRACK_GEOMETRY_OFFSET = 2.05
+  // Set to 0 since WorldConfig.trackSurfaceHeight already represents the correct walking surface
+  private readonly TRACK_GEOMETRY_OFFSET = 0
 
   /**
    * Enable debug overlay

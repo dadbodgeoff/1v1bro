@@ -65,6 +65,7 @@ export class PhysicsController {
 
   // Character dimensions (set from model)
   private characterFootOffset: number = 0 // Distance from model origin to feet
+  private lastRaycastLog: number = 0 // For debug logging throttle
 
   // AAA Feature: Coyote Time - allows jump briefly after leaving edge
   // Uses mobile config for device-specific timing
@@ -326,14 +327,18 @@ export class PhysicsController {
    * Returns the Y position where the character's feet should be
    * 
    * Enterprise: Uses WorldConfig as single source of truth for track surface height
+   * 
+   * NOTE: characterFootOffset is NOT used in ground height calculation.
+   * The player's Y position represents their feet position directly.
+   * The footOffset is only relevant for positioning the visual model, not physics.
    */
   private checkGround(position: THREE.Vector3): { hit: boolean; height: number } {
     // Get track surface height from WorldConfig (single source of truth)
     const trackSurfaceHeight = WorldConfig.getInstance().getTrackSurfaceHeight()
     
-    // Calculate the target ground height for character feet
-    // = track surface + epsilon (prevent z-fighting) - character foot offset (model origin to feet)
-    const targetGroundHeight = trackSurfaceHeight + GROUND_SURFACE_EPSILON - this.characterFootOffset
+    // Target ground height = track surface + small epsilon to prevent z-fighting
+    // NOTE: We do NOT subtract characterFootOffset here - player Y IS the feet position
+    const targetGroundHeight = trackSurfaceHeight + GROUND_SURFACE_EPSILON
     
     // If no scene or track meshes, use fallback with track surface height
     if (!this.scene || this.trackMeshes.length === 0) {
@@ -356,9 +361,24 @@ export class PhysicsController {
 
     if (intersects.length > 0) {
       const closest = intersects[0]
-      // Ground height = raycast hit point + epsilon - character foot offset
-      this.groundHitResult.height =
-        closest.point.y + GROUND_SURFACE_EPSILON - this.characterFootOffset
+      // Ground height = raycast hit point + epsilon
+      // Note: characterFootOffset is the distance from model origin to feet (negative if origin is above feet)
+      // We want the player's Y position to be at the ground level, so we just use the hit point
+      this.groundHitResult.height = closest.point.y + GROUND_SURFACE_EPSILON
+      
+      // Debug: Log raycast hit (throttled)
+      if (!this.lastRaycastLog) this.lastRaycastLog = 0
+      const now = performance.now()
+      if (now - this.lastRaycastLog > 2000) {
+        this.lastRaycastLog = now
+        console.log(`%c[Physics] 🎯 RAYCAST HIT`, 'color: #ff00ff; font-weight: bold')
+        console.log(`  Hit point Y: ${closest.point.y.toFixed(3)}`)
+        console.log(`  GROUND_SURFACE_EPSILON: ${GROUND_SURFACE_EPSILON}`)
+        console.log(`  Final ground height (player feet Y): ${this.groundHitResult.height.toFixed(3)}`)
+        console.log(`  Track surface from WorldConfig: ${trackSurfaceHeight.toFixed(3)}`)
+        console.log(`  characterFootOffset (NOT used): ${this.characterFootOffset.toFixed(3)}`)
+      }
+      
       return this.groundHitResult
     }
 

@@ -80,7 +80,11 @@ export class TrackManager {
     
     // Set WorldConfig as single source of truth for track surface height
     WorldConfig.getInstance().setTrackSurfaceHeight(this.trackSurfaceHeight)
-    console.log(`[TrackManager] Track surface height: ${this.trackSurfaceHeight.toFixed(2)} (model max.y after scale)`)
+    console.log(`%c[TrackManager] 🛤️ TRACK INITIALIZED`, 'color: #00ff00; font-weight: bold')
+    console.log(`  Track surface height (Y): ${this.trackSurfaceHeight.toFixed(3)}`)
+    console.log(`  Track tile depth (Z): ${this.tileDepth.toFixed(3)}`)
+    console.log(`  Track scale: ${scale}`)
+    console.log(`  Bounding box: min=(${box.min.x.toFixed(2)}, ${box.min.y.toFixed(2)}, ${box.min.z.toFixed(2)}) max=(${box.max.x.toFixed(2)}, ${box.max.y.toFixed(2)}, ${box.max.z.toFixed(2)})`)
     
     // Store scale for instancing
     this.tempScale.set(scale, scale, scale)

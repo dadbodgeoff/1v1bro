@@ -49,9 +49,10 @@ export default defineConfig({
       },
     },
   },
-  // Drop console.log in production for performance
+  // Keep console.log for debugging (temporarily enabled)
+  // To disable: set drop: ['console', 'debugger']
   esbuild: {
-    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+    drop: [], // Console logs enabled for debugging
   },
   server: {
     proxy: {

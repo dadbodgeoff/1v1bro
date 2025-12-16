@@ -259,8 +259,10 @@ export class ObstacleManager {
    * Spawn obstacle using clone
    * Enterprise: Y positions are relative to WorldConfig.trackSurfaceHeight
    */
-  // Track geometry offset - see createCollisionBox for explanation
-  private static readonly TRACK_GEOMETRY_OFFSET = 2.05
+  // Track geometry offset - obstacles are positioned relative to WorldConfig.trackSurfaceHeight
+  // This offset accounts for the difference between the track's bounding box top and the actual walking surface
+  // Set to 0 since WorldConfig.trackSurfaceHeight already represents the correct walking surface
+  private static readonly TRACK_GEOMETRY_OFFSET = 0
   
   private spawnClonedObstacle(
     request: SpawnRequest,
@@ -319,6 +321,16 @@ export class ObstacleManager {
       baseY + yOffset,
       request.z
     )
+    
+    // Debug logging for obstacle spawn
+    console.log(`%c[ObstacleManager] 🚧 OBSTACLE SPAWNED: ${request.type}`, 'color: #ff9900; font-weight: bold')
+    console.log(`  Position: X=${(request.lane * this.laneWidth).toFixed(3)}, Y=${(baseY + yOffset).toFixed(3)}, Z=${request.z.toFixed(3)}`)
+    console.log(`  Track surface (rawBaseY): ${rawBaseY.toFixed(3)}`)
+    console.log(`  TRACK_GEOMETRY_OFFSET: ${ObstacleManager.TRACK_GEOMETRY_OFFSET}`)
+    console.log(`  baseY (rawBaseY + offset): ${baseY.toFixed(3)}`)
+    console.log(`  yOffset for type: ${yOffset.toFixed(3)}`)
+    console.log(`  Final Y: ${(baseY + yOffset).toFixed(3)}`)
+    console.log(`  Lane: ${request.lane}`)
     
     // Add emissive glow and rim lighting for better visibility against track
     // This is zero-cost at runtime - emissive materials glow without lights

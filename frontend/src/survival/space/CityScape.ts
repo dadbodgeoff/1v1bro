@@ -55,9 +55,19 @@ export class CityScape {
    * Register the city model (call after loading)
    */
   registerModel(model: THREE.Group): void {
+    // Clear any stuck damage effect state
+    this.damageEffectActive = false
+    if (this.damageEffectTimeout) {
+      clearTimeout(this.damageEffectTimeout)
+      this.damageEffectTimeout = null
+    }
+    
     this.cityModel = model
     this.createInstances()
     this.initialized = true
+    
+    // Ensure colors are restored after initialization
+    this.forceRestoreColors()
   }
 
   /**
@@ -84,8 +94,8 @@ export class CityScape {
     for (let i = 0; i < instanceCount; i++) {
       const zPos = -i * zSpacing
 
-      // Left side
-      const leftCity = this.cityModel.clone()
+      // Left side - deep clone with separate materials
+      const leftCity = this.deepCloneWithMaterials(this.cityModel)
       leftCity.scale.setScalar(scale)
       leftCity.position.set(-xOffset, yOffset, zPos)
       leftCity.rotation.y = Math.PI * 0.1 // Slight angle toward track
@@ -93,8 +103,8 @@ export class CityScape {
       this.scene.add(leftCity)
       this.instances.push(leftCity)
 
-      // Right side (mirrored)
-      const rightCity = this.cityModel.clone()
+      // Right side (mirrored) - deep clone with separate materials
+      const rightCity = this.deepCloneWithMaterials(this.cityModel)
       rightCity.scale.setScalar(scale)
       rightCity.position.set(xOffset, yOffset, zPos)
       rightCity.rotation.y = -Math.PI * 0.1 // Slight angle toward track
@@ -105,7 +115,46 @@ export class CityScape {
   }
 
   /**
+   * Deep clone a model with separate material instances
+   * This prevents material changes on one instance from affecting others
+   * Also ensures emissive is reset to prevent red tint on mobile
+   */
+  private deepCloneWithMaterials(source: THREE.Group): THREE.Group {
+    const clone = source.clone()
+    
+    clone.traverse(obj => {
+      if (obj instanceof THREE.Mesh && obj.material) {
+        // Clone materials so each instance has its own
+        if (Array.isArray(obj.material)) {
+          obj.material = obj.material.map(m => {
+            const cloned = m.clone()
+            // Reset emissive on cloned material to prevent red tint
+            if (cloned instanceof THREE.MeshStandardMaterial) {
+              cloned.emissive.setHex(0x000000)
+              cloned.emissiveIntensity = 0
+              cloned.needsUpdate = true
+            }
+            return cloned
+          })
+        } else {
+          const cloned = obj.material.clone()
+          // Reset emissive on cloned material to prevent red tint
+          if (cloned instanceof THREE.MeshStandardMaterial) {
+            cloned.emissive.setHex(0x000000)
+            cloned.emissiveIntensity = 0
+            cloned.needsUpdate = true
+          }
+          obj.material = cloned
+        }
+      }
+    })
+    
+    return clone
+  }
+
+  /**
    * Optimize materials on the source model (called once)
+   * Preserves original colors while optimizing for performance
    */
   private optimizeModelMaterials(model: THREE.Group): void {
     model.traverse(obj => {
@@ -116,9 +165,19 @@ export class CityScape {
           if (mat instanceof THREE.MeshStandardMaterial) {
             mat.envMapIntensity = 0.3 // Reduce reflection intensity
             mat.roughness = Math.max(mat.roughness, 0.5) // Less shiny = less GPU work
-            // Ensure emissive starts at zero (fixes mobile red tint issue)
+            
+            // CRITICAL: Reset emissive to black to prevent red tint
+            // The model may have emissive baked in from export or previous damage effects
             mat.emissive.setHex(0x000000)
             mat.emissiveIntensity = 0
+            
+            // Ensure color is not tinted red (preserve original or reset to white)
+            // This fixes mobile rendering issues where color gets corrupted
+            if (mat.color.r > 0.8 && mat.color.g < 0.3 && mat.color.b < 0.3) {
+              // Material is mostly red - likely corrupted, reset to neutral
+              console.warn('[CityScape] Detected red-tinted material, resetting color')
+              mat.color.setHex(0xffffff)
+            }
           }
           // Disable features we don't need for background scenery
           mat.fog = false // Cities don't need fog

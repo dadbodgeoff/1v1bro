@@ -55,6 +55,7 @@ export class FixedUpdateLoop {
   private slideTimer: number = 0
   private pendingLifeLoss: boolean = false // Guard against multiple life losses per fall
   private lastSnapshotTime: number = 0 // For ghost position snapshots
+  private lastPositionLogTime: number = 0 // For debug position logging
 
   // Config values (laneWidth from static config, speed from WorldConfig)
   private laneWidth: number
@@ -236,6 +237,20 @@ export class FixedUpdateLoop {
       stateManager.loseLife()
       // Reset pending flag after a delay to allow respawn
       setTimeout(() => { this.pendingLifeLoss = false }, 2000)
+    }
+    
+    // DEBUG: Log player position every 500ms
+    if (!this.lastPositionLogTime) this.lastPositionLogTime = 0
+    const now = performance.now()
+    if (now - this.lastPositionLogTime > 500) {
+      this.lastPositionLogTime = now
+      const trackSurface = WorldConfig.getInstance().getTrackSurfaceHeight()
+      const playerDims = WorldConfig.getInstance().getPlayerDimensions()
+      console.log(`%c[Position] 📍 Player @ ${state.distance.toFixed(0)}m`, 'color: #88ff88')
+      console.log(`  X: ${state.player.x.toFixed(3)} | Y: ${playerController.getY().toFixed(3)} | Z: ${state.player.z.toFixed(3)}`)
+      console.log(`  Track surface Y: ${trackSurface.toFixed(3)} | Height above track: ${(playerController.getY() - trackSurface).toFixed(3)}`)
+      console.log(`  Jumping: ${state.player.isJumping} | Sliding: ${state.player.isSliding} | Grounded: ${physicsState.isGrounded}`)
+      console.log(`  Player box: minY=${playerController.getY().toFixed(3)}, maxY=${(playerController.getY() + playerDims.height).toFixed(3)}`)
     }
 
     // Update camera

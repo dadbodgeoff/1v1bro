@@ -60,7 +60,8 @@ export class CollisionHandler {
   private lastDebugLog = 0
   
   // Track geometry offset (must match ObstacleManager)
-  private readonly TRACK_GEOMETRY_OFFSET = 2.05
+  // Set to 0 since WorldConfig.trackSurfaceHeight already represents the correct walking surface
+  private readonly TRACK_GEOMETRY_OFFSET = 0
 
   /**
    * Check collisions and handle results
@@ -118,13 +119,18 @@ export class CollisionHandler {
       for (const o of nearbyObstacles) {
         const box = o.getCollisionBox()
         const zDist = Math.abs(o.z - state.player.z)
-        if (zDist < 3) { // Only log when very close
-          console.log(`[Collision Debug] type=${o.type} lane=${o.lane}`)
-          console.log(`  Player: X=${state.player.x.toFixed(2)} Y=${playerY.toFixed(2)} Z=${state.player.z.toFixed(2)}`)
-          console.log(`  Obstacle Z=${o.z.toFixed(2)} (dist=${zDist.toFixed(2)})`)
-          console.log(`  Box: minY=${box.minY.toFixed(2)} maxY=${box.maxY.toFixed(2)}`)
-          console.log(`  Player feet (${playerY.toFixed(2)}) >= obstacle top (${box.maxY.toFixed(2)})? ${playerY >= box.maxY}`)
-          console.log(`  Jump height: ${jumpHeight.toFixed(2)} (ground at ${effectiveGroundY.toFixed(2)})`)
+        if (zDist < 5) { // Log when approaching
+          console.log(`%c[Collision] ⚠️ OBSTACLE NEARBY: ${o.type}`, 'color: #ffaa00; font-weight: bold')
+          console.log(`  Player: X=${state.player.x.toFixed(3)} Y=${playerY.toFixed(3)} Z=${state.player.z.toFixed(3)}`)
+          console.log(`  Obstacle: lane=${o.lane} Z=${o.z.toFixed(3)} (dist=${zDist.toFixed(3)})`)
+          console.log(`  Obstacle collision box:`)
+          console.log(`    X: ${box.minX.toFixed(3)} to ${box.maxX.toFixed(3)}`)
+          console.log(`    Y: ${box.minY.toFixed(3)} to ${box.maxY.toFixed(3)}`)
+          console.log(`    Z: ${box.minZ.toFixed(3)} to ${box.maxZ.toFixed(3)}`)
+          console.log(`  Player box: minY=${playerBox.minY.toFixed(3)}, maxY=${playerBox.maxY.toFixed(3)}`)
+          console.log(`  Jump check: Player feet (${playerY.toFixed(3)}) >= obstacle top (${box.maxY.toFixed(3)})? ${playerY >= box.maxY}`)
+          console.log(`  Jump height above ground: ${jumpHeight.toFixed(3)} (ground at ${effectiveGroundY.toFixed(3)})`)
+          console.log(`  State: jumping=${state.player.isJumping}, sliding=${state.player.isSliding}`)
         }
       }
     }
