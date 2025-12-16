@@ -2,6 +2,7 @@
  * SurvivalInstantPlay - Zero-friction guest survival runner
  * 
  * Allows unauthenticated users to play survival mode with:
+ * - Category selection (NFL or Fortnite) before starting
  * - Session progress tracking via SurvivalGuestSessionManager
  * - Leaderboard rank preview showing where their run would place
  * - Option to save run data by creating an account
@@ -10,6 +11,7 @@
 
 import { useEffect, useCallback, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuthStore } from '@/stores/authStore'
 import { useSurvivalGame } from '@/survival/hooks/useSurvivalGame'
 import { useSurvivalAnalytics } from '@/survival/hooks/useSurvivalAnalytics'
@@ -37,7 +39,135 @@ import { useTriviaBillboards } from '@/survival/hooks/useTriviaBillboards'
 import { leaderboardService } from '@/survival/services/LeaderboardService'
 import { getSurvivalGuestSession, type SurvivalRunResult } from '@/survival/guest'
 import { getRandomQuestions } from '@/data/fortnite-quiz-data'
+import { getRandomNflQuestions } from '@/data/nfl-quiz-data'
 import type { TriviaStats } from '@/survival/hooks/useSurvivalTrivia'
+import type { TriviaCategory } from '@/survival/world/TriviaQuestionProvider'
+
+// Category configuration for the picker
+const SURVIVAL_CATEGORIES = [
+  {
+    id: 'nfl' as TriviaCategory,
+    name: 'NFL',
+    icon: '🏈',
+    description: 'Football trivia',
+    color: '#22C55E',
+  },
+  {
+    id: 'fortnite' as TriviaCategory,
+    name: 'Fortnite',
+    icon: '🎮',
+    description: 'Gaming trivia',
+    color: '#A855F7',
+  },
+] as const
+
+interface SurvivalCategoryPickerProps {
+  visible: boolean
+  onSelect: (category: TriviaCategory) => void
+  onBack: () => void
+}
+
+function SurvivalCategoryPicker({ visible, onSelect, onBack }: SurvivalCategoryPickerProps) {
+  const [selectedCategory, setSelectedCategory] = useState<TriviaCategory | null>(null)
+
+  const handleSelect = (category: TriviaCategory) => {
+    setSelectedCategory(category)
+    // Brief delay for visual feedback
+    setTimeout(() => onSelect(category), 150)
+  }
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#09090b]/95 backdrop-blur-sm"
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="w-full max-w-md mx-4 text-center"
+          >
+            {/* Header */}
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-white mb-2">
+                Choose Your Trivia
+              </h2>
+              <p className="text-neutral-400 text-sm">
+                Pick a category to test your knowledge while you run
+              </p>
+            </div>
+
+            {/* Category Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              {SURVIVAL_CATEGORIES.map((category) => {
+                const isSelected = selectedCategory === category.id
+                return (
+                  <motion.button
+                    key={category.id}
+                    onClick={() => handleSelect(category.id)}
+                    whileTap={{ scale: 0.95 }}
+                    className={`
+                      relative p-6 rounded-2xl border-2 transition-all
+                      flex flex-col items-center gap-3
+                      min-h-[140px] min-w-[44px]
+                      ${isSelected
+                        ? 'border-white bg-white/10 scale-105'
+                        : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
+                      }
+                    `}
+                    style={{
+                      boxShadow: isSelected ? `0 0 30px ${category.color}40` : undefined,
+                    }}
+                  >
+                    {/* Icon */}
+                    <span className="text-5xl">{category.icon}</span>
+                    
+                    {/* Name */}
+                    <span className="text-white font-bold text-lg">
+                      {category.name}
+                    </span>
+                    
+                    {/* Description */}
+                    <span className="text-neutral-500 text-xs">
+                      {category.description}
+                    </span>
+
+                    {/* Selection indicator */}
+                    {isSelected && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center"
+                      >
+                        <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </motion.div>
+                    )}
+                  </motion.button>
+                )
+              })}
+            </div>
+
+            {/* Back button */}
+            <button
+              onClick={onBack}
+              className="text-neutral-500 hover:text-white text-sm transition-colors"
+            >
+              ← Back to Home
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
 
 function SurvivalInstantPlayContent() {
   const navigate = useNavigate()
@@ -45,6 +175,10 @@ function SurvivalInstantPlayContent() {
   const guestSession = useRef(getSurvivalGuestSession())
   const survivalAnalytics = useSurvivalAnalytics()
   const { isMobile, enableTriviaBillboards, isMobileBrowser } = useMobileDetection()
+  
+  // Category selection state
+  const [selectedCategory, setSelectedCategory] = useState<TriviaCategory | null>(null)
+  const [showCategoryPicker, setShowCategoryPicker] = useState(true)
   
   const [showGameOver, setShowGameOver] = useState(false)
   const [showReadyCard, setShowReadyCard] = useState(true)
@@ -70,6 +204,18 @@ function SurvivalInstantPlayContent() {
       navigate('/survival', { replace: true })
     }
   }, [isAuthenticated, navigate])
+
+  // Handle category selection
+  const handleCategorySelect = useCallback((category: TriviaCategory) => {
+    setSelectedCategory(category)
+    setShowCategoryPicker(false)
+    // Track category selection (using page_visit event type since category_selected isn't a standard funnel event)
+    survivalAnalytics.trackFunnelEvent('page_visit')
+  }, [survivalAnalytics])
+
+  const handleBackFromCategoryPicker = useCallback(() => {
+    navigate('/')
+  }, [navigate])
 
   // Analytics tracking
   useEffect(() => {
@@ -191,8 +337,8 @@ function SurvivalInstantPlayContent() {
 
   // Desktop billboards (only when enableTriviaBillboards is true)
   const billboards = useTriviaBillboards(engine, {
-    category: 'fortnite',
-    enabled: enableTriviaBillboards,
+    category: selectedCategory || 'fortnite',
+    enabled: enableTriviaBillboards && !!selectedCategory,
     onCorrectAnswer: (points) => {
       updateTriviaStats(true, points)
       addScore?.(points)
@@ -218,9 +364,15 @@ function SurvivalInstantPlayContent() {
     }
   }, [phase, billboards, enableTriviaBillboards])
 
-  // Mobile: get next question
+  // Mobile: get next question based on selected category
   const getNextMobileQuestion = useCallback((): TriviaQuestion | null => {
-    const allQuestions = getRandomQuestions(50)
+    if (!selectedCategory) return null
+    
+    // Get questions based on selected category
+    const allQuestions = selectedCategory === 'nfl' 
+      ? getRandomNflQuestions(50)
+      : getRandomQuestions(50)
+    
     const unusedQuestions = allQuestions.filter(q => !usedQuestionsRef.current.has(q.id))
     
     if (unusedQuestions.length === 0) {
@@ -240,7 +392,7 @@ function SurvivalInstantPlayContent() {
       category: quizQ.category,
       difficulty: quizQ.difficulty === 'casual' ? 'easy' : quizQ.difficulty === 'moderate' ? 'medium' : 'hard',
     }
-  }, [])
+  }, [selectedCategory])
 
   // Mobile: handle answer
   const handleMobileTriviaAnswer = useCallback((_questionId: string, _selectedIndex: number, isCorrect: boolean) => {
@@ -324,6 +476,17 @@ function SurvivalInstantPlayContent() {
   const handleViewLeaderboard = () => navigate('/survival/leaderboard')
 
   if (isAuthenticated) return null
+
+  // Show category picker first
+  if (showCategoryPicker) {
+    return (
+      <SurvivalCategoryPicker
+        visible={true}
+        onSelect={handleCategorySelect}
+        onBack={handleBackFromCategoryPicker}
+      />
+    )
+  }
 
   // Use dvh (dynamic viewport height) on mobile browsers to account for browser chrome
   // PWA/standalone mode can use regular vh since there's no browser UI

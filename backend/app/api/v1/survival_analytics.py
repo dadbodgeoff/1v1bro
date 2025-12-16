@@ -11,7 +11,7 @@ from decimal import Decimal
 
 from app.core.responses import APIResponse
 from app.database.supabase_client import get_supabase_service_client
-from app.api.deps import CurrentUser
+from app.api.deps import CurrentUser, OptionalUser
 
 router = APIRouter(prefix="/analytics/survival", tags=["survival-analytics"])
 
@@ -268,7 +268,7 @@ async def track_session_end(data: SessionEndData):
 
 
 @router.post("/track/run")
-async def track_run(data: RunAnalyticsData, user: Optional[CurrentUser] = None):
+async def track_run(data: RunAnalyticsData, user: OptionalUser = None):
     """Track completed survival run with full analytics."""
     try:
         supabase = get_supabase_service_client()
@@ -392,7 +392,7 @@ async def track_funnel_event(data: FunnelEventData):
 
 
 @router.post("/track/trivia")
-async def track_trivia(data: TriviaAnalyticsData, user: Optional[CurrentUser] = None):
+async def track_trivia(data: TriviaAnalyticsData, user: OptionalUser = None):
     """Track trivia question interaction for game balance analysis."""
     try:
         supabase = get_supabase_service_client()
@@ -424,7 +424,7 @@ async def track_trivia(data: TriviaAnalyticsData, user: Optional[CurrentUser] = 
 
 
 @router.post("/track/milestone")
-async def track_milestone(data: MilestoneData, user: Optional[CurrentUser] = None):
+async def track_milestone(data: MilestoneData, user: OptionalUser = None):
     """Track milestone events (personal best, rank change, achievement)."""
     try:
         supabase = get_supabase_service_client()
@@ -454,7 +454,7 @@ async def track_milestone(data: MilestoneData, user: Optional[CurrentUser] = Non
 
 
 @router.post("/track/shop")
-async def track_shop_event(data: ShopEventData, user: Optional[CurrentUser] = None):
+async def track_shop_event(data: ShopEventData, user: OptionalUser = None):
     """Track shop interactions for monetization funnel."""
     try:
         supabase = get_supabase_service_client()
@@ -483,7 +483,7 @@ async def track_shop_event(data: ShopEventData, user: Optional[CurrentUser] = No
 
 
 @router.post("/track/leaderboard")
-async def track_leaderboard_event(data: LeaderboardEventData, user: Optional[CurrentUser] = None):
+async def track_leaderboard_event(data: LeaderboardEventData, user: OptionalUser = None):
     """Track leaderboard engagement."""
     try:
         supabase = get_supabase_service_client()
@@ -510,7 +510,7 @@ async def track_leaderboard_event(data: LeaderboardEventData, user: Optional[Cur
 
 
 @router.post("/track/battlepass")
-async def track_battlepass_event(data: BattlePassEventData, user: Optional[CurrentUser] = None):
+async def track_battlepass_event(data: BattlePassEventData, user: OptionalUser = None):
     """Track battle pass progression and purchases."""
     try:
         supabase = get_supabase_service_client()
@@ -538,7 +538,7 @@ async def track_battlepass_event(data: BattlePassEventData, user: Optional[Curre
 
 
 @router.post("/track/auth")
-async def track_auth_event(data: AuthEventData, user: Optional[CurrentUser] = None):
+async def track_auth_event(data: AuthEventData, user: OptionalUser = None):
     """Track authentication events for conversion analysis."""
     try:
         supabase = get_supabase_service_client()
