@@ -433,13 +433,13 @@ export class ObstacleManager {
         }
       case 'lowBarrier':
         // Low barrier (neon gate) - horizontal beam to jump over
-        // Player feet at Y≈2.05 grounded, need to jump to clear
-        // maxY=2.4 means a small jump clears it (more forgiving)
+        // Player grounded Y is ~0.1, jump reaches ~3.3 max
+        // maxY=1.5 means player needs to be mid-jump to clear (feet at 1.5+)
         return {
           minX: x - 1.8,
           maxX: x + 1.8,
           minY: 0,
-          maxY: 2.4, // Lowered from 2.8 - easier to clear with jump
+          maxY: 1.5, // Player must jump - feet need to be above this
           minZ: z - 0.4,
           maxZ: z + 0.4,
         }

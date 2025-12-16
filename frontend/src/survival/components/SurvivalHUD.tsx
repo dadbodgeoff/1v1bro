@@ -295,7 +295,7 @@ const GhostIndicator = memo(({ isActive }: { isActive: boolean }) => {
   return (
     <div 
       className="flex items-center gap-2 text-sm font-bold animate-pulse"
-      style={{ color: '#00ffff' }}
+      style={{ color: '#6366f1' }}
     >
       <span className="text-lg">👻</span>
       <span>RACING PB</span>
@@ -303,6 +303,72 @@ const GhostIndicator = memo(({ isActive }: { isActive: boolean }) => {
   )
 })
 GhostIndicator.displayName = 'GhostIndicator'
+
+/**
+ * Mobile Stats Panel - Responsive stats display for portrait mobile
+ * Uses viewport-relative sizing to prevent cutoff on any screen size
+ */
+const MobileStatsPanel = memo(({ 
+  distance, 
+  score, 
+  combo 
+}: { 
+  distance: number
+  score: number
+  combo: number
+}) => {
+  return (
+    <div 
+      className="bg-black/60 backdrop-blur-sm rounded-lg text-right"
+      style={{
+        padding: 'clamp(4px, 1.5vw, 8px) clamp(6px, 2vw, 12px)',
+        minWidth: 'clamp(60px, 20vw, 100px)',
+        maxWidth: 'clamp(80px, 25vw, 120px)',
+      }}
+    >
+      {/* Distance - primary stat */}
+      <div className="flex items-baseline justify-end gap-0.5">
+        <span 
+          className="font-black tabular-nums text-white leading-none"
+          style={{ fontSize: 'clamp(14px, 4vw, 22px)' }}
+        >
+          {Math.round(distance)}
+        </span>
+        <span 
+          className="text-white/50 font-semibold"
+          style={{ fontSize: 'clamp(8px, 2vw, 12px)' }}
+        >
+          m
+        </span>
+      </div>
+      
+      {/* Score - secondary stat */}
+      <div 
+        className="font-bold tabular-nums text-orange-400 leading-tight"
+        style={{ fontSize: 'clamp(11px, 3vw, 16px)' }}
+      >
+        {Math.round(score).toLocaleString()}
+        <span 
+          className="text-orange-400/60 ml-0.5"
+          style={{ fontSize: 'clamp(8px, 2vw, 10px)' }}
+        >
+          pts
+        </span>
+      </div>
+      
+      {/* Combo - tertiary stat (only when active) */}
+      {combo > 0 && (
+        <div 
+          className="font-bold text-indigo-400 leading-tight"
+          style={{ fontSize: 'clamp(9px, 2.5vw, 13px)' }}
+        >
+          {combo}x
+        </div>
+      )}
+    </div>
+  )
+})
+MobileStatsPanel.displayName = 'MobileStatsPanel'
 
 /**
  * Game phase indicator
@@ -449,34 +515,12 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
         }}
       >
         {responsiveStyles.isPortraitMobile ? (
-          // Portrait mobile: ultra-compact stats - scales with viewport
-          <div className="bg-black/50 backdrop-blur-sm px-1.5 py-1 rounded-lg text-right">
-            {/* Distance - primary, responsive sizing */}
-            <div className="flex items-baseline justify-end">
-              <span 
-                className="font-black tabular-nums text-white"
-                style={{ fontSize: 'clamp(16px, 4.5vw, 24px)' }}
-              >
-                {Math.round(distance)}
-              </span>
-            </div>
-            {/* Score - secondary, responsive */}
-            <div 
-              className="font-bold tabular-nums text-orange-400"
-              style={{ fontSize: 'clamp(12px, 3.5vw, 18px)' }}
-            >
-              {Math.round(score).toLocaleString()}
-            </div>
-            {/* Combo - responsive */}
-            {combo > 0 && (
-              <div 
-                className="font-bold text-cyan-400"
-                style={{ fontSize: 'clamp(10px, 3vw, 14px)' }}
-              >
-                {combo}x
-              </div>
-            )}
-          </div>
+          // Portrait mobile: responsive stats panel that scales with screen
+          <MobileStatsPanel 
+            distance={distance} 
+            score={score} 
+            combo={combo} 
+          />
         ) : (
           // Desktop/tablet: full panel
           <div className={`bg-black/70 backdrop-blur-sm ${responsiveStyles.padding} rounded-xl border border-white/10 text-right ${responsiveStyles.minWidth} ${responsiveStyles.spacing}`}>
