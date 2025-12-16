@@ -294,6 +294,19 @@ export class CollisionSystem {
     // Use obstacle's actual collision box (which accounts for Y offset)
     const obstacleBox = obstacle.getCollisionBox()
 
+    // DEBUG: Log lowBarrier collision check
+    if (obstacle.type === 'lowBarrier') {
+      const zDist = Math.abs(playerZ - obstacle.z)
+      if (zDist < 3) {
+        console.log(`[COLLISION DEBUG] lowBarrier z=${obstacle.z.toFixed(1)}:`, {
+          playerBox: { minY: playerBox.minY.toFixed(2), maxY: playerBox.maxY.toFixed(2), minZ: playerBox.minZ.toFixed(2), maxZ: playerBox.maxZ.toFixed(2) },
+          obstacleBox: { minY: obstacleBox.minY.toFixed(2), maxY: obstacleBox.maxY.toFixed(2), minZ: obstacleBox.minZ.toFixed(2), maxZ: obstacleBox.maxZ.toFixed(2) },
+          isJumping,
+          zDistance: zDist.toFixed(2),
+        })
+      }
+    }
+
     if (this.boxesIntersect(playerBox, obstacleBox)) {
       // Special handling for different obstacle types
       switch (obstacle.type) {
@@ -319,6 +332,7 @@ export class CollisionSystem {
           // Low barrier on ground - must jump over
           // Player Y is feet position, check if feet clear the obstacle top
           // Must be clearly above the obstacle (no tolerance - strict check)
+          console.log(`[COLLISION] lowBarrier HIT! playerBox.minY=${playerBox.minY.toFixed(2)}, obstacleBox.maxY=${obstacleBox.maxY.toFixed(2)}, cleared=${playerBox.minY >= obstacleBox.maxY}`)
           if (playerBox.minY >= obstacleBox.maxY) {
             // Player cleared the obstacle (feet at or above obstacle top)
             // AAA: Near-miss detection - barely cleared
@@ -330,6 +344,7 @@ export class CollisionSystem {
             return this.noCollisionResult
           }
           // Player didn't clear - collision!
+          console.log(`[COLLISION] lowBarrier COLLISION TRIGGERED!`)
           break
           
         case 'spikes':

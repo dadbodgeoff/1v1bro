@@ -427,6 +427,7 @@ export class ObstacleManager {
         // Visual is at baseY - 0.2, collision should match
         // Player feet are at ~trackSurfaceHeight when grounded
         // Player must jump high enough that feet clear maxY
+        console.log(`[ObstacleManager] lowBarrier collision box: baseY=${baseY}, minY=${baseY - 0.3}, maxY=${baseY + 0.8}, z=${z}`)
         return {
           minX: x - 1.8,
           maxX: x + 1.8,
