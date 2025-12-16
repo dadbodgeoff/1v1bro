@@ -31,6 +31,10 @@ export class TrackManager {
   // Config values (from dynamic config)
   private trackScale: number
   
+  // Enterprise: Track surface height (calculated from model)
+  // This is the Y position of the walking surface after scaling
+  private trackSurfaceHeight: number = 0
+  
   // Enterprise: Instanced rendering
   private instancedMesh: THREE.InstancedMesh | null = null
   private useInstancing: boolean = false
@@ -63,10 +67,16 @@ export class TrackManager {
     this.tileTemplate.scale.set(scale, scale, scale)
     this.tileTemplate.rotation.y = Math.PI / 2 // Rotate to face -Z direction
 
-    // Calculate actual tile depth after scaling
+    // Calculate actual tile dimensions after scaling
     const box = new THREE.Box3().setFromObject(this.tileTemplate)
     const size = box.getSize(new THREE.Vector3())
     this.tileDepth = size.z
+    
+    // Enterprise: Calculate track surface height from model
+    // The walking surface is at the TOP of the model's bounding box (max.y)
+    // This is where the character's feet should be placed
+    this.trackSurfaceHeight = box.max.y
+    console.log(`[TrackManager] Track surface height: ${this.trackSurfaceHeight.toFixed(2)} (model max.y after scale)`)
     
     // Store scale for instancing
     this.tempScale.set(scale, scale, scale)
@@ -304,6 +314,14 @@ export class TrackManager {
     if (this.instancedMesh) {
       this.instancedMesh.instanceMatrix.needsUpdate = true
     }
+  }
+  
+  /**
+   * Enterprise: Get track surface height for physics
+   * This is the Y position where character feet should be placed
+   */
+  getTrackSurfaceHeight(): number {
+    return this.trackSurfaceHeight
   }
   
   /**

@@ -47,10 +47,8 @@ const MAX_JUMP_HOLD_TIME = 0.25 // Maximum time holding affects jump
 // AAA Feature: Air control
 const AIR_CONTROL_STRENGTH = 0.3 // How much lane influence while airborne (0-1)
 
-// Ground offset - distance from raycast hit to character feet
-// This should be calibrated based on character model
-// Increased from 0.05 to 0.1 for better feet-to-ground alignment (AAA standard)
-const GROUND_FOOT_OFFSET = 0.1
+// Small offset to prevent z-fighting between character feet and ground surface
+const GROUND_SURFACE_EPSILON = 0.05
 
 export class PhysicsController {
   private config: PhysicsConfig
@@ -66,6 +64,9 @@ export class PhysicsController {
 
   // Character dimensions (set from model)
   private characterFootOffset: number = 0 // Distance from model origin to feet
+  
+  // Track surface height (set from TrackManager after model analysis)
+  private trackSurfaceHeight: number = 0 // Y position of track walking surface
 
   // AAA Feature: Coyote Time - allows jump briefly after leaving edge
   // Uses mobile config for device-specific timing
@@ -142,6 +143,16 @@ export class PhysicsController {
    */
   setCharacterDimensions(_height: number, footOffset: number = 0): void {
     this.characterFootOffset = footOffset
+  }
+
+  /**
+   * Enterprise: Set track surface height from TrackManager
+   * This is the Y position where the character should stand
+   * @param surfaceHeight Y position of the track's walking surface
+   */
+  setTrackSurfaceHeight(surfaceHeight: number): void {
+    this.trackSurfaceHeight = surfaceHeight
+    console.log(`[PhysicsController] Track surface height set to: ${surfaceHeight}`)
   }
 
   /**
@@ -325,12 +336,17 @@ export class PhysicsController {
   /**
    * Raycast downward to find ground
    * Returns the Y position where the character's feet should be
+   * 
+   * Enterprise: Uses data-driven track surface height instead of magic numbers
    */
   private checkGround(position: THREE.Vector3): { hit: boolean; height: number } {
-    // If no scene or track meshes, use fallback ground plane
+    // Calculate the target ground height for character feet
+    // = track surface + epsilon (prevent z-fighting) - character foot offset (model origin to feet)
+    const targetGroundHeight = this.trackSurfaceHeight + GROUND_SURFACE_EPSILON - this.characterFootOffset
+    
+    // If no scene or track meshes, use fallback with track surface height
     if (!this.scene || this.trackMeshes.length === 0) {
-      // Fallback: assume flat ground at Y=0, place feet on ground
-      this.groundHitResult.height = GROUND_FOOT_OFFSET - this.characterFootOffset
+      this.groundHitResult.height = targetGroundHeight
       return this.groundHitResult
     }
 
@@ -349,22 +365,20 @@ export class PhysicsController {
 
     if (intersects.length > 0) {
       const closest = intersects[0]
-      // Ground height = raycast hit point + small offset - character foot offset
-      // This places the character's feet exactly on the ground surface
+      // Ground height = raycast hit point + epsilon - character foot offset
       this.groundHitResult.height =
-        closest.point.y + GROUND_FOOT_OFFSET - this.characterFootOffset
+        closest.point.y + GROUND_SURFACE_EPSILON - this.characterFootOffset
       return this.groundHitResult
     }
 
-    // No raycast hit - but player might still be over the track
-    // Use a simple fallback: if player is within reasonable X bounds and Y is near ground level,
-    // assume they're on the track (prevents false "fell off" detection)
-    const isNearGroundLevel = position.y < 3 // Player is close to expected ground height
+    // No raycast hit - use fallback based on track surface height
+    // Check if player is within reasonable bounds
+    const expectedGroundLevel = this.trackSurfaceHeight + 3 // Allow some tolerance
+    const isNearGroundLevel = position.y < expectedGroundLevel
     const isWithinTrackX = Math.abs(position.x) < this.config.trackWidth / 2
     
     if (isNearGroundLevel && isWithinTrackX) {
-      // Assume ground at Y=0 with offset
-      this.groundHitResult.height = GROUND_FOOT_OFFSET - this.characterFootOffset
+      this.groundHitResult.height = targetGroundHeight
       return this.groundHitResult
     }
 
