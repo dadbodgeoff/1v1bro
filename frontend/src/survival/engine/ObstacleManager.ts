@@ -424,14 +424,16 @@ export class ObstacleManager {
         }
       case 'lowBarrier':
         // Low barrier - must jump over
-        // Collision from track surface to jump clearance height
+        // Visual is at baseY - 0.2, collision should match
+        // Player feet are at ~trackSurfaceHeight when grounded
+        // Player must jump high enough that feet clear maxY
         return {
           minX: x - 1.8,
           maxX: x + 1.8,
-          minY: baseY - 0.5,
-          maxY: baseY + 1.2, // Player must jump to clear
-          minZ: z - 0.4,
-          maxZ: z + 0.4,
+          minY: baseY - 0.3, // Slightly below track surface (matches visual)
+          maxY: baseY + 0.8, // Player feet must be above this to clear
+          minZ: z - 0.8,
+          maxZ: z + 0.8,
         }
       case 'laneBarrier':
         return {
