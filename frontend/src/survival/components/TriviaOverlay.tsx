@@ -60,7 +60,8 @@ export interface TriviaOverlayLegacyProps {
 type TimerId = ReturnType<typeof setTimeout>
 
 // Panel height constant - export for parent layout
-export const TRIVIA_PANEL_HEIGHT = 124
+// Must fit: question row (~36px) + 2x2 grid (26px * 2 + 4px gap) + padding (12px) = ~134px
+export const TRIVIA_PANEL_HEIGHT = 134
 
 // ============================================
 // Answer Button - Clean, professional styling
@@ -85,6 +86,13 @@ const AnswerButton = memo(({
 }: AnswerButtonProps) => {
   const labels = ['A', 'B', 'C', 'D']
   
+  // Dynamic font size based on answer length
+  const getFontSize = (text: string) => {
+    if (text.length > 35) return 'text-[9px]'
+    if (text.length > 25) return 'text-[10px]'
+    return 'text-[11px]'
+  }
+  
   // State-based styling
   let containerStyle = 'bg-zinc-800/90 border-zinc-600/50'
   let labelStyle = 'bg-zinc-700 text-zinc-300'
@@ -104,50 +112,68 @@ const AnswerButton = memo(({
     textStyle = 'text-white'
   }
   
+  // Use onPointerDown for immediate touch response on mobile
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (isDisabled) return
+    e.preventDefault()
+    e.stopPropagation()
+    onSelect(index)
+  }, [isDisabled, onSelect, index])
+  
   return (
     <button
-      onClick={() => !isDisabled && onSelect(index)}
+      onPointerDown={handlePointerDown}
       disabled={isDisabled}
       className={`
         ${containerStyle}
-        border rounded-lg
-        px-2 py-1.5
+        border rounded
+        px-1 py-0.5
         transition-colors duration-75
         active:scale-[0.98]
         disabled:opacity-50
         touch-manipulation
-        flex items-center gap-2
+        select-none
+        flex items-center gap-1
         min-w-0
-        h-[32px]
+        h-[26px]
+        overflow-hidden
       `}
-      style={{ WebkitTapHighlightColor: 'transparent' }}
+      style={{ 
+        WebkitTapHighlightColor: 'transparent',
+        touchAction: 'manipulation',
+      }}
     >
-      {/* Letter badge */}
+      {/* Letter badge - compact */}
       <span className={`
         ${labelStyle}
-        w-5 h-5 rounded
+        w-3.5 h-3.5 rounded-sm
         flex items-center justify-center
-        text-[11px] font-bold
+        text-[9px] font-bold
         shrink-0
       `}>
         {labels[index]}
       </span>
       
-      {/* Answer text */}
-      <span className={`
-        ${textStyle}
-        text-[13px] font-medium tracking-tight
-        truncate text-left flex-1
-      `}>
+      {/* Answer text - auto-scales based on length */}
+      <span 
+        className={`
+          ${textStyle}
+          ${getFontSize(answer)}
+          font-medium tracking-tight
+          truncate text-left flex-1
+          leading-tight
+        `}
+        title={answer}
+      >
         {answer}
       </span>
       
-      {/* Result indicator */}
+      {/* Result indicator - compact */}
       {isCorrect === true && (
-        <span className="shrink-0 text-emerald-200 text-sm font-bold">✓</span>
+        <span className="shrink-0 text-emerald-200 text-[10px] font-bold">✓</span>
       )}
       {isCorrect === false && isSelected && (
-        <span className="shrink-0 text-red-200 text-sm font-bold">✗</span>
+        <span className="shrink-0 text-red-200 text-[10px] font-bold">✗</span>
       )}
     </button>
   )
@@ -263,31 +289,30 @@ export const TriviaPanel: React.FC<TriviaOverlayProps> = memo(({
   
   return (
     <div 
-      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-2"
-      style={{ height: TRIVIA_PANEL_HEIGHT }}
+      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-1.5"
+      style={{ height: TRIVIA_PANEL_HEIGHT, touchAction: 'manipulation' }}
     >
-      {/* Question row with timer */}
-      <div className="flex items-start gap-3 mb-2">
-        {/* Timer with progress ring */}
+      {/* Question row with timer - ultra compact */}
+      <div className="flex items-center gap-2 mb-1">
+        {/* Timer - minimal */}
         <div className="relative shrink-0">
           <div className={`
-            w-10 h-10 rounded-full flex items-center justify-center
+            w-8 h-8 rounded-full flex items-center justify-center
             ${isUrgent ? 'bg-red-500/20' : 'bg-orange-500/20'}
           `}>
-            {/* Progress ring (CSS-only, no animation overhead) */}
-            <svg className="absolute inset-0 w-10 h-10 -rotate-90" viewBox="0 0 40 40">
+            <svg className="absolute inset-0 w-8 h-8 -rotate-90" viewBox="0 0 32 32">
               <circle
-                cx="20" cy="20" r="17"
+                cx="16" cy="16" r="13"
                 fill="none"
                 stroke={isUrgent ? '#ef4444' : '#f97316'}
-                strokeWidth="3"
-                strokeDasharray={`${timerPercent * 1.07} 107`}
+                strokeWidth="2"
+                strokeDasharray={`${timerPercent * 0.82} 82`}
                 strokeLinecap="round"
                 className="opacity-80"
               />
             </svg>
             <span className={`
-              text-sm font-bold tabular-nums relative z-10
+              text-[11px] font-bold tabular-nums relative z-10
               ${isUrgent ? 'text-red-400' : 'text-orange-400'}
             `}>
               {Math.ceil(timeRemaining)}
@@ -295,21 +320,14 @@ export const TriviaPanel: React.FC<TriviaOverlayProps> = memo(({
           </div>
         </div>
         
-        {/* Question text */}
-        <div className="flex-1 min-w-0">
-          <p className="text-white text-[14px] font-semibold leading-snug line-clamp-2 tracking-tight">
-            {question.question}
-          </p>
-          {question.category && (
-            <span className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider">
-              {question.category}
-            </span>
-          )}
-        </div>
+        {/* Question text - single line */}
+        <p className="text-white text-[12px] font-semibold leading-tight line-clamp-1 tracking-tight flex-1 min-w-0">
+          {question.question}
+        </p>
       </div>
       
-      {/* 2x2 Answer grid */}
-      <div className="grid grid-cols-2 gap-2">
+      {/* 2x2 Answer grid - tight */}
+      <div className="grid grid-cols-2 gap-1" style={{ touchAction: 'manipulation' }}>
         {question.answers.slice(0, 4).map((answer, index) => (
           <AnswerButton
             key={index}
@@ -409,30 +427,30 @@ export const TriviaOverlay: React.FC<TriviaOverlayLegacyProps> = memo(({
   
   return (
     <div 
-      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-2"
-      style={{ height: TRIVIA_PANEL_HEIGHT }}
+      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-1.5"
+      style={{ height: TRIVIA_PANEL_HEIGHT, touchAction: 'manipulation' }}
     >
-      {/* Question row with timer */}
-      <div className="flex items-start gap-3 mb-2">
-        {/* Timer with progress ring */}
+      {/* Question row with timer - compact */}
+      <div className="flex items-center gap-2 mb-1.5">
+        {/* Timer with progress ring - smaller */}
         <div className="relative shrink-0">
           <div className={`
-            w-10 h-10 rounded-full flex items-center justify-center
+            w-9 h-9 rounded-full flex items-center justify-center
             ${isUrgent ? 'bg-red-500/20' : 'bg-orange-500/20'}
           `}>
-            <svg className="absolute inset-0 w-10 h-10 -rotate-90" viewBox="0 0 40 40">
+            <svg className="absolute inset-0 w-9 h-9 -rotate-90" viewBox="0 0 36 36">
               <circle
-                cx="20" cy="20" r="17"
+                cx="18" cy="18" r="15"
                 fill="none"
                 stroke={isUrgent ? '#ef4444' : '#f97316'}
-                strokeWidth="3"
-                strokeDasharray={`${timerPercent * 1.07} 107`}
+                strokeWidth="2.5"
+                strokeDasharray={`${timerPercent * 0.94} 94`}
                 strokeLinecap="round"
                 className="opacity-80"
               />
             </svg>
             <span className={`
-              text-sm font-bold tabular-nums relative z-10
+              text-xs font-bold tabular-nums relative z-10
               ${isUrgent ? 'text-red-400' : 'text-orange-400'}
             `}>
               {Math.ceil(timeRemaining)}
@@ -440,14 +458,14 @@ export const TriviaOverlay: React.FC<TriviaOverlayLegacyProps> = memo(({
           </div>
         </div>
         
-        {/* Question text */}
-        <p className="text-white text-[14px] font-semibold leading-snug line-clamp-2 tracking-tight flex-1">
+        {/* Question text - single line to save space */}
+        <p className="text-white text-[13px] font-semibold leading-tight line-clamp-1 tracking-tight flex-1 min-w-0">
           {question.question}
         </p>
       </div>
       
       {/* 2x2 Answer grid */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-1.5" style={{ touchAction: 'manipulation' }}>
         {question.answers.slice(0, 4).map((answer, index) => (
           <AnswerButton
             key={index}

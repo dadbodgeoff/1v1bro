@@ -406,9 +406,12 @@ function SurvivalInstantPlayContent() {
         />
       )}
 
-      {/* Mobile Trivia Panel - fixed at bottom */}
+      {/* Mobile Trivia Panel - fixed at bottom, high z-index for touch priority */}
       {showMobileTrivia && (
-        <div className="absolute bottom-0 left-0 right-0 z-20">
+        <div 
+          className="absolute bottom-0 left-0 right-0 z-50"
+          style={{ touchAction: 'manipulation' }}
+        >
           <TriviaPanel
             isActive={phase === 'running'}
             getNextQuestion={getNextMobileQuestion}
