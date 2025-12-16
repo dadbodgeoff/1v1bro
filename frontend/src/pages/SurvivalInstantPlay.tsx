@@ -47,6 +47,7 @@ function SurvivalInstantPlayContent() {
   const { isMobile, enableTriviaBillboards } = useMobileDetection()
   
   const [showGameOver, setShowGameOver] = useState(false)
+  const [showReadyCard, setShowReadyCard] = useState(true)
   const [lastRunStats, setLastRunStats] = useState<GuestRunStats | null>(null)
   const [showSavePrompt, setShowSavePrompt] = useState(false)
   const maxComboRef = useRef(0)
@@ -272,6 +273,7 @@ function SurvivalInstantPlayContent() {
 
   const handleReset = useCallback(() => {
     setShowGameOver(false)
+    setShowReadyCard(true)
     setLastRunStats(null)
     setShowSavePrompt(false)
     resetTracking()
@@ -280,6 +282,7 @@ function SurvivalInstantPlayContent() {
 
   const handleQuickRestart = useCallback(() => {
     setShowGameOver(false)
+    setShowReadyCard(false)
     setLastRunStats(null)
     setShowSavePrompt(false)
     resetTracking()
@@ -300,6 +303,7 @@ function SurvivalInstantPlayContent() {
 
   const handleStart = () => {
     setShowGameOver(false)
+    setShowReadyCard(false)
     resetTracking()
     survivalAnalytics.trackRunStart()
     start()
@@ -398,7 +402,7 @@ function SurvivalInstantPlayContent() {
       )}
 
       {/* Ready Overlay */}
-      {phase === 'ready' && !isLoading && (
+      {phase === 'ready' && !isLoading && showReadyCard && (
         <ReadyOverlay
           isMobile={isMobile} isMuted={isMuted} onToggleMute={() => setMuted(!isMuted)}
           onStart={handleStart} onBack={handleBackToHome} backLabel="← Back to Home"

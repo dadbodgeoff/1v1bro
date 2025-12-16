@@ -59,8 +59,8 @@ export const ReadyOverlay = memo(({
         <EnterpriseTitle size="lg">{title}</EnterpriseTitle>
         <p className="text-gray-400 text-sm text-center mb-4">{subtitle}</p>
         
-        {/* Session Stats (guest mode) */}
-        {sessionStats && sessionStats.totalRuns > 0 && (
+        {/* Session Stats (guest mode) - only show if they have a meaningful best */}
+        {sessionStats && sessionStats.bestDistance > 0 && (
           <div className="mb-4">
             <StatRow 
               items={[
