@@ -11,6 +11,7 @@ import * as THREE from 'three'
 import type { Lane } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
 import { getMobileConfig } from '../config/mobile'
+import { WorldConfig } from '../config/WorldConfig'
 
 export interface PhysicsState {
   isGrounded: boolean
@@ -64,9 +65,6 @@ export class PhysicsController {
 
   // Character dimensions (set from model)
   private characterFootOffset: number = 0 // Distance from model origin to feet
-  
-  // Track surface height (set from TrackManager after model analysis)
-  private trackSurfaceHeight: number = 0 // Y position of track walking surface
 
   // AAA Feature: Coyote Time - allows jump briefly after leaving edge
   // Uses mobile config for device-specific timing
@@ -146,13 +144,12 @@ export class PhysicsController {
   }
 
   /**
-   * Enterprise: Set track surface height from TrackManager
-   * This is the Y position where the character should stand
-   * @param surfaceHeight Y position of the track's walking surface
+   * @deprecated Use WorldConfig.getInstance().setTrackSurfaceHeight() instead
+   * Kept for backward compatibility during migration
    */
-  setTrackSurfaceHeight(surfaceHeight: number): void {
-    this.trackSurfaceHeight = surfaceHeight
-    console.log(`[PhysicsController] Track surface height set to: ${surfaceHeight}`)
+  setTrackSurfaceHeight(_surfaceHeight: number): void {
+    console.warn('[PhysicsController] setTrackSurfaceHeight() is deprecated. Use WorldConfig instead.')
+    // No-op: WorldConfig is now the single source of truth
   }
 
   /**
@@ -337,12 +334,15 @@ export class PhysicsController {
    * Raycast downward to find ground
    * Returns the Y position where the character's feet should be
    * 
-   * Enterprise: Uses data-driven track surface height instead of magic numbers
+   * Enterprise: Uses WorldConfig as single source of truth for track surface height
    */
   private checkGround(position: THREE.Vector3): { hit: boolean; height: number } {
+    // Get track surface height from WorldConfig (single source of truth)
+    const trackSurfaceHeight = WorldConfig.getInstance().getTrackSurfaceHeight()
+    
     // Calculate the target ground height for character feet
     // = track surface + epsilon (prevent z-fighting) - character foot offset (model origin to feet)
-    const targetGroundHeight = this.trackSurfaceHeight + GROUND_SURFACE_EPSILON - this.characterFootOffset
+    const targetGroundHeight = trackSurfaceHeight + GROUND_SURFACE_EPSILON - this.characterFootOffset
     
     // If no scene or track meshes, use fallback with track surface height
     if (!this.scene || this.trackMeshes.length === 0) {
@@ -373,7 +373,7 @@ export class PhysicsController {
 
     // No raycast hit - use fallback based on track surface height
     // Check if player is within reasonable bounds
-    const expectedGroundLevel = this.trackSurfaceHeight + 3 // Allow some tolerance
+    const expectedGroundLevel = trackSurfaceHeight + 3 // Allow some tolerance
     const isNearGroundLevel = position.y < expectedGroundLevel
     const isWithinTrackX = Math.abs(position.x) < this.config.trackWidth / 2
     

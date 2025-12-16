@@ -74,6 +74,13 @@ export {
   KEY_BINDINGS,
 } from './constants'
 
+// World configuration (runtime-calculated geometry)
+export {
+  WorldConfig,
+  WORLD_CONFIG_DEFAULTS,
+  type PlayerDimensions,
+} from './WorldConfig'
+
 /**
  * Initialize configuration system
  * Call this early in app startup to ensure device detection runs

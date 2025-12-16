@@ -14,6 +14,7 @@
 import * as THREE from 'three'
 import type { TrackTile } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
+import { WorldConfig } from '../config/WorldConfig'
 
 // Enterprise: Extended tile with instance index
 interface InstancedTrackTile extends TrackTile {
@@ -76,6 +77,9 @@ export class TrackManager {
     // The walking surface is at the TOP of the model's bounding box (max.y)
     // This is where the character's feet should be placed
     this.trackSurfaceHeight = box.max.y
+    
+    // Set WorldConfig as single source of truth for track surface height
+    WorldConfig.getInstance().setTrackSurfaceHeight(this.trackSurfaceHeight)
     console.log(`[TrackManager] Track surface height: ${this.trackSurfaceHeight.toFixed(2)} (model max.y after scale)`)
     
     // Store scale for instancing
@@ -319,9 +323,14 @@ export class TrackManager {
   /**
    * Enterprise: Get track surface height for physics
    * This is the Y position where character feet should be placed
+   * Delegates to WorldConfig for backward compatibility
    */
   getTrackSurfaceHeight(): number {
-    return this.trackSurfaceHeight
+    // Delegate to WorldConfig (single source of truth)
+    // Keep local value as fallback for edge cases during initialization
+    return WorldConfig.getInstance().isTrackSurfaceInitialized() 
+      ? WorldConfig.getInstance().getTrackSurfaceHeight()
+      : this.trackSurfaceHeight
   }
   
   /**

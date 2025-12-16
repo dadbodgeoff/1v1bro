@@ -5,6 +5,7 @@
 
 import type { DifficultyTier, ObstaclePattern, PacingPhase } from './types'
 import type { DifficultyManager } from './DifficultyManager'
+import { getMobileConfig } from '../config/mobile'
 
 /**
  * Spacing calculation parameters
@@ -88,6 +89,10 @@ export class SpacingCalculator {
     // Phase multiplier
     const phaseMultiplier = PHASE_MULTIPLIERS[pacingPhase]
 
+    // Mobile/device multiplier - gives touch devices slightly more space
+    const mobileConfig = getMobileConfig()
+    const deviceGapMultiplier = mobileConfig.balance.obstacleGapMultiplier
+
     // Recovery bonus from previous pattern complexity
     const recoveryBonus = previousPattern 
       ? this.getRecoveryBonus(previousPattern)
@@ -102,6 +107,7 @@ export class SpacingCalculator {
     let gap = Math.max(reactionDistance, speedScaledBase)
     gap *= difficultyMultiplier
     gap *= phaseMultiplier
+    gap *= deviceGapMultiplier  // Apply device-specific gap adjustment
     gap += recoveryBonus
     gap += transitionBonus
 
