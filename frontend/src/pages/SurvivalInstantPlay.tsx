@@ -355,7 +355,7 @@ function SurvivalInstantPlayContent() {
       {/* Game Canvas Container - takes remaining space above trivia */}
       <div 
         ref={containerRef} 
-        className="absolute top-0 left-0 right-0"
+        className="absolute top-0 left-0 right-0 overflow-hidden"
         style={{ height: gameAreaHeight }}
       />
 

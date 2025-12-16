@@ -337,7 +337,7 @@ function SurvivalGameContent() {
   if (!isAuthenticated) return null
 
   // Calculate game area height for mobile with trivia panel
-  // Must account for safe area inset (iOS home indicator) which the trivia panel uses
+  // Account for iOS safe area (home indicator) on top of panel height
   const gameAreaHeight = showMobileTrivia 
     ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px - env(safe-area-inset-bottom, 0px))` 
     : '100vh'
@@ -359,7 +359,7 @@ function SurvivalGameContent() {
       {/* Game Canvas Container - takes remaining space above trivia */}
       <div 
         ref={containerRef} 
-        className="absolute top-0 left-0 right-0"
+        className="absolute top-0 left-0 right-0 overflow-hidden"
         style={{ height: gameAreaHeight }}
       />
 
