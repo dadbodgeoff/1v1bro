@@ -3,7 +3,6 @@
  */
 
 import { useEffect, useState, useCallback } from 'react'
-import { MetricCard } from '../MetricCard'
 import { DonutChart } from '../MiniChart'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
 
@@ -70,20 +69,30 @@ export function RealtimePanel() {
         </button>
       </div>
 
-      {/* Active Users */}
+      {/* Active Users - Enhanced */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <MetricCard
-          label="Active Users"
-          value={data?.active_users ?? 0}
-          size="lg"
-          variant={data?.active_users ? 'success' : 'default'}
-        />
+        <div className={`rounded-xl border p-6 ${
+          data?.active_users 
+            ? 'bg-gradient-to-br from-green-500/20 to-green-500/5 border-green-500/30' 
+            : 'bg-white/5 border-white/10'
+        }`}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className={`w-3 h-3 rounded-full ${data?.active_users ? 'bg-green-500 animate-pulse' : 'bg-neutral-600'}`} />
+            <span className="text-xs text-neutral-400 uppercase tracking-wide">Active Users</span>
+          </div>
+          <div className={`text-4xl font-bold ${data?.active_users ? 'text-green-400' : 'text-neutral-500'}`}>
+            {data?.active_users ?? 0}
+          </div>
+          <div className="text-xs text-neutral-500 mt-2">
+            {data?.active_users ? 'users online now' : 'no active users'}
+          </div>
+        </div>
         <div className="md:col-span-2 bg-white/5 rounded-xl border border-white/10 p-5">
           <h3 className="text-sm font-medium text-neutral-400 mb-3">Device Breakdown</h3>
           {deviceData.some(d => d.value > 0) ? (
-            <DonutChart data={deviceData} size={80} />
+            <DonutChart data={deviceData} size={80} showPercentages />
           ) : (
-            <div className="text-neutral-500 text-sm">No active sessions</div>
+            <div className="text-neutral-500 text-sm text-center py-4">No active sessions</div>
           )}
         </div>
       </div>

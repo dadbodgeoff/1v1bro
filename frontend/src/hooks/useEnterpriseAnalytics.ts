@@ -74,7 +74,8 @@ interface ErrorData {
 const generateId = (): string => `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
 
 const getVisitorId = (): string => {
-  const key = 'analytics_visitor_id'
+  // Use same key as basic analytics service for consistency
+  const key = '1v1bro_visitor_id'
   let id = localStorage.getItem(key)
   if (!id) {
     id = `v_${generateId()}`
@@ -84,7 +85,8 @@ const getVisitorId = (): string => {
 }
 
 const getSessionId = (): string => {
-  const key = 'analytics_session_id'
+  // Use same key as basic analytics service for consistency
+  const key = '1v1bro_session_id'
   let id = sessionStorage.getItem(key)
   if (!id) {
     id = `s_${generateId()}`

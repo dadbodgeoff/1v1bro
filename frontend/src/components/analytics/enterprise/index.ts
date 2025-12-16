@@ -5,10 +5,10 @@ export * from './types'
 export { useAnalyticsAPI } from './useAnalyticsAPI'
 
 // Components
-export { MetricCard, WebVitalCard, calculateTrendPercentage, getTrendDirection } from './MetricCard'
+export { MetricCard, WebVitalCard, KPICard, StatRow, calculateTrendPercentage, getTrendDirection } from './MetricCard'
 export type { MetricCardProps, MetricFormat } from './MetricCard'
 export { DataTable, Pagination } from './DataTable'
-export { LineChart, BarChart, DonutChart, FunnelChart } from './MiniChart'
+export { LineChart, BarChart, DonutChart, FunnelChart, Sparkline, ComparisonBar, StackedBar, ProgressRing, GaugeChart, HeatCalendar } from './MiniChart'
 export { SessionLink } from './SessionLink'
 export type { SessionLinkProps } from './SessionLink'
 export { SessionExplorer, sortEventsChronologically } from './SessionExplorer'

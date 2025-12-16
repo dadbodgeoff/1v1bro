@@ -169,20 +169,68 @@ export function SurvivalPanel({ days = 7 }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Key Metrics */}
+      {/* Key Metrics with sparklines */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <MetricCard label="Total Runs" value={totals?.total_runs} size="lg" />
-        <MetricCard label="Unique Players" value={totals?.unique_players} size="lg" />
-        <MetricCard label="Avg Distance" value={totals?.avg_distance?.toFixed(0)} unit="m" size="lg" />
-        <MetricCard label="Avg Score" value={totals?.avg_score?.toFixed(0)} size="lg" />
+        <MetricCard 
+          label="Total Runs" 
+          value={totals?.total_runs} 
+          size="lg"
+          sparkline={overview?.daily.map(d => d.total_runs)}
+          icon={<span className="text-lg">🎮</span>}
+        />
+        <MetricCard 
+          label="Unique Players" 
+          value={totals?.unique_players} 
+          size="lg"
+          sparkline={overview?.daily.map(d => d.unique_players)}
+          icon={<span className="text-lg">👥</span>}
+        />
+        <MetricCard 
+          label="Avg Distance" 
+          value={totals?.avg_distance?.toFixed(0)} 
+          unit="m" 
+          size="lg"
+          sparkline={overview?.daily.map(d => d.avg_distance)}
+          icon={<span className="text-lg">📏</span>}
+        />
+        <MetricCard 
+          label="Avg Score" 
+          value={totals?.avg_score?.toFixed(0)} 
+          size="lg"
+          sparkline={overview?.daily.map(d => d.avg_score)}
+          icon={<span className="text-lg">⭐</span>}
+        />
       </div>
 
-      {/* Records */}
+      {/* Records - highlighted */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <MetricCard label="Max Distance" value={totals?.max_distance?.toFixed(0)} unit="m" variant="success" />
-        <MetricCard label="Max Score" value={totals?.max_score} variant="success" />
-        <MetricCard label="Max Combo" value={totals?.max_combo} variant="success" />
-        <MetricCard label="Unique Visitors" value={totals?.unique_visitors} />
+        <MetricCard 
+          label="Max Distance" 
+          value={totals?.max_distance?.toFixed(0)} 
+          unit="m" 
+          variant="success"
+          icon={<span className="text-lg">🏆</span>}
+          description="All-time record"
+        />
+        <MetricCard 
+          label="Max Score" 
+          value={totals?.max_score} 
+          variant="success"
+          icon={<span className="text-lg">🥇</span>}
+          description="All-time record"
+        />
+        <MetricCard 
+          label="Max Combo" 
+          value={totals?.max_combo} 
+          variant="success"
+          icon={<span className="text-lg">🔥</span>}
+          description="All-time record"
+        />
+        <MetricCard 
+          label="Unique Visitors" 
+          value={totals?.unique_visitors}
+          icon={<span className="text-lg">👀</span>}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

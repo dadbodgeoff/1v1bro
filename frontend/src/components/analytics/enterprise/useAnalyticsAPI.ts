@@ -57,8 +57,14 @@ export function useAnalyticsAPI() {
     fetchAPI(`/analytics/dashboard/geo?${buildParams(range)}`)
 
   // Enterprise Analytics
-  const getJourneys = (range: DateRange, page = 1) =>
-    fetchAPI(`/analytics/enterprise/dashboard/journeys?${buildParams(range, { page, per_page: 50 })}`)
+  const getJourneys = (range: DateRange, page = 1, sortBy = 'journey_start', sortOrder = 'desc', convertedOnly = false) =>
+    fetchAPI(`/analytics/enterprise/dashboard/journeys?${buildParams(range, { 
+      page, 
+      per_page: 50, 
+      sort_by: sortBy, 
+      sort_order: sortOrder,
+      converted_only: String(convertedOnly),
+    })}`)
 
   const getJourneySteps = (journeyId: string) =>
     fetchAPI(`/analytics/enterprise/dashboard/journey/${journeyId}/steps`)

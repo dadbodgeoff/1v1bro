@@ -86,7 +86,8 @@ const generateId = (): string => {
 // Get or create persistent visitor ID (survives browser restarts)
 // This identifies the same user across multiple visits on the same device
 const getVisitorId = (): string => {
-  const key = 'analytics_visitor_id'
+  // Use consistent key across all analytics systems
+  const key = '1v1bro_visitor_id'
   let visitorId = localStorage.getItem(key)
   if (!visitorId) {
     visitorId = `v_${generateId()}`
@@ -98,7 +99,8 @@ const getVisitorId = (): string => {
 // Get or create session ID (resets per browser session/tab)
 // This tracks individual browsing sessions
 const getSessionId = (): string => {
-  const key = 'analytics_session_id'
+  // Use consistent key across all analytics systems
+  const key = '1v1bro_session_id'
   let sessionId = sessionStorage.getItem(key)
   if (!sessionId) {
     sessionId = `s_${generateId()}`

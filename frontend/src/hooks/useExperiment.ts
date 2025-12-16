@@ -17,9 +17,9 @@ interface ExperimentResult {
 // Cache assignments to avoid repeated API calls
 const assignmentCache = new Map<string, { variant: string; inExperiment: boolean }>()
 
-// Get visitor ID from localStorage
+// Get visitor ID from localStorage - use consistent key across all analytics
 const getVisitorId = (): string => {
-  const key = 'analytics_visitor_id'
+  const key = '1v1bro_visitor_id'
   let id = localStorage.getItem(key)
   if (!id) {
     id = `v_${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
@@ -29,7 +29,8 @@ const getVisitorId = (): string => {
 }
 
 const getSessionId = (): string => {
-  const key = 'analytics_session_id'
+  // Use consistent key across all analytics systems
+  const key = '1v1bro_session_id'
   let id = sessionStorage.getItem(key)
   if (!id) {
     id = `s_${Date.now()}-${Math.random().toString(36).slice(2, 11)}`

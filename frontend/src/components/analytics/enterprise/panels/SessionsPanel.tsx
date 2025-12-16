@@ -201,28 +201,40 @@ export function SessionsPanel({ dateRange }: Props) {
         </div>
       </div>
 
-      {/* Summary Stats */}
+      {/* Summary Stats - Enhanced */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white/5 rounded-xl border border-white/10 p-4">
-          <div className="text-xs text-neutral-500">Total Sessions</div>
+        <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-xl border border-white/10 p-4">
+          <div className="text-xs text-neutral-500 mb-1">Total Sessions</div>
           <div className="text-2xl font-bold text-white">{total.toLocaleString()}</div>
+          <div className="text-xs text-neutral-500 mt-1">in selected period</div>
         </div>
-        <div className="bg-white/5 rounded-xl border border-white/10 p-4">
-          <div className="text-xs text-neutral-500">Avg Pages/Session</div>
+        <div className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-xl border border-orange-500/20 p-4">
+          <div className="text-xs text-orange-400 mb-1">Avg Pages/Session</div>
           <div className="text-2xl font-bold text-orange-400">
             {sessions.length ? (sessions.reduce((a, s) => a + s.page_views, 0) / sessions.length).toFixed(1) : 0}
           </div>
+          <div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+            <div 
+              className="h-full bg-orange-500 rounded-full"
+              style={{ width: `${Math.min(100, (sessions.length ? (sessions.reduce((a, s) => a + s.page_views, 0) / sessions.length) : 0) * 20)}%` }}
+            />
+          </div>
         </div>
-        <div className="bg-white/5 rounded-xl border border-white/10 p-4">
-          <div className="text-xs text-neutral-500">Avg Duration</div>
+        <div className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-xl border border-blue-500/20 p-4">
+          <div className="text-xs text-blue-400 mb-1">Avg Duration</div>
           <div className="text-2xl font-bold text-blue-400">
             {formatDuration(sessions.length ? sessions.reduce((a, s) => a + s.duration_seconds, 0) / sessions.length : 0)}
           </div>
+          <div className="text-xs text-neutral-500 mt-1">per session</div>
         </div>
-        <div className="bg-white/5 rounded-xl border border-white/10 p-4">
-          <div className="text-xs text-neutral-500">Mobile %</div>
+        <div className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-xl border border-purple-500/20 p-4">
+          <div className="text-xs text-purple-400 mb-1">Mobile Traffic</div>
           <div className="text-2xl font-bold text-purple-400">
             {sessions.length ? ((sessions.filter(s => s.device_type?.toLowerCase() === 'mobile').length / sessions.length) * 100).toFixed(0) : 0}%
+          </div>
+          <div className="flex gap-1 mt-2">
+            <span className="text-xs text-neutral-500">📱 {sessions.filter(s => s.device_type?.toLowerCase() === 'mobile').length}</span>
+            <span className="text-xs text-neutral-500">💻 {sessions.filter(s => s.device_type?.toLowerCase() !== 'mobile').length}</span>
           </div>
         </div>
       </div>

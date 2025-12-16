@@ -12,6 +12,24 @@ import { SessionExplorer } from '../SessionExplorer'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
 import type { DateRange } from '../types'
 
+// Raw journey from API (matches DB schema)
+interface RawJourney {
+  id: string
+  visitor_id: string
+  session_id: string
+  journey_start: string
+  journey_end?: string
+  total_pages: number
+  total_events: number
+  duration_ms: number
+  entry_page: string
+  exit_page: string
+  converted: boolean
+  conversion_type?: string
+  device_type: string
+}
+
+// Transformed journey for display
 interface Journey {
   journey_id: string
   session_id: string
@@ -25,6 +43,21 @@ interface Journey {
   converted: boolean
 }
 
+// Transform raw journey to display format
+function transformJourney(raw: RawJourney): Journey {
+  return {
+    journey_id: raw.id,
+    session_id: raw.session_id,
+    started_at: raw.journey_start,
+    ended_at: raw.journey_end,
+    page_count: raw.total_pages || 0,
+    duration_seconds: Math.round((raw.duration_ms || 0) / 1000),
+    entry_page: raw.entry_page || '/',
+    exit_page: raw.exit_page || '/',
+    converted: raw.converted || false,
+  }
+}
+
 interface JourneyStep {
   page: string
   timestamp: string
@@ -36,6 +69,9 @@ interface Props {
   dateRange: DateRange
 }
 
+type SortField = 'journey_start' | 'total_pages' | 'duration_ms' | 'converted'
+type SortOrder = 'asc' | 'desc'
+
 export function JourneysPanel({ dateRange }: Props) {
   const api = useAnalyticsAPI()
   const [journeys, setJourneys] = useState<Journey[]>([])
@@ -43,6 +79,9 @@ export function JourneysPanel({ dateRange }: Props) {
   const [steps, setSteps] = useState<JourneyStep[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingSteps, setLoadingSteps] = useState(false)
+  const [sortBy, setSortBy] = useState<SortField>('journey_start')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  const [convertedOnly, setConvertedOnly] = useState(false)
   
   // Session Explorer state
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
@@ -61,12 +100,13 @@ export function JourneysPanel({ dateRange }: Props) {
   useEffect(() => {
     const load = async () => {
       setLoading(true)
-      const result = await api.getJourneys(dateRange)
-      setJourneys((result as { journeys: Journey[] })?.journeys || [])
+      const result = await api.getJourneys(dateRange, 1, sortBy, sortOrder, convertedOnly) as { journeys: RawJourney[] } | null
+      const rawJourneys = result?.journeys || []
+      setJourneys(rawJourneys.map(transformJourney))
       setLoading(false)
     }
     load()
-  }, [dateRange])
+  }, [dateRange, sortBy, sortOrder, convertedOnly])
 
   const loadSteps = async (journeyId: string) => {
     if (selectedJourney === journeyId) {
@@ -180,7 +220,35 @@ export function JourneysPanel({ dateRange }: Props) {
 
       {/* Journeys Table */}
       <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-        <h3 className="text-sm font-medium text-neutral-400 mb-4">User Journeys</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-neutral-400">User Journeys</h3>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 text-xs text-neutral-400">
+              <input
+                type="checkbox"
+                checked={convertedOnly}
+                onChange={(e) => setConvertedOnly(e.target.checked)}
+                className="rounded border-white/20 bg-white/5"
+              />
+              Converted only
+            </label>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortField)}
+              className="text-xs bg-white/5 border border-white/10 rounded px-2 py-1 text-white"
+            >
+              <option value="journey_start">Date</option>
+              <option value="total_pages">Pages</option>
+              <option value="duration_ms">Duration</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(o => o === 'desc' ? 'asc' : 'desc')}
+              className="text-xs bg-white/5 border border-white/10 rounded px-2 py-1 text-white hover:bg-white/10"
+            >
+              {sortOrder === 'desc' ? '↓ Newest' : '↑ Oldest'}
+            </button>
+          </div>
+        </div>
         <DataTable
           columns={columns}
           data={journeys}

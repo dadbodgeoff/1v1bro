@@ -11,12 +11,35 @@ import { DonutChart } from '../MiniChart'
 import { useAnalyticsAPI } from '../useAnalyticsAPI'
 import type { DateRange } from '../types'
 
+// Raw data from API (matches backend response)
+interface RawUTMData {
+  sources: Array<{ name: string; visitors: number; conversions: number; conversion_rate: number }>
+  campaigns: Array<{ name: string; visitors: number; conversions: number; conversion_rate: number }>
+}
+
+// Transformed data for display
 interface UTMData {
-  sources: Array<{ name: string; count: number; conversions?: number; previous_count?: number }>
-  mediums: Array<{ name: string; count: number; conversions?: number; previous_count?: number }>
-  campaigns: Array<{ name: string; count: number; conversions?: number; previous_count?: number }>
-  terms: Array<{ name: string; count: number }>
-  contents: Array<{ name: string; count: number }>
+  sources: Array<{ name: string; count: number; conversions?: number; conversion_rate?: number }>
+  campaigns: Array<{ name: string; count: number; conversions?: number; conversion_rate?: number }>
+}
+
+// Transform raw API data to display format
+function transformUTMData(raw: RawUTMData | null): UTMData | null {
+  if (!raw) return null
+  return {
+    sources: (raw.sources || []).map(s => ({
+      name: s.name,
+      count: s.visitors,
+      conversions: s.conversions,
+      conversion_rate: s.conversion_rate,
+    })),
+    campaigns: (raw.campaigns || []).map(c => ({
+      name: c.name,
+      count: c.visitors,
+      conversions: c.conversions,
+      conversion_rate: c.conversion_rate,
+    })),
+  }
 }
 
 /**
@@ -53,7 +76,7 @@ export function UTMPanel({ dateRange }: Props) {
     const load = async () => {
       setLoading(true)
       const result = await api.getUTMBreakdown(dateRange)
-      setData(result as UTMData)
+      setData(transformUTMData(result as RawUTMData))
       setLoading(false)
     }
     load()
@@ -66,15 +89,46 @@ export function UTMPanel({ dateRange }: Props) {
   }
 
   const sourceData = data?.sources.slice(0, 6).map(s => ({ label: s.name || 'direct', value: s.count })) || []
-  const mediumData = data?.mediums.slice(0, 6).map(m => ({ label: m.name || 'none', value: m.count })) || []
+  const campaignData = data?.campaigns.slice(0, 6).map(c => ({ label: c.name || 'none', value: c.count })) || []
 
-  const columns: Column<{ name: string; count: number }>[] = [
-    { key: 'name', label: 'Value', render: (r) => <span className="font-mono text-xs">{r.name || '(none)'}</span> },
-    { key: 'count', label: 'Sessions', sortable: true, align: 'right', render: (r) => <span className="text-orange-400">{r.count.toLocaleString()}</span> },
+  // Source columns with conversion rate
+  const sourceColumns: Column<{ name: string; count: number; conversions?: number; conversion_rate?: number }>[] = [
+    { 
+      key: 'name', 
+      label: 'Source', 
+      render: (r) => <span className="font-mono text-xs">{r.name || '(direct)'}</span> 
+    },
+    { 
+      key: 'count', 
+      label: 'Visitors', 
+      sortable: true, 
+      align: 'right', 
+      render: (r) => <span className="text-white">{r.count.toLocaleString()}</span> 
+    },
+    { 
+      key: 'conversions', 
+      label: 'Conversions', 
+      sortable: true, 
+      align: 'right', 
+      render: (r) => <span className="text-green-400">{(r.conversions || 0).toLocaleString()}</span> 
+    },
+    { 
+      key: 'conversion_rate', 
+      label: 'Conv. Rate', 
+      align: 'right', 
+      render: (r) => {
+        const rate = r.conversion_rate ?? calculateConversionRate(r.conversions || 0, r.count)
+        return (
+          <span className={rate > 5 ? 'text-green-400' : rate > 2 ? 'text-yellow-400' : 'text-neutral-400'}>
+            {rate.toFixed(1)}%
+          </span>
+        )
+      }
+    },
   ]
 
-  // Campaign columns with conversion rate and trend
-  const campaignColumns: Column<{ name: string; count: number; conversions?: number; previous_count?: number }>[] = [
+  // Campaign columns with conversion rate
+  const campaignColumns: Column<{ name: string; count: number; conversions?: number; conversion_rate?: number }>[] = [
     { 
       key: 'name', 
       label: 'Campaign', 
@@ -97,29 +151,12 @@ export function UTMPanel({ dateRange }: Props) {
     { 
       key: 'conversion_rate', 
       label: 'Conv. Rate', 
-      sortable: true, 
       align: 'right', 
       render: (r) => {
-        const rate = calculateConversionRate(r.conversions || 0, r.count)
+        const rate = r.conversion_rate ?? calculateConversionRate(r.conversions || 0, r.count)
         return (
           <span className={rate > 5 ? 'text-green-400' : rate > 2 ? 'text-yellow-400' : 'text-neutral-400'}>
-            {rate.toFixed(2)}%
-          </span>
-        )
-      }
-    },
-    { 
-      key: 'trend', 
-      label: 'Trend', 
-      align: 'right', 
-      render: (r) => {
-        const trend = calculateTrendPercentage(r.count, r.previous_count || 0)
-        if (trend === null) return <span className="text-neutral-500">—</span>
-        const isPositive = trend > 0
-        return (
-          <span className={`flex items-center justify-end gap-1 ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-            <span>{isPositive ? '↑' : '↓'}</span>
-            <span>{Math.abs(trend).toFixed(1)}%</span>
+            {rate.toFixed(1)}%
           </span>
         )
       }
@@ -128,7 +165,7 @@ export function UTMPanel({ dateRange }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Top Row - Sources & Mediums */}
+      {/* Top Row - Sources & Campaigns Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white/5 rounded-xl border border-white/10 p-5">
           <h3 className="text-sm font-medium text-neutral-400 mb-4">Traffic Sources</h3>
@@ -140,16 +177,32 @@ export function UTMPanel({ dateRange }: Props) {
         </div>
 
         <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-          <h3 className="text-sm font-medium text-neutral-400 mb-4">Mediums</h3>
-          {mediumData.length > 0 ? (
-            <DonutChart data={mediumData} size={100} colors={['#8b5cf6', '#14b8a6', '#f97316', '#3b82f6', '#22c55e', '#eab308']} />
+          <h3 className="text-sm font-medium text-neutral-400 mb-4">Campaigns</h3>
+          {campaignData.length > 0 ? (
+            <DonutChart data={campaignData} size={100} colors={['#8b5cf6', '#14b8a6', '#f97316', '#3b82f6', '#22c55e', '#eab308']} />
           ) : (
-            <div className="text-neutral-500 text-sm">No medium data</div>
+            <div className="text-neutral-500 text-sm">No campaign data</div>
           )}
         </div>
       </div>
 
-      {/* Campaigns with Conversion Rates */}
+      {/* Sources Table with Conversion Rates */}
+      <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+        <h3 className="text-sm font-medium text-neutral-400 mb-4">Source Performance</h3>
+        {data?.sources && data.sources.length > 0 ? (
+          <DataTable
+            columns={sourceColumns}
+            data={data.sources}
+            keyField="name"
+            maxHeight="250px"
+            emptyMessage="No source data"
+          />
+        ) : (
+          <div className="text-neutral-500 text-sm">No source data</div>
+        )}
+      </div>
+
+      {/* Campaigns Table with Conversion Rates */}
       <div className="bg-white/5 rounded-xl border border-white/10 p-5">
         <h3 className="text-sm font-medium text-neutral-400 mb-4">Campaign Performance</h3>
         {data?.campaigns && data.campaigns.length > 0 ? (
@@ -157,25 +210,12 @@ export function UTMPanel({ dateRange }: Props) {
             columns={campaignColumns}
             data={data.campaigns}
             keyField="name"
-            maxHeight="300px"
+            maxHeight="250px"
             emptyMessage="No campaign data"
           />
         ) : (
           <div className="text-neutral-500 text-sm">No campaign data</div>
         )}
-      </div>
-
-      {/* Detailed Tables */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-          <h3 className="text-sm font-medium text-neutral-400 mb-4">UTM Terms</h3>
-          <DataTable columns={columns} data={data?.terms || []} keyField="name" maxHeight="200px" emptyMessage="No term data" />
-        </div>
-
-        <div className="bg-white/5 rounded-xl border border-white/10 p-5">
-          <h3 className="text-sm font-medium text-neutral-400 mb-4">UTM Content</h3>
-          <DataTable columns={columns} data={data?.contents || []} keyField="name" maxHeight="200px" emptyMessage="No content data" />
-        </div>
       </div>
     </div>
   )

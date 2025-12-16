@@ -5,7 +5,7 @@ These endpoints accept anonymous requests (no auth required) to track
 visitors before they sign up.
 """
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Query
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
@@ -555,25 +555,34 @@ async def get_tech_breakdown(
         screen_sizes = {}
         
         for s in sessions.data or []:
-            # Browser
-            browser = s.get("browser", "Unknown")
-            browsers[browser] = browsers.get(browser, 0) + 1
-            
-            # OS
-            os_name = s.get("os", "Unknown")
-            operating_systems[os_name] = operating_systems.get(os_name, 0) + 1
-            
-            # Screen size buckets
-            width = s.get("screen_width", 0)
-            if width < 768:
-                size = "Small (<768px)"
-            elif width < 1024:
-                size = "Medium (768-1024px)"
-            elif width < 1440:
-                size = "Large (1024-1440px)"
+            # Browser - handle null/empty values
+            browser = s.get("browser") or "Unknown"
+            if browser and browser.strip():
+                browsers[browser] = browsers.get(browser, 0) + 1
             else:
-                size = "XL (1440px+)"
-            screen_sizes[size] = screen_sizes.get(size, 0) + 1
+                browsers["Unknown"] = browsers.get("Unknown", 0) + 1
+            
+            # OS - handle null/empty values
+            os_name = s.get("os") or "Unknown"
+            if os_name and os_name.strip():
+                operating_systems[os_name] = operating_systems.get(os_name, 0) + 1
+            else:
+                operating_systems["Unknown"] = operating_systems.get("Unknown", 0) + 1
+            
+            # Screen size buckets - handle null/0 values
+            width = s.get("screen_width") or 0
+            if width > 0:
+                if width < 768:
+                    size = "Small (<768px)"
+                elif width < 1024:
+                    size = "Medium (768-1024px)"
+                elif width < 1440:
+                    size = "Large (1024-1440px)"
+                else:
+                    size = "XL (1440px+)"
+                screen_sizes[size] = screen_sizes.get(size, 0) + 1
+            else:
+                screen_sizes["Unknown"] = screen_sizes.get("Unknown", 0) + 1
         
         return APIResponse.ok({
             "browsers": [{"name": k, "count": v} for k, v in sorted(browsers.items(), key=lambda x: x[1], reverse=True)],
@@ -686,16 +695,18 @@ async def get_geo_breakdown(
 async def get_sessions(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    limit: int = 100,
+    page: int = Query(1, ge=1),
+    per_page: int = Query(50, ge=1, le=200),
     _admin=Depends(require_admin)
 ):
     """
     Get all session data for the admin dashboard.
+    Transforms raw DB fields to frontend-expected format.
     """
     try:
         supabase = get_supabase_service_client()
         
-        query = supabase.table("analytics_sessions").select("*")
+        query = supabase.table("analytics_sessions").select("*", count="exact")
         
         if start_date:
             query = query.gte("first_seen", start_date)
@@ -703,9 +714,85 @@ async def get_sessions(
             end_date_inclusive = (datetime.fromisoformat(end_date) + __import__('datetime').timedelta(days=1)).isoformat()[:10]
             query = query.lt("first_seen", end_date_inclusive)
         
-        sessions = query.order("first_seen", desc=True).limit(limit).execute()
+        # Pagination
+        offset = (page - 1) * per_page
+        sessions_result = query.order("first_seen", desc=True).range(offset, offset + per_page - 1).execute()
+        raw_sessions = sessions_result.data or []
         
-        return APIResponse.ok({"sessions": sessions.data or []})
+        # Get page views for each session to calculate entry/exit pages and page count
+        session_ids = [s.get("session_id") for s in raw_sessions if s.get("session_id")]
+        
+        pageviews_by_session = {}
+        if session_ids:
+            # Fetch page views for these sessions
+            pv_result = supabase.table("analytics_page_views").select(
+                "session_id, page, viewed_at, time_on_page"
+            ).in_("session_id", session_ids).order("viewed_at").execute()
+            
+            for pv in pv_result.data or []:
+                sid = pv.get("session_id")
+                if sid not in pageviews_by_session:
+                    pageviews_by_session[sid] = []
+                pageviews_by_session[sid].append(pv)
+        
+        # Transform sessions to frontend format
+        transformed = []
+        for s in raw_sessions:
+            sid = s.get("session_id")
+            pvs = pageviews_by_session.get(sid, [])
+            
+            # Calculate duration - try multiple methods
+            duration_seconds = 0
+            
+            # Method 1: Sum of time_on_page from page views (most accurate)
+            total_time_on_pages = sum(pv.get("time_on_page", 0) or 0 for pv in pvs)
+            if total_time_on_pages > 0:
+                duration_seconds = total_time_on_pages
+            
+            # Method 2: Calculate from first_seen to last_seen
+            elif s.get("first_seen") and s.get("last_seen"):
+                try:
+                    first = datetime.fromisoformat(s["first_seen"].replace("Z", "+00:00"))
+                    last = datetime.fromisoformat(s["last_seen"].replace("Z", "+00:00"))
+                    duration_seconds = max(0, (last - first).total_seconds())
+                except:
+                    pass
+            
+            # Method 3: Calculate from page view timestamps
+            elif len(pvs) >= 2:
+                try:
+                    first_pv = datetime.fromisoformat(pvs[0].get("viewed_at", "").replace("Z", "+00:00"))
+                    last_pv = datetime.fromisoformat(pvs[-1].get("viewed_at", "").replace("Z", "+00:00"))
+                    duration_seconds = max(0, (last_pv - first_pv).total_seconds())
+                except:
+                    pass
+            
+            # Get entry/exit pages from page views
+            entry_page = pvs[0].get("page", "/") if pvs else "/"
+            exit_page = pvs[-1].get("page", "/") if pvs else "/"
+            
+            transformed.append({
+                "session_id": sid,
+                "user_id": s.get("user_id"),
+                "started_at": s.get("first_seen"),
+                "ended_at": s.get("last_seen"),
+                "page_views": len(pvs),
+                "duration_seconds": duration_seconds,
+                "device_type": s.get("device_type", "desktop"),
+                "browser": s.get("browser", "Unknown"),
+                "os": s.get("os", "Unknown"),
+                "entry_page": entry_page,
+                "exit_page": exit_page,
+            })
+        
+        total_count = sessions_result.count or len(transformed)
+        return APIResponse.ok({
+            "sessions": transformed,
+            "total": total_count,
+            "page": page,
+            "per_page": per_page,
+            "total_pages": ((total_count) + per_page - 1) // per_page,
+        })
     except Exception as e:
         return APIResponse.fail(str(e), "ANALYTICS_ERROR")
 
