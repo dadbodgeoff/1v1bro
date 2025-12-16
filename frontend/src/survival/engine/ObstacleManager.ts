@@ -95,15 +95,6 @@ export class ObstacleManager {
   }
 
   /**
-   * @deprecated Use WorldConfig.getInstance().setTrackSurfaceHeight() instead
-   * Kept for backward compatibility during migration
-   */
-  setTrackSurfaceHeight(_surfaceHeight: number): void {
-    console.warn('[ObstacleManager] setTrackSurfaceHeight() is deprecated. Use WorldConfig instead.')
-    // No-op: WorldConfig is now the single source of truth
-  }
-
-  /**
    * Initialize obstacle templates from loaded assets
    * Enterprise: Creates InstancedMesh pools for efficient rendering
    */

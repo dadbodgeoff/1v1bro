@@ -144,15 +144,6 @@ export class PhysicsController {
   }
 
   /**
-   * @deprecated Use WorldConfig.getInstance().setTrackSurfaceHeight() instead
-   * Kept for backward compatibility during migration
-   */
-  setTrackSurfaceHeight(_surfaceHeight: number): void {
-    console.warn('[PhysicsController] setTrackSurfaceHeight() is deprecated. Use WorldConfig instead.')
-    // No-op: WorldConfig is now the single source of truth
-  }
-
-  /**
    * Main physics update - call every frame
    * Implements AAA features: coyote time, jump buffering, landing detection,
    * variable jump height, gravity scaling, air control

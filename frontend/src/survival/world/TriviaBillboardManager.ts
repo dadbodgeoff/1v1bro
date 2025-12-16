@@ -1,6 +1,6 @@
 /**
  * TriviaBillboardManager - Single persistent trivia billboard that follows the player
- * 
+ *
  * Features:
  * - Single billboard that stays in view (fixed relative to player)
  * - 30 second timer per question with countdown sounds
@@ -8,11 +8,15 @@
  * - Always visible and in focus
  * - Screen shake on question appear
  * - Correct/wrong answer feedback
+ *
+ * Audio Integration:
+ * - Requires FeedbackSystem for centralized sound management
+ * - Call setFeedbackSystem() before use
  */
 
 import * as THREE from 'three'
 import { TriviaBillboard, type TriviaQuestion } from './TriviaBillboard'
-import { getSoundManager } from '../audio/SynthSoundManager'
+import type { FeedbackSystem } from '../effects/FeedbackSystem'
 
 export interface TriviaBillboardManagerConfig {
   sideOffset: number         // How far to the side (left side of track)
@@ -51,15 +55,20 @@ export class TriviaBillboardManager {
   
   // Track player position for billboard following
   private lastPlayerZ: number = 0
+  
+  // Audio integration - use FeedbackSystem when available for centralized sound management
+  private feedbackSystem: FeedbackSystem | null = null
 
   constructor(
     scene: THREE.Scene,
     config: Partial<TriviaBillboardManagerConfig> = {},
-    callbacks: BillboardCallbacks = {}
+    callbacks: BillboardCallbacks = {},
+    feedbackSystem?: FeedbackSystem
   ) {
     this.scene = scene
     this.config = { ...DEFAULT_CONFIG, ...config }
     this.callbacks = callbacks
+    this.feedbackSystem = feedbackSystem ?? null
     
     // Create single billboard
     this.billboard = new TriviaBillboard({
@@ -69,6 +78,14 @@ export class TriviaBillboardManager {
     this.scene.add(this.billboard.getObject())
     
     console.log('[TriviaBillboardManager] Initialized with single persistent billboard')
+  }
+  
+  /**
+   * Set FeedbackSystem for centralized audio management
+   * Can be called after construction for late binding
+   */
+  setFeedbackSystem(feedbackSystem: FeedbackSystem): void {
+    this.feedbackSystem = feedbackSystem
   }
 
   /**
@@ -91,9 +108,8 @@ export class TriviaBillboardManager {
     this.billboard.spawn(question, position, 'left')
     this.startTimer()
     
-    // Play popup sound
-    const soundManager = getSoundManager()
-    soundManager.play({ event: 'quiz-popup', intensity: 1.0 })
+    // Play popup sound via FeedbackSystem
+    this.feedbackSystem?.onQuizPopup()
     
     // Trigger screen shake for attention
     this.callbacks.onScreenShake?.(0.3, 200)
@@ -106,20 +122,19 @@ export class TriviaBillboardManager {
     this.clearTimer()
     
     this.timeRemaining = this.config.timeLimit
-    const soundManager = getSoundManager()
     
     // Update timer every second with countdown sounds
     this.timerInterval = setInterval(() => {
       this.timeRemaining--
       
-      // Play countdown sounds
+      // Play countdown sounds via FeedbackSystem
       if (this.timeRemaining > 0) {
         if (this.timeRemaining <= 5) {
           // Urgent ticks for last 5 seconds
-          soundManager.play({ event: 'quiz-tick-urgent', intensity: 1.0 })
+          this.feedbackSystem?.onQuizTickUrgent()
         } else if (this.timeRemaining <= 10) {
           // Normal ticks for 6-10 seconds
-          soundManager.play({ event: 'quiz-tick', intensity: 0.8 })
+          this.feedbackSystem?.onQuizTick()
         }
       }
       
@@ -158,9 +173,8 @@ export class TriviaBillboardManager {
     if (question) {
       this.billboard.reveal()
       
-      // Play timeout/wrong sound
-      const soundManager = getSoundManager()
-      soundManager.play({ event: 'quiz-wrong', intensity: 0.8 })
+      // Play timeout/wrong sound via FeedbackSystem
+      this.feedbackSystem?.onQuizWrong()
       
       // Negative feedback shake
       this.callbacks.onScreenShake?.(0.4, 250)
@@ -191,20 +205,18 @@ export class TriviaBillboardManager {
     this.billboard.selectAnswer(answerIndex)
     const result = this.billboard.reveal()
     
-    const soundManager = getSoundManager()
-    
     if (result) {
       // Calculate points based on time remaining (faster = more points)
       const timeBonus = Math.floor((this.timeRemaining / this.config.timeLimit) * 300)
       const points = result.isCorrect ? 200 + timeBonus : 0
       
-      // Play appropriate sound and trigger feedback
+      // Play appropriate sound and trigger feedback via FeedbackSystem
       if (result.isCorrect) {
-        soundManager.play({ event: 'quiz-correct', intensity: 1.0 })
+        this.feedbackSystem?.onQuizCorrect()
         // Celebratory screen shake
         this.callbacks.onScreenShake?.(0.2, 150)
       } else {
-        soundManager.play({ event: 'quiz-wrong', intensity: 1.0 })
+        this.feedbackSystem?.onQuizWrong()
         // Negative feedback shake
         this.callbacks.onScreenShake?.(0.5, 300)
       }

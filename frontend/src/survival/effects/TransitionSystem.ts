@@ -6,6 +6,19 @@
  * - 3-2-1-GO countdown sequence
  * - Death animation with slow-mo + camera effects
  * - Respawn effect with invincibility flash
+ * 
+ * STATE MACHINE CONTEXT:
+ * This is 1 of 4 state machines that control game readiness. See docs/STATE_MACHINE_AUDIT.md
+ * 
+ * Related state machines:
+ * - LoadingOrchestrator: Asset loading stages (loading-critical/ready/running)
+ * - GameStateManager: Game phase (ready/running/paused/gameover)
+ * - useSurvivalGame: React state (isLoading/isReadyToStart)
+ * 
+ * Key integration points:
+ * - isGamePaused() is checked by SurvivalEngine.fixedUpdate() to pause physics during transitions
+ * - startCountdown() is called by RunManager.start() after LoadingOrchestrator.isReadyForCountdown()
+ * - onCountdownComplete callback triggers RunManager.onCountdownComplete() → setPhase('running')
  */
 
 import * as THREE from 'three'

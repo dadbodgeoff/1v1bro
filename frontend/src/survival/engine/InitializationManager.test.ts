@@ -60,6 +60,7 @@ describe('InitializationManager', () => {
         initialize: vi.fn(),
         getRaycastMeshes: vi.fn().mockReturnValue([]),
         getTileDepth: vi.fn().mockReturnValue(10),
+        getTrackSurfaceHeight: vi.fn().mockReturnValue(1.3),
       },
       obstacleManager: {
         initialize: vi.fn(),
@@ -70,6 +71,7 @@ describe('InitializationManager', () => {
       physicsController: {
         initialize: vi.fn(),
         setTrackMeshes: vi.fn(),
+        setCharacterDimensions: vi.fn(),
       },
       cameraController: {
         initialize: vi.fn(),
@@ -92,6 +94,7 @@ describe('InitializationManager', () => {
     const mockPlayerManager = {
       setupPlayer: vi.fn(),
       setupAnimatedCharacter: vi.fn(),
+      syncAnimationPosition: vi.fn(),
     }
 
     mockCallbacks = {

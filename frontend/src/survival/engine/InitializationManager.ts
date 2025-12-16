@@ -105,16 +105,14 @@ export class InitializationManager {
       const raycastMeshes = trackManager.getRaycastMeshes()
       physicsController.setTrackMeshes(raycastMeshes)
       
-      // Enterprise: Pass track surface height to physics, obstacles, and player
-      // This ensures all systems use the same reference point for Y positioning
-      const trackSurfaceHeight = trackManager.getTrackSurfaceHeight()
-      physicsController.setTrackSurfaceHeight(trackSurfaceHeight)
-      obstacleManager.setTrackSurfaceHeight(trackSurfaceHeight)
+      // Note: TrackManager.initialize() sets WorldConfig.trackSurfaceHeight
+      // All systems (PhysicsController, ObstacleManager, PlayerController) now read from WorldConfig directly
+      // No need to pass trackSurfaceHeight to individual systems
       
-      // Set player initial Y to track surface height
-      // This ensures collision detection works from the first frame
+      // Sync animation controller position with player controller
+      // PlayerController already has correct Y from WorldConfig
       if (this.playerManager) {
-        this.playerManager.setInitialY(trackSurfaceHeight)
+        this.playerManager.syncAnimationPosition()
       }
 
       cameraController.initialize(8) // Initial player Z

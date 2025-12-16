@@ -8,6 +8,7 @@
 import * as THREE from 'three'
 import type { Lane } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
+import { WorldConfig } from '../config/WorldConfig'
 
 export interface PlayerVisualState {
   isRunning: boolean
@@ -98,30 +99,21 @@ export class PlayerController {
 
   /**
    * Initialize with mesh
+   * Sets initial Y position from WorldConfig (uses default 1.3 if not yet initialized)
    */
   initialize(mesh: THREE.Group, height: number): void {
     this.mesh = mesh
     this.height = height
     
-    // Set initial position - Y will be set properly by setInitialY() after track loads
-    this.position.y = height / 2 + 0.5
-    this.position.previousY = this.position.y
+    // Get track surface height from WorldConfig
+    // PlayerController.initialize() may be called before TrackManager sets WorldConfig,
+    // so we use the default value (1.3) if not yet initialized
+    const worldConfig = WorldConfig.getInstance()
+    const trackSurfaceHeight = worldConfig.getTrackSurfaceHeight()
     
-    this.updateMeshPosition(0)
-  }
-
-  // Track surface height for proper Y positioning
-  private trackSurfaceHeight: number = 0
-
-  /**
-   * Set initial Y position based on track surface height
-   * Called after track is loaded to ensure player starts at correct height
-   */
-  setInitialY(trackSurfaceHeight: number): void {
-    this.trackSurfaceHeight = trackSurfaceHeight
     this.position.y = trackSurfaceHeight
     this.position.previousY = trackSurfaceHeight
-    console.log(`[PlayerController] Initial Y set to track surface: ${trackSurfaceHeight}`)
+    
     this.updateMeshPosition(0)
   }
 
@@ -463,10 +455,12 @@ export class PlayerController {
 
   /**
    * Reset to initial state
+   * Uses WorldConfig for track surface height (by reset time, WorldConfig will be initialized)
    */
   reset(): void {
-    // Use track surface height if set, otherwise fall back to old calculation
-    const initialY = this.trackSurfaceHeight > 0 ? this.trackSurfaceHeight : this.height / 2 + 0.5
+    // Get track surface height from WorldConfig
+    // By reset time, WorldConfig should be initialized by TrackManager
+    const initialY = WorldConfig.getInstance().getTrackSurfaceHeight()
     this.position = {
       x: 0, y: initialY, z: 8,
       previousX: 0, previousY: initialY, previousZ: 8,

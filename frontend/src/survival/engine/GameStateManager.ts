@@ -3,6 +3,18 @@
  * Extracted from SurvivalEngine for modularity
  * 
  * Mobile-optimized: Uses dynamic config for initial state values
+ * 
+ * STATE MACHINE CONTEXT:
+ * This is 1 of 4 state machines that control game readiness. See docs/STATE_MACHINE_AUDIT.md
+ * 
+ * Related state machines:
+ * - LoadingOrchestrator: Asset loading stages (loading-critical/ready/running)
+ * - TransitionSystem: Visual transitions (countdown/death/respawn)
+ * - useSurvivalGame: React state (isLoading/isReadyToStart)
+ * 
+ * Key integration points:
+ * - setPhase('running') is called by RunManager after LoadingOrchestrator.isReadyForCountdown()
+ * - isRunning() is checked by SurvivalEngine.fixedUpdate() along with TransitionSystem.isGamePaused()
  */
 
 import type { SurvivalGameState, SurvivalCallbacks } from '../types/survival'

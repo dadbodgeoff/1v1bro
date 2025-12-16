@@ -399,6 +399,47 @@ export class FeedbackSystem {
     }
   }
 
+  // === Quiz/Trivia convenience methods ===
+
+  /**
+   * Quiz question appeared - attention-grabbing notification
+   */
+  onQuizPopup(): void {
+    this.emitSound('quiz-popup', { intensity: 1 })
+    this.emitHaptic('medium', 0.6)
+  }
+
+  /**
+   * Quiz answered correctly - triumphant success
+   */
+  onQuizCorrect(): void {
+    this.emitSound('quiz-correct', { intensity: 1 })
+    this.emitHaptic('success', 0.8)
+  }
+
+  /**
+   * Quiz answered incorrectly or timed out
+   */
+  onQuizWrong(): void {
+    this.emitSound('quiz-wrong', { intensity: 0.8 })
+    this.emitHaptic('warning', 0.6)
+  }
+
+  /**
+   * Quiz countdown tick (normal, 6-10 seconds remaining)
+   */
+  onQuizTick(): void {
+    this.emitSound('quiz-tick', { intensity: 0.8 })
+  }
+
+  /**
+   * Quiz countdown tick (urgent, last 5 seconds)
+   */
+  onQuizTickUrgent(): void {
+    this.emitSound('quiz-tick-urgent', { intensity: 1 })
+    this.emitHaptic('light', 0.3)
+  }
+
   /**
    * Dispose
    */

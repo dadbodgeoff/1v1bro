@@ -11,17 +11,7 @@
  */
 
 import { useCallback, useRef, useEffect } from 'react'
-import { SynthSoundManager } from '@/survival/audio/SynthSoundManager'
-
-// Singleton sound manager instance
-let soundManagerInstance: SynthSoundManager | null = null
-
-function getSoundManager(): SynthSoundManager {
-  if (!soundManagerInstance) {
-    soundManagerInstance = new SynthSoundManager()
-  }
-  return soundManagerInstance
-}
+import { getSoundManager, type SynthSoundManager } from '@/survival/audio/SynthSoundManager'
 
 export interface UseUISoundOptions {
   /** Disable all sounds */

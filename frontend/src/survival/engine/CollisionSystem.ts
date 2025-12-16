@@ -9,6 +9,7 @@ import * as THREE from 'three'
 import type { Lane, ObstacleType } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
 import { getMobileConfig } from '../config/mobile'
+import { WorldConfig } from '../config/WorldConfig'
 
 // Collision box definition
 export interface CollisionBox {
@@ -51,11 +52,6 @@ export interface PlayerCollisionState {
 }
 
 export class CollisionSystem {
-  // Player dimensions (after scaling)
-  private playerWidth: number = 1.0
-  private playerHeight: number = 2.0
-  private playerDepth: number = 0.8
-  
   // Collision tuning - uses mobile config for device-specific tolerance
   private collisionTolerance: number = 0.2
   private readonly SLIDE_HEIGHT_RATIO: number = 0.4 // Slide reduces height to 40%
@@ -81,15 +77,6 @@ export class CollisionSystem {
     this.laneWidth = config.laneWidth
     // Use device-specific hitbox tolerance (mobile is more forgiving)
     this.collisionTolerance = mobileConfig.balance.hitboxTolerance
-  }
-
-  /**
-   * Set player dimensions based on model
-   */
-  setPlayerDimensions(width: number, height: number, depth: number): void {
-    this.playerWidth = width
-    this.playerHeight = height
-    this.playerDepth = depth
   }
 
   /**
@@ -125,6 +112,7 @@ export class CollisionSystem {
   /**
    * Create player collision box based on current state
    * Uses actual Y position from physics (includes jump height)
+   * Reads player dimensions from WorldConfig
    */
   createPlayerBox(
     x: number,
@@ -133,15 +121,17 @@ export class CollisionSystem {
     _isJumping: boolean,
     isSliding: boolean
   ): CollisionBox {
-    const halfWidth = this.playerWidth / 2
-    const halfDepth = this.playerDepth / 2
+    // Read player dimensions from WorldConfig
+    const playerDimensions = WorldConfig.getInstance().getPlayerDimensions()
+    const halfWidth = playerDimensions.width / 2
+    const halfDepth = playerDimensions.depth / 2
 
     // Adjust height based on state
-    let height = this.playerHeight
+    let height = playerDimensions.height
 
     if (isSliding) {
       // Sliding reduces collision height significantly
-      height = this.playerHeight * this.SLIDE_HEIGHT_RATIO
+      height = playerDimensions.height * this.SLIDE_HEIGHT_RATIO
     }
 
     // Y position already includes jump height from physics
@@ -153,99 +143,6 @@ export class CollisionSystem {
       maxY: y + height, // Top of head
       minZ: z - halfDepth,
       maxZ: z + halfDepth,
-    }
-  }
-
-  /**
-   * Create obstacle collision box
-   */
-  createObstacleBox(
-    x: number,
-    y: number,
-    z: number,
-    type: ObstacleType
-  ): CollisionBox {
-    // Different collision boxes for different obstacle types
-    switch (type) {
-      case 'highBarrier':
-        // High barrier TUNNEL - must slide through
-        // Tunnel opening is 0 to 1.2 height, collision is everything above 1.2
-        // Sliding player height is ~0.8, so they fit through the 1.2 opening
-        return {
-          minX: x - this.laneWidth * 2.5,
-          maxX: x + this.laneWidth * 2.5,
-          minY: y + 1.2, // Tunnel ceiling - sliding player fits under this
-          maxY: y + 6.0, // Top of structure - can't jump over
-          minZ: z - 1.5, // Tunnel is deep
-          maxZ: z + 1.5,
-        }
-        
-      case 'lowBarrier':
-        // Low barrier (neon gate) - horizontal beam to jump over
-        // Based on the futuristic energy barrier gate model
-        return {
-          minX: x - this.laneWidth * 2.0, // Wide gate spans lanes
-          maxX: x + this.laneWidth * 2.0,
-          minY: y,
-          maxY: y + 1.2, // Low enough to jump over (~knee height)
-          minZ: z - 0.4,
-          maxZ: z + 0.4, // Thin depth - easy to time jumps
-        }
-        
-      case 'laneBarrier':
-        // Lane-specific barrier - dodge left/right
-        return {
-          minX: x - this.laneWidth * 0.4,
-          maxX: x + this.laneWidth * 0.4,
-          minY: y,
-          maxY: y + 3.0,
-          minZ: z - 1.0,
-          maxZ: z + 1.0,
-        }
-        
-      case 'knowledgeGate':
-        // Gate spans all lanes - triggers trivia
-        return {
-          minX: x - this.laneWidth * 1.5,
-          maxX: x + this.laneWidth * 1.5,
-          minY: y,
-          maxY: y + 5.0,
-          minZ: z - 0.5,
-          maxZ: z + 0.5,
-        }
-        
-      case 'gap':
-        // Gap in track - must jump
-        return {
-          minX: x - this.laneWidth * 1.5,
-          maxX: x + this.laneWidth * 1.5,
-          minY: y - 10, // Below track
-          maxY: y - 0.5,
-          minZ: z - 2.0,
-          maxZ: z + 2.0,
-        }
-        
-      case 'spikes':
-        // Ground spikes - must jump over
-        return {
-          minX: x - this.laneWidth * 1.2,
-          maxX: x + this.laneWidth * 1.2,
-          minY: y,
-          maxY: y + 1.8, // Slightly taller than lowBarrier
-          minZ: z - 0.5,
-          maxZ: z + 0.5,
-        }
-        
-      default:
-        // Default box
-        return {
-          minX: x - 1,
-          maxX: x + 1,
-          minY: y,
-          maxY: y + 2,
-          minZ: z - 1,
-          maxZ: z + 1,
-        }
     }
   }
 

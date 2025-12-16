@@ -58,6 +58,10 @@ import { InitializationManager } from './InitializationManager'
 import { RunManager } from './RunManager'
 import { GhostManager } from './GhostManager'
 
+// Event system
+import { GameEventBus } from '../core/GameEventBus'
+import { wireEvents, wireCollisionSystem } from '../core/EventWiring'
+
 /**
  * Runner skin configuration for custom character skins
  * Contains URLs to the 3D model files for each animation state
@@ -108,6 +112,10 @@ export class SurvivalEngine {
   private initializationManager!: InitializationManager
   private runManager!: RunManager
   private ghostManager: GhostManager
+
+  // Event system
+  private eventBus: GameEventBus
+  private eventCleanup?: () => void
 
   // Enterprise loading orchestrator
   private loadingOrchestrator: LoadingOrchestrator
@@ -186,16 +194,15 @@ export class SurvivalEngine {
       ghostRenderer,
     })
     
-    // Wire milestone/achievement feedback
-    this.milestoneSystem.onMilestone((event) => {
-      this.feedbackSystem.emitSound('milestone', { intensity: event.isMajor ? 1 : 0.7 })
-      this.feedbackSystem.emitHaptic(event.isMajor ? 'success' : 'medium', event.isMajor ? 1 : 0.6)
-    })
+    // Initialize event bus for centralized event handling
+    this.eventBus = new GameEventBus()
     
-    this.achievementSystem.onAchievement(() => {
-      this.feedbackSystem.emitSound('milestone', { intensity: 1, pitch: 1.2 })
-      this.feedbackSystem.emitHaptic('success', 0.8)
-    })
+    // Wire collision system to event bus (before full wiring since CollisionHandler needs it)
+    wireCollisionSystem(
+      this.collisionSystem,
+      this.eventBus,
+      () => this.playerController.getPosition()
+    )
 
     // Setup transition callbacks
     this.setupTransitionCallbacks()
@@ -354,15 +361,13 @@ export class SurvivalEngine {
 
   /**
    * Setup transition system callbacks
+   * NOTE: Countdown sounds are now handled by EventWiring via 'game:countdown' event
    */
   private setupTransitionCallbacks(): void {
     this.transitionSystem.setCallbacks({
       onCountdownTick: (value) => {
-        if (value !== null && value !== 'GO') {
-          this.feedbackSystem.emitSound('countdown', { intensity: 0.8 })
-        } else if (value === 'GO') {
-          this.feedbackSystem.emitSound('boost', { intensity: 1 })
-        }
+        // Emit to event bus for centralized sound handling
+        this.eventBus.emit('game:countdown', { value })
       },
       onCountdownComplete: () => {
         // Delegate to run manager
@@ -383,41 +388,47 @@ export class SurvivalEngine {
    * Initialize modular subsystems
    */
   private initializeModularSystems(callbacks: SurvivalCallbacks): void {
-    // Collision handler
+    // Collision handler (reduced deps - most effects now in EventWiring)
     this.collisionHandler = new CollisionHandler({
       collisionSystem: this.collisionSystem,
       obstacleManager: this.obstacleManager,
       playerController: this.playerController,
-      cameraController: this.cameraController,
-      gameLoop: this.gameLoop!,
       particleSystem: this.particleSystem,
-      feedbackSystem: this.feedbackSystem,
-      transitionSystem: this.transitionSystem,
-      comboSystem: this.comboSystem,
       renderer: this.renderer,
     }, callbacks)
 
-    // Wire collision handler callbacks
+    // Wire collision handler callbacks (these emit to event bus for centralized handling)
+    // NOTE: onObstacleCleared and onScoreUpdate are now handled by EventWiring
     this.collisionHandler.setHandlers({
       onLifeLost: () => {
         const lives = this.stateManager.loseLife()
-        this.achievementSystem.recordHit()
+        // Emit life lost event - EventWiring handles invincibility, death animation, etc.
+        this.eventBus.emit('player:lifeLost', { livesRemaining: lives })
         if (lives > 0) {
           setTimeout(() => this.playerManager.respawnPlayer(this.stateManager.getMutableState()), 1200)
         }
       },
-      onObstacleCleared: () => this.stateManager.incrementObstaclesCleared(),
-      onScoreUpdate: (score) => this.stateManager.addScore(score),
-      onDeathRecord: (type, pos) => this.stateManager.recordDeath(type, pos),
+      onDeathRecord: (type, pos) => {
+        // Emit collision event - EventWiring handles combo reset, camera effects, feedback, etc.
+        this.eventBus.emit('player:collision', { obstacleType: type as never, position: pos })
+      },
     })
     
-    // Wire near-miss tracking for achievements
-    this.feedbackSystem.onVisualIndicator((data) => {
-      if (data.type === 'close') {
-        this.achievementSystem.recordCloseCall()
-      } else if (data.type === 'perfect') {
-        this.achievementSystem.recordPerfectDodge()
-      }
+    // Wire centralized event handling
+    // All cross-system callbacks are now in EventWiring.ts
+    this.eventCleanup = wireEvents({
+      eventBus: this.eventBus,
+      feedbackSystem: this.feedbackSystem,
+      achievementSystem: this.achievementSystem,
+      milestoneSystem: this.milestoneSystem,
+      comboSystem: this.comboSystem,
+      collisionSystem: this.collisionSystem,
+      stateManager: this.stateManager,
+      transitionSystem: this.transitionSystem,
+      particleSystem: this.particleSystem,
+      cameraController: this.cameraController,
+      gameLoop: this.gameLoop,
+      obstacleManager: this.obstacleManager,
     })
   }
 
@@ -537,6 +548,10 @@ export class SurvivalEngine {
   }
 
   dispose(): void {
+    // Clean up event bus subscriptions
+    this.eventCleanup?.()
+    this.eventBus.clear()
+    
     this.gameLoop.stop()
     this.inputController.detach()
     this.lifecycleManager.dispose()
@@ -559,6 +574,7 @@ export class SurvivalEngine {
   getComboSystem(): ComboSystem { return this.comboSystem }
   getMilestoneSystem(): MilestoneSystem { return this.milestoneSystem }
   getAchievementSystem(): AchievementSystem { return this.achievementSystem }
+  getEventBus(): GameEventBus { return this.eventBus }
   getCombo(): number { return this.comboSystem.getCombo() }
   getMultiplier(): number { return this.comboSystem.getMultiplier() }
   getRunSeed(): number { return this.stateManager.runSeed }
@@ -578,6 +594,47 @@ export class SurvivalEngine {
   getOrchestratorDebug() { return this.obstacleManager.getDebugInfo() }
   getObstacleRenderStats() { return this.obstacleManager.getRenderStats() }
   getTrackRenderStats() { return this.trackManager.getRenderStats() }
+
+  /**
+   * Debug helper for state machine audit
+   * Returns unified view of all 4 state machines for debugging "why won't the game start?"
+   * See docs/STATE_MACHINE_AUDIT.md for full documentation
+   */
+  getStateDebug(): {
+    loading: { stage: string; criticalReady: boolean; fullyReady: boolean };
+    game: { phase: string; isRunning: boolean };
+    transition: { phase: string; isPaused: boolean; isTransitioning: boolean };
+    canStart: boolean;
+    diagnosis: string;
+  } {
+    const loadingStage = this.loadingOrchestrator.getStage()
+    const criticalReady = this.loadingOrchestrator.isReadyForCountdown()
+    const fullyReady = this.loadingOrchestrator.isFullyReady()
+    const gamePhase = this.stateManager.getPhase()
+    const transitionPhase = this.transitionSystem.getPhase()
+    const isPaused = this.transitionSystem.isGamePaused()
+    const isTransitioning = this.transitionSystem.isTransitioning()
+    
+    // Diagnose why game can't start
+    let diagnosis = 'Ready to start'
+    if (loadingStage !== 'ready' && loadingStage !== 'running' && loadingStage !== 'countdown') {
+      diagnosis = `Loading not complete: stage=${loadingStage}`
+    } else if (!criticalReady) {
+      diagnosis = 'Critical subsystems not ready'
+    } else if (gamePhase !== 'ready') {
+      diagnosis = `Game phase not ready: phase=${gamePhase}`
+    } else if (isTransitioning) {
+      diagnosis = `Transition in progress: ${transitionPhase}`
+    }
+    
+    return {
+      loading: { stage: loadingStage, criticalReady, fullyReady },
+      game: { phase: gamePhase, isRunning: this.stateManager.isRunning() },
+      transition: { phase: transitionPhase, isPaused, isTransitioning },
+      canStart: criticalReady && gamePhase === 'ready' && !isTransitioning,
+      diagnosis,
+    }
+  }
 
   // Quiz integration methods
   loseLife(): void {

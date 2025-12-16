@@ -7,6 +7,19 @@
  * - Subsystem readiness monitoring
  * - Smart countdown integration
  * - Mobile optimization (fullscreen, orientation lock, wake lock)
+ * 
+ * STATE MACHINE CONTEXT:
+ * This is 1 of 4 state machines that control game readiness. See docs/STATE_MACHINE_AUDIT.md
+ * 
+ * Related state machines:
+ * - LoadingOrchestrator: Asset loading stages (loading-critical/ready/running)
+ * - GameStateManager: Game phase (ready/running/paused/gameover)
+ * - TransitionSystem: Visual transitions (countdown/death/respawn)
+ * 
+ * Key integration points:
+ * - isLoading: Set false after engine.initialize() completes
+ * - isReadyToStart: Derived from engine.isReadyToStart() (LoadingOrchestrator.isReadyForCountdown())
+ * - getStateDebug(): Returns unified view of all 4 state machines for debugging
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react'
@@ -69,6 +82,8 @@ interface UseSurvivalGameReturn {
   getSymphonyState: () => unknown
   getOrchestratorDebug: () => object | null
   getObstacleRenderStats: () => { totalObstacles: number; instancedObstacles: number; clonedObstacles: number; drawCalls: number; poolUtilization: Record<string, string> } | null
+  // State machine debugging (see docs/STATE_MACHINE_AUDIT.md)
+  getStateDebug: () => { loading: { stage: string; criticalReady: boolean; fullyReady: boolean }; game: { phase: string; isRunning: boolean }; transition: { phase: string; isPaused: boolean; isTransitioning: boolean }; canStart: boolean; diagnosis: string } | null
   // Milestone & Achievement system
   currentMilestone: MilestoneEvent | null
   milestoneProgress: number
@@ -412,6 +427,11 @@ export function useSurvivalGame(
     return engineRef.current?.getObstacleRenderStats() ?? null
   }, [])
 
+  // State machine debugging (see docs/STATE_MACHINE_AUDIT.md)
+  const getStateDebug = useCallback(() => {
+    return engineRef.current?.getStateDebug() ?? null
+  }, [])
+
   // Dismiss current achievement notification
   const dismissAchievement = useCallback(() => {
     setCurrentAchievement(null)
@@ -445,6 +465,7 @@ export function useSurvivalGame(
     getSymphonyState,
     getOrchestratorDebug,
     getObstacleRenderStats,
+    getStateDebug,
     // Milestone & Achievement system
     currentMilestone,
     milestoneProgress,

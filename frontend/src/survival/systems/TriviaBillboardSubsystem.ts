@@ -1,15 +1,20 @@
 /**
  * TriviaBillboardSubsystem - Standalone trivia billboard system
- * 
+ *
  * A modular subsystem that can be plugged into the survival engine
  * without bloating the main engine code. Handles:
  * - Billboard spawning and lifecycle
  * - Question fetching and display
  * - Keyboard input for answers (1-4)
  * - Score callbacks and sound feedback
- * 
+ *
+ * Audio Integration:
+ * - Requires FeedbackSystem for centralized audio management
+ * - Call setFeedbackSystem() after construction
+ *
  * Usage:
  *   const trivia = new TriviaBillboardSubsystem(scene, { category: 'fortnite' })
+ *   trivia.setFeedbackSystem(feedbackSystem)
  *   trivia.onScore((points, isCorrect) => { ... })
  *   trivia.start()
  *   // In game loop:
@@ -19,6 +24,7 @@
 import * as THREE from 'three'
 import { TriviaBillboardManager, type BillboardCallbacks } from '../world/TriviaBillboardManager'
 import { TriviaQuestionProvider, type TriviaCategory } from '../world/TriviaQuestionProvider'
+import type { FeedbackSystem } from '../effects/FeedbackSystem'
 
 export interface TriviaBillboardSubsystemConfig {
   category: TriviaCategory
@@ -54,7 +60,6 @@ export class TriviaBillboardSubsystem {
   // Callbacks
   private scoreCallbacks: ((event: TriviaScoreEvent) => void)[] = []
   private timeoutCallbacks: ((event: TriviaTimeoutEvent) => void)[] = []
-  private soundCallback: ((sound: string, options?: { intensity?: number }) => void) | null = null
   private screenShakeCallback: ((intensity: number, duration: number) => void) | null = null
 
   constructor(scene: THREE.Scene, config: Partial<TriviaBillboardSubsystemConfig> = {}) {
@@ -76,6 +81,14 @@ export class TriviaBillboardSubsystem {
     this.manager = new TriviaBillboardManager(scene, {
       timeLimit: this.config.timeLimit,
     }, callbacks)
+  }
+  
+  /**
+   * Set FeedbackSystem for centralized audio management
+   * The manager handles all sounds through FeedbackSystem
+   */
+  setFeedbackSystem(feedbackSystem: FeedbackSystem): void {
+    this.manager.setFeedbackSystem(feedbackSystem)
   }
 
   /**
@@ -158,28 +171,20 @@ export class TriviaBillboardSubsystem {
 
   /**
    * Handle answer from billboard manager
+   * Note: Sounds are handled by TriviaBillboardManager via FeedbackSystem
    */
   private handleAnswer(questionId: string, isCorrect: boolean, points: number): void {
-    // Play sound
-    if (isCorrect) {
-      this.soundCallback?.('quiz-correct', { intensity: 0.8 })
-    } else {
-      this.soundCallback?.('quiz-wrong', { intensity: 0.5 })
-    }
-    
-    // Fire callbacks
     const event: TriviaScoreEvent = { questionId, isCorrect, points }
-    this.scoreCallbacks.forEach(cb => cb(event))
+    this.scoreCallbacks.forEach((cb) => cb(event))
   }
 
   /**
    * Handle timeout from billboard manager
+   * Note: Sounds are handled by TriviaBillboardManager via FeedbackSystem
    */
   private handleTimeout(questionId: string): void {
-    this.soundCallback?.('quiz-wrong', { intensity: 0.3 })
-    
     const event: TriviaTimeoutEvent = { questionId }
-    this.timeoutCallbacks.forEach(cb => cb(event))
+    this.timeoutCallbacks.forEach((cb) => cb(event))
   }
 
   // === Public API for callbacks ===
@@ -204,13 +209,6 @@ export class TriviaBillboardSubsystem {
       const idx = this.timeoutCallbacks.indexOf(callback)
       if (idx >= 0) this.timeoutCallbacks.splice(idx, 1)
     }
-  }
-
-  /**
-   * Set sound callback (for integration with FeedbackSystem)
-   */
-  setSoundCallback(callback: (sound: string, options?: { intensity?: number }) => void): void {
-    this.soundCallback = callback
   }
 
   /**
@@ -290,6 +288,5 @@ export class TriviaBillboardSubsystem {
     this.manager.dispose()
     this.scoreCallbacks = []
     this.timeoutCallbacks = []
-    this.soundCallback = null
   }
 }

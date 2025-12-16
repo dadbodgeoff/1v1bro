@@ -8,6 +8,7 @@
 import * as THREE from 'three'
 import type { SurvivalGameState } from '../types/survival'
 import { getSurvivalConfig } from '../config/constants'
+import { WorldConfig } from '../config/WorldConfig'
 import { SurvivalRenderer } from '../renderer/SurvivalRenderer'
 import type { LoadedAssets } from '../renderer/AssetLoader'
 import { PlayerController } from './PlayerController'
@@ -58,7 +59,7 @@ export class PlayerManager {
   setupPlayer(assets: LoadedAssets): void {
     const runMesh = assets.character.runner.run.clone()
     const scale = this.runnerScale
-    
+
     runMesh.scale.set(scale, scale, scale)
     runMesh.rotation.y = Math.PI / 2
 
@@ -67,13 +68,20 @@ export class PlayerManager {
 
     const placeholder = new THREE.Group()
     this.playerController.initialize(placeholder, playerHeight)
-    
+
+    // Set player dimensions on WorldConfig for CollisionSystem to read
     const size = box.getSize(new THREE.Vector3())
-    this.collisionSystem.setPlayerDimensions(size.x, size.y, size.z)
+    WorldConfig.getInstance().setPlayerDimensions({
+      width: size.x,
+      height: size.y,
+      depth: size.z,
+      footOffset: 0,
+    })
   }
 
   /**
    * Setup animated character from loaded assets
+   * Sets player dimensions on WorldConfig for other systems to read
    */
   setupAnimatedCharacter(assets: LoadedAssets): void {
     const runner = assets.character.runner
@@ -97,8 +105,15 @@ export class PlayerManager {
     this.characterHeight = size.y
     const footOffset = min.y * scale
 
+    // Set player dimensions on WorldConfig for other systems to read
+    WorldConfig.getInstance().setPlayerDimensions({
+      width: size.x,
+      height: this.characterHeight,
+      depth: size.z,
+      footOffset: footOffset,
+    })
+
     this.physicsController.setCharacterDimensions(this.characterHeight, footOffset)
-    this.collisionSystem.setPlayerDimensions(size.x, this.characterHeight, size.z)
 
     for (const { state, mesh } of states) {
       mesh.scale.setScalar(scale)
@@ -114,13 +129,10 @@ export class PlayerManager {
   }
 
   /**
-   * Set initial Y position based on track surface height
-   * Called after track is loaded to ensure player starts at correct height for collision
+   * Sync animation controller position with player controller
+   * Called after track is loaded to ensure animation is at correct position
    */
-  setInitialY(trackSurfaceHeight: number): void {
-    this.playerController.setInitialY(trackSurfaceHeight)
-    
-    // Also update animation controller position if it exists
+  syncAnimationPosition(): void {
     if (this.animationController) {
       const playerPos = this.playerController.getPosition()
       this.animationController.setPosition(playerPos.x, playerPos.y, playerPos.z)

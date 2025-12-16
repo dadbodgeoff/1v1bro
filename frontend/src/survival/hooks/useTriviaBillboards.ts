@@ -87,11 +87,10 @@ export function useTriviaBillboards(
     const subsystem = new TriviaBillboardSubsystem(scene, { category })
     subsystemRef.current = subsystem
 
-    // Wire up sound callback
+    // Wire up FeedbackSystem for centralized audio management
+    // This routes all trivia sounds through the same system as game sounds
     const feedbackSystem = engine.getFeedbackSystem()
-    subsystem.setSoundCallback((sound, opts) => {
-      feedbackSystem.emitSound(sound as 'quiz-correct' | 'quiz-wrong', opts)
-    })
+    subsystem.setFeedbackSystem(feedbackSystem)
 
     // Wire up screen shake callback
     subsystem.setScreenShakeCallback((intensity, _duration) => {

@@ -7,6 +7,18 @@
  * - Readiness tracking for all subsystems
  * - Smart countdown that waits for everything to be ready
  * - Detailed progress reporting
+ * 
+ * STATE MACHINE CONTEXT:
+ * This is 1 of 4 state machines that control game readiness. See docs/STATE_MACHINE_AUDIT.md
+ * 
+ * Related state machines:
+ * - GameStateManager: Game phase (ready/running/paused/gameover)
+ * - TransitionSystem: Visual transitions (countdown/death/respawn)
+ * - useSurvivalGame: React state (isLoading/isReadyToStart)
+ * 
+ * Key integration points:
+ * - isReadyForCountdown() gates RunManager.start()
+ * - startCountdown()/startRunning() sync with GameStateManager.setPhase()
  */
 
 export type LoadingStage = 
