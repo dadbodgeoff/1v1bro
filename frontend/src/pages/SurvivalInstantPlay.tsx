@@ -319,7 +319,10 @@ function SurvivalInstantPlayContent() {
   if (isAuthenticated) return null
 
   // Calculate game area height for mobile with trivia panel
-  const gameAreaHeight = showMobileTrivia ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px)` : '100vh'
+  // Account for iOS safe area (home indicator) on top of panel height
+  const gameAreaHeight = showMobileTrivia 
+    ? `calc(100vh - ${TRIVIA_PANEL_HEIGHT}px - env(safe-area-inset-bottom, 0px))` 
+    : '100vh'
 
   return (
     <div className="fixed inset-0 bg-[#09090b] text-white overflow-hidden">

@@ -60,8 +60,9 @@ export interface TriviaOverlayLegacyProps {
 type TimerId = ReturnType<typeof setTimeout>
 
 // Panel height constant - export for parent layout
-// Must fit: question row (~36px) + 2x2 grid (26px * 2 + 4px gap) + padding (12px) = ~134px
-export const TRIVIA_PANEL_HEIGHT = 134
+// 150px content + safe area padding for iOS home indicator
+// Game engine sizes canvas to: calc(100vh - TRIVIA_PANEL_HEIGHT - env(safe-area-inset-bottom))
+export const TRIVIA_PANEL_HEIGHT = 150
 
 // ============================================
 // Answer Button - Clean, professional styling
@@ -126,16 +127,16 @@ const AnswerButton = memo(({
       disabled={isDisabled}
       className={`
         ${containerStyle}
-        border rounded
-        px-1 py-0.5
+        border rounded-lg
+        px-2 py-1
         transition-colors duration-75
         active:scale-[0.98]
         disabled:opacity-50
         touch-manipulation
         select-none
-        flex items-center gap-1
+        flex items-center gap-1.5
         min-w-0
-        h-[26px]
+        h-[36px]
         overflow-hidden
       `}
       style={{ 
@@ -143,12 +144,12 @@ const AnswerButton = memo(({
         touchAction: 'manipulation',
       }}
     >
-      {/* Letter badge - compact */}
+      {/* Letter badge */}
       <span className={`
         ${labelStyle}
-        w-3.5 h-3.5 rounded-sm
+        w-5 h-5 rounded
         flex items-center justify-center
-        text-[9px] font-bold
+        text-[11px] font-bold
         shrink-0
       `}>
         {labels[index]}
@@ -168,12 +169,12 @@ const AnswerButton = memo(({
         {answer}
       </span>
       
-      {/* Result indicator - compact */}
+      {/* Result indicator */}
       {isCorrect === true && (
-        <span className="shrink-0 text-emerald-200 text-[10px] font-bold">✓</span>
+        <span className="shrink-0 text-emerald-200 text-xs font-bold">✓</span>
       )}
       {isCorrect === false && isSelected && (
-        <span className="shrink-0 text-red-200 text-[10px] font-bold">✗</span>
+        <span className="shrink-0 text-red-200 text-xs font-bold">✗</span>
       )}
     </button>
   )
@@ -289,11 +290,15 @@ export const TriviaPanel: React.FC<TriviaOverlayProps> = memo(({
   
   return (
     <div 
-      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 py-1.5"
-      style={{ height: TRIVIA_PANEL_HEIGHT, touchAction: 'manipulation' }}
+      className="bg-gradient-to-t from-zinc-900 via-zinc-900 to-zinc-800 border-t border-zinc-700/50 px-3 pt-2"
+      style={{ 
+        minHeight: TRIVIA_PANEL_HEIGHT, 
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
+        touchAction: 'manipulation',
+      }}
     >
-      {/* Question row with timer - ultra compact */}
-      <div className="flex items-center gap-2 mb-1">
+      {/* Question row with timer */}
+      <div className="flex items-center gap-2 mb-1.5">
         {/* Timer - minimal */}
         <div className="relative shrink-0">
           <div className={`

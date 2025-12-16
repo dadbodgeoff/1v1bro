@@ -1822,3 +1822,1096 @@ export const movieQuizQuestions: QuizQuestion[] = [
     points: 1,
     tags: ['movies', 'action', 'actors']
   },
+
+
+  // ============================================================================
+  // FRANCHISE & ACTORS (161-200)
+  // ============================================================================
+  {
+    id: 'movie_161',
+    question: 'How many "Harry Potter" films are there?',
+    options: ['6', '7', '8', '9'],
+    correctAnswer: 2,
+    explanation: 'There are 8 Harry Potter films',
+    difficulty: 'casual',
+    category: 'franchise',
+    points: 1,
+    tags: ['movies', 'franchise', 'fantasy']
+  },
+  {
+    id: 'movie_162',
+    question: 'Who plays Harry Potter?',
+    options: ['Rupert Grint', 'Daniel Radcliffe', 'Tom Felton', 'Matthew Lewis'],
+    correctAnswer: 1,
+    explanation: 'Daniel Radcliffe plays Harry Potter',
+    difficulty: 'casual',
+    category: 'franchise',
+    points: 1,
+    tags: ['movies', 'franchise', 'actors']
+  },
+  {
+    id: 'movie_163',
+    question: 'Who plays Frodo in "Lord of the Rings"?',
+    options: ['Sean Astin', 'Elijah Wood', 'Billy Boyd', 'Dominic Monaghan'],
+    correctAnswer: 1,
+    explanation: 'Elijah Wood plays Frodo',
+    difficulty: 'casual',
+    category: 'franchise',
+    points: 1,
+    tags: ['movies', 'franchise', 'actors']
+  },
+  {
+    id: 'movie_164',
+    question: 'Who plays Gandalf in "Lord of the Rings"?',
+    options: ['Christopher Lee', 'Ian McKellen', 'Michael Gambon', 'Patrick Stewart'],
+    correctAnswer: 1,
+    explanation: 'Ian McKellen plays Gandalf',
+    difficulty: 'casual',
+    category: 'franchise',
+    points: 1,
+    tags: ['movies', 'franchise', 'actors']
+  },
+  {
+    id: 'movie_165',
+    question: 'Who was the first actor to play James Bond?',
+    options: ['Roger Moore', 'Sean Connery', 'George Lazenby', 'David Niven'],
+    correctAnswer: 1,
+    explanation: 'Sean Connery was the first Bond',
+    difficulty: 'moderate',
+    category: 'franchise',
+    points: 2,
+    tags: ['movies', 'franchise', 'actors']
+  },
+  {
+    id: 'movie_166',
+    question: 'Who is the most recent James Bond actor?',
+    options: ['Pierce Brosnan', 'Daniel Craig', 'Timothy Dalton', 'Roger Moore'],
+    correctAnswer: 1,
+    explanation: 'Daniel Craig is the most recent Bond',
+    difficulty: 'casual',
+    category: 'franchise',
+    points: 1,
+    tags: ['movies', 'franchise', 'actors']
+  },
+  {
+    id: 'movie_167',
+    question: 'What is James Bond\'s code number?',
+    options: ['001', '007', '008', '009'],
+    correctAnswer: 1,
+    explanation: '007',
+    difficulty: 'casual',
+    category: 'franchise',
+    points: 1,
+    tags: ['movies', 'franchise']
+  },
+  {
+    id: 'movie_168',
+    question: 'Who plays Captain Jack Sparrow?',
+    options: ['Orlando Bloom', 'Johnny Depp', 'Geoffrey Rush', 'Javier Bardem'],
+    correctAnswer: 1,
+    explanation: 'Johnny Depp plays Jack Sparrow',
+    difficulty: 'casual',
+    category: 'franchise',
+    points: 1,
+    tags: ['movies', 'franchise', 'actors']
+  },
+  {
+    id: 'movie_169',
+    question: 'Who played Wolverine in the X-Men films?',
+    options: ['Chris Hemsworth', 'Hugh Jackman', 'Ryan Reynolds', 'Patrick Stewart'],
+    correctAnswer: 1,
+    explanation: 'Hugh Jackman played Wolverine',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_170',
+    question: 'Who played Deadpool?',
+    options: ['Hugh Jackman', 'Ryan Reynolds', 'Chris Pratt', 'Ryan Gosling'],
+    correctAnswer: 1,
+    explanation: 'Ryan Reynolds plays Deadpool',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_171',
+    question: 'Who played the lead in "Gladiator"?',
+    options: ['Brad Pitt', 'Russell Crowe', 'Gerard Butler', 'Mel Gibson'],
+    correctAnswer: 1,
+    explanation: 'Russell Crowe',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_172',
+    question: 'Who played Forrest Gump?',
+    options: ['Robin Williams', 'Tom Hanks', 'Jim Carrey', 'Kevin Costner'],
+    correctAnswer: 1,
+    explanation: 'Tom Hanks played Forrest Gump',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_173',
+    question: 'Who played Tyler Durden in "Fight Club"?',
+    options: ['Edward Norton', 'Brad Pitt', 'Jared Leto', 'Meat Loaf'],
+    correctAnswer: 1,
+    explanation: 'Brad Pitt played Tyler Durden',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_174',
+    question: 'Who played Hannibal Lecter in "The Silence of the Lambs"?',
+    options: ['Robert De Niro', 'Anthony Hopkins', 'Gary Oldman', 'Mads Mikkelsen'],
+    correctAnswer: 1,
+    explanation: 'Anthony Hopkins',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_175',
+    question: 'Who played the lead in "The Bourne Identity"?',
+    options: ['Tom Cruise', 'Matt Damon', 'Brad Pitt', 'George Clooney'],
+    correctAnswer: 1,
+    explanation: 'Matt Damon',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_176',
+    question: 'Who played the lead in "The Wolf of Wall Street"?',
+    options: ['Brad Pitt', 'Leonardo DiCaprio', 'Matt Damon', 'Christian Bale'],
+    correctAnswer: 1,
+    explanation: 'Leonardo DiCaprio',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_177',
+    question: 'Who played the lead in "Interstellar"?',
+    options: ['Matt Damon', 'Matthew McConaughey', 'Christian Bale', 'Michael Caine'],
+    correctAnswer: 1,
+    explanation: 'Matthew McConaughey',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_178',
+    question: 'Who played the lead in "The Martian"?',
+    options: ['Matt Damon', 'Ryan Gosling', 'Brad Pitt', 'George Clooney'],
+    correctAnswer: 0,
+    explanation: 'Matt Damon',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_179',
+    question: 'Who played the lead in "Gravity"?',
+    options: ['Anne Hathaway', 'Sandra Bullock', 'Natalie Portman', 'Amy Adams'],
+    correctAnswer: 1,
+    explanation: 'Sandra Bullock',
+    difficulty: 'moderate',
+    category: 'actors',
+    points: 2,
+    tags: ['movies', 'actors']
+  },
+  {
+    id: 'movie_180',
+    question: 'Who played Mark Zuckerberg in "The Social Network"?',
+    options: ['Andrew Garfield', 'Jesse Eisenberg', 'Justin Timberlake', 'Armie Hammer'],
+    correctAnswer: 1,
+    explanation: 'Jesse Eisenberg',
+    difficulty: 'casual',
+    category: 'actors',
+    points: 1,
+    tags: ['movies', 'actors']
+  },
+
+
+  // ============================================================================
+  // BIOPIC & MUSICAL (181-200)
+  // ============================================================================
+  {
+    id: 'movie_181',
+    question: 'Who played Freddie Mercury in "Bohemian Rhapsody"?',
+    options: ['Ben Whishaw', 'Rami Malek', 'Sacha Baron Cohen', 'Eddie Redmayne'],
+    correctAnswer: 1,
+    explanation: 'Rami Malek played Freddie Mercury',
+    difficulty: 'casual',
+    category: 'biopic',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_182',
+    question: 'Who played Elton John in "Rocketman"?',
+    options: ['Rami Malek', 'Taron Egerton', 'Eddie Redmayne', 'Tom Hardy'],
+    correctAnswer: 1,
+    explanation: 'Taron Egerton played Elton John',
+    difficulty: 'casual',
+    category: 'biopic',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_183',
+    question: 'Who played Ray Charles in "Ray"?',
+    options: ['Denzel Washington', 'Jamie Foxx', 'Will Smith', 'Forest Whitaker'],
+    correctAnswer: 1,
+    explanation: 'Jamie Foxx played Ray Charles',
+    difficulty: 'moderate',
+    category: 'biopic',
+    points: 2,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_184',
+    question: 'Who played Elvis in "Elvis" (2022)?',
+    options: ['Timothée Chalamet', 'Austin Butler', 'Tom Holland', 'Ansel Elgort'],
+    correctAnswer: 1,
+    explanation: 'Austin Butler played Elvis',
+    difficulty: 'casual',
+    category: 'biopic',
+    points: 1,
+    tags: ['movies', 'biopic', 'actors']
+  },
+  {
+    id: 'movie_185',
+    question: 'Who directed "La La Land"?',
+    options: ['Baz Luhrmann', 'Damien Chazelle', 'Tom Hooper', 'Rob Marshall'],
+    correctAnswer: 1,
+    explanation: 'Damien Chazelle directed La La Land',
+    difficulty: 'moderate',
+    category: 'musical',
+    points: 2,
+    tags: ['movies', 'musical', 'directors']
+  },
+  {
+    id: 'movie_186',
+    question: 'Who stars in "La La Land"?',
+    options: ['Bradley Cooper & Lady Gaga', 'Ryan Gosling & Emma Stone', 'Hugh Jackman & Anne Hathaway', 'Zac Efron & Zendaya'],
+    correctAnswer: 1,
+    explanation: 'Ryan Gosling and Emma Stone',
+    difficulty: 'casual',
+    category: 'musical',
+    points: 1,
+    tags: ['movies', 'musical', 'actors']
+  },
+  {
+    id: 'movie_187',
+    question: 'Who plays P.T. Barnum in "The Greatest Showman"?',
+    options: ['Ryan Gosling', 'Hugh Jackman', 'Zac Efron', 'Bradley Cooper'],
+    correctAnswer: 1,
+    explanation: 'Hugh Jackman plays P.T. Barnum',
+    difficulty: 'casual',
+    category: 'musical',
+    points: 1,
+    tags: ['movies', 'musical', 'actors']
+  },
+  {
+    id: 'movie_188',
+    question: 'Who plays Jean Valjean in "Les Misérables" (2012)?',
+    options: ['Russell Crowe', 'Hugh Jackman', 'Eddie Redmayne', 'Sacha Baron Cohen'],
+    correctAnswer: 1,
+    explanation: 'Hugh Jackman plays Jean Valjean',
+    difficulty: 'moderate',
+    category: 'musical',
+    points: 2,
+    tags: ['movies', 'musical', 'actors']
+  },
+  {
+    id: 'movie_189',
+    question: 'Who stars in "Grease"?',
+    options: ['Elvis Presley & Ann-Margret', 'John Travolta & Olivia Newton-John', 'Patrick Swayze & Jennifer Grey', 'Kevin Bacon & Lori Singer'],
+    correctAnswer: 1,
+    explanation: 'John Travolta and Olivia Newton-John',
+    difficulty: 'casual',
+    category: 'musical',
+    points: 1,
+    tags: ['movies', 'musical', 'actors']
+  },
+  {
+    id: 'movie_190',
+    question: 'Who stars in "A Star Is Born" (2018)?',
+    options: ['Ryan Gosling & Emma Stone', 'Bradley Cooper & Lady Gaga', 'Chris Pratt & Jennifer Lawrence', 'Jake Gyllenhaal & Anne Hathaway'],
+    correctAnswer: 1,
+    explanation: 'Bradley Cooper and Lady Gaga',
+    difficulty: 'casual',
+    category: 'musical',
+    points: 1,
+    tags: ['movies', 'musical', 'actors']
+  },
+
+  // ============================================================================
+  // THRILLER & CRIME (191-220)
+  // ============================================================================
+  {
+    id: 'movie_191',
+    question: 'Who directed "Gone Girl"?',
+    options: ['Christopher Nolan', 'David Fincher', 'Denis Villeneuve', 'Darren Aronofsky'],
+    correctAnswer: 1,
+    explanation: 'David Fincher directed Gone Girl',
+    difficulty: 'moderate',
+    category: 'thriller',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+  {
+    id: 'movie_192',
+    question: 'Who directed "Zodiac"?',
+    options: ['Christopher Nolan', 'David Fincher', 'Denis Villeneuve', 'Darren Aronofsky'],
+    correctAnswer: 1,
+    explanation: 'David Fincher directed Zodiac',
+    difficulty: 'moderate',
+    category: 'thriller',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+  {
+    id: 'movie_193',
+    question: 'Who directed "Prisoners"?',
+    options: ['Christopher Nolan', 'David Fincher', 'Denis Villeneuve', 'Darren Aronofsky'],
+    correctAnswer: 2,
+    explanation: 'Denis Villeneuve directed Prisoners',
+    difficulty: 'moderate',
+    category: 'thriller',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+  {
+    id: 'movie_194',
+    question: 'Who directed "Shutter Island"?',
+    options: ['Christopher Nolan', 'Martin Scorsese', 'David Fincher', 'Denis Villeneuve'],
+    correctAnswer: 1,
+    explanation: 'Martin Scorsese directed Shutter Island',
+    difficulty: 'moderate',
+    category: 'thriller',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+  {
+    id: 'movie_195',
+    question: 'Who stars in "Shutter Island"?',
+    options: ['Brad Pitt', 'Leonardo DiCaprio', 'Matt Damon', 'George Clooney'],
+    correctAnswer: 1,
+    explanation: 'Leonardo DiCaprio',
+    difficulty: 'casual',
+    category: 'thriller',
+    points: 1,
+    tags: ['movies', 'thriller', 'actors']
+  },
+  {
+    id: 'movie_196',
+    question: 'Who directed "Knives Out"?',
+    options: ['Christopher Nolan', 'Rian Johnson', 'David Fincher', 'Edgar Wright'],
+    correctAnswer: 1,
+    explanation: 'Rian Johnson directed Knives Out',
+    difficulty: 'moderate',
+    category: 'thriller',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+  {
+    id: 'movie_197',
+    question: 'Who plays the detective in "Knives Out"?',
+    options: ['Chris Evans', 'Daniel Craig', 'Jamie Lee Curtis', 'Michael Shannon'],
+    correctAnswer: 1,
+    explanation: 'Daniel Craig plays Benoit Blanc',
+    difficulty: 'casual',
+    category: 'thriller',
+    points: 1,
+    tags: ['movies', 'thriller', 'actors']
+  },
+  {
+    id: 'movie_198',
+    question: 'Who directed "The Prestige"?',
+    options: ['David Fincher', 'Christopher Nolan', 'Denis Villeneuve', 'Ridley Scott'],
+    correctAnswer: 1,
+    explanation: 'Christopher Nolan directed The Prestige',
+    difficulty: 'moderate',
+    category: 'thriller',
+    points: 2,
+    tags: ['movies', 'thriller', 'directors']
+  },
+  {
+    id: 'movie_199',
+    question: 'Who plays young Vito Corleone in "The Godfather Part II"?',
+    options: ['Al Pacino', 'Robert De Niro', 'James Caan', 'John Cazale'],
+    correctAnswer: 1,
+    explanation: 'Robert De Niro',
+    difficulty: 'moderate',
+    category: 'crime',
+    points: 2,
+    tags: ['movies', 'crime', 'actors']
+  },
+  {
+    id: 'movie_200',
+    question: 'Who plays Tony Montana in "Scarface"?',
+    options: ['Robert De Niro', 'Al Pacino', 'Joe Pesci', 'Ray Liotta'],
+    correctAnswer: 1,
+    explanation: 'Al Pacino plays Tony Montana',
+    difficulty: 'casual',
+    category: 'crime',
+    points: 1,
+    tags: ['movies', 'crime', 'actors']
+  },
+
+
+  // ============================================================================
+  // ANIME & STUDIO GHIBLI (201-220)
+  // ============================================================================
+  {
+    id: 'movie_201',
+    question: 'Who founded Studio Ghibli?',
+    options: ['Makoto Shinkai', 'Hayao Miyazaki', 'Satoshi Kon', 'Mamoru Hosoda'],
+    correctAnswer: 1,
+    explanation: 'Hayao Miyazaki co-founded Studio Ghibli',
+    difficulty: 'moderate',
+    category: 'anime',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_202',
+    question: 'What year was "Spirited Away" released?',
+    options: ['1999', '2001', '2003', '2005'],
+    correctAnswer: 1,
+    explanation: 'Spirited Away was released in 2001',
+    difficulty: 'moderate',
+    category: 'anime',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_203',
+    question: 'What is the name of the main character in "Spirited Away"?',
+    options: ['Kiki', 'Chihiro', 'Sophie', 'San'],
+    correctAnswer: 1,
+    explanation: 'Chihiro is the main character',
+    difficulty: 'casual',
+    category: 'anime',
+    points: 1,
+    tags: ['movies', 'anime', 'animation']
+  },
+  {
+    id: 'movie_204',
+    question: 'Who directed "Your Name"?',
+    options: ['Hayao Miyazaki', 'Makoto Shinkai', 'Mamoru Hosoda', 'Satoshi Kon'],
+    correctAnswer: 1,
+    explanation: 'Makoto Shinkai directed Your Name',
+    difficulty: 'moderate',
+    category: 'anime',
+    points: 2,
+    tags: ['movies', 'anime', 'directors']
+  },
+  {
+    id: 'movie_205',
+    question: 'What year was "Akira" released?',
+    options: ['1986', '1988', '1990', '1992'],
+    correctAnswer: 1,
+    explanation: 'Akira was released in 1988',
+    difficulty: 'moderate',
+    category: 'anime',
+    points: 2,
+    tags: ['movies', 'anime', 'animation']
+  },
+
+  // ============================================================================
+  // WAR & SPORTS (206-225)
+  // ============================================================================
+  {
+    id: 'movie_206',
+    question: 'Who directed "Saving Private Ryan"?',
+    options: ['Ridley Scott', 'Steven Spielberg', 'Oliver Stone', 'Clint Eastwood'],
+    correctAnswer: 1,
+    explanation: 'Steven Spielberg directed Saving Private Ryan',
+    difficulty: 'casual',
+    category: 'war',
+    points: 1,
+    tags: ['movies', 'war', 'directors']
+  },
+  {
+    id: 'movie_207',
+    question: 'Who plays Captain Miller in "Saving Private Ryan"?',
+    options: ['Matt Damon', 'Tom Hanks', 'Tom Sizemore', 'Edward Burns'],
+    correctAnswer: 1,
+    explanation: 'Tom Hanks plays Captain Miller',
+    difficulty: 'casual',
+    category: 'war',
+    points: 1,
+    tags: ['movies', 'war', 'actors']
+  },
+  {
+    id: 'movie_208',
+    question: 'Who directed "1917"?',
+    options: ['Christopher Nolan', 'Sam Mendes', 'Steven Spielberg', 'Ridley Scott'],
+    correctAnswer: 1,
+    explanation: 'Sam Mendes directed 1917',
+    difficulty: 'moderate',
+    category: 'war',
+    points: 2,
+    tags: ['movies', 'war', 'directors']
+  },
+  {
+    id: 'movie_209',
+    question: 'Who directed "Apocalypse Now"?',
+    options: ['Stanley Kubrick', 'Francis Ford Coppola', 'Oliver Stone', 'Martin Scorsese'],
+    correctAnswer: 1,
+    explanation: 'Francis Ford Coppola directed Apocalypse Now',
+    difficulty: 'moderate',
+    category: 'war',
+    points: 2,
+    tags: ['movies', 'war', 'directors']
+  },
+  {
+    id: 'movie_210',
+    question: 'Who directed "Full Metal Jacket"?',
+    options: ['Francis Ford Coppola', 'Stanley Kubrick', 'Oliver Stone', 'Brian De Palma'],
+    correctAnswer: 1,
+    explanation: 'Stanley Kubrick directed Full Metal Jacket',
+    difficulty: 'moderate',
+    category: 'war',
+    points: 2,
+    tags: ['movies', 'war', 'directors']
+  },
+  {
+    id: 'movie_211',
+    question: 'Who plays Rocky Balboa?',
+    options: ['Arnold Schwarzenegger', 'Sylvester Stallone', 'Carl Weathers', 'Dolph Lundgren'],
+    correctAnswer: 1,
+    explanation: 'Sylvester Stallone plays Rocky',
+    difficulty: 'casual',
+    category: 'sports',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+  {
+    id: 'movie_212',
+    question: 'Who plays Adonis Creed?',
+    options: ['Chadwick Boseman', 'Michael B. Jordan', 'John Boyega', 'Lakeith Stanfield'],
+    correctAnswer: 1,
+    explanation: 'Michael B. Jordan plays Adonis Creed',
+    difficulty: 'casual',
+    category: 'sports',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+  {
+    id: 'movie_213',
+    question: 'Who stars in "Remember the Titans"?',
+    options: ['Will Smith', 'Denzel Washington', 'Jamie Foxx', 'Morgan Freeman'],
+    correctAnswer: 1,
+    explanation: 'Denzel Washington',
+    difficulty: 'casual',
+    category: 'sports',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+  {
+    id: 'movie_214',
+    question: 'Who stars in "Moneyball"?',
+    options: ['Matt Damon', 'Brad Pitt', 'George Clooney', 'Leonardo DiCaprio'],
+    correctAnswer: 1,
+    explanation: 'Brad Pitt',
+    difficulty: 'casual',
+    category: 'sports',
+    points: 1,
+    tags: ['movies', 'sports', 'actors']
+  },
+  {
+    id: 'movie_215',
+    question: 'Who won Best Actress for "The Blind Side"?',
+    options: ['Meryl Streep', 'Sandra Bullock', 'Julia Roberts', 'Reese Witherspoon'],
+    correctAnswer: 1,
+    explanation: 'Sandra Bullock won Best Actress',
+    difficulty: 'moderate',
+    category: 'sports',
+    points: 2,
+    tags: ['movies', 'sports', 'awards']
+  },
+
+  // ============================================================================
+  // WESTERN & FANTASY (216-235)
+  // ============================================================================
+  {
+    id: 'movie_216',
+    question: 'Who directed "The Good, the Bad and the Ugly"?',
+    options: ['John Ford', 'Sergio Leone', 'Clint Eastwood', 'Sam Peckinpah'],
+    correctAnswer: 1,
+    explanation: 'Sergio Leone directed it',
+    difficulty: 'moderate',
+    category: 'western',
+    points: 2,
+    tags: ['movies', 'western', 'directors']
+  },
+  {
+    id: 'movie_217',
+    question: 'Who stars in "The Good, the Bad and the Ugly"?',
+    options: ['John Wayne', 'Clint Eastwood', 'James Stewart', 'Gary Cooper'],
+    correctAnswer: 1,
+    explanation: 'Clint Eastwood',
+    difficulty: 'moderate',
+    category: 'western',
+    points: 2,
+    tags: ['movies', 'western', 'actors']
+  },
+  {
+    id: 'movie_218',
+    question: 'Who directed "Unforgiven"?',
+    options: ['Kevin Costner', 'Clint Eastwood', 'Sam Raimi', 'Quentin Tarantino'],
+    correctAnswer: 1,
+    explanation: 'Clint Eastwood directed Unforgiven',
+    difficulty: 'moderate',
+    category: 'western',
+    points: 2,
+    tags: ['movies', 'western', 'directors']
+  },
+  {
+    id: 'movie_219',
+    question: 'Who directed "The Hateful Eight"?',
+    options: ['The Coen Brothers', 'Quentin Tarantino', 'Clint Eastwood', 'Taylor Sheridan'],
+    correctAnswer: 1,
+    explanation: 'Quentin Tarantino',
+    difficulty: 'casual',
+    category: 'western',
+    points: 1,
+    tags: ['movies', 'western', 'directors']
+  },
+  {
+    id: 'movie_220',
+    question: 'Who plays Westley in "The Princess Bride"?',
+    options: ['Robin Wright', 'Cary Elwes', 'Mandy Patinkin', 'Chris Sarandon'],
+    correctAnswer: 1,
+    explanation: 'Cary Elwes plays Westley',
+    difficulty: 'moderate',
+    category: 'fantasy',
+    points: 2,
+    tags: ['movies', 'fantasy', 'actors']
+  },
+  {
+    id: 'movie_221',
+    question: 'Who plays the Goblin King in "Labyrinth"?',
+    options: ['Tim Curry', 'David Bowie', 'Gary Oldman', 'Alan Rickman'],
+    correctAnswer: 1,
+    explanation: 'David Bowie plays the Goblin King',
+    difficulty: 'moderate',
+    category: 'fantasy',
+    points: 2,
+    tags: ['movies', 'fantasy', 'actors']
+  },
+  {
+    id: 'movie_222',
+    question: 'Who directed "Pan\'s Labyrinth"?',
+    options: ['Alfonso Cuarón', 'Guillermo del Toro', 'Alejandro González Iñárritu', 'Pedro Almodóvar'],
+    correctAnswer: 1,
+    explanation: 'Guillermo del Toro directed Pan\'s Labyrinth',
+    difficulty: 'moderate',
+    category: 'fantasy',
+    points: 2,
+    tags: ['movies', 'fantasy', 'directors']
+  },
+  {
+    id: 'movie_223',
+    question: 'What is the name of the luck dragon in "The NeverEnding Story"?',
+    options: ['Artax', 'Falkor', 'Morla', 'Gmork'],
+    correctAnswer: 1,
+    explanation: 'Falkor is the luck dragon',
+    difficulty: 'moderate',
+    category: 'fantasy',
+    points: 2,
+    tags: ['movies', 'fantasy']
+  },
+
+  // ============================================================================
+  // PIXAR (224-240)
+  // ============================================================================
+  {
+    id: 'movie_224',
+    question: 'Who directed "The Incredibles"?',
+    options: ['John Lasseter', 'Brad Bird', 'Pete Docter', 'Andrew Stanton'],
+    correctAnswer: 1,
+    explanation: 'Brad Bird directed The Incredibles',
+    difficulty: 'moderate',
+    category: 'pixar',
+    points: 2,
+    tags: ['movies', 'pixar', 'directors']
+  },
+  {
+    id: 'movie_225',
+    question: 'What is the rat\'s name in "Ratatouille"?',
+    options: ['Emile', 'Remy', 'Alfredo', 'Gusteau'],
+    correctAnswer: 1,
+    explanation: 'Remy is the rat',
+    difficulty: 'casual',
+    category: 'pixar',
+    points: 1,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_226',
+    question: 'Who voices Sulley in "Monsters, Inc."?',
+    options: ['Billy Crystal', 'John Goodman', 'Steve Buscemi', 'James Coburn'],
+    correctAnswer: 1,
+    explanation: 'John Goodman voices Sulley',
+    difficulty: 'moderate',
+    category: 'pixar',
+    points: 2,
+    tags: ['movies', 'pixar', 'actors']
+  },
+  {
+    id: 'movie_227',
+    question: 'Who voices Mike Wazowski in "Monsters, Inc."?',
+    options: ['John Goodman', 'Billy Crystal', 'Steve Buscemi', 'James Coburn'],
+    correctAnswer: 1,
+    explanation: 'Billy Crystal voices Mike',
+    difficulty: 'moderate',
+    category: 'pixar',
+    points: 2,
+    tags: ['movies', 'pixar', 'actors']
+  },
+  {
+    id: 'movie_228',
+    question: 'What is the main character\'s name in "Brave"?',
+    options: ['Moana', 'Merida', 'Elsa', 'Rapunzel'],
+    correctAnswer: 1,
+    explanation: 'Merida is the main character',
+    difficulty: 'casual',
+    category: 'pixar',
+    points: 1,
+    tags: ['movies', 'pixar', 'animation']
+  },
+  {
+    id: 'movie_229',
+    question: 'Who voices Joy in "Inside Out"?',
+    options: ['Tina Fey', 'Amy Poehler', 'Mindy Kaling', 'Phyllis Smith'],
+    correctAnswer: 1,
+    explanation: 'Amy Poehler voices Joy',
+    difficulty: 'moderate',
+    category: 'pixar',
+    points: 2,
+    tags: ['movies', 'pixar', 'actors']
+  },
+  {
+    id: 'movie_230',
+    question: 'What is the name of Woody\'s owner in "Toy Story"?',
+    options: ['Sid', 'Andy', 'Bonnie', 'Al'],
+    correctAnswer: 1,
+    explanation: 'Andy is Woody\'s owner',
+    difficulty: 'casual',
+    category: 'pixar',
+    points: 1,
+    tags: ['movies', 'pixar', 'animation']
+  },
+
+
+  // ============================================================================
+  // ROMANCE (231-245)
+  // ============================================================================
+  {
+    id: 'movie_231',
+    question: 'Who stars in "The Notebook"?',
+    options: ['Leonardo DiCaprio & Kate Winslet', 'Ryan Gosling & Rachel McAdams', 'Brad Pitt & Angelina Jolie', 'George Clooney & Julia Roberts'],
+    correctAnswer: 1,
+    explanation: 'Ryan Gosling and Rachel McAdams',
+    difficulty: 'casual',
+    category: 'romance',
+    points: 1,
+    tags: ['movies', 'romance', 'actors']
+  },
+  {
+    id: 'movie_232',
+    question: 'Who stars in "Pretty Woman"?',
+    options: ['Tom Hanks & Meg Ryan', 'Richard Gere & Julia Roberts', 'Hugh Grant & Julia Roberts', 'George Clooney & Julia Roberts'],
+    correctAnswer: 1,
+    explanation: 'Richard Gere and Julia Roberts',
+    difficulty: 'casual',
+    category: 'romance',
+    points: 1,
+    tags: ['movies', 'romance', 'actors']
+  },
+  {
+    id: 'movie_233',
+    question: 'Who stars in "Notting Hill"?',
+    options: ['Tom Hanks & Meg Ryan', 'Richard Gere & Julia Roberts', 'Hugh Grant & Julia Roberts', 'George Clooney & Julia Roberts'],
+    correctAnswer: 2,
+    explanation: 'Hugh Grant and Julia Roberts',
+    difficulty: 'casual',
+    category: 'romance',
+    points: 1,
+    tags: ['movies', 'romance', 'actors']
+  },
+  {
+    id: 'movie_234',
+    question: 'Who stars in "Sleepless in Seattle"?',
+    options: ['Tom Hanks & Meg Ryan', 'Richard Gere & Julia Roberts', 'Hugh Grant & Julia Roberts', 'Billy Crystal & Meg Ryan'],
+    correctAnswer: 0,
+    explanation: 'Tom Hanks and Meg Ryan',
+    difficulty: 'casual',
+    category: 'romance',
+    points: 1,
+    tags: ['movies', 'romance', 'actors']
+  },
+  {
+    id: 'movie_235',
+    question: 'Who stars in "When Harry Met Sally"?',
+    options: ['Tom Hanks & Meg Ryan', 'Richard Gere & Julia Roberts', 'Hugh Grant & Julia Roberts', 'Billy Crystal & Meg Ryan'],
+    correctAnswer: 3,
+    explanation: 'Billy Crystal and Meg Ryan',
+    difficulty: 'moderate',
+    category: 'romance',
+    points: 2,
+    tags: ['movies', 'romance', 'actors']
+  },
+
+  // ============================================================================
+  // 2020s MOVIES (236-250)
+  // ============================================================================
+  {
+    id: 'movie_236',
+    question: 'What year was "Dune" (Part One) released?',
+    options: ['2019', '2021', '2023', '2025'],
+    correctAnswer: 1,
+    explanation: 'Dune was released in 2021',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s']
+  },
+  {
+    id: 'movie_237',
+    question: 'What year was "Top Gun: Maverick" released?',
+    options: ['2020', '2022', '2024', '2026'],
+    correctAnswer: 1,
+    explanation: 'Top Gun: Maverick was released in 2022',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s']
+  },
+  {
+    id: 'movie_238',
+    question: 'What year was "Oppenheimer" released?',
+    options: ['2021', '2023', '2025', '2027'],
+    correctAnswer: 1,
+    explanation: 'Oppenheimer was released in 2023',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s']
+  },
+  {
+    id: 'movie_239',
+    question: 'What year was "Barbie" released?',
+    options: ['2021', '2023', '2025', '2027'],
+    correctAnswer: 1,
+    explanation: 'Barbie was released in 2023',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s']
+  },
+  {
+    id: 'movie_240',
+    question: 'Who directed "Barbie"?',
+    options: ['Patty Jenkins', 'Greta Gerwig', 'Chloe Zhao', 'Olivia Wilde'],
+    correctAnswer: 1,
+    explanation: 'Greta Gerwig directed Barbie',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s', 'directors']
+  },
+  {
+    id: 'movie_241',
+    question: 'Who plays Barbie in "Barbie"?',
+    options: ['Emma Stone', 'Margot Robbie', 'Saoirse Ronan', 'Florence Pugh'],
+    correctAnswer: 1,
+    explanation: 'Margot Robbie plays Barbie',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s', 'actors']
+  },
+  {
+    id: 'movie_242',
+    question: 'Who plays Ken in "Barbie"?',
+    options: ['Timothée Chalamet', 'Ryan Gosling', 'Austin Butler', 'Jacob Elordi'],
+    correctAnswer: 1,
+    explanation: 'Ryan Gosling plays Ken',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s', 'actors']
+  },
+  {
+    id: 'movie_243',
+    question: 'Who won Best Actress for "Everything Everywhere All at Once"?',
+    options: ['Cate Blanchett', 'Michelle Yeoh', 'Ana de Armas', 'Andrea Riseborough'],
+    correctAnswer: 1,
+    explanation: 'Michelle Yeoh won Best Actress',
+    difficulty: 'moderate',
+    category: '2020s',
+    points: 2,
+    tags: ['movies', '2020s', 'awards']
+  },
+  {
+    id: 'movie_244',
+    question: 'What year was "Spider-Man: No Way Home" released?',
+    options: ['2019', '2021', '2023', '2025'],
+    correctAnswer: 1,
+    explanation: 'No Way Home was released in 2021',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s', 'mcu']
+  },
+  {
+    id: 'movie_245',
+    question: 'What year was "Avatar: The Way of Water" released?',
+    options: ['2020', '2022', '2024', '2026'],
+    correctAnswer: 1,
+    explanation: 'Avatar 2 was released in 2022',
+    difficulty: 'casual',
+    category: '2020s',
+    points: 1,
+    tags: ['movies', '2020s']
+  },
+
+  // ============================================================================
+  // GENERAL TRIVIA (246-260)
+  // ============================================================================
+  {
+    id: 'movie_246',
+    question: 'What is the highest-grossing film of all time (unadjusted)?',
+    options: ['Titanic', 'Avatar', 'Avengers: Endgame', 'Star Wars: The Force Awakens'],
+    correctAnswer: 1,
+    explanation: 'Avatar is the highest-grossing film',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_247',
+    question: 'What is Batman\'s real name?',
+    options: ['Clark Kent', 'Bruce Wayne', 'Peter Parker', 'Tony Stark'],
+    correctAnswer: 1,
+    explanation: 'Bruce Wayne',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_248',
+    question: 'What is Superman\'s real name?',
+    options: ['Bruce Wayne', 'Clark Kent', 'Kal-El', 'Barry Allen'],
+    correctAnswer: 1,
+    explanation: 'Clark Kent (Kal-El is his Kryptonian name)',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_249',
+    question: 'What city does Batman protect?',
+    options: ['Metropolis', 'Gotham City', 'Central City', 'Star City'],
+    correctAnswer: 1,
+    explanation: 'Gotham City',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  },
+  {
+    id: 'movie_250',
+    question: 'What city does Superman protect?',
+    options: ['Gotham City', 'Metropolis', 'Central City', 'Star City'],
+    correctAnswer: 1,
+    explanation: 'Metropolis',
+    difficulty: 'casual',
+    category: 'general',
+    points: 1,
+    tags: ['movies', 'general']
+  }
+]
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Get random questions from the movie quiz pool
+ * @param count Number of questions to return
+ * @param category Optional category filter
+ * @param difficulty Optional difficulty filter
+ * @returns Array of random quiz questions
+ */
+export function getRandomMovieQuestions(
+  count: number = 10,
+  category?: string,
+  difficulty?: 'casual' | 'moderate' | 'expert'
+): QuizQuestion[] {
+  let filtered = [...movieQuizQuestions]
+  
+  if (category) {
+    filtered = filtered.filter(q => q.category === category || q.tags.includes(category))
+  }
+  
+  if (difficulty) {
+    filtered = filtered.filter(q => q.difficulty === difficulty)
+  }
+  
+  // Shuffle and return requested count
+  const shuffled = filtered.sort(() => Math.random() - 0.5)
+  return shuffled.slice(0, Math.min(count, shuffled.length))
+}
+
+/**
+ * Get questions by specific category
+ */
+export function getMovieQuestionsByCategory(category: string): QuizQuestion[] {
+  return movieQuizQuestions.filter(q => q.category === category || q.tags.includes(category))
+}
+
+/**
+ * Get all available movie categories
+ */
+export function getMovieCategories(): string[] {
+  const categories = new Set<string>()
+  movieQuizQuestions.forEach(q => {
+    categories.add(q.category)
+  })
+  return Array.from(categories)
+}
+
+/**
+ * Get total question count
+ */
+export function getMovieQuestionCount(): number {
+  return movieQuizQuestions.length
+}
+
+export default movieQuizQuestions

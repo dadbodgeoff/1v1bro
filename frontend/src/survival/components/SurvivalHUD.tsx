@@ -211,11 +211,11 @@ const HealthHearts = memo(({
     hearts.push(
       <span
         key={i}
-        className={`${compact ? 'text-base' : 'text-2xl'} transition-all duration-200`}
+        className={`${compact ? 'text-sm' : 'text-2xl'} transition-all duration-200`}
         style={{
-          filter: isFilled ? 'drop-shadow(0 0 6px #ef4444)' : 'grayscale(1) opacity(0.4)',
+          filter: isFilled ? 'drop-shadow(0 0 4px #ef4444)' : 'grayscale(1) opacity(0.4)',
           transform: isLost 
-            ? `translate(${shakeRef.current.x}px, ${shakeRef.current.y}px) scale(1.3)`
+            ? `translate(${shakeRef.current.x}px, ${shakeRef.current.y}px) scale(1.2)`
             : isFilled ? 'scale(1)' : 'scale(0.9)',
         }}
       >
@@ -368,8 +368,9 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
     const safeRight = Math.max(safeArea.right, isPortraitMobile ? 8 : ui.hudMargin)
     const safeLeft = Math.max(safeArea.left, isPortraitMobile ? 8 : ui.hudMargin)
     
-    // Reserve bottom space for future trivia overlay (200px on mobile)
-    const bottomReserved = isPortraitMobile ? 200 : 0
+    // Reserve bottom space for trivia panel (150px on mobile - matches TRIVIA_PANEL_HEIGHT)
+    // Note: actual space includes iOS safe area, handled by parent container
+    const bottomReserved = isPortraitMobile ? 150 : 0
     
     return {
       scale,
@@ -421,10 +422,8 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
         }}
       >
         {responsiveStyles.isPortraitMobile ? (
-          // Portrait mobile: minimal lives display, no box
-          <div className="flex items-center gap-1">
-            <HealthHearts lives={player.lives} onDamage={onDamage} compact />
-          </div>
+          // Portrait mobile: minimal lives display, smaller hearts
+          <HealthHearts lives={player.lives} onDamage={onDamage} compact />
         ) : (
           // Desktop/tablet: full panel
           <div className={`bg-black/70 backdrop-blur-sm ${responsiveStyles.padding} rounded-xl border border-white/10 ${responsiveStyles.spacing}`}>
@@ -450,27 +449,21 @@ export const SurvivalHUD: React.FC<SurvivalHUDProps> = memo(({
         }}
       >
         {responsiveStyles.isPortraitMobile ? (
-          // Portrait mobile: compact stats, minimal styling
-          <div className="bg-black/60 backdrop-blur-sm p-2 rounded-lg border border-white/5 text-right space-y-0.5">
-            {/* Distance - primary stat */}
+          // Portrait mobile: ultra-compact stats
+          <div className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg text-right">
+            {/* Distance - primary */}
             <div className="flex items-baseline justify-end gap-0.5">
-              <span className="text-2xl font-black tabular-nums text-white">
+              <span className="text-xl font-black tabular-nums text-white">
                 {Math.round(distance)}
               </span>
-              <span className="text-xs text-white/40 font-bold">m</span>
             </div>
-            {/* Score - secondary */}
-            <div className="flex items-baseline justify-end gap-0.5">
-              <span className="text-lg font-bold tabular-nums text-orange-400">
-                {Math.round(score).toLocaleString()}
-              </span>
-              <span className="text-[10px] text-orange-400/50">pts</span>
+            {/* Score - secondary, smaller */}
+            <div className="text-sm font-bold tabular-nums text-orange-400">
+              {Math.round(score).toLocaleString()}
             </div>
-            {/* Combo - only if active */}
+            {/* Combo - tiny */}
             {combo > 0 && (
-              <div className="text-sm font-bold text-cyan-400">
-                {combo}x
-              </div>
+              <div className="text-xs font-bold text-cyan-400">{combo}x</div>
             )}
           </div>
         ) : (
