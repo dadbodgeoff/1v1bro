@@ -615,31 +615,73 @@ async def get_overview(
     days: int = Query(default=7, ge=1, le=90),
     _admin=Depends(require_admin)
 ):
-    """Get survival analytics overview."""
+    """Get survival analytics overview - queries directly from runs table."""
     try:
         supabase = get_supabase_service_client()
         start_date = (datetime.utcnow().date() - timedelta(days=days)).isoformat()
         
-        # Get daily aggregates
-        daily = supabase.table("survival_analytics_daily").select("*").gte(
-            "date", start_date
-        ).order("date", desc=True).execute()
+        # Query runs directly instead of relying on materialized view
+        runs_result = supabase.table("survival_analytics_runs").select(
+            "id, distance, score, max_combo, user_id, visitor_id, created_at, duration_seconds, obstacles_cleared, near_misses, avg_fps, death_obstacle_type"
+        ).gte("created_at", start_date).execute()
         
-        # Calculate totals
-        runs = daily.data or []
+        all_runs = runs_result.data or []
+        
+        # Group by date for daily stats
+        daily_map = {}
+        for run in all_runs:
+            date = run.get("created_at", "")[:10]  # Extract date part
+            if date not in daily_map:
+                daily_map[date] = {
+                    "date": date,
+                    "runs": [],
+                    "user_ids": set(),
+                    "visitor_ids": set(),
+                }
+            daily_map[date]["runs"].append(run)
+            if run.get("user_id"):
+                daily_map[date]["user_ids"].add(run["user_id"])
+            if run.get("visitor_id"):
+                daily_map[date]["visitor_ids"].add(run["visitor_id"])
+        
+        # Calculate daily aggregates
+        daily = []
+        for date, data in sorted(daily_map.items(), reverse=True):
+            runs_list = data["runs"]
+            daily.append({
+                "date": date,
+                "total_runs": len(runs_list),
+                "unique_players": len(data["user_ids"]),
+                "unique_visitors": len(data["visitor_ids"]) or len(data["user_ids"]),
+                "avg_distance": round(sum(r.get("distance", 0) or 0 for r in runs_list) / len(runs_list), 2) if runs_list else 0,
+                "avg_score": round(sum(r.get("score", 0) or 0 for r in runs_list) / len(runs_list), 2) if runs_list else 0,
+                "max_distance": max((r.get("distance", 0) or 0 for r in runs_list), default=0),
+                "max_score": max((r.get("score", 0) or 0 for r in runs_list), default=0),
+                "max_combo": max((r.get("max_combo", 0) or 0 for r in runs_list), default=0),
+            })
+        
+        # Calculate totals across all runs
+        all_user_ids = set()
+        all_visitor_ids = set()
+        for run in all_runs:
+            if run.get("user_id"):
+                all_user_ids.add(run["user_id"])
+            if run.get("visitor_id"):
+                all_visitor_ids.add(run["visitor_id"])
+        
         totals = {
-            "total_runs": sum(r.get("total_runs", 0) for r in runs),
-            "unique_players": sum(r.get("unique_players", 0) for r in runs),
-            "unique_visitors": sum(r.get("unique_visitors", 0) for r in runs),
-            "avg_distance": round(sum(r.get("avg_distance", 0) for r in runs) / len(runs), 2) if runs else 0,
-            "avg_score": round(sum(r.get("avg_score", 0) for r in runs) / len(runs), 2) if runs else 0,
-            "max_distance": max((r.get("max_distance", 0) for r in runs), default=0),
-            "max_score": max((r.get("max_score", 0) for r in runs), default=0),
-            "max_combo": max((r.get("max_combo", 0) for r in runs), default=0),
+            "total_runs": len(all_runs),
+            "unique_players": len(all_user_ids),
+            "unique_visitors": len(all_visitor_ids) or len(all_user_ids),
+            "avg_distance": round(sum(r.get("distance", 0) or 0 for r in all_runs) / len(all_runs), 2) if all_runs else 0,
+            "avg_score": round(sum(r.get("score", 0) or 0 for r in all_runs) / len(all_runs), 2) if all_runs else 0,
+            "max_distance": max((r.get("distance", 0) or 0 for r in all_runs), default=0),
+            "max_score": max((r.get("score", 0) or 0 for r in all_runs), default=0),
+            "max_combo": max((r.get("max_combo", 0) or 0 for r in all_runs), default=0),
         }
         
         return APIResponse.ok({
-            "daily": runs,
+            "daily": daily,
             "totals": totals,
             "period_days": days,
         })
@@ -703,34 +745,62 @@ async def get_obstacle_analysis(
     days: int = Query(default=7, ge=1, le=30),
     _admin=Depends(require_admin)
 ):
-    """Get obstacle death rate analysis."""
+    """Get obstacle death rate analysis - queries from runs if obstacles table is empty."""
     try:
         supabase = get_supabase_service_client()
         start_date = (datetime.utcnow().date() - timedelta(days=days)).isoformat()
         
+        # Try obstacles table first
         result = supabase.table("survival_analytics_obstacles").select("*").gte(
             "date", start_date
         ).execute()
         
-        # Aggregate by obstacle type
         obstacles = {}
-        for row in result.data or []:
-            otype = row["obstacle_type"]
-            if otype not in obstacles:
-                obstacles[otype] = {
-                    "obstacle_type": otype,
-                    "total_encounters": 0,
-                    "total_deaths": 0,
-                    "avg_distance_sum": 0,
-                    "avg_speed_sum": 0,
-                    "count": 0,
-                }
-            o = obstacles[otype]
-            o["total_encounters"] += row.get("total_encounters", 0)
-            o["total_deaths"] += row.get("total_deaths", 0)
-            o["avg_distance_sum"] += (row.get("avg_distance_at_encounter", 0) or 0)
-            o["avg_speed_sum"] += (row.get("avg_speed_at_encounter", 0) or 0)
-            o["count"] += 1
+        
+        if result.data:
+            # Aggregate by obstacle type from obstacles table
+            for row in result.data:
+                otype = row["obstacle_type"]
+                if otype not in obstacles:
+                    obstacles[otype] = {
+                        "obstacle_type": otype,
+                        "total_encounters": 0,
+                        "total_deaths": 0,
+                        "avg_distance_sum": 0,
+                        "avg_speed_sum": 0,
+                        "count": 0,
+                    }
+                o = obstacles[otype]
+                o["total_encounters"] += row.get("total_encounters", 0)
+                o["total_deaths"] += row.get("total_deaths", 0)
+                o["avg_distance_sum"] += (row.get("avg_distance_at_encounter", 0) or 0)
+                o["avg_speed_sum"] += (row.get("avg_speed_at_encounter", 0) or 0)
+                o["count"] += 1
+        else:
+            # Fallback: derive from runs table
+            runs_result = supabase.table("survival_analytics_runs").select(
+                "death_obstacle_type, distance, speed_at_death"
+            ).gte("created_at", start_date).not_.is_("death_obstacle_type", "null").execute()
+            
+            for run in runs_result.data or []:
+                otype = run.get("death_obstacle_type")
+                if not otype:
+                    continue
+                if otype not in obstacles:
+                    obstacles[otype] = {
+                        "obstacle_type": otype,
+                        "total_encounters": 0,
+                        "total_deaths": 0,
+                        "avg_distance_sum": 0,
+                        "avg_speed_sum": 0,
+                        "count": 0,
+                    }
+                o = obstacles[otype]
+                o["total_encounters"] += 1  # Each death is an encounter
+                o["total_deaths"] += 1
+                o["avg_distance_sum"] += run.get("distance", 0) or 0
+                o["avg_speed_sum"] += run.get("speed_at_death", 0) or 0
+                o["count"] += 1
         
         # Calculate death rates
         analysis = []
@@ -759,49 +829,81 @@ async def get_funnel_analysis(
     days: int = Query(default=7, ge=1, le=30),
     _admin=Depends(require_admin)
 ):
-    """Get conversion funnel analysis."""
+    """Get conversion funnel analysis - derives distance milestones from actual runs."""
     try:
         supabase = get_supabase_service_client()
         start_date = (datetime.utcnow().date() - timedelta(days=days)).isoformat()
         
-        result = supabase.table("survival_analytics_funnels").select("*").gte(
+        # Get funnel events (page visits, game loads, etc.)
+        funnel_result = supabase.table("survival_analytics_funnels").select("*").gte(
             "date", start_date
         ).execute()
         
-        # Aggregate totals
-        totals = {
+        # Aggregate funnel totals
+        funnel_totals = {
             "page_visits": 0,
             "game_loads": 0,
             "first_run_starts": 0,
             "first_run_completes": 0,
             "second_run_starts": 0,
-            "reached_100m": 0,
-            "reached_500m": 0,
-            "reached_1000m": 0,
-            "submitted_score": 0,
-            "viewed_leaderboard": 0,
         }
         
-        for row in result.data or []:
-            for key in totals:
-                totals[key] += row.get(key, 0) or 0
+        for row in funnel_result.data or []:
+            for key in funnel_totals:
+                funnel_totals[key] += row.get(key, 0) or 0
+        
+        # Get actual run data to derive distance milestones accurately
+        runs_result = supabase.table("survival_analytics_runs").select(
+            "distance, visitor_id, user_id"
+        ).gte("created_at", start_date).execute()
+        
+        all_runs = runs_result.data or []
+        
+        # Count unique players who reached each milestone
+        # Use visitor_id or user_id to track unique players
+        players_100m = set()
+        players_500m = set()
+        players_1000m = set()
+        
+        for run in all_runs:
+            player_id = run.get("user_id") or run.get("visitor_id") or str(id(run))
+            distance = run.get("distance", 0) or 0
+            
+            if distance >= 100:
+                players_100m.add(player_id)
+            if distance >= 500:
+                players_500m.add(player_id)
+            if distance >= 1000:
+                players_1000m.add(player_id)
+        
+        # Total runs is a better metric for distance milestones
+        runs_100m = sum(1 for r in all_runs if (r.get("distance", 0) or 0) >= 100)
+        runs_500m = sum(1 for r in all_runs if (r.get("distance", 0) or 0) >= 500)
+        runs_1000m = sum(1 for r in all_runs if (r.get("distance", 0) or 0) >= 1000)
+        
+        # Use total runs as the base for distance milestones
+        total_runs = len(all_runs)
+        
+        # Build funnel - ensure monotonically decreasing by using runs for distance steps
+        steps_data = [
+            ("page_visits", "Page Visits", funnel_totals["page_visits"]),
+            ("game_loads", "Game Loads", funnel_totals["game_loads"]),
+            ("first_run_starts", "First Run Started", funnel_totals["first_run_starts"] or total_runs),
+            ("first_run_completes", "First Run Completed", funnel_totals["first_run_completes"] or total_runs),
+            ("second_run_starts", "Second Run Started", funnel_totals["second_run_starts"]),
+            ("reached_100m", "Reached 100m", runs_100m),
+            ("reached_500m", "Reached 500m", runs_500m),
+            ("reached_1000m", "Reached 1000m", runs_1000m),
+        ]
         
         # Calculate conversion rates
         funnel = []
-        steps = [
-            ("page_visits", "Page Visits"),
-            ("game_loads", "Game Loads"),
-            ("first_run_starts", "First Run Started"),
-            ("first_run_completes", "First Run Completed"),
-            ("second_run_starts", "Second Run Started"),
-            ("reached_100m", "Reached 100m"),
-            ("reached_500m", "Reached 500m"),
-            ("reached_1000m", "Reached 1000m"),
-        ]
-        
         prev_count = None
-        for key, label in steps:
-            count = totals[key]
+        for key, label, count in steps_data:
+            # Ensure funnel is monotonically decreasing (cap at previous step)
+            if prev_count is not None and count > prev_count:
+                count = prev_count
+            
             conversion = round(count / prev_count * 100, 2) if prev_count and prev_count > 0 else 100
             funnel.append({
                 "step": key,
@@ -810,11 +912,11 @@ async def get_funnel_analysis(
                 "conversion_rate": conversion,
                 "drop_off": round(100 - conversion, 2) if prev_count else 0,
             })
-            prev_count = count
+            prev_count = count if count > 0 else prev_count  # Don't let 0 break the chain
         
         return APIResponse.ok({
             "funnel": funnel,
-            "daily": result.data or [],
+            "daily": funnel_result.data or [],
         })
     except Exception as e:
         return APIResponse.fail(str(e), "ANALYTICS_ERROR")
