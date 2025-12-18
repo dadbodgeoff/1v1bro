@@ -6,6 +6,7 @@
 
 import * as THREE from 'three'
 
+// @deprecated Use MapLoader to load textures instead
 const CEILING_TEXTURE_URL =
   'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/ceiling-texture.jpg'
 
@@ -74,4 +75,44 @@ export function disposeCeilingMaterial(): void {
     ceilingMaterial.dispose()
     ceilingMaterial = null
   }
+}
+
+
+/**
+ * Apply pre-loaded ceiling texture to ceiling mesh
+ * 
+ * This is the preferred method when using MapLoader to pre-load assets.
+ * 
+ * @param scene - The scene containing ceiling mesh
+ * @param preloadedTexture - The ceiling texture from LoadedMap.textures.ceiling
+ */
+export function applyPreloadedCeilingMaterial(
+  scene: THREE.Scene,
+  preloadedTexture: THREE.Texture | undefined
+): void {
+  if (!preloadedTexture) {
+    console.warn('[CeilingMaterialLoader] No pre-loaded ceiling texture provided')
+    return
+  }
+
+  // Configure texture
+  preloadedTexture.wrapS = THREE.RepeatWrapping
+  preloadedTexture.wrapT = THREE.RepeatWrapping
+  preloadedTexture.repeat.set(CEILING_TEXTURE_CONFIG.repeatX, CEILING_TEXTURE_CONFIG.repeatY)
+  preloadedTexture.colorSpace = THREE.SRGBColorSpace
+  preloadedTexture.anisotropy = 4 // Lower than floor/walls since ceiling is less viewed
+
+  const material = new THREE.MeshStandardMaterial({
+    map: preloadedTexture,
+    roughness: 0.9,
+    metalness: 0.1,
+  })
+
+  // Find and apply to ceiling mesh
+  scene.traverse((child) => {
+    if (child instanceof THREE.Mesh && child.name === 'ceiling') {
+      child.material = material
+      console.log('[CeilingMaterialLoader] Applied pre-loaded texture to ceiling')
+    }
+  })
 }

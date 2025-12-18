@@ -7,7 +7,9 @@
  */
 
 import * as THREE from 'three'
+import type { ArenaConfig } from '../maps/types'
 
+// @deprecated Use MapLoader to load textures instead
 const FLOOR_ATLAS_URL = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/floor-atlas.jpg'
 
 let cachedTexture: THREE.Texture | null = null
@@ -89,4 +91,57 @@ export function disposeFloorMaterial(): void {
     cachedTexture.dispose()
     cachedTexture = null
   }
+}
+
+
+/**
+ * Apply pre-loaded floor texture to floor meshes
+ * 
+ * This is the preferred method when using MapLoader to pre-load assets.
+ * 
+ * @param scene - The scene containing floor meshes
+ * @param preloadedTexture - The floor texture from LoadedMap.textures.floor
+ * @param config - Arena configuration for floor dimensions
+ */
+export function applyPreloadedFloorMaterial(
+  scene: THREE.Scene,
+  preloadedTexture: THREE.Texture | undefined,
+  config: ArenaConfig
+): void {
+  if (!preloadedTexture) {
+    console.warn('[FloorMaterialLoader] No pre-loaded floor texture provided')
+    return
+  }
+
+  // Configure texture
+  preloadedTexture.colorSpace = THREE.SRGBColorSpace
+  preloadedTexture.minFilter = THREE.LinearMipmapLinearFilter
+  preloadedTexture.magFilter = THREE.LinearFilter
+  preloadedTexture.generateMipmaps = true
+  preloadedTexture.anisotropy = 8
+
+  const material = new THREE.MeshStandardMaterial({
+    map: preloadedTexture,
+    roughness: 0.85,
+    metalness: 0.1,
+  })
+
+  // Calculate floor dimensions from config
+  const sideWidth = (config.width - config.tracks.width) / 2
+
+  scene.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      if (child.name === 'floor-west') {
+        child.geometry.dispose()
+        child.geometry = createFloorWithUVs(sideWidth, config.depth, 0, 0.5)
+        child.material = material
+      } else if (child.name === 'floor-east') {
+        child.geometry.dispose()
+        child.geometry = createFloorWithUVs(sideWidth, config.depth, 0.5, 1.0)
+        child.material = material.clone()
+      }
+    }
+  })
+
+  console.log('[FloorMaterialLoader] Pre-loaded atlas applied')
 }
