@@ -21,6 +21,7 @@ export interface LoadoutWithDetails {
   trail_equipped: Cosmetic | null
   playercard_equipped: Cosmetic | null
   runner_equipped: Cosmetic | null
+  arena_character_equipped: Cosmetic | null
 }
 
 interface CosmeticsState {
@@ -163,6 +164,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
         trail_equipped: rawLoadout.trail_equipped || null,
         playercard_equipped: rawLoadout.playercard_equipped || null,
         runner_equipped: rawLoadout.runner_equipped || null,
+        arena_character_equipped: rawLoadout.arena_character_equipped || null,
       }
 
       const transformedLoadout: Loadout = {
@@ -174,6 +176,7 @@ export const useCosmeticsStore = create<CosmeticsState>((set, get) => ({
         trail: rawLoadout.trail_equipped?.id ?? rawLoadout.trail_equipped ?? undefined,
         playercard: rawLoadout.playercard_equipped?.id ?? rawLoadout.playercard_equipped ?? undefined,
         runner: rawLoadout.runner_equipped?.id ?? rawLoadout.runner_equipped ?? undefined,
+        arena_character: rawLoadout.arena_character_equipped?.id ?? rawLoadout.arena_character_equipped ?? undefined,
       }
 
       set({

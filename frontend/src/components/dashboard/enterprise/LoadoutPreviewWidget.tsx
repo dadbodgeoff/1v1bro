@@ -59,6 +59,7 @@ export function getSlotDisplayStateFromCosmetic(
     effect: 'Effect',
     trail: 'Trail',
     runner: 'Runner',
+    arena_character: 'Arena Character',
   }
 
   if (!cosmetic) {
@@ -99,6 +100,7 @@ export function getSlotDisplayState(
     effect: 'Effect',
     trail: 'Trail',
     runner: 'Runner',
+    arena_character: 'Arena Character',
   }
 
   if (!loadoutId) {

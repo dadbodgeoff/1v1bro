@@ -6,7 +6,7 @@
 /**
  * Types of cosmetic items.
  */
-export type CosmeticType = 'skin' | 'emote' | 'banner' | 'nameplate' | 'effect' | 'trail' | 'playercard' | 'runner';
+export type CosmeticType = 'skin' | 'emote' | 'banner' | 'nameplate' | 'effect' | 'trail' | 'playercard' | 'runner' | 'arena_character';
 
 /**
  * Rarity levels for cosmetics.
@@ -36,6 +36,30 @@ export const RARITY_GRADIENTS: Record<Rarity, string> = {
 };
 
 /**
+ * Arena character animation URLs
+ */
+export interface ArenaCharacterAnimations {
+  idle?: string;
+  walk?: string;
+  run?: string;
+  sprint?: string;
+  jump?: string;
+  jumpLand?: string;
+  crouch?: string;
+  crouchWalk?: string;
+  slide?: string;
+  roll?: string;
+  shoot?: string;
+  reload?: string;
+  reloadKneeling?: string;
+  hitReact?: string;
+  death?: string;
+  walkBackward?: string;
+  walkLeft?: string;
+  lookAround?: string;
+}
+
+/**
  * Cosmetic item from catalog.
  */
 export interface Cosmetic {
@@ -60,6 +84,8 @@ export interface Cosmetic {
   sprite_meta_url?: string;
   is_featured?: boolean;
   sort_order?: number;
+  // Arena character specific (type: 'arena_character')
+  arena_animations?: ArenaCharacterAnimations;
 }
 
 /**
@@ -85,6 +111,7 @@ export interface Loadout {
   trail?: string;
   playercard?: string;
   runner?: string;
+  arena_character?: string;
 }
 
 /**
@@ -110,6 +137,7 @@ export function getCosmeticTypeName(type: CosmeticType): string {
     trail: 'Trail',
     playercard: 'Player Card',
     runner: 'Runner',
+    arena_character: 'Arena Character',
   };
   return names[type];
 }

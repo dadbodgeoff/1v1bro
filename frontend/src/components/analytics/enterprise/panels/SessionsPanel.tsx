@@ -26,7 +26,18 @@ interface Session {
   country?: string
   entry_page: string
   exit_page: string
+  // Survival data
+  survival_runs?: number
+  survival_distance?: number
+  survival_best_distance?: number
+  survival_best_score?: number
+  survival_best_combo?: number
+  survival_top_death?: string
+  trivia_answered?: number
+  trivia_correct?: number
 }
+
+type SurvivalFilter = 'all' | 'with_runs' | 'multi_run' | 'no_runs'
 
 interface Props {
   dateRange: DateRange
@@ -39,6 +50,9 @@ export function SessionsPanel({ dateRange }: Props) {
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [exporting, setExporting] = useState(false)
+  
+  // Filtering state
+  const [survivalFilter, setSurvivalFilter] = useState<SurvivalFilter>('all')
   
   // Session Explorer state
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null)
@@ -126,6 +140,21 @@ export function SessionsPanel({ dateRange }: Props) {
     }
   }
 
+  const formatDistance = (d: number) => {
+    if (!d) return '—'
+    return d >= 1000 ? `${(d / 1000).toFixed(1)}km` : `${Math.round(d)}m`
+  }
+
+  const deathIcon = (cause: string | null | undefined) => {
+    if (!cause) return ''
+    const lower = cause.toLowerCase()
+    if (lower.includes('spike')) return '🔺'
+    if (lower.includes('barrier') || lower.includes('wall')) return '🧱'
+    if (lower.includes('gap') || lower.includes('hole')) return '🕳️'
+    if (lower.includes('laser')) return '⚡'
+    return '💀'
+  }
+
   const columns: Column<Session>[] = [
     {
       key: 'session_id',
@@ -172,17 +201,112 @@ export function SessionsPanel({ dateRange }: Props) {
       align: 'right',
       render: (r) => <span className="text-blue-400">{formatDuration(r.duration_seconds)}</span>
     },
+    {
+      key: 'survival_runs',
+      label: '🎮 Runs',
+      sortable: true,
+      align: 'center',
+      render: (r) => r.survival_runs ? (
+        <span className="text-orange-400 font-medium">{r.survival_runs}</span>
+      ) : <span className="text-neutral-600">—</span>
+    },
+    {
+      key: 'survival_distance',
+      label: '📏 Distance',
+      sortable: true,
+      align: 'right',
+      render: (r) => r.survival_distance ? (
+        <span className="text-cyan-400">{formatDistance(r.survival_distance)}</span>
+      ) : <span className="text-neutral-600">—</span>
+    },
+    {
+      key: 'trivia_answered',
+      label: '❓ Trivia',
+      sortable: true,
+      align: 'center',
+      render: (r) => r.trivia_answered ? (
+        <span className="text-purple-400">
+          {r.trivia_correct}/{r.trivia_answered}
+        </span>
+      ) : <span className="text-neutral-600">—</span>
+    },
+    {
+      key: 'survival_best_distance',
+      label: '🏆 Best',
+      sortable: true,
+      align: 'right',
+      render: (r) => r.survival_best_distance ? (
+        <span className="text-green-400 font-medium">{formatDistance(r.survival_best_distance)}</span>
+      ) : <span className="text-neutral-600">—</span>
+    },
+    {
+      key: 'survival_top_death',
+      label: '💀 Death',
+      render: (r) => r.survival_top_death ? (
+        <span className="text-red-400 text-xs flex items-center gap-1">
+          {deathIcon(r.survival_top_death)}
+          <span className="truncate max-w-[60px]">{r.survival_top_death}</span>
+        </span>
+      ) : <span className="text-neutral-600">—</span>
+    },
   ]
 
+  // Apply client-side filtering
+  const filteredSessions = sessions.filter(s => {
+    switch (survivalFilter) {
+      case 'with_runs':
+        return s.survival_runs && s.survival_runs > 0
+      case 'multi_run':
+        return s.survival_runs && s.survival_runs > 1
+      case 'no_runs':
+        return !s.survival_runs || s.survival_runs === 0
+      default:
+        return true
+    }
+  })
+
   const totalPages = Math.ceil(total / 50)
+  
+  // Calculate additional survival metrics
+  const survivalSessions = sessions.filter(s => s.survival_runs && s.survival_runs > 0)
+  const avgRunsPerSession = survivalSessions.length 
+    ? survivalSessions.reduce((a, s) => a + (s.survival_runs || 0), 0) / survivalSessions.length 
+    : 0
+  const avgDistancePerRun = (() => {
+    const totalRuns = survivalSessions.reduce((a, s) => a + (s.survival_runs || 0), 0)
+    const totalDist = survivalSessions.reduce((a, s) => a + (s.survival_distance || 0), 0)
+    return totalRuns > 0 ? totalDist / totalRuns : 0
+  })()
+  // Use best_distance for the best single run, fallback to total distance
+  const bestSingleRun = Math.max(...survivalSessions.map(s => s.survival_best_distance || 0), 0)
+  const bestScore = Math.max(...survivalSessions.map(s => s.survival_best_score || 0), 0)
+  const bestCombo = Math.max(...survivalSessions.map(s => s.survival_best_combo || 0), 0)
 
   return (
     <div className="space-y-6">
-      {/* Header with Export */}
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-neutral-400">
-          {total.toLocaleString()} sessions found
+      {/* Header with Export and Filters */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-neutral-400">
+            {filteredSessions.length.toLocaleString()} of {total.toLocaleString()} sessions
+          </div>
+          
+          {/* Survival Filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-neutral-500">Filter:</span>
+            <select
+              value={survivalFilter}
+              onChange={(e) => setSurvivalFilter(e.target.value as SurvivalFilter)}
+              className="px-2 py-1 text-xs bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-orange-500"
+            >
+              <option value="all">All Sessions</option>
+              <option value="with_runs">🎮 Played Survival</option>
+              <option value="multi_run">🔄 Played Again (2+ runs)</option>
+              <option value="no_runs">📄 No Survival</option>
+            </select>
+          </div>
         </div>
+        
         <div className="flex gap-2">
           <button
             onClick={() => exportData('csv')}
@@ -239,6 +363,105 @@ export function SessionsPanel({ dateRange }: Props) {
         </div>
       </div>
 
+      {/* Survival Stats */}
+      {sessions.some(s => s.survival_runs && s.survival_runs > 0) && (
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-xl border border-orange-500/20 p-4">
+            <div className="text-xs text-orange-400 mb-1">🎮 Sessions w/ Runs</div>
+            <div className="text-2xl font-bold text-orange-400">
+              {sessions.filter(s => s.survival_runs && s.survival_runs > 0).length}
+            </div>
+            <div className="text-xs text-neutral-500 mt-1">
+              {sessions.length ? ((sessions.filter(s => s.survival_runs && s.survival_runs > 0).length / sessions.length) * 100).toFixed(0) : 0}% of sessions
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 rounded-xl border border-cyan-500/20 p-4">
+            <div className="text-xs text-cyan-400 mb-1">📏 Total Distance</div>
+            <div className="text-2xl font-bold text-cyan-400">
+              {formatDistance(sessions.reduce((a, s) => a + (s.survival_distance || 0), 0))}
+            </div>
+            <div className="text-xs text-neutral-500 mt-1">across all runs</div>
+          </div>
+          <div className="bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 rounded-xl border border-yellow-500/20 p-4">
+            <div className="text-xs text-yellow-400 mb-1">🔄 Play Again Rate</div>
+            <div className="text-2xl font-bold text-yellow-400">
+              {(() => {
+                const withRuns = sessions.filter(s => s.survival_runs && s.survival_runs > 0)
+                const multiRun = withRuns.filter(s => s.survival_runs && s.survival_runs > 1)
+                return withRuns.length ? ((multiRun.length / withRuns.length) * 100).toFixed(0) : 0
+              })()}%
+            </div>
+            <div className="text-xs text-neutral-500 mt-1">
+              {sessions.filter(s => s.survival_runs && s.survival_runs > 1).length} played again
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-xl border border-purple-500/20 p-4">
+            <div className="text-xs text-purple-400 mb-1">❓ Trivia Answered</div>
+            <div className="text-2xl font-bold text-purple-400">
+              {sessions.reduce((a, s) => a + (s.trivia_answered || 0), 0)}
+            </div>
+            <div className="text-xs text-neutral-500 mt-1">
+              {(() => {
+                const total = sessions.reduce((a, s) => a + (s.trivia_answered || 0), 0)
+                const correct = sessions.reduce((a, s) => a + (s.trivia_correct || 0), 0)
+                return total ? `${((correct / total) * 100).toFixed(0)}% correct` : 'no answers'
+              })()}
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-red-500/10 to-red-500/5 rounded-xl border border-red-500/20 p-4">
+            <div className="text-xs text-red-400 mb-1">💀 Top Death Cause</div>
+            <div className="text-xl font-bold text-red-400 truncate">
+              {(() => {
+                const deaths: Record<string, number> = {}
+                sessions.forEach(s => {
+                  if (s.survival_top_death) {
+                    deaths[s.survival_top_death] = (deaths[s.survival_top_death] || 0) + 1
+                  }
+                })
+                const sorted = Object.entries(deaths).sort((a, b) => b[1] - a[1])
+                return sorted[0] ? `${deathIcon(sorted[0][0])} ${sorted[0][0]}` : '—'
+              })()}
+            </div>
+            <div className="text-xs text-neutral-500 mt-1">most common</div>
+          </div>
+        </div>
+      )}
+
+      {/* Additional Survival Metrics - only show when there's survival data */}
+      {survivalSessions.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white/5 rounded-xl border border-white/10 p-4">
+            <div className="text-xs text-neutral-500 mb-1">📊 Avg Runs/Session</div>
+            <div className="text-2xl font-bold text-white">{avgRunsPerSession.toFixed(1)}</div>
+            <div className="text-xs text-neutral-500 mt-1">for players who played</div>
+          </div>
+          <div className="bg-white/5 rounded-xl border border-white/10 p-4">
+            <div className="text-xs text-neutral-500 mb-1">📏 Avg Distance/Run</div>
+            <div className="text-2xl font-bold text-white">{formatDistance(avgDistancePerRun)}</div>
+            <div className="text-xs text-neutral-500 mt-1">per individual run</div>
+          </div>
+          <div className="bg-white/5 rounded-xl border border-white/10 p-4">
+            <div className="text-xs text-neutral-500 mb-1">🏆 Best Single Run</div>
+            <div className="text-2xl font-bold text-green-400">{formatDistance(bestSingleRun)}</div>
+            <div className="text-xs text-neutral-500 mt-1">
+              {bestScore > 0 && <span>{bestScore.toLocaleString()} pts</span>}
+              {bestCombo > 0 && <span className="ml-2">{bestCombo}x combo</span>}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-xl border border-white/10 p-4">
+            <div className="text-xs text-neutral-500 mb-1">⏱️ Avg Survival Duration</div>
+            <div className="text-2xl font-bold text-white">
+              {formatDuration(
+                survivalSessions.length 
+                  ? survivalSessions.reduce((a, s) => a + s.duration_seconds, 0) / survivalSessions.length 
+                  : 0
+              )}
+            </div>
+            <div className="text-xs text-neutral-500 mt-1">for survival sessions</div>
+          </div>
+        </div>
+      )}
+
       {/* Sessions Table */}
       <div className="bg-white/5 rounded-xl border border-white/10 p-5">
         {loading ? (
@@ -249,10 +472,10 @@ export function SessionsPanel({ dateRange }: Props) {
           <>
             <DataTable
               columns={columns}
-              data={sessions}
+              data={filteredSessions}
               keyField="session_id"
               maxHeight="400px"
-              emptyMessage="No sessions found"
+              emptyMessage={survivalFilter !== 'all' ? `No sessions match filter "${survivalFilter}"` : "No sessions found"}
             />
             
             {/* Pagination */}

@@ -108,67 +108,67 @@
 - [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Refactor model builders to use LoadedMap
-  - [ ] 7.1 Update TrainBuilder.ts
+- [x] 7. Refactor model builders to use LoadedMap
+  - [x] 7.1 Update TrainBuilder.ts
     - Remove hardcoded TRAIN_URL
     - Accept pre-loaded model from LoadedMap
     - Use DRACO_DECODER_PATH from types.ts
     - _Requirements: 5.3, 5.4_
 
-  - [ ] 7.2 Update CartBuilder.ts
+  - [x] 7.2 Update CartBuilder.ts
     - Remove hardcoded CART_URL
     - Accept pre-loaded model from LoadedMap
     - Use DRACO_DECODER_PATH from types.ts
     - _Requirements: 5.3, 5.4_
 
-  - [ ] 7.3 Update SubwayEntranceBuilder.ts
+  - [x] 7.3 Update SubwayEntranceBuilder.ts
     - Remove hardcoded SUBWAY_GLB_URL
     - Accept pre-loaded model from LoadedMap
     - _Requirements: 5.3, 5.4_
 
-  - [ ] 7.4 Update FareTerminalBuilder.ts
+  - [x] 7.4 Update FareTerminalBuilder.ts
     - Remove hardcoded TERMINAL_URL
     - Accept pre-loaded model from LoadedMap
     - Accept positions from props config
     - Use DRACO_DECODER_PATH from types.ts
     - _Requirements: 5.3, 5.4_
 
-  - [ ] 7.5 Update PropBuilder.ts
+  - [x] 7.5 Update PropBuilder.ts
     - Remove hardcoded ASSETS URLs
     - Accept pre-loaded models from LoadedMap
     - Accept positions from props config
     - Use DRACO_DECODER_PATH from types.ts
     - _Requirements: 5.3, 5.4_
 
-  - [ ] 7.6 Update LuggageBuilder.ts
+  - [x] 7.6 Update LuggageBuilder.ts
     - Remove hardcoded LUGGAGE_URL
     - Accept pre-loaded model from LoadedMap
     - Accept positions from props config
     - Use DRACO_DECODER_PATH from types.ts
     - _Requirements: 5.3, 5.4_
 
-- [ ] 8. Refactor texture loaders to use LoadedMap
-  - [ ] 8.1 Update FloorMaterialLoader.ts
+- [x] 8. Refactor texture loaders to use LoadedMap
+  - [x] 8.1 Update FloorMaterialLoader.ts
     - Remove hardcoded FLOOR_ATLAS_URL
     - Accept pre-loaded texture from LoadedMap
     - _Requirements: 5.3_
 
-  - [ ] 8.2 Update WallMaterialLoader.ts
+  - [x] 8.2 Update WallMaterialLoader.ts
     - Remove hardcoded WALL_TEXTURE_URL
     - Accept pre-loaded texture from LoadedMap
     - _Requirements: 5.3_
 
-  - [ ] 8.3 Update CeilingMaterialLoader.ts
+  - [x] 8.3 Update CeilingMaterialLoader.ts
     - Remove hardcoded CEILING_TEXTURE_URL
     - Accept pre-loaded texture from LoadedMap
     - _Requirements: 5.3_
 
-  - [ ] 8.4 Update TrackTextureLoader.ts
+  - [x] 8.4 Update TrackTextureLoader.ts
     - Remove hardcoded TRACK_TEXTURE_URL and TUNNEL_TEXTURE_URL
     - Accept pre-loaded textures from LoadedMap
     - _Requirements: 5.3_
 
-- [ ] 9. Checkpoint - Ensure all tests pass
+- [x] 9. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 10. Refactor ArenaScene to use LoadedMap

@@ -10,7 +10,7 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-import { DRACO_DECODER_PATH, type PropPlacement, type ArenaConfig } from '../maps/types'
+import { DRACO_DECODER_PATH, type PropPlacement } from '../maps/types'
 
 // Asset URLs (Supabase CDN)
 // @deprecated Use MapLoader to load models instead

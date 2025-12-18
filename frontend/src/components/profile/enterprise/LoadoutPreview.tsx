@@ -45,6 +45,7 @@ const SLOT_ICONS: Record<CosmeticType, string> = {
   trail: '💫',
   playercard: '🎴',
   runner: '🏃',
+  arena_character: '🎮',
 }
 
 const SLOT_LABELS: Record<CosmeticType, string> = {
@@ -56,6 +57,7 @@ const SLOT_LABELS: Record<CosmeticType, string> = {
   trail: 'Trail',
   playercard: 'Player Card',
   runner: 'Runner',
+  arena_character: 'Arena Character',
 }
 
 /**

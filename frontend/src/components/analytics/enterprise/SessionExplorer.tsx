@@ -50,6 +50,50 @@ export interface PageVisit {
   scrollDepth: number | null
 }
 
+// Survival run data
+export interface SurvivalRun {
+  runNumber: number
+  distance: number
+  score: number
+  duration: number
+  maxCombo: number
+  obstaclesCleared: number
+  nearMisses: number
+  jumps: number
+  slides: number
+  laneChanges: number
+  deathCause: string | null
+  deathLane: number | null
+  speedAtDeath: number | null
+  startedAt: string
+  endedAt: string | null
+}
+
+export interface TriviaAnswer {
+  category: string
+  difficulty: string | null
+  correct: boolean
+  timedOut: boolean
+  timeToAnswerMs: number | null
+  distanceAtQuestion: number | null
+  streakBefore: number
+  timestamp: string
+}
+
+export interface SurvivalSummary {
+  totalRuns: number
+  playAgainCount: number
+  totalDistance: number
+  maxDistance: number
+  totalPlaytimeSeconds: number
+  questionsAnswered: number
+  correctAnswers: number
+  timedOutAnswers: number
+  correctRate: number
+  deathCauses: [string, number][]
+  topDeathCause: string | null
+}
+
 export interface SessionExplorerProps {
   sessionId: string
   isOpen: boolean
@@ -64,6 +108,9 @@ export function SessionExplorer({ sessionId, isOpen, onClose }: SessionExplorerP
   const [session, setSession] = useState<SessionDetails | null>(null)
   const [events, setEvents] = useState<SessionEvent[]>([])
   const [pageJourney, setPageJourney] = useState<PageVisit[]>([])
+  const [survivalSummary, setSurvivalSummary] = useState<SurvivalSummary | null>(null)
+  const [survivalRuns, setSurvivalRuns] = useState<SurvivalRun[]>([])
+  const [triviaAnswers, setTriviaAnswers] = useState<TriviaAnswer[]>([])
 
   const fetchSessionData = useCallback(async () => {
     if (!sessionId || !token) return
@@ -72,19 +119,33 @@ export function SessionExplorer({ sessionId, isOpen, onClose }: SessionExplorerP
     setError(null)
     
     try {
-      const res = await fetch(`${API_BASE}/analytics/dashboard/session/${sessionId}/events`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const data = await res.json()
+      // Fetch session events and survival data in parallel
+      const [eventsRes, survivalRes] = await Promise.all([
+        fetch(`${API_BASE}/analytics/dashboard/session/${sessionId}/events`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${API_BASE}/analytics/dashboard/session/${sessionId}/survival`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ])
       
-      if (data.success) {
-        setSession(data.data.session)
-        // Sort events chronologically (ascending by timestamp)
-        const sortedEvents = sortEventsChronologically(data.data.events || [])
+      const eventsData = await eventsRes.json()
+      const survivalData = await survivalRes.json()
+      
+      if (eventsData.success) {
+        setSession(eventsData.data.session)
+        const sortedEvents = sortEventsChronologically(eventsData.data.events || [])
         setEvents(sortedEvents)
-        setPageJourney(data.data.pageviews || [])
+        setPageJourney(eventsData.data.pageviews || [])
       } else {
-        setError(data.error || 'Failed to load session data')
+        setError(eventsData.error || 'Failed to load session data')
+      }
+      
+      // Survival data is optional - session may not have played survival
+      if (survivalData.success && survivalData.data) {
+        setSurvivalSummary(survivalData.data.summary)
+        setSurvivalRuns(survivalData.data.runs || [])
+        setTriviaAnswers(survivalData.data.trivia || [])
       }
     } catch (e) {
       console.error('Failed to fetch session data', e)
@@ -148,6 +209,13 @@ export function SessionExplorer({ sessionId, isOpen, onClose }: SessionExplorerP
           ) : session ? (
             <div className="p-6 space-y-6">
               <SessionContext session={session} />
+              {survivalSummary && survivalSummary.totalRuns > 0 && (
+                <SurvivalSection 
+                  summary={survivalSummary} 
+                  runs={survivalRuns} 
+                  trivia={triviaAnswers} 
+                />
+              )}
               <EventTimeline events={events} />
               <PageJourney pages={pageJourney} />
             </div>
@@ -455,6 +523,217 @@ function ErrorState({ error, onRetry }: { error: string; onRetry: () => void }) 
           Try Again
         </button>
       </div>
+    </div>
+  )
+}
+
+
+// Survival gameplay section
+function SurvivalSection({ 
+  summary, 
+  runs, 
+  trivia 
+}: { 
+  summary: SurvivalSummary
+  runs: SurvivalRun[]
+  trivia: TriviaAnswer[]
+}) {
+  const [expandedRun, setExpandedRun] = useState<number | null>(null)
+  
+  const formatDistance = (d: number) => d >= 1000 ? `${(d / 1000).toFixed(2)}km` : `${Math.round(d)}m`
+  const formatDuration = (s: number) => {
+    if (s < 60) return `${Math.round(s)}s`
+    const mins = Math.floor(s / 60)
+    const secs = Math.round(s % 60)
+    return `${mins}m ${secs}s`
+  }
+
+  const deathIcon = (cause: string | null) => {
+    if (!cause) return '❓'
+    const lower = cause.toLowerCase()
+    if (lower.includes('spike')) return '🔺'
+    if (lower.includes('barrier') || lower.includes('wall')) return '🧱'
+    if (lower.includes('gap') || lower.includes('hole')) return '🕳️'
+    if (lower.includes('laser')) return '⚡'
+    if (lower.includes('train')) return '🚂'
+    return '💀'
+  }
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-sm font-medium text-neutral-300 uppercase tracking-wide flex items-center gap-2">
+        <span>🎮</span> Survival Gameplay
+      </h3>
+      
+      {/* Summary Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-lg border border-orange-500/20 p-3">
+          <div className="text-xs text-orange-400 mb-1">Total Runs</div>
+          <div className="text-xl font-bold text-orange-400">{summary.totalRuns}</div>
+          {summary.playAgainCount > 0 && (
+            <div className="text-xs text-neutral-500 mt-1">
+              🔄 Played again {summary.playAgainCount}x
+            </div>
+          )}
+        </div>
+        
+        <div className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-lg border border-blue-500/20 p-3">
+          <div className="text-xs text-blue-400 mb-1">Distance Traveled</div>
+          <div className="text-xl font-bold text-blue-400">{formatDistance(summary.totalDistance)}</div>
+          <div className="text-xs text-neutral-500 mt-1">
+            Best: {formatDistance(summary.maxDistance)}
+          </div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-lg border border-purple-500/20 p-3">
+          <div className="text-xs text-purple-400 mb-1">Questions</div>
+          <div className="text-xl font-bold text-purple-400">{summary.questionsAnswered}</div>
+          {summary.questionsAnswered > 0 && (
+            <div className="text-xs text-neutral-500 mt-1">
+              ✅ {summary.correctAnswers} correct ({summary.correctRate}%)
+            </div>
+          )}
+        </div>
+        
+        <div className="bg-gradient-to-br from-red-500/10 to-red-500/5 rounded-lg border border-red-500/20 p-3">
+          <div className="text-xs text-red-400 mb-1">Top Death Cause</div>
+          <div className="text-xl font-bold text-red-400 flex items-center gap-1">
+            {deathIcon(summary.topDeathCause)}
+            <span className="truncate">{summary.topDeathCause || 'None'}</span>
+          </div>
+          <div className="text-xs text-neutral-500 mt-1">
+            Playtime: {formatDuration(summary.totalPlaytimeSeconds)}
+          </div>
+        </div>
+      </div>
+      
+      {/* Death Causes Breakdown */}
+      {summary.deathCauses.length > 1 && (
+        <div className="bg-white/5 rounded-lg p-4">
+          <div className="text-xs text-neutral-500 mb-2">Death Causes</div>
+          <div className="flex flex-wrap gap-2">
+            {summary.deathCauses.map(([cause, count]) => (
+              <span 
+                key={cause}
+                className="px-2 py-1 bg-red-500/20 text-red-300 rounded text-xs flex items-center gap-1"
+              >
+                {deathIcon(cause)} {cause}: {count}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Run Details */}
+      {runs.length > 0 && (
+        <div className="bg-white/5 rounded-lg overflow-hidden">
+          <div className="px-4 py-2 border-b border-white/10 text-xs text-neutral-500">
+            Run History ({runs.length} runs)
+          </div>
+          <div className="divide-y divide-white/5">
+            {runs.map((run) => (
+              <div key={run.runNumber} className="hover:bg-white/5">
+                <button
+                  onClick={() => setExpandedRun(expandedRun === run.runNumber ? null : run.runNumber)}
+                  className="w-full px-4 py-3 flex items-center justify-between text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-neutral-500">#{run.runNumber}</span>
+                    <span className="text-sm text-white font-medium">{formatDistance(run.distance)}</span>
+                    <span className="text-xs text-neutral-400">{run.score.toLocaleString()} pts</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {run.deathCause && (
+                      <span className="text-xs text-red-400 flex items-center gap-1">
+                        {deathIcon(run.deathCause)} {run.deathCause}
+                      </span>
+                    )}
+                    <span className="text-xs text-neutral-500">{formatDuration(run.duration)}</span>
+                    <svg 
+                      className={`w-4 h-4 text-neutral-500 transition-transform ${expandedRun === run.runNumber ? 'rotate-180' : ''}`}
+                      fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </button>
+                
+                {expandedRun === run.runNumber && (
+                  <div className="px-4 pb-3 grid grid-cols-3 md:grid-cols-6 gap-2 text-xs">
+                    <div className="bg-white/5 rounded p-2">
+                      <div className="text-neutral-500">Max Combo</div>
+                      <div className="text-yellow-400 font-medium">{run.maxCombo}x</div>
+                    </div>
+                    <div className="bg-white/5 rounded p-2">
+                      <div className="text-neutral-500">Obstacles</div>
+                      <div className="text-green-400 font-medium">{run.obstaclesCleared}</div>
+                    </div>
+                    <div className="bg-white/5 rounded p-2">
+                      <div className="text-neutral-500">Near Misses</div>
+                      <div className="text-orange-400 font-medium">{run.nearMisses}</div>
+                    </div>
+                    <div className="bg-white/5 rounded p-2">
+                      <div className="text-neutral-500">Jumps</div>
+                      <div className="text-cyan-400 font-medium">{run.jumps}</div>
+                    </div>
+                    <div className="bg-white/5 rounded p-2">
+                      <div className="text-neutral-500">Slides</div>
+                      <div className="text-purple-400 font-medium">{run.slides}</div>
+                    </div>
+                    <div className="bg-white/5 rounded p-2">
+                      <div className="text-neutral-500">Lane Changes</div>
+                      <div className="text-blue-400 font-medium">{run.laneChanges}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Trivia Answers */}
+      {trivia.length > 0 && (
+        <div className="bg-white/5 rounded-lg overflow-hidden">
+          <div className="px-4 py-2 border-b border-white/10 text-xs text-neutral-500">
+            Trivia Questions ({trivia.length} answered)
+          </div>
+          <div className="max-h-48 overflow-y-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-white/5 sticky top-0">
+                <tr>
+                  <th className="text-left px-3 py-2 text-neutral-500">Category</th>
+                  <th className="text-center px-3 py-2 text-neutral-500">Result</th>
+                  <th className="text-right px-3 py-2 text-neutral-500">Time</th>
+                  <th className="text-right px-3 py-2 text-neutral-500">Distance</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {trivia.map((t, i) => (
+                  <tr key={i} className="hover:bg-white/5">
+                    <td className="px-3 py-2 text-neutral-300">{t.category}</td>
+                    <td className="px-3 py-2 text-center">
+                      {t.timedOut ? (
+                        <span className="text-yellow-400">⏱️ Timeout</span>
+                      ) : t.correct ? (
+                        <span className="text-green-400">✅ Correct</span>
+                      ) : (
+                        <span className="text-red-400">❌ Wrong</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2 text-right text-neutral-400">
+                      {t.timeToAnswerMs ? `${(t.timeToAnswerMs / 1000).toFixed(1)}s` : '—'}
+                    </td>
+                    <td className="px-3 py-2 text-right text-neutral-400">
+                      {t.distanceAtQuestion ? formatDistance(t.distanceAtQuestion) : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

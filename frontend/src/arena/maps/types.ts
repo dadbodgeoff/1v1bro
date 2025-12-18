@@ -96,25 +96,25 @@ export interface LightPosition {
 /** Complete arena configuration - dimensions, colors, and structural parameters */
 export interface ArenaConfig {
   // Main dimensions
-  width: number;
-  depth: number;
-  wallHeight: number;
-  wallThickness: number;
-  ceilingHeight: number;
+  readonly width: number;
+  readonly depth: number;
+  readonly wallHeight: number;
+  readonly wallThickness: number;
+  readonly ceilingHeight: number;
 
   // Window configuration
-  windowHeight: number;
-  windowBottom: number;
-  windowWidth: number;
-  windowSpacing: number;
+  readonly windowHeight: number;
+  readonly windowBottom: number;
+  readonly windowWidth: number;
+  readonly windowSpacing: number;
 
   // Sub-configurations
-  tracks: TrackConfig;
-  platformEdge: PlatformEdgeConfig;
-  subwayEntrance: SubwayEntranceConfig;
-  spawns: SpawnPositionConfig;
-  lightPositions: LightPosition[];
-  colors: ColorConfig;
+  readonly tracks: Readonly<TrackConfig>;
+  readonly platformEdge: Readonly<PlatformEdgeConfig>;
+  readonly subwayEntrance: Readonly<SubwayEntranceConfig>;
+  readonly spawns: Readonly<SpawnPositionConfig>;
+  readonly lightPositions: readonly LightPosition[];
+  readonly colors: Readonly<ColorConfig>;
 }
 
 // ============================================================================

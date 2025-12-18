@@ -12,8 +12,9 @@ import { useState, useCallback, useRef } from 'react'
 import type { QuizQuestion } from '@/types/quiz'
 import { getRandomQuestions } from '@/data/fortnite-quiz-data'
 import { getRandomNflQuestions } from '@/data/nfl-quiz-data'
+import { getRandomMovieQuestions } from '@/data/movie-quiz-data'
 
-export type QuizCategory = 'fortnite' | 'nfl' | 'mixed'
+export type QuizCategory = 'fortnite' | 'nfl' | 'movies' | 'mixed'
 
 // ============================================
 // Types
@@ -89,13 +90,17 @@ export function useQuizRunner(
     switch (category) {
       case 'nfl':
         return getRandomNflQuestions(count)
+      case 'movies':
+        return getRandomMovieQuestions(count)
       case 'mixed':
-        // Mix both categories
-        const fortniteCount = Math.ceil(count / 2)
-        const nflCount = Math.floor(count / 2)
+        // Mix all categories
+        const fortniteCount = Math.ceil(count / 3)
+        const nflCount = Math.ceil(count / 3)
+        const movieCount = count - fortniteCount - nflCount
         return [
           ...getRandomQuestions(fortniteCount),
-          ...getRandomNflQuestions(nflCount)
+          ...getRandomNflQuestions(nflCount),
+          ...getRandomMovieQuestions(movieCount)
         ].sort(() => Math.random() - 0.5)
       case 'fortnite':
       default:

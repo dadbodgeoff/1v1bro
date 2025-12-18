@@ -39,6 +39,7 @@ class CosmeticsService:
         CosmeticType.TRAIL: "trail_equipped",
         CosmeticType.PLAYERCARD: "playercard_equipped",
         CosmeticType.RUNNER: "runner_equipped",
+        CosmeticType.ARENA_CHARACTER: "arena_character_equipped",
     }
     
     def __init__(

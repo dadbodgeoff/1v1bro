@@ -2,7 +2,7 @@
  * TriviaQuestionProvider - Bridges quiz data sources to the billboard system
  *
  * Features:
- * - Fetches questions from fortnite/nfl quiz data
+ * - Fetches questions from fortnite/nfl/movies quiz data
  * - Tracks used questions to avoid repeats
  * - Supports category filtering
  * - Pre-fetches question pool for performance
@@ -11,9 +11,10 @@
 import type { QuizQuestion } from '@/types/quiz'
 import { getRandomQuestions } from '@/data/fortnite-quiz-data'
 import { getRandomNflQuestions } from '@/data/nfl-quiz-data'
+import { getRandomMovieQuestions } from '@/data/movie-quiz-data'
 import type { TriviaQuestion } from './TriviaBillboard'
 
-export type TriviaCategory = 'fortnite' | 'nfl' | 'mixed'
+export type TriviaCategory = 'fortnite' | 'nfl' | 'movies' | 'mixed'
 
 export interface TriviaQuestionProviderConfig {
   category: TriviaCategory
@@ -101,12 +102,17 @@ export class TriviaQuestionProvider {
       case 'nfl':
         rawQuestions = getRandomNflQuestions(poolSize)
         break
+      case 'movies':
+        rawQuestions = getRandomMovieQuestions(poolSize)
+        break
       case 'mixed':
-        const fortniteCount = Math.ceil(poolSize / 2)
-        const nflCount = Math.floor(poolSize / 2)
+        const fortniteCount = Math.ceil(poolSize / 3)
+        const nflCount = Math.ceil(poolSize / 3)
+        const movieCount = poolSize - fortniteCount - nflCount
         rawQuestions = [
           ...getRandomQuestions(fortniteCount),
           ...getRandomNflQuestions(nflCount),
+          ...getRandomMovieQuestions(movieCount),
         ].sort(() => Math.random() - 0.5)
         break
       case 'fortnite':

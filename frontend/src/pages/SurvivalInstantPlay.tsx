@@ -40,6 +40,7 @@ import { leaderboardService } from '@/survival/services/LeaderboardService'
 import { getSurvivalGuestSession, type SurvivalRunResult } from '@/survival/guest'
 import { getRandomQuestions } from '@/data/fortnite-quiz-data'
 import { getRandomNflQuestions } from '@/data/nfl-quiz-data'
+import { getRandomMovieQuestions } from '@/data/movie-quiz-data'
 import type { TriviaStats } from '@/survival/hooks/useSurvivalTrivia'
 import type { TriviaCategory } from '@/survival/world/TriviaQuestionProvider'
 
@@ -58,6 +59,13 @@ const SURVIVAL_CATEGORIES = [
     icon: '🎮',
     description: 'Gaming trivia',
     color: '#A855F7',
+  },
+  {
+    id: 'movies' as TriviaCategory,
+    name: 'Movies',
+    icon: '🎬',
+    description: 'Film trivia',
+    color: '#F59E0B',
   },
 ] as const
 
@@ -369,9 +377,19 @@ function SurvivalInstantPlayContent() {
     if (!selectedCategory) return null
     
     // Get questions based on selected category
-    const allQuestions = selectedCategory === 'nfl' 
-      ? getRandomNflQuestions(50)
-      : getRandomQuestions(50)
+    let allQuestions
+    switch (selectedCategory) {
+      case 'nfl':
+        allQuestions = getRandomNflQuestions(50)
+        break
+      case 'movies':
+        allQuestions = getRandomMovieQuestions(50)
+        break
+      case 'fortnite':
+      default:
+        allQuestions = getRandomQuestions(50)
+        break
+    }
     
     const unusedQuestions = allQuestions.filter(q => !usedQuestionsRef.current.has(q.id))
     

@@ -758,6 +758,9 @@ async def get_sessions(
         session_ids = [s.get("session_id") for s in raw_sessions if s.get("session_id")]
         
         pageviews_by_session = {}
+        survival_by_session = {}
+        trivia_by_session = {}
+        
         if session_ids:
             # Fetch page views for these sessions
             pv_result = supabase.table("analytics_page_views").select(
@@ -769,6 +772,51 @@ async def get_sessions(
                 if sid not in pageviews_by_session:
                     pageviews_by_session[sid] = []
                 pageviews_by_session[sid].append(pv)
+            
+            # Fetch survival run data for these sessions
+            survival_result = supabase.table("survival_analytics_runs").select(
+                "session_id, distance, score, max_combo, death_obstacle_type"
+            ).in_("session_id", session_ids).execute()
+            
+            for run in survival_result.data or []:
+                sid = run.get("session_id")
+                if sid not in survival_by_session:
+                    survival_by_session[sid] = {
+                        "runs": 0, 
+                        "total_distance": 0, 
+                        "best_distance": 0,
+                        "best_score": 0,
+                        "best_combo": 0,
+                        "deaths": {}
+                    }
+                survival_by_session[sid]["runs"] += 1
+                run_distance = run.get("distance", 0) or 0
+                survival_by_session[sid]["total_distance"] += run_distance
+                # Track best run metrics
+                if run_distance > survival_by_session[sid]["best_distance"]:
+                    survival_by_session[sid]["best_distance"] = run_distance
+                run_score = run.get("score", 0) or 0
+                if run_score > survival_by_session[sid]["best_score"]:
+                    survival_by_session[sid]["best_score"] = run_score
+                run_combo = run.get("max_combo", 0) or 0
+                if run_combo > survival_by_session[sid]["best_combo"]:
+                    survival_by_session[sid]["best_combo"] = run_combo
+                death = run.get("death_obstacle_type")
+                if death:
+                    survival_by_session[sid]["deaths"][death] = survival_by_session[sid]["deaths"].get(death, 0) + 1
+            
+            # Fetch trivia data for these sessions
+            trivia_result = supabase.table("survival_analytics_trivia").select(
+                "session_id, correct"
+            ).in_("session_id", session_ids).execute()
+            
+            for t in trivia_result.data or []:
+                sid = t.get("session_id")
+                if sid not in trivia_by_session:
+                    trivia_by_session[sid] = {"total": 0, "correct": 0}
+                trivia_by_session[sid]["total"] += 1
+                if t.get("correct"):
+                    trivia_by_session[sid]["correct"] += 1
         
         # Transform sessions to frontend format
         transformed = []
@@ -806,6 +854,14 @@ async def get_sessions(
             entry_page = pvs[0].get("page", "/") if pvs else "/"
             exit_page = pvs[-1].get("page", "/") if pvs else "/"
             
+            # Get survival data for this session
+            survival_data = survival_by_session.get(sid, {})
+            trivia_data = trivia_by_session.get(sid, {})
+            
+            # Find top death cause
+            deaths = survival_data.get("deaths", {})
+            top_death = max(deaths.items(), key=lambda x: x[1])[0] if deaths else None
+            
             transformed.append({
                 "session_id": sid,
                 "user_id": s.get("user_id"),
@@ -818,6 +874,15 @@ async def get_sessions(
                 "os": s.get("os", "Unknown"),
                 "entry_page": entry_page,
                 "exit_page": exit_page,
+                # Survival data
+                "survival_runs": survival_data.get("runs", 0),
+                "survival_distance": round(survival_data.get("total_distance", 0), 2),
+                "survival_best_distance": round(survival_data.get("best_distance", 0), 2),
+                "survival_best_score": survival_data.get("best_score", 0),
+                "survival_best_combo": survival_data.get("best_combo", 0),
+                "survival_top_death": top_death,
+                "trivia_answered": trivia_data.get("total", 0),
+                "trivia_correct": trivia_data.get("correct", 0),
             })
         
         total_count = sessions_result.count or len(transformed)
@@ -980,6 +1045,118 @@ async def get_session_events(
             "session": session_details,
             "events": events,
             "pageviews": pageviews,
+        })
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+@router.get("/dashboard/session/{session_id}/survival")
+async def get_session_survival_data(
+    session_id: str,
+    _admin=Depends(require_admin)
+):
+    """
+    Get survival run data for a specific session.
+    Tracks: distance traveled, questions answered, play again count, death causes.
+    
+    Used by the Session Explorer modal to show survival gameplay details.
+    """
+    try:
+        supabase = get_supabase_service_client()
+        
+        # Get all survival runs for this session
+        runs_result = supabase.table("survival_analytics_runs").select(
+            "id, run_id, distance, score, duration_seconds, max_combo, "
+            "obstacles_cleared, near_misses, jumps, slides, lane_changes, "
+            "death_obstacle_type, death_lane, speed_at_death, "
+            "created_at, ended_at"
+        ).eq("session_id", session_id).order("created_at", desc=False).execute()
+        
+        runs = runs_result.data or []
+        
+        # Get trivia questions answered in this session
+        trivia_result = supabase.table("survival_analytics_trivia").select(
+            "id, category, difficulty, correct, timed_out, time_to_answer_ms, "
+            "distance_at_question, streak_before, created_at"
+        ).eq("session_id", session_id).order("created_at", desc=False).execute()
+        
+        trivia = trivia_result.data or []
+        
+        # Calculate summary stats
+        total_runs = len(runs)
+        total_distance = sum(r.get("distance", 0) or 0 for r in runs)
+        max_distance = max((r.get("distance", 0) or 0 for r in runs), default=0)
+        total_playtime = sum(r.get("duration_seconds", 0) or 0 for r in runs)
+        
+        # Questions answered
+        total_questions = len(trivia)
+        correct_answers = sum(1 for t in trivia if t.get("correct"))
+        timed_out = sum(1 for t in trivia if t.get("timed_out"))
+        
+        # Death analysis
+        death_causes = {}
+        for run in runs:
+            death_type = run.get("death_obstacle_type")
+            if death_type:
+                death_causes[death_type] = death_causes.get(death_type, 0) + 1
+        
+        # Sort death causes by frequency
+        sorted_deaths = sorted(death_causes.items(), key=lambda x: x[1], reverse=True)
+        
+        # Play again tracking (runs after the first one)
+        play_again_count = max(0, total_runs - 1)
+        
+        # Format runs for timeline
+        formatted_runs = []
+        for i, run in enumerate(runs):
+            formatted_runs.append({
+                "runNumber": i + 1,
+                "distance": run.get("distance", 0),
+                "score": run.get("score", 0),
+                "duration": run.get("duration_seconds", 0),
+                "maxCombo": run.get("max_combo", 0),
+                "obstaclesCleared": run.get("obstacles_cleared", 0),
+                "nearMisses": run.get("near_misses", 0),
+                "jumps": run.get("jumps", 0),
+                "slides": run.get("slides", 0),
+                "laneChanges": run.get("lane_changes", 0),
+                "deathCause": run.get("death_obstacle_type"),
+                "deathLane": run.get("death_lane"),
+                "speedAtDeath": run.get("speed_at_death"),
+                "startedAt": run.get("created_at"),
+                "endedAt": run.get("ended_at"),
+            })
+        
+        # Format trivia for display
+        formatted_trivia = []
+        for t in trivia:
+            formatted_trivia.append({
+                "category": t.get("category"),
+                "difficulty": t.get("difficulty"),
+                "correct": t.get("correct"),
+                "timedOut": t.get("timed_out"),
+                "timeToAnswerMs": t.get("time_to_answer_ms"),
+                "distanceAtQuestion": t.get("distance_at_question"),
+                "streakBefore": t.get("streak_before"),
+                "timestamp": t.get("created_at"),
+            })
+        
+        return APIResponse.ok({
+            "summary": {
+                "totalRuns": total_runs,
+                "playAgainCount": play_again_count,
+                "totalDistance": round(total_distance, 2),
+                "maxDistance": round(max_distance, 2),
+                "totalPlaytimeSeconds": round(total_playtime, 2),
+                "questionsAnswered": total_questions,
+                "correctAnswers": correct_answers,
+                "timedOutAnswers": timed_out,
+                "correctRate": round(correct_answers / total_questions * 100, 2) if total_questions > 0 else 0,
+                "deathCauses": sorted_deaths,
+                "topDeathCause": sorted_deaths[0][0] if sorted_deaths else None,
+            },
+            "runs": formatted_runs,
+            "trivia": formatted_trivia,
         })
     except Exception as e:
         return APIResponse.fail(str(e), "ANALYTICS_ERROR")

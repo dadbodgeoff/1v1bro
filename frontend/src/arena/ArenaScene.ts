@@ -10,6 +10,7 @@
 
 import * as THREE from 'three'
 import { ARENA_CONFIG } from './config/ArenaConfig'
+import { AbandonedTerminalMap } from './maps/definitions/AbandonedTerminalMap'
 import { createArenaMaterials, disposeMaterials, type ArenaMaterials } from './materials/ArenaMaterials'
 import {
   createFloor,
@@ -167,15 +168,15 @@ export class ArenaScene {
   }
   
   private buildArena(): void {
-    // Create geometry
-    const floor = createFloor(this.materials)
-    const ceiling = createCeiling(this.materials)
-    const walls = createWalls(this.materials)
-    const trackChannel = createTrackChannel(this.materials)
-    const platformEdges = createPlatformEdges(this.materials)
+    // Create geometry using ARENA_CONFIG
+    const floor = createFloor(this.materials, ARENA_CONFIG)
+    const ceiling = createCeiling(this.materials, ARENA_CONFIG)
+    const walls = createWalls(this.materials, ARENA_CONFIG)
+    const trackChannel = createTrackChannel(this.materials, ARENA_CONFIG)
+    const platformEdges = createPlatformEdges(this.materials, ARENA_CONFIG)
     const subwayTrain = createSubwayTrain()
     const lights = createHangingLights(this.materials)
-    const ambientLighting = createAmbientLighting()
+    const ambientLighting = createAmbientLighting(AbandonedTerminalMap.lightingConfig)
     
     // Batch static geometry for fewer draw calls
     // NOTE: Floor, walls, ceiling are NOT batched so we can apply textures to them

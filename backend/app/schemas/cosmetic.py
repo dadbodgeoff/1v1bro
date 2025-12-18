@@ -26,6 +26,7 @@ class CosmeticType(str, Enum):
     TRAIL = "trail"
     PLAYERCARD = "playercard"  # Full-art player cards for lobby display
     RUNNER = "runner"  # Survival mode character skins
+    ARENA_CHARACTER = "arena_character"  # Arena mode 3D character skins
 
 
 class Rarity(str, Enum):
@@ -40,6 +41,28 @@ class Rarity(str, Enum):
 # ============================================
 # Cosmetic Schemas
 # ============================================
+
+class ArenaCharacterAnimations(BaseSchema):
+    """Animation URLs for arena character skins."""
+    idle: Optional[str] = None
+    walk: Optional[str] = None
+    run: Optional[str] = None
+    sprint: Optional[str] = None
+    jump: Optional[str] = None
+    jumpLand: Optional[str] = None
+    crouch: Optional[str] = None
+    crouchWalk: Optional[str] = None
+    slide: Optional[str] = None
+    roll: Optional[str] = None
+    shoot: Optional[str] = None
+    reload: Optional[str] = None
+    reloadKneeling: Optional[str] = None
+    hitReact: Optional[str] = None
+    death: Optional[str] = None
+    walkBackward: Optional[str] = None
+    walkLeft: Optional[str] = None
+    lookAround: Optional[str] = None
+
 
 class Cosmetic(BaseSchema):
     """Cosmetic item definition from catalog."""
@@ -63,6 +86,8 @@ class Cosmetic(BaseSchema):
     sprite_meta_url: Optional[str] = Field(None, description="Sprite metadata URL")
     skin_id: Optional[str] = Field(None, description="Static bundled skin ID")
     model_url: Optional[str] = Field(None, description="3D GLB model URL for interactive shop preview")
+    # Arena character specific (type: arena_character)
+    arena_animations: Optional[ArenaCharacterAnimations] = Field(None, description="Animation URLs for arena characters")
 
 
 class CosmeticCreate(BaseSchema):
@@ -119,6 +144,7 @@ class Loadout(BaseSchema):
     trail_equipped: Optional[Cosmetic] = Field(None, description="Equipped trail")
     playercard_equipped: Optional[Cosmetic] = Field(None, description="Equipped playercard for lobby display")
     runner_equipped: Optional[Cosmetic] = Field(None, description="Equipped runner for survival mode")
+    arena_character_equipped: Optional[Cosmetic] = Field(None, description="Equipped arena character skin")
     updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
 
@@ -134,6 +160,7 @@ class LoadoutSimple(BaseSchema):
     trail_equipped: Optional[str] = None
     playercard_equipped: Optional[str] = None
     runner_equipped: Optional[str] = None
+    arena_character_equipped: Optional[str] = None
 
 
 # ============================================

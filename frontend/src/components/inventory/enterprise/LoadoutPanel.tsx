@@ -44,6 +44,7 @@ export const SLOT_ICONS: Record<CosmeticType, string> = {
   trail: '🌟',
   playercard: '🎴',
   runner: '🏃',
+  arena_character: '🎮',
 }
 
 export function LoadoutPanel({
