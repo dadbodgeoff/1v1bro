@@ -169,6 +169,73 @@ describe('SpawnSystem', () => {
     });
   });
 
+  describe('Property Tests', () => {
+    /**
+     * **Feature: arena-map-registry, Property 5: Spawn Point Validity**
+     * **Validates: Requirements 7.3**
+     *
+     * For any SpawnManifest, spawn operations should return positions
+     * that exist in the manifest's spawn points.
+     */
+    it('Property 5: spawn operations return positions from manifest', () => {
+      fc.assert(
+        fc.property(
+          // Generate random spawn manifests
+          fc.record({
+            spawnPoints: fc.array(
+              fc.record({
+                id: fc.string({ minLength: 1, maxLength: 20 }),
+                position: fc.tuple(
+                  fc.float({ min: Math.fround(-100), max: Math.fround(100), noNaN: true }),
+                  fc.float({ min: Math.fround(-10), max: Math.fround(10), noNaN: true }),
+                  fc.float({ min: Math.fround(-100), max: Math.fround(100), noNaN: true })
+                ),
+              }),
+              { minLength: 1, maxLength: 10 }
+            ),
+            arenaCenter: fc.tuple(
+              fc.float({ min: Math.fround(-50), max: Math.fround(50), noNaN: true }),
+              fc.constant(0),
+              fc.float({ min: Math.fround(-50), max: Math.fround(50), noNaN: true })
+            ),
+          }),
+          // Generate random enemy positions
+          fc.array(
+            fc.record({
+              x: fc.float({ min: Math.fround(-100), max: Math.fround(100), noNaN: true }),
+              y: fc.constant(0),
+              z: fc.float({ min: Math.fround(-100), max: Math.fround(100), noNaN: true }),
+            }),
+            { minLength: 0, maxLength: 5 }
+          ),
+          (manifest, enemyPositions) => {
+            const system = new SpawnSystem();
+            system.loadManifest(manifest as SpawnManifest);
+
+            const enemies = enemyPositions.map((p) => new Vector3(p.x, p.y, p.z));
+            const selected = system.selectSpawnPoint(1, enemies);
+
+            // The selected spawn point ID should be one from the manifest
+            const manifestIds = manifest.spawnPoints.map((sp) => sp.id);
+            expect(manifestIds).toContain(selected.id);
+
+            // The selected position should match one from the manifest
+            const matchingManifestPoint = manifest.spawnPoints.find((sp) => sp.id === selected.id);
+            expect(matchingManifestPoint).toBeDefined();
+
+            if (matchingManifestPoint) {
+              // Use tolerance of 3 decimal places for floating point comparison
+              expect(selected.position.x).toBeCloseTo(matchingManifestPoint.position[0], 3);
+              expect(selected.position.y).toBeCloseTo(matchingManifestPoint.position[1], 3);
+              expect(selected.position.z).toBeCloseTo(matchingManifestPoint.position[2], 3);
+            }
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+
   describe('Edge Cases', () => {
     it('handles spawn at arena center', () => {
       const system = new SpawnSystem();

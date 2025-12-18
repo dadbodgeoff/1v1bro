@@ -10,18 +10,18 @@
 - [x] Define CoverPosition, AggressionModifiers
 
 ### Task 1.2: Aggression Curve
-- [ ] Create `frontend/src/arena/bot/AggressionCurve.ts`
-- [ ] Implement wave-based aggression calculation
-- [ ] Add score/health/time modifiers
-- [ ] Add trend detection (rising/falling/peak/valley)
-- [ ] Unit tests for wave math and modifiers
+- [x] Create `frontend/src/arena/bot/AggressionCurve.ts`
+- [x] Implement wave-based aggression calculation
+- [x] Add score/health/time modifiers
+- [x] Add trend detection (rising/falling/peak/valley)
+- [x] Unit tests for wave math and modifiers
 
 ### Task 1.3: Mercy System
-- [ ] Create `frontend/src/arena/bot/MercySystem.ts`
-- [ ] Implement domination score tracking
-- [ ] Add mercy activation/deactivation logic
-- [ ] Add aggression multiplier output
-- [ ] Unit tests for domination calculation
+- [x] Create `frontend/src/arena/bot/MercySystem.ts`
+- [x] Implement domination score tracking
+- [x] Add mercy activation/deactivation logic
+- [x] Add aggression multiplier output
+- [x] Unit tests for domination calculation
 
 ## Phase 2: Tactical Systems (~2.5 hours)
 

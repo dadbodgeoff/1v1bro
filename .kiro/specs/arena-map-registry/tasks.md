@@ -171,8 +171,8 @@
 - [x] 9. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Refactor ArenaScene to use LoadedMap
-  - [ ] 10.1 Update ArenaScene constructor
+- [x] 10. Refactor ArenaScene to use LoadedMap
+  - [x] 10.1 Update ArenaScene constructor
     - Change constructor to accept LoadedMap parameter
     - Store loadedMap as instance property
     - Pass config to geometry builders
@@ -180,29 +180,29 @@
     - Use pre-loaded textures and models
     - _Requirements: 6.1-6.4_
 
-  - [ ] 10.2 Update ArenaScene dispose method
+  - [x] 10.2 Update ArenaScene dispose method
     - Dispose all textures from LoadedMap
     - Dispose all models from LoadedMap
     - _Requirements: 6.5_
 
-  - [ ] 10.3 Write unit tests for ArenaScene with LoadedMap
+  - [x] 10.3 Write unit tests for ArenaScene with LoadedMap
     - Test constructor accepts LoadedMap
     - Test scene uses config dimensions
     - Test dispose cleans up resources
     - _Requirements: 6.1-6.5_
 
-- [ ] 11. Update game systems to use LoadedMap
-  - [ ] 11.1 Update CollisionWorld initialization
+- [x] 11. Update game systems to use LoadedMap
+  - [x] 11.1 Update CollisionWorld initialization
     - Accept collisionManifest from LoadedMap
     - Remove direct import of ABANDONED_TERMINAL_COLLISION_MANIFEST
     - _Requirements: 7.1, 7.4_
 
-  - [ ] 11.2 Update SpawnSystem initialization
+  - [x] 11.2 Update SpawnSystem initialization
     - Accept spawnManifest from LoadedMap
     - Remove direct import of ABANDONED_TERMINAL_SPAWN_MANIFEST
     - _Requirements: 7.2_
 
-  - [ ] 11.3 Write property test for spawn point validity
+  - [x] 11.3 Write property test for spawn point validity
     - **Property 5: Spawn Point Validity**
     - Generate random SpawnManifest
     - Verify spawn operations return positions from manifest
