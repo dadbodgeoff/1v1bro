@@ -28,6 +28,7 @@ const TEXTURE_URLS = {
 };
 
 const MODEL_URLS = {
+  // Original train with baked transforms (98k tris but correct scale)
   train: `${ASSET_BASE}/train2-optimized.glb`,
   subwayEntrance: `${ASSET_BASE}/subway.glb`,
   cart: `${ASSET_BASE}/underground-cart-optimized.glb`,
@@ -86,11 +87,16 @@ const LIGHTING_CONFIG: LightingConfig = {
     { type: 'tunnelGlow', color: 0x445566, intensity: 5, position: { x: 0, y: 1, z: -22 }, distance: 15, decay: 1.5, name: 'tunnel-glow-0' },
     { type: 'tunnelGlow', color: 0x445566, intensity: 5, position: { x: 0, y: 1, z: 22 }, distance: 15, decay: 1.5, name: 'tunnel-glow-1' },
 
-    // Wall wash (texture enhancement)
-    { type: 'wallWash', color: 0xeef4ff, intensity: 4.5, position: { x: 0, y: 1.5, z: -18 }, distance: 18, decay: 1.8, name: 'wall-wash-n' },
-    { type: 'wallWash', color: 0xeef4ff, intensity: 4.5, position: { x: 0, y: 1.5, z: 18 }, distance: 18, decay: 1.8, name: 'wall-wash-s' },
-    { type: 'wallWash', color: 0xeef4ff, intensity: 4.5, position: { x: 16, y: 1.5, z: 0 }, distance: 18, decay: 1.8, name: 'wall-wash-e' },
-    { type: 'wallWash', color: 0xeef4ff, intensity: 4.5, position: { x: -16, y: 1.5, z: 0 }, distance: 18, decay: 1.8, name: 'wall-wash-w' },
+    // Wall wash (texture enhancement) - boosted for better texture visibility
+    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: 0, y: 2.5, z: -18 }, distance: 22, decay: 1.5, name: 'wall-wash-n' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: 0, y: 2.5, z: 18 }, distance: 22, decay: 1.5, name: 'wall-wash-s' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: 16, y: 2.5, z: 0 }, distance: 22, decay: 1.5, name: 'wall-wash-e' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: -16, y: 2.5, z: 0 }, distance: 22, decay: 1.5, name: 'wall-wash-w' },
+    // Additional corner wall washes for better coverage
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: -14, y: 2, z: -16 }, distance: 14, decay: 1.6, name: 'wall-wash-nw' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: 14, y: 2, z: -16 }, distance: 14, decay: 1.6, name: 'wall-wash-ne' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: -14, y: 2, z: 16 }, distance: 14, decay: 1.6, name: 'wall-wash-sw' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: 14, y: 2, z: 16 }, distance: 14, decay: 1.6, name: 'wall-wash-se' },
   ],
 };
 

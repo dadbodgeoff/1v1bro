@@ -12,9 +12,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { ArenaScene, ARENA_CONFIG } from '@/arena'
+import { ArenaScene } from '@/arena'
 import { ArenaRenderer } from '@/arena/rendering/ArenaRenderer'
-import { ABANDONED_TERMINAL_COLLISION_MANIFEST } from '@/arena/config/AbandonedTerminalManifest'
+import { MapLoader } from '@/arena/maps/MapLoader'
+import type { LoadedMap } from '@/arena/maps/MapLoader'
+import '@/arena/maps/definitions' // Register maps
 
 // Color map for different collider types
 const COLLIDER_COLORS: Record<string, number> = {
@@ -156,7 +158,7 @@ export default function ArenaMapViewer() {
   }, [])
   
   // Toggle collision box visualization
-  const updateColliderHelpers = useCallback((scene: THREE.Scene, show: boolean) => {
+  const updateColliderHelpers = useCallback((scene: THREE.Scene, show: boolean, loadedMap: LoadedMap | null) => {
     // Remove existing collider helpers
     colliderHelpersRef.current.forEach(helper => {
       scene.remove(helper)
@@ -169,8 +171,8 @@ export default function ArenaMapViewer() {
     })
     colliderHelpersRef.current = []
     
-    if (show) {
-      ABANDONED_TERMINAL_COLLISION_MANIFEST.colliders.forEach((collider) => {
+    if (show && loadedMap) {
+      loadedMap.definition.collisionManifest.colliders.forEach((collider) => {
         const color = getColliderColor(collider.id)
         
         // Wireframe box
@@ -210,26 +212,50 @@ export default function ArenaMapViewer() {
       setSceneObjects(collectSceneObjects(sceneRef.current))
     }
   }, [])
+
+  // Store loadedMap ref for collider helpers
+  const loadedMapRef = useRef<LoadedMap | null>(null)
+  const [mapLoading, setMapLoading] = useState(true)
+  const [mapLoadError, setMapLoadError] = useState<string | null>(null)
   
   useEffect(() => {
     if (!containerRef.current) return
+
+    let cleanup: (() => void) | null = null
+    const mapLoader = new MapLoader()
+
+    const initViewer = async () => {
+      setMapLoading(true)
+      setMapLoadError(null)
+
+      // Load map using MapLoader
+      const mapResult = await mapLoader.load('abandoned_terminal')
+      if (!mapResult.ok) {
+        setMapLoadError(mapResult.error.message)
+        setMapLoading(false)
+        return
+      }
+
+      const loadedMap = mapResult.value
+      loadedMapRef.current = loadedMap
+      setMapLoading(false)
     
-    // Create arena scene
-    const arenaScene = new ArenaScene()
-    sceneRef.current = arenaScene.scene
+      // Create arena scene with loaded map
+      const arenaScene = new ArenaScene(loadedMap)
+      sceneRef.current = arenaScene.scene
     
-    // Camera - start with side view of train
-    const camera = new THREE.PerspectiveCamera(
-      70,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      100
-    )
-    camera.position.set(15, 3, 0)
-    cameraRef.current = camera
+      // Camera - start with side view of train
+      const camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      )
+      camera.position.set(15, 3, 0)
+      cameraRef.current = camera
     
-    // Create enterprise renderer
-    const arenaRenderer = new ArenaRenderer(null, {
+      // Create enterprise renderer
+      const arenaRenderer = new ArenaRenderer(null, {
       antialias: true,
       shadows: true,
       shadowMapSize: 2048,
@@ -253,7 +279,7 @@ export default function ArenaMapViewer() {
       },
     })
     
-    containerRef.current.appendChild(arenaRenderer.renderer.domElement)
+    containerRef.current!.appendChild(arenaRenderer.renderer.domElement)
     arenaRenderer.setSize(window.innerWidth, window.innerHeight)
     
     // Initialize renderer with scene
@@ -329,7 +355,7 @@ export default function ArenaMapViewer() {
           // Toggle collision boxes
           showCollidersRef.current = !showCollidersRef.current
           setShowColliders(showCollidersRef.current)
-          updateColliderHelpers(arenaScene.scene, showCollidersRef.current)
+          updateColliderHelpers(arenaScene.scene, showCollidersRef.current, loadedMapRef.current)
           break
       }
     }
@@ -382,22 +408,45 @@ export default function ArenaMapViewer() {
     // Store renderer ref for post-processing toggle
     const rendererRef = arenaRenderer
     
-    // Cleanup
-    return () => {
-      cancelAnimationFrame(animationId)
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('keydown', handleKeyDown)
-      rendererRef.dispose()
-      arenaScene.dispose()
-      if (containerRef.current?.contains(rendererRef.renderer.domElement)) {
-        containerRef.current.removeChild(rendererRef.renderer.domElement)
+      // Cleanup function
+      cleanup = () => {
+        cancelAnimationFrame(animationId)
+        window.removeEventListener('resize', handleResize)
+        window.removeEventListener('keydown', handleKeyDown)
+        rendererRef.dispose()
+        arenaScene.dispose()
+        if (containerRef.current?.contains(rendererRef.renderer.domElement)) {
+          containerRef.current.removeChild(rendererRef.renderer.domElement)
+        }
       }
     }
-  }, [setCamera])
+
+    // Start initialization
+    initViewer()
+
+    // Return cleanup
+    return () => {
+      if (cleanup) cleanup()
+    }
+  }, [setCamera, updateDebugHelpers, updateColliderHelpers])
   
   return (
     <div className="relative w-full h-screen bg-black">
       <div ref={containerRef} className="w-full h-full" />
+
+      {/* Loading overlay */}
+      {mapLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/90">
+          <div className="text-amber-400 text-xl">Loading map...</div>
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {mapLoadError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/90">
+          <div className="text-red-400 text-xl">Error: {mapLoadError}</div>
+        </div>
+      )}
       
       {/* Info overlay */}
       <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-white">
@@ -464,9 +513,9 @@ export default function ArenaMapViewer() {
       
       {/* Dimensions info */}
       <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm p-3 rounded-xl border border-white/10 text-xs text-gray-400">
-        <p>Floor: {ARENA_CONFIG.width}m × {ARENA_CONFIG.depth}m</p>
-        <p>Ceiling: {ARENA_CONFIG.ceilingHeight}m</p>
-        <p>Track: {ARENA_CONFIG.tracks.width}m wide, {ARENA_CONFIG.tracks.depth}m deep</p>
+        <p>Floor: 36m × 40m</p>
+        <p>Ceiling: 6m</p>
+        <p>Track: 5m wide, 0.6m deep</p>
         <p>Subway Entrances: 2 (diagonal corners)</p>
       </div>
       
@@ -545,7 +594,7 @@ export default function ArenaMapViewer() {
                   showCollidersRef.current = e.target.checked
                   setShowColliders(e.target.checked)
                   if (sceneRef.current) {
-                    updateColliderHelpers(sceneRef.current, e.target.checked)
+                    updateColliderHelpers(sceneRef.current, e.target.checked, loadedMapRef.current)
                   }
                 }}
                 className="rounded accent-yellow-500"

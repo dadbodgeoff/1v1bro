@@ -28,3 +28,10 @@ export {
 export {
   useArenaCharacter,
 } from './useArenaCharacter'
+
+export {
+  WeaponBuilder,
+  setupWeaponCamera,
+  WEAPONS,
+  type WeaponDefinition,
+} from './WeaponBuilder'

@@ -17,7 +17,9 @@ import { DRACO_DECODER_PATH, type ArenaConfig } from '../maps/types'
 // @deprecated Use MapLoader to load models instead
 const TRAIN_URL = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/train2-optimized.glb'
 
-// Scale factor to adjust train size (1.0 = original, 0.5 = half size)
+// Scale factor to adjust train size
+// Original train2-optimized.glb has baked transforms (~9m × 12m × 26m at scale 1.0)
+// Scale 0.5 gives us ~4.5m × 6m × 13m which fits the station well
 const TRAIN_SCALE = 0.5
 
 // @deprecated Use DRACO_DECODER_PATH from maps/types.ts
@@ -156,10 +158,13 @@ export function placeSubwayTrain(
   const train = preloadedModel.clone()
   train.name = 'subway-train-glb'
 
+  // Original train2-optimized.glb has correct orientation baked in
+  // No rotation needed
+
   // Apply scale factor
   train.scale.setScalar(TRAIN_SCALE)
 
-  // Recalculate bounds after scaling
+  // Recalculate bounds after scaling and rotation
   const box = new THREE.Box3().setFromObject(train)
   const size = box.getSize(new THREE.Vector3())
   const center = box.getCenter(new THREE.Vector3())

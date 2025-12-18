@@ -134,7 +134,7 @@ export class SignatureMoveTracker {
   private cooldowns: Map<string, number> = new Map();
   private currentSignature: SignatureMove | null = null;
   private currentPatternIndex: number = 0;
-  private _signatureStartTime: number = 0;
+  private signatureStartTime: number = 0;
   private state: SignatureState = 'idle';
   private enabled: boolean;
 
@@ -201,7 +201,7 @@ export class SignatureMoveTracker {
   startSignature(signature: SignatureMove): void {
     this.currentSignature = signature;
     this.currentPatternIndex = 0;
-    this._signatureStartTime = Date.now();
+    this.signatureStartTime = Date.now();
     this.state = 'executing';
   }
 
@@ -210,6 +210,14 @@ export class SignatureMoveTracker {
    */
   isExecuting(): boolean {
     return this.state === 'executing' && this.currentSignature !== null;
+  }
+
+  /**
+   * Get elapsed time since signature started (ms)
+   */
+  getSignatureElapsedMs(): number {
+    if (!this.isExecuting()) return 0;
+    return Date.now() - this.signatureStartTime;
   }
 
   /**

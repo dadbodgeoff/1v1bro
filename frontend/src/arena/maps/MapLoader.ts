@@ -10,6 +10,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import type { Result } from '../core/Result';
 import { Ok, Err } from '../core/Result';
 import { MapRegistry } from './MapRegistry';
@@ -112,6 +113,7 @@ export class MapLoader {
 
     this.gltfLoader = new GLTFLoader();
     this.gltfLoader.setDRACOLoader(this.dracoLoader);
+    this.gltfLoader.setMeshoptDecoder(MeshoptDecoder);
   }
 
   /**

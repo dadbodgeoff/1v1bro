@@ -4,6 +4,23 @@
  * Collision geometry and spawn points for the Abandoned Terminal arena map.
  * Based on ARENA_CONFIG dimensions.
  * 
+ * @deprecated Use MapRegistry and MapLoader instead.
+ * Import map definitions from '@/arena/maps/definitions' which auto-register
+ * with MapRegistry. Then use MapLoader to load the map and access manifests
+ * from LoadedMap.definition.collisionManifest and LoadedMap.definition.spawnManifest.
+ * 
+ * Example:
+ * ```typescript
+ * import '@/arena/maps/definitions';
+ * import { MapLoader } from '@/arena/maps/MapLoader';
+ * 
+ * const loader = new MapLoader();
+ * const result = await loader.load('abandoned_terminal');
+ * if (result.ok) {
+ *   const { collisionManifest, spawnManifest } = result.value.definition;
+ * }
+ * ```
+ * 
  * @module config/AbandonedTerminalManifest
  */
 

@@ -1,6 +1,23 @@
 /**
  * ArenaConfig - All arena dimensions and settings
  * Single source of truth for the Abandoned Terminal map
+ * 
+ * @deprecated Use MapRegistry and MapLoader instead.
+ * Import map definitions from '@/arena/maps/definitions' which auto-register
+ * with MapRegistry. Then use MapLoader to load the map and access arenaConfig
+ * from LoadedMap.definition.arenaConfig.
+ * 
+ * Example:
+ * ```typescript
+ * import '@/arena/maps/definitions';
+ * import { MapLoader } from '@/arena/maps/MapLoader';
+ * 
+ * const loader = new MapLoader();
+ * const result = await loader.load('abandoned_terminal');
+ * if (result.ok) {
+ *   const { arenaConfig } = result.value.definition;
+ * }
+ * ```
  */
 
 export const ARENA_CONFIG = {

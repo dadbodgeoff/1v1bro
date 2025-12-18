@@ -50,8 +50,9 @@ export default defineConfig({
     },
   },
   // Strip console.log and debugger statements in production builds
+  // TEMP: Disabled for bot debugging
   esbuild: {
-    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
+    drop: [], // process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
   },
   server: {
     proxy: {

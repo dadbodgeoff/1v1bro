@@ -33,7 +33,7 @@ export interface CombatConfig {
  * Default combat configuration
  */
 export const DEFAULT_COMBAT_CONFIG: CombatConfig = {
-  weaponDamage: 25,
+  weaponDamage: 8,
   weaponRange: 100,
   fireRateCooldownMs: 200,
   respawnTimeMs: 3000,

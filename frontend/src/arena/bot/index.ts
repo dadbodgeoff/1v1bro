@@ -7,6 +7,14 @@
 // Main orchestrator
 export { CombatConductor } from './CombatConductor';
 
+// Integration classes
+export { BotPlayer } from './BotPlayer';
+export type { BotPlayerConfig, BotPlayerState, BotMatchContext } from './BotPlayer';
+export { BotMatchManager } from './BotMatchManager';
+export type { BotMatchConfig, MatchState, MatchResult } from './BotMatchManager';
+export { BotDebugOverlay } from './BotDebugOverlay';
+export type { BotDebugConfig, TacticalIntent } from './BotDebugOverlay';
+
 // Subsystems (for advanced usage/testing)
 export { AggressionCurve } from './AggressionCurve';
 export { MercySystem } from './MercySystem';
@@ -18,6 +26,65 @@ export { EngagementComposer } from './EngagementComposer';
 export { AimController } from './AimController';
 export { SpatialAwareness } from './SpatialAwareness';
 export type { SafetyEvaluation, PathResult } from './SpatialAwareness';
+
+// Navigation
+export {
+  createAbandonedTerminalNavGraph,
+  findPath,
+  findNearestWaypoint,
+  getRandomWaypoint,
+  getWaypointsInArea,
+} from './NavigationGraph';
+export type { NavWaypoint, NavGraph } from './NavigationGraph';
+
+// Tactical Navigation (Map-aware lanes and angles)
+export { TacticalNavigator } from './TacticalNavigator';
+export type { NavigatorState, NavigatorOutput, TacticalDebugLog } from './TacticalNavigator';
+export {
+  MAP_TACTICS,
+  gridToWorld,
+  worldToGrid,
+  selectPushingLane,
+  selectRetreatLane,
+  findNearestSmartAngle,
+  getAnglesForCoverage,
+  isAtChokepoint,
+  getNearestChokepoint,
+  calculateFlankPosition,
+  getMapSide,
+  isNearSpawn,
+  isOnTrack,
+  calculatePathCost,
+  laneUsesTrack,
+} from './MapTactics';
+export type {
+  TacticalWaypoint,
+  TacticalLane,
+  SmartAngle,
+  MapTacticsData,
+  LaneSelectionContext,
+} from './MapTactics';
+
+// Tactical Plays (macro-goal definitions)
+export {
+  TACTICAL_PLAYS,
+  getStartZone,
+  worldToGrid as tacticalWorldToGrid,
+} from './TacticalPlays';
+export type {
+  TacticalPlay,
+  TacticalWaypoint as TacticalPlayWaypoint,
+  PlayType,
+  StartZone,
+} from './TacticalPlays';
+
+// Tactical Evaluator (play scoring and selection)
+export { TacticalEvaluator } from './TacticalEvaluator';
+export type {
+  EvaluatorContext,
+  PlayScore,
+  ActivePlay,
+} from './TacticalEvaluator';
 
 // Personality and difficulty
 export {

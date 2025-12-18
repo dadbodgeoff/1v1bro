@@ -74,6 +74,33 @@ export const DEFAULT_ARENA_SKIN: ArenaCharacterSkin = {
 }
 
 /**
+ * Forbidden character skin - Uses the same Meshy AI character with animations
+ * This is an alias to DEFAULT_ARENA_SKIN for now until a unique Forbidden model is uploaded
+ */
+export const FORBIDDEN_ARENA_SKIN: ArenaCharacterSkin = {
+  id: 'forbidden_warrior',
+  name: 'Forbidden Warrior',
+  baseModel: `${ARENA_ASSETS_BASE}/Meshy_AI_Character_output.glb`,
+  animations: {
+    idle: `${ARENA_ASSETS_BASE}/Idle_02.glb`,
+    walk: `${ARENA_ASSETS_BASE}/Walking.glb`,
+    run: `${ARENA_ASSETS_BASE}/Running.glb`,
+    sprint: `${ARENA_ASSETS_BASE}/Lean_Forward_Sprint.glb`,
+    jump: `${ARENA_ASSETS_BASE}/Jump_Run.glb`,
+    jumpLand: `${ARENA_ASSETS_BASE}/Jump_with_Arms_Open.glb`,
+    crouch: `${ARENA_ASSETS_BASE}/CrouchLookAroundBow.glb`,
+    crouchWalk: `${ARENA_ASSETS_BASE}/Crouch_Walk_Left_with_Gun.glb`,
+    slide: `${ARENA_ASSETS_BASE}/slide_light.glb`,
+    roll: `${ARENA_ASSETS_BASE}/Roll_Dodge.glb`,
+    shoot: `${ARENA_ASSETS_BASE}/Run_and_Shoot.glb`,
+    reload: `${ARENA_ASSETS_BASE}/Standing_Reload.glb`,
+    reloadKneeling: `${ARENA_ASSETS_BASE}/Kneeling_Reload.glb`,
+    hitReact: `${ARENA_ASSETS_BASE}/Gunshot_Reaction.glb`,
+    death: `${ARENA_ASSETS_BASE}/Dead.glb`,
+  },
+}
+
+/**
  * Arena character animations from cosmetic (matches ArenaCharacterAnimations in cosmetic.ts)
  */
 export interface CosmeticArenaAnimations {

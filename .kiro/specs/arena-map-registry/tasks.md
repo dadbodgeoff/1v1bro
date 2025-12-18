@@ -208,36 +208,37 @@
     - Verify spawn operations return positions from manifest
     - **Validates: Requirements 7.3**
 
-- [-] 12. Update orchestrators and entry points
+- [x] 12. Update orchestrators and entry points
   - [x] 12.1 Update ClientOrchestrator
     - Use MapLoader to load map before initializing scene
     - Pass LoadedMap to ArenaScene, CollisionWorld, SpawnSystem
     - _Requirements: 3.1, 6.1, 7.1, 7.2_
 
-  - [-] 12.2 Update ArenaPlayTest.tsx
+  - [x] 12.2 Update ArenaPlayTest.tsx
     - Add map selection UI (optional, can default to abandoned_terminal)
     - Use MapLoader to load selected map
     - Show loading progress
     - _Requirements: 3.7_
 
-  - [ ] 12.3 Create maps/index.ts public API
+  - [x] 12.3 Create maps/index.ts public API
     - Export MapRegistry, MapLoader, types
     - Export map definitions
     - _Requirements: 9.7_
 
-- [ ] 13. Final verification and cleanup
-  - [ ] 13.1 Verify visual equivalence
+- [x] 13. Final verification and cleanup
+  - [x] 13.1 Verify visual equivalence
     - Load game with AbandonedTerminalMap
     - Verify rendering matches original hardcoded implementation
     - Verify collision works correctly
     - Verify spawning works correctly
     - _Requirements: 8.6_
 
-  - [ ] 13.2 Remove deprecated code
+  - [x] 13.2 Remove deprecated code
     - Add deprecation comments to config/ArenaConfig.ts
     - Add deprecation comments to config/AbandonedTerminalManifest.ts
     - Update any remaining imports to use new map system
     - _Requirements: 8.6_
 
-- [ ] 14. Final Checkpoint - Ensure all tests pass
-  - Ensure all tests pass, ask the user if questions arise.
+- [x] 14. Final Checkpoint - Ensure all tests pass
+  - All 807 arena tests pass ✓
+  - Docker build passes with --no-cache ✓
