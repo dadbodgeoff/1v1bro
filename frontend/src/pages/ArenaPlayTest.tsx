@@ -50,39 +50,12 @@ import {
   optimizeRenderOrder,
 } from '@/arena/rendering/PerformanceOptimizer'
 
-interface DebugInfo {
-  fps: number
-  position: { x: number; y: number; z: number }
-  velocity: { x: number; y: number; z: number }
-  isGrounded: boolean
-  pointerLocked: boolean
-  collisionCount: number
-  health: number
-  ammo: number
-  drawCalls?: number
-  triangles?: number
-  // Bot info
-  botHealth?: number
-  botState?: string
-  botScore?: number
-  playerScore?: number
-  // Bot movement debug
-  botPos?: { x: number; z: number }
-  botMoveDir?: { x: number; z: number }
-  botMoveSpeed?: number
-  botVisible?: boolean
-  botMoved?: number
-  // Bot tactical intent ("thought bubble")
-  botTacticalIntent?: {
-    status: string
-    laneName: string | null
-    laneType: string | null
-    waypointProgress: string
-    angleName: string | null
-    mercyActive: boolean
-    isPausing: boolean
-  }
-}
+// Import types from extracted UI components
+import { DEFAULT_DEBUG_INFO } from '@/arena/ui'
+import type { ArenaDebugInfo } from '@/arena/ui'
+
+// Use ArenaDebugInfo type from extracted component
+type DebugInfo = ArenaDebugInfo
 
 const LOCAL_PLAYER_ID = 1
 const BOT_PLAYER_ID = 999
@@ -90,16 +63,7 @@ const DEFAULT_MAP_ID = 'abandoned_terminal'
 
 export default function ArenaPlayTest() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [debugInfo, setDebugInfo] = useState<DebugInfo>({
-    fps: 0,
-    position: { x: 0, y: 0, z: 0 },
-    velocity: { x: 0, y: 0, z: 0 },
-    isGrounded: false,
-    pointerLocked: false,
-    collisionCount: 0,
-    health: 100,
-    ammo: 30,
-  })
+  const [debugInfo, setDebugInfo] = useState<DebugInfo>(DEFAULT_DEBUG_INFO)
   const [showInstructions, setShowInstructions] = useState(true)
   const [characterLoaded, setCharacterLoaded] = useState(false)
   const [showDebugOverlay, setShowDebugOverlay] = useState(false)
@@ -187,12 +151,27 @@ export default function ArenaPlayTest() {
       const BOT_FIRE_INTERVAL = 1000 / BOT_FIRE_RATE // ms between shots
       const botAnimLOD = new AnimationLOD() // Animation LOD for performance
       
-      // Smooth movement interpolation for bot
+      // Smooth movement interpolation for bot - human-like motion
       // Visual position lerps toward logical position for smooth movement
       const botVisualPos = new THREE.Vector3(0, 0, 0)
+      const botVisualVel = new THREE.Vector3(0, 0, 0) // Velocity for momentum
       let botVisualRotY = 0
-      const BOT_POSITION_LERP = 12 // Higher = snappier, lower = smoother (8-15 feels good)
-      const BOT_ROTATION_LERP = 10 // Rotation smoothing factor
+      
+      // Movement feel tuning - lower = smoother/more human, higher = snappier/robotic
+      const BOT_POSITION_LERP = 6    // Position smoothing (was 12, now more human)
+      const BOT_ROTATION_LERP = 5    // Rotation smoothing (was 10, smoother turns)
+      const BOT_ACCELERATION = 8    // How fast bot accelerates (units/sec²)
+      const BOT_DECELERATION = 12   // How fast bot decelerates (higher = stops faster)
+      const BOT_MAX_SPEED = 5.0     // Max visual speed cap
+      
+      // Performance tracking for debug HUD
+      let frameTimeHistory: number[] = []
+      let lastFrameStart = performance.now()
+      let gcPauseEstimate = 0
+      let worstFrameTime = 0
+      let physicsTime = 0
+      let renderTime = 0
+      let botUpdateTime = 0
       
       const initBot = () => {
         if (!botEnabled) return
@@ -536,10 +515,27 @@ export default function ArenaPlayTest() {
     const gameLoop = () => {
       animationId = requestAnimationFrame(gameLoop)
       
-      const now = performance.now()
+      const frameStart = performance.now()
+      const now = frameStart
       const deltaTime = Math.min((now - lastTime) / 1000, 0.1)
       lastTime = now
       tickNumber++
+      
+      // Track frame time for performance analysis
+      const lastFrameDuration = frameStart - lastFrameStart
+      lastFrameStart = frameStart
+      frameTimeHistory.push(lastFrameDuration)
+      if (frameTimeHistory.length > 60) frameTimeHistory.shift()
+      
+      // Detect GC pauses (frame > 50ms is likely GC)
+      if (lastFrameDuration > 50) {
+        gcPauseEstimate = lastFrameDuration
+      }
+      
+      // Track worst frame in last second
+      if (tickNumber % 60 === 0) {
+        worstFrameTime = Math.max(...frameTimeHistory)
+      }
 
       // FPS counter
       frameCount++
@@ -559,7 +555,8 @@ export default function ArenaPlayTest() {
 
       const cameraState = cameraController.getState()
 
-      // Physics step
+      // Physics step (timed)
+      const physicsStart = performance.now()
       playerState = physics.step(
         playerState,
         {
@@ -571,6 +568,7 @@ export default function ArenaPlayTest() {
         deltaTime,
         now
       )
+      physicsTime = performance.now() - physicsStart
 
       // Handle reload progress
       if (isReloading) {
@@ -674,6 +672,7 @@ export default function ArenaPlayTest() {
       combatSystem.update(now)
 
       // === BOT UPDATE ===
+      const botUpdateStart = performance.now()
       if (bot && botMesh) {
         const botState = bot.getState()
         const realTime = Date.now() // Bot uses Date.now() for respawn timing
@@ -812,12 +811,55 @@ export default function ArenaPlayTest() {
           const targetY = newBotPos.y + 0.9
           const targetZ = newBotPos.z
           
-          // Smooth interpolation: lerp visual position toward target
-          // This prevents teleporting/jerky movement
-          const lerpFactor = 1 - Math.exp(-BOT_POSITION_LERP * deltaTime)
-          botVisualPos.x += (targetX - botVisualPos.x) * lerpFactor
-          botVisualPos.y += (targetY - botVisualPos.y) * lerpFactor
-          botVisualPos.z += (targetZ - botVisualPos.z) * lerpFactor
+          // Human-like movement with acceleration/deceleration
+          // Calculate direction to target
+          const toTargetX = targetX - botVisualPos.x
+          const toTargetZ = targetZ - botVisualPos.z
+          const distToTarget = Math.sqrt(toTargetX * toTargetX + toTargetZ * toTargetZ)
+          
+          if (distToTarget > 0.01) {
+            // Normalize direction
+            const dirX = toTargetX / distToTarget
+            const dirZ = toTargetZ / distToTarget
+            
+            // Accelerate toward target
+            const accel = BOT_ACCELERATION * deltaTime
+            botVisualVel.x += dirX * accel
+            botVisualVel.z += dirZ * accel
+            
+            // Clamp to max speed
+            const currentSpeed = Math.sqrt(botVisualVel.x ** 2 + botVisualVel.z ** 2)
+            if (currentSpeed > BOT_MAX_SPEED) {
+              const scale = BOT_MAX_SPEED / currentSpeed
+              botVisualVel.x *= scale
+              botVisualVel.z *= scale
+            }
+            
+            // Apply velocity
+            botVisualPos.x += botVisualVel.x * deltaTime
+            botVisualPos.z += botVisualVel.z * deltaTime
+            
+            // Smooth lerp for final approach (prevents overshooting)
+            const lerpFactor = 1 - Math.exp(-BOT_POSITION_LERP * deltaTime)
+            botVisualPos.x += (targetX - botVisualPos.x) * lerpFactor * 0.3
+            botVisualPos.z += (targetZ - botVisualPos.z) * lerpFactor * 0.3
+          } else {
+            // Close enough - decelerate
+            const decel = BOT_DECELERATION * deltaTime
+            const speed = Math.sqrt(botVisualVel.x ** 2 + botVisualVel.z ** 2)
+            if (speed > decel) {
+              const scale = (speed - decel) / speed
+              botVisualVel.x *= scale
+              botVisualVel.z *= scale
+            } else {
+              botVisualVel.x = 0
+              botVisualVel.z = 0
+            }
+          }
+          
+          // Y position just lerps (no physics needed for vertical)
+          const yLerp = 1 - Math.exp(-BOT_POSITION_LERP * deltaTime)
+          botVisualPos.y += (targetY - botVisualPos.y) * yLerp
           
           // Apply smoothed position to mesh
           botMesh.position.copy(botVisualPos)
@@ -924,6 +966,7 @@ export default function ArenaPlayTest() {
         // Update bot mesh visibility
         botMesh.visible = !botState.isDead
       }
+      botUpdateTime = performance.now() - botUpdateStart
 
       // Update view bob
       const horizontalSpeed = Math.sqrt(
@@ -1004,8 +1047,10 @@ export default function ArenaPlayTest() {
       // Update projectile particles
       projectileParticles.update(deltaTime)
 
-      // Render world
+      // Render world (timed)
+      const renderStart = performance.now()
       arenaRenderer.render()
+      renderTime = performance.now() - renderStart
       
       // Render weapon on top
       weaponSystem.renderWeapon()
@@ -1016,6 +1061,11 @@ export default function ArenaPlayTest() {
       
       // Track draw calls for performance monitoring
       drawCallMonitor.update(arenaRenderer.renderer)
+      
+      // Get memory usage if available
+      const memoryMB = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory
+        ? Math.round((performance as unknown as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize / 1024 / 1024)
+        : undefined
       
       setDebugInfo({
         fps: currentFps,
@@ -1036,6 +1086,15 @@ export default function ArenaPlayTest() {
         ammo: currentAmmo,
         drawCalls: drawCallMonitor.getCurrent(),
         triangles: arenaRenderer.getTriangles(),
+        // Performance breakdown
+        frameTime: Math.round(frameTimeHistory[frameTimeHistory.length - 1] * 10) / 10,
+        worstFrame: Math.round(worstFrameTime * 10) / 10,
+        physicsMs: Math.round(physicsTime * 100) / 100,
+        renderMs: Math.round(renderTime * 100) / 100,
+        botMs: Math.round(botUpdateTime * 100) / 100,
+        memoryMB,
+        gcWarning: gcPauseEstimate > 30,
+        // Bot info
         botHealth: botState?.health,
         botState: botState?.currentState,
         botScore: botState?.score,
@@ -1295,16 +1354,33 @@ export default function ArenaPlayTest() {
 
       {/* Debug HUD */}
       <div className="absolute top-4 left-4 bg-black/90 backdrop-blur-sm p-4 rounded-xl border border-white/10 text-xs font-mono text-gray-400 min-w-[280px]">
-        <p className="text-amber-400 font-bold mb-2">Debug Info</p>
-        <p>FPS: <span className={debugInfo.fps >= 55 ? 'text-green-400' : debugInfo.fps >= 30 ? 'text-yellow-400' : 'text-red-400'}>{debugInfo.fps}</span></p>
+        <p className="text-amber-400 font-bold mb-2">Performance</p>
+        <p>FPS: <span className={debugInfo.fps >= 55 ? 'text-green-400' : debugInfo.fps >= 30 ? 'text-yellow-400' : 'text-red-400'}>{debugInfo.fps}</span>
+          {debugInfo.gcWarning && <span className="text-red-500 ml-2">⚠ GC</span>}
+        </p>
+        <p>Frame: <span className={(debugInfo.frameTime ?? 0) < 20 ? 'text-green-400' : 'text-yellow-400'}>{debugInfo.frameTime ?? 0}ms</span>
+          <span className="text-gray-500 ml-1">(worst: {debugInfo.worstFrame ?? 0}ms)</span>
+        </p>
         <p>Draw Calls: <span className={(debugInfo.drawCalls ?? 0) < 100 ? 'text-green-400' : 'text-yellow-400'}>{debugInfo.drawCalls ?? 0}</span></p>
         <p>Triangles: <span className="text-blue-400">{((debugInfo.triangles ?? 0) / 1000).toFixed(1)}k</span></p>
-        <p>Pos: <span className="text-cyan-400">{debugInfo.position.x}, {debugInfo.position.y}, {debugInfo.position.z}</span></p>
-        <p>Vel: <span className="text-purple-400">{debugInfo.velocity.x}, {debugInfo.velocity.y}, {debugInfo.velocity.z}</span></p>
-        <p>Grounded: <span className={debugInfo.isGrounded ? 'text-green-400' : 'text-red-400'}>{debugInfo.isGrounded ? 'Yes' : 'No'}</span></p>
-        <p>Pointer: <span className={debugInfo.pointerLocked ? 'text-green-400' : 'text-gray-500'}>{debugInfo.pointerLocked ? 'Locked' : 'Free'}</span></p>
-        <p>Collisions: <span className={debugInfo.collisionCount > 0 ? 'text-orange-400' : 'text-gray-500'}>{debugInfo.collisionCount}</span></p>
-        <p>Debug Overlay: <span className={showDebugOverlay ? 'text-green-400' : 'text-gray-500'}>{showDebugOverlay ? 'ON' : 'OFF'}</span></p>
+        {debugInfo.memoryMB && <p>Memory: <span className={debugInfo.memoryMB < 200 ? 'text-green-400' : 'text-yellow-400'}>{debugInfo.memoryMB}MB</span></p>}
+        
+        <div className="border-t border-white/10 mt-2 pt-2">
+          <p className="text-amber-400 font-bold mb-1">Frame Breakdown</p>
+          <p>Physics: <span className={(debugInfo.physicsMs ?? 0) < 2 ? 'text-green-400' : 'text-yellow-400'}>{debugInfo.physicsMs ?? 0}ms</span></p>
+          <p>Bot AI: <span className={(debugInfo.botMs ?? 0) < 2 ? 'text-green-400' : 'text-yellow-400'}>{debugInfo.botMs ?? 0}ms</span></p>
+          <p>Render: <span className={(debugInfo.renderMs ?? 0) < 8 ? 'text-green-400' : 'text-yellow-400'}>{debugInfo.renderMs ?? 0}ms</span></p>
+        </div>
+        
+        <div className="border-t border-white/10 mt-2 pt-2">
+          <p className="text-amber-400 font-bold mb-1">Player</p>
+          <p>Pos: <span className="text-cyan-400">{debugInfo.position.x}, {debugInfo.position.y}, {debugInfo.position.z}</span></p>
+          <p>Vel: <span className="text-purple-400">{debugInfo.velocity.x}, {debugInfo.velocity.y}, {debugInfo.velocity.z}</span></p>
+          <p>Grounded: <span className={debugInfo.isGrounded ? 'text-green-400' : 'text-red-400'}>{debugInfo.isGrounded ? 'Yes' : 'No'}</span></p>
+          <p>Collisions: <span className={debugInfo.collisionCount > 0 ? 'text-orange-400' : 'text-gray-500'}>{debugInfo.collisionCount}</span></p>
+        </div>
+        
+        <p className="text-gray-500 mt-2">Debug Overlay: <span className={showDebugOverlay ? 'text-green-400' : 'text-gray-500'}>{showDebugOverlay ? 'ON (F3)' : 'OFF (F3)'}</span></p>
         
         <div className="border-t border-white/10 mt-2 pt-2">
           <p className="text-amber-400 font-bold mb-1">Combat</p>

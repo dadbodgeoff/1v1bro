@@ -29,6 +29,7 @@ import {
 import { OnboardingModal, useOnboarding } from '@/components/onboarding'
 import { ArenaShooterCard } from '@/components/dashboard/enterprise/ArenaShooterCard'
 import { SurvivalRunnerCard } from '@/components/dashboard/enterprise/SurvivalRunnerCard'
+import { ArenaCard } from '@/components/dashboard/ArenaCard'
 
 export function Home() {
   const { fetchFriends } = useFriends()
@@ -60,8 +61,8 @@ export function Home() {
             <span className="text-xs text-neutral-500">Choose your game mode</span>
           </div>
 
-          {/* Game Mode Cards - Side by Side */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Game Mode Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* 2D Arena Shooter Card */}
             <WidgetErrorBoundary widgetName="Arena Shooter" isCritical>
               <ArenaShooterCard />
@@ -70,6 +71,11 @@ export function Home() {
             {/* Survival Runner Card */}
             <WidgetErrorBoundary widgetName="Survival Runner" isCritical>
               <SurvivalRunnerCard />
+            </WidgetErrorBoundary>
+
+            {/* 3D FPS Arena Card */}
+            <WidgetErrorBoundary widgetName="3D Arena" isCritical>
+              <ArenaCard />
             </WidgetErrorBoundary>
           </div>
 

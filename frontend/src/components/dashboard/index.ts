@@ -20,3 +20,6 @@ export { KeyboardShortcutsModal } from './KeyboardShortcutsModal'
 export type { KeyboardShortcutsModalProps } from './KeyboardShortcutsModal'
 export { OfflineBanner } from './OfflineBanner'
 export type { OfflineBannerProps } from './OfflineBanner'
+
+// Arena Mode Card
+export { ArenaCard } from './ArenaCard'

@@ -100,6 +100,13 @@ export class BotMatchManager {
   }
 
   /**
+   * Set initial player position (call before startMatch for proper bot spawn)
+   */
+  setPlayerPosition(position: Vector3): void {
+    this.playerPosition = position;
+  }
+
+  /**
    * Start a new bot match
    */
   startMatch(localPlayerId: number): void {
@@ -236,8 +243,9 @@ export class BotMatchManager {
     const isHit = dot > hitThreshold && distance < 50;
 
     if (isHit) {
-      // Apply damage to player
-      const damage = 25; // Standard damage
+      // Apply damage to player (8 damage per hit, same as player weapon)
+      const damage = 8;
+      const wasAlive = !this.combatSystem.getPlayerState(this.localPlayerId)?.isDead;
       this.combatSystem.applyDamage(
         this.localPlayerId,
         BOT_PLAYER_ID,
@@ -248,9 +256,9 @@ export class BotMatchManager {
 
       this.bot.recordHit(damage);
 
-      // Check if player died
+      // Check if player just died (was alive before, dead now)
       const playerState = this.combatSystem.getPlayerState(this.localPlayerId);
-      if (playerState?.isDead) {
+      if (wasAlive && playerState?.isDead) {
         this.bot.addKill();
       }
     } else {

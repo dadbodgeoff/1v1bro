@@ -30,8 +30,15 @@ import { AudioSystem } from '../presentation/AudioSystem';
 import { DebugOverlay } from '../debug/DebugOverlay';
 import { DiagnosticsRecorder } from '../debug/DiagnosticsRecorder';
 import { SpawnSystem } from '../game/SpawnSystem';
+import { CombatSystem, DEFAULT_COMBAT_CONFIG } from '../game/CombatSystem';
+import { MatchStateMachine, DEFAULT_MATCH_CONFIG } from '../game/MatchStateMachine';
 import type { LoadedMap } from '../maps/MapLoader';
 import { Vector3 } from '../math/Vector3';
+
+/**
+ * Callback type for tick updates
+ */
+export type TickCallback = (deltaTime: number, currentTime: number, tickNumber: number) => void;
 
 // ============================================================================
 // Types
@@ -59,6 +66,8 @@ export interface ClientSystems {
   audioSystem: AudioSystem;
   debugOverlay: DebugOverlay;
   diagnosticsRecorder: DiagnosticsRecorder;
+  combatSystem: CombatSystem;
+  matchStateMachine: MatchStateMachine;
 }
 
 // ============================================================================
@@ -74,6 +83,10 @@ export interface IClientOrchestrator {
   stopGameLoop(): void;
   pause(): void;
   resume(): void;
+  /** Register a callback to run each frame */
+  onTick(callback: TickCallback): () => void;
+  /** Get current tick number */
+  getCurrentTick(): number;
 }
 
 // ============================================================================
@@ -87,6 +100,8 @@ export class ClientOrchestrator implements IClientOrchestrator {
   private animationFrameId: number | null = null;
   private lastFrameTime: number = 0;
   private localPlayerId: number = 0;
+  private tickNumber: number = 0;
+  private tickCallbacks: Set<TickCallback> = new Set();
 
   constructor(config: GameConfig = DEFAULT_GAME_CONFIG) {
     this.config = config;
@@ -185,6 +200,14 @@ export class ClientOrchestrator implements IClientOrchestrator {
       const diagnosticsRecorder = new DiagnosticsRecorder(this.config.diagnostics);
       this.emitSystemReady(eventBus, 'DiagnosticsRecorder');
 
+      // 13. Create CombatSystem
+      const combatSystem = new CombatSystem(DEFAULT_COMBAT_CONFIG, collisionWorld, eventBus);
+      this.emitSystemReady(eventBus, 'CombatSystem');
+
+      // 14. Create MatchStateMachine
+      const matchStateMachine = new MatchStateMachine(DEFAULT_MATCH_CONFIG, eventBus);
+      this.emitSystemReady(eventBus, 'MatchStateMachine');
+
       // Store all systems
       this.systems = {
         eventBus,
@@ -198,7 +221,9 @@ export class ClientOrchestrator implements IClientOrchestrator {
         hudRenderer,
         audioSystem,
         debugOverlay,
-        diagnosticsRecorder
+        diagnosticsRecorder,
+        combatSystem,
+        matchStateMachine,
       };
 
       this.state = 'ready';
@@ -278,6 +303,24 @@ export class ClientOrchestrator implements IClientOrchestrator {
     }
   }
 
+  /**
+   * Register a callback to run each frame
+   * @returns Unsubscribe function
+   */
+  onTick(callback: TickCallback): () => void {
+    this.tickCallbacks.add(callback);
+    return () => {
+      this.tickCallbacks.delete(callback);
+    };
+  }
+
+  /**
+   * Get current tick number
+   */
+  getCurrentTick(): number {
+    return this.tickNumber;
+  }
+
 
   // ===========================================================================
   // Private Methods
@@ -289,6 +332,7 @@ export class ClientOrchestrator implements IClientOrchestrator {
     const currentTime = performance.now();
     const deltaTime = (currentTime - this.lastFrameTime) / 1000;
     this.lastFrameTime = currentTime;
+    this.tickNumber++;
 
     // 1. Capture input
     const inputSnapshot = this.systems.inputManager.captureFrame(0, 0, currentTime);
@@ -387,6 +431,15 @@ export class ClientOrchestrator implements IClientOrchestrator {
       //   this.systems.debugOverlay.drawCapsule(entity.capsule, '#ff0000');
       // });
     }
+
+    // 11. Call tick callbacks
+    this.tickCallbacks.forEach(callback => {
+      try {
+        callback(deltaTime, currentTime, this.tickNumber);
+      } catch (error) {
+        console.error('[ClientOrchestrator] Tick callback error:', error);
+      }
+    });
 
     // Schedule next frame
     this.animationFrameId = requestAnimationFrame(this.gameLoop);

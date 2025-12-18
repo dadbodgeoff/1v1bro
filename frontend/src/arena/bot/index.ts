@@ -12,6 +12,8 @@ export { BotPlayer } from './BotPlayer';
 export type { BotPlayerConfig, BotPlayerState, BotMatchContext } from './BotPlayer';
 export { BotMatchManager } from './BotMatchManager';
 export type { BotMatchConfig, MatchState, MatchResult } from './BotMatchManager';
+export { BotVisualController, DEFAULT_BOT_VISUAL_CONFIG } from './BotVisualController';
+export type { BotVisualConfig } from './BotVisualController';
 export { BotDebugOverlay } from './BotDebugOverlay';
 export type { BotDebugConfig, TacticalIntent } from './BotDebugOverlay';
 

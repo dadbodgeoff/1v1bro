@@ -26,6 +26,7 @@ const SurvivalDemoTest = lazy(() => import('@/pages/SurvivalDemoTest'))
 const SimpleArenaTest = lazy(() => import('@/pages/SimpleArenaTest').then(m => ({ default: m.SimpleArenaTest })))
 const ArenaMapViewer = lazy(() => import('@/pages/ArenaMapViewer'))
 const ArenaPlayTest = lazy(() => import('@/pages/ArenaPlayTest'))
+const Arena = lazy(() => import('@/pages/Arena'))
 const CornfieldMapBuilder = lazy(() => import('@/pages/CornfieldMapBuilder').then(m => ({ default: m.CornfieldMapBuilder })))
 
 // Shop & Inventory (medium - cosmetics, 3D previews)
@@ -308,6 +309,15 @@ function App() {
         <Route path="/arena-viewer" element={<ArenaMapViewer />} />
         {/* Arena Play Test - First-person playable arena with physics */}
         <Route path="/arena-play-test" element={<ArenaPlayTest />} />
+        {/* Arena - Dashboard-integrated arena (practice mode) */}
+        <Route
+          path="/arena"
+          element={
+            <ProtectedRoute>
+              <Arena />
+            </ProtectedRoute>
+          }
+        />
         {/* Legacy Analytics Routes - Redirect to new unified dashboard */}
         <Route path="/admin/analytics" element={<Navigate to="/analytics" replace />} />
         <Route path="/admin/analytics/enterprise" element={<Navigate to="/analytics" replace />} />
