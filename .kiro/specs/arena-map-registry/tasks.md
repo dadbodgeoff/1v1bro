@@ -208,13 +208,13 @@
     - Verify spawn operations return positions from manifest
     - **Validates: Requirements 7.3**
 
-- [ ] 12. Update orchestrators and entry points
-  - [ ] 12.1 Update ClientOrchestrator
+- [-] 12. Update orchestrators and entry points
+  - [x] 12.1 Update ClientOrchestrator
     - Use MapLoader to load map before initializing scene
     - Pass LoadedMap to ArenaScene, CollisionWorld, SpawnSystem
     - _Requirements: 3.1, 6.1, 7.1, 7.2_
 
-  - [ ] 12.2 Update ArenaPlayTest.tsx
+  - [-] 12.2 Update ArenaPlayTest.tsx
     - Add map selection UI (optional, can default to abandoned_terminal)
     - Use MapLoader to load selected map
     - Show loading progress

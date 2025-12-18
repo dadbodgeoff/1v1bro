@@ -26,73 +26,73 @@
 ## Phase 2: Tactical Systems (~2.5 hours)
 
 ### Task 2.1: Tactics Library
-- [ ] Create `frontend/src/arena/bot/TacticsLibrary.ts`
-- [ ] Define STRAFE patterns (left, right, random)
-- [ ] Define PEEK patterns (quick, slow, double)
-- [ ] Define PUSH patterns (direct, angled)
-- [ ] Define RETREAT patterns (back, diagonal)
-- [ ] Define HOLD patterns (angle hold, crouch hold)
-- [ ] Add pattern selection by state and aggression
+- [x] Create `frontend/src/arena/bot/TacticsLibrary.ts`
+- [x] Define STRAFE patterns (left, right, random)
+- [x] Define PEEK patterns (quick, slow, double)
+- [x] Define PUSH patterns (direct, angled)
+- [x] Define RETREAT patterns (back, diagonal)
+- [x] Define HOLD patterns (angle hold, crouch hold)
+- [x] Add pattern selection by state and aggression
 
 ### Task 2.2: Combat Flow Analyzer
-- [ ] Create `frontend/src/arena/bot/CombatFlowAnalyzer.ts`
-- [ ] Track player action history (10 second window)
-- [ ] Detect player patterns (aggressive, passive, flanker)
-- [ ] Calculate counter-play weights
-- [ ] Track engagement outcomes
+- [x] Create `frontend/src/arena/bot/CombatFlowAnalyzer.ts`
+- [x] Track player action history (10 second window)
+- [x] Detect player patterns (aggressive, passive, flanker)
+- [x] Calculate counter-play weights
+- [x] Track engagement outcomes
 
 ### Task 2.3: Signature Move Tracker
-- [ ] Create `frontend/src/arena/bot/SignatureMoveTracker.ts`
-- [ ] Define signature moves per personality
-- [ ] Implement cooldown tracking
-- [ ] Add trigger condition checking
-- [ ] Add execution state machine
+- [x] Create `frontend/src/arena/bot/SignatureMoveTracker.ts`
+- [x] Define signature moves per personality
+- [x] Implement cooldown tracking
+- [x] Add trigger condition checking
+- [x] Add execution state machine
 
 ### Task 2.4: Engagement Composer
-- [ ] Create `frontend/src/arena/bot/EngagementComposer.ts`
-- [ ] Implement phrase composition logic
-- [ ] Define phrase types (pressure, probe, punish, reset)
-- [ ] Add smooth transitions between phrases
-- [ ] Respect aggression and player state
+- [x] Create `frontend/src/arena/bot/EngagementComposer.ts`
+- [x] Implement phrase composition logic
+- [x] Define phrase types (pressure, probe, punish, reset)
+- [x] Add smooth transitions between phrases
+- [x] Respect aggression and player state
 
 ## Phase 3: Aim and Spatial (~1.5 hours)
 
 ### Task 3.1: Aim Controller
-- [ ] Create `frontend/src/arena/bot/AimController.ts`
-- [ ] Implement reaction time delay
-- [ ] Add aim smoothing (lerp to target)
-- [ ] Add predictive aiming based on tracking skill
-- [ ] Add accuracy variance and jitter
-- [ ] Add state-based aim degradation (worse when retreating)
+- [x] Create `frontend/src/arena/bot/AimController.ts`
+- [x] Implement reaction time delay
+- [x] Add aim smoothing (lerp to target)
+- [x] Add predictive aiming based on tracking skill
+- [x] Add accuracy variance and jitter
+- [x] Add state-based aim degradation (worse when retreating)
 
 ### Task 3.2: Spatial Awareness
-- [ ] Create `frontend/src/arena/bot/SpatialAwareness.ts`
-- [ ] Parse cover positions from CollisionManifest
-- [ ] Implement line-of-sight checking
-- [ ] Add position safety evaluation
-- [ ] Add simple pathfinding to cover/positions
+- [x] Create `frontend/src/arena/bot/SpatialAwareness.ts`
+- [x] Parse cover positions from CollisionManifest
+- [x] Implement line-of-sight checking
+- [x] Add position safety evaluation
+- [x] Add simple pathfinding to cover/positions
 
 ## Phase 4: Orchestrator (~2 hours)
 
 ### Task 4.1: Combat Conductor
-- [ ] Create `frontend/src/arena/bot/CombatConductor.ts`
-- [ ] Wire up all subsystems
-- [ ] Implement state machine (PATROL → ENGAGE → RETREAT → REPOSITION)
-- [ ] Implement pattern selection priority chain
-- [ ] Implement pattern execution
-- [ ] Add shooting decision logic
-- [ ] Add event emission
+- [x] Create `frontend/src/arena/bot/CombatConductor.ts`
+- [x] Wire up all subsystems
+- [x] Implement state machine (PATROL → ENGAGE → RETREAT → REPOSITION)
+- [x] Implement pattern selection priority chain
+- [x] Implement pattern execution
+- [x] Add shooting decision logic
+- [x] Add event emission
 
 ### Task 4.2: Bot Personalities
-- [ ] Create `frontend/src/arena/bot/BotPersonality.ts`
-- [ ] Define Rusher personality config
-- [ ] Define Sentinel personality config
-- [ ] Define Duelist personality config
-- [ ] Add difficulty presets (easy, medium, hard, adaptive)
+- [x] Create `frontend/src/arena/bot/BotPersonality.ts`
+- [x] Define Rusher personality config
+- [x] Define Sentinel personality config
+- [x] Define Duelist personality config
+- [x] Add difficulty presets (easy, medium, hard, adaptive)
 
 ### Task 4.3: Index and Exports
-- [ ] Create `frontend/src/arena/bot/index.ts`
-- [ ] Export public API
+- [x] Create `frontend/src/arena/bot/index.ts`
+- [x] Export public API
 
 ## Phase 5: Integration (~1.5 hours)
 

@@ -15,6 +15,8 @@ import { DEFAULT_GAME_CONFIG } from '../config/GameConfig';
 import { isOk } from '../core/Result';
 import { Vector3 } from '../math/Vector3';
 import type { DesyncDetectedEvent, ReconciliationEvent } from '../core/GameEvents';
+import type { LoadedMap } from '../maps/MapLoader';
+import type { MapDefinition } from '../maps/types';
 
 // Mock AudioContext
 class MockAudioContext {
@@ -67,6 +69,95 @@ class MockAudioContext {
 
 vi.stubGlobal('AudioContext', MockAudioContext);
 
+/**
+ * Create a mock LoadedMap for testing
+ */
+function createMockLoadedMap(): LoadedMap {
+  const mockDefinition: MapDefinition = {
+    id: 'test_map',
+    name: 'Test Map',
+    description: 'A test map',
+    playerCount: { min: 2, max: 2 },
+    arenaConfig: {
+      width: 36,
+      depth: 40,
+      wallHeight: 6,
+      wallThickness: 0.4,
+      ceilingHeight: 6,
+      windowHeight: 2.5,
+      windowBottom: 1.5,
+      windowWidth: 4,
+      windowSpacing: 6,
+      tracks: {
+        width: 5,
+        depth: 0.6,
+        railWidth: 0.1,
+        railHeight: 0.15,
+        railSpacing: 1.4,
+        sleeperWidth: 2.2,
+        sleeperDepth: 0.15,
+        sleeperSpacing: 0.6,
+      },
+      platformEdge: { width: 0.3, tactileWidth: 0.6 },
+      subwayEntrance: {
+        width: 6,
+        depth: 8,
+        stairDepth: 1.5,
+        stairSteps: 8,
+        gateHeight: 2.2,
+      },
+      spawns: {
+        player1: { x: -14, y: -1.5, z: -16 },
+        player2: { x: 14, y: -1.5, z: 16 },
+      },
+      lightPositions: [{ x: 0, z: 0 }],
+      colors: {
+        floor: 0xd4cfc4,
+        wall: 0x8a8580,
+        ceiling: 0x6a6560,
+        windowFrame: 0x3a3530,
+        lightFixture: 0x2a2520,
+        lightEmissive: 0xfff5e6,
+        ambient: 0x404040,
+        fog: 0x1a1a1a,
+        trackBed: 0x2a2520,
+        rail: 0x4a4a4a,
+        sleeper: 0x3d2b1f,
+        yellowLine: 0xf4d03f,
+        tactileStrip: 0xc4a000,
+        gate: 0x5a5a5a,
+      },
+    },
+    assets: { textures: {}, models: {} },
+    collisionManifest: {
+      colliders: [
+        { id: 'floor', center: [0, -0.25, 0], size: [36, 0.5, 40] },
+      ],
+    },
+    spawnManifest: {
+      spawnPoints: [
+        { id: 'spawn_1', position: [-14, 0, -16] },
+        { id: 'spawn_2', position: [14, 0, 16] },
+      ],
+      arenaCenter: [0, 0, 0],
+    },
+    lightingConfig: {
+      ambient: { color: 0x606878, intensity: 1.2 },
+      hemisphere: { skyColor: 0x505868, groundColor: 0x8a8580, intensity: 0.9 },
+      keyLight: { color: 0xe8f0ff, intensity: 1.8, position: { x: 5, y: 20, z: -8 } },
+      fillLight: { color: 0xfff0e0, intensity: 0.8, position: { x: -8, y: 15, z: 10 } },
+      pointLights: [],
+    },
+    props: [],
+  };
+
+  return {
+    definition: mockDefinition,
+    textures: {},
+    models: {},
+  };
+}
+
 describe('ClientOrchestrator', () => {
   let orchestrator: ClientOrchestrator;
   let container: HTMLElement;
@@ -88,14 +179,14 @@ describe('ClientOrchestrator', () => {
     });
 
     it('should initialize all systems successfully', async () => {
-      const result = await orchestrator.initialize(container);
+      const result = await orchestrator.initialize(container, createMockLoadedMap());
       
       expect(isOk(result)).toBe(true);
       expect(orchestrator.getState()).toBe('ready');
     });
 
     it('should have all systems after initialization', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       
       const systems = orchestrator.getSystems();
       expect(systems).not.toBeNull();
@@ -113,8 +204,8 @@ describe('ClientOrchestrator', () => {
     });
 
     it('should fail if already initialized', async () => {
-      await orchestrator.initialize(container);
-      const result = await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
+      const result = await orchestrator.initialize(container, createMockLoadedMap());
       
       expect(isOk(result)).toBe(false);
     });
@@ -122,7 +213,7 @@ describe('ClientOrchestrator', () => {
     it('should emit system_ready events during initialization', async () => {
       const readySystems: string[] = [];
       
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       
       const systems = orchestrator.getSystems();
       systems?.eventBus.on('system_ready', (e: any) => {
@@ -136,7 +227,7 @@ describe('ClientOrchestrator', () => {
 
   describe('game loop', () => {
     it('should start game loop when ready', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       
       orchestrator.startGameLoop();
       
@@ -144,7 +235,7 @@ describe('ClientOrchestrator', () => {
     });
 
     it('should stop game loop', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       orchestrator.startGameLoop();
       
       orchestrator.stopGameLoop();
@@ -153,7 +244,7 @@ describe('ClientOrchestrator', () => {
     });
 
     it('should pause and resume', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       orchestrator.startGameLoop();
       
       orchestrator.pause();
@@ -172,7 +263,7 @@ describe('ClientOrchestrator', () => {
 
   describe('dispose', () => {
     it('should clean up all systems', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       
       orchestrator.dispose();
       
@@ -181,7 +272,7 @@ describe('ClientOrchestrator', () => {
     });
 
     it('should stop game loop on dispose', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       orchestrator.startGameLoop();
       
       orchestrator.dispose();
@@ -215,7 +306,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
 
   describe('input application', () => {
     it('should apply input to prediction system immediately', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       const initialState = systems.predictionSystem.getCurrentState();
@@ -241,7 +332,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
     });
 
     it('should track pending inputs for reconciliation', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       expect(systems.predictionSystem.getPendingInputCount()).toBe(0);
@@ -265,7 +356,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
     });
 
     it('should acknowledge inputs and remove from pending buffer', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       // Apply 5 inputs
@@ -295,7 +386,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
 
   describe('reconciliation', () => {
     it('should not reconcile when prediction matches server state', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       let desyncDetected = false;
@@ -322,7 +413,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
     });
 
     it('should trigger reconciliation when prediction error exceeds threshold', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       let desyncDetected = false;
@@ -369,7 +460,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
     });
 
     it('should replay unacknowledged inputs after reconciliation', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       let inputsReplayed = 0;
@@ -414,7 +505,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
     });
 
     it('should snap to server position after reconciliation', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       // Apply inputs to move player
@@ -462,7 +553,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
      * **Validates: Requirements 6.1, 6.3, 6.4**
      */
     it('should complete full prediction-reconciliation cycle correctly', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       const events: string[] = [];
@@ -528,7 +619,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
     });
 
     it('should handle multiple reconciliation cycles', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       let reconciliationCount = 0;
@@ -599,7 +690,7 @@ describe('Prediction-Reconciliation Cycle Integration', () => {
     });
 
     it('should preserve yaw during input replay', async () => {
-      await orchestrator.initialize(container);
+      await orchestrator.initialize(container, createMockLoadedMap());
       const systems = orchestrator.getSystems()!;
       
       // Apply inputs with different yaw values

@@ -35,6 +35,8 @@ import type {
   ConnectionLostEvent,
   ConnectionEstablishedEvent
 } from '../core/GameEvents';
+import type { LoadedMap } from '../maps/MapLoader';
+import type { MapDefinition } from '../maps/types';
 
 // Mock AudioContext for client tests
 class MockAudioContext {
@@ -86,6 +88,95 @@ class MockAudioContext {
 }
 
 vi.stubGlobal('AudioContext', MockAudioContext);
+
+/**
+ * Create a mock LoadedMap for testing
+ */
+function createMockLoadedMap(): LoadedMap {
+  const mockDefinition: MapDefinition = {
+    id: 'test_map',
+    name: 'Test Map',
+    description: 'A test map',
+    playerCount: { min: 2, max: 2 },
+    arenaConfig: {
+      width: 36,
+      depth: 40,
+      wallHeight: 6,
+      wallThickness: 0.4,
+      ceilingHeight: 6,
+      windowHeight: 2.5,
+      windowBottom: 1.5,
+      windowWidth: 4,
+      windowSpacing: 6,
+      tracks: {
+        width: 5,
+        depth: 0.6,
+        railWidth: 0.1,
+        railHeight: 0.15,
+        railSpacing: 1.4,
+        sleeperWidth: 2.2,
+        sleeperDepth: 0.15,
+        sleeperSpacing: 0.6,
+      },
+      platformEdge: { width: 0.3, tactileWidth: 0.6 },
+      subwayEntrance: {
+        width: 6,
+        depth: 8,
+        stairDepth: 1.5,
+        stairSteps: 8,
+        gateHeight: 2.2,
+      },
+      spawns: {
+        player1: { x: -14, y: -1.5, z: -16 },
+        player2: { x: 14, y: -1.5, z: 16 },
+      },
+      lightPositions: [{ x: 0, z: 0 }],
+      colors: {
+        floor: 0xd4cfc4,
+        wall: 0x8a8580,
+        ceiling: 0x6a6560,
+        windowFrame: 0x3a3530,
+        lightFixture: 0x2a2520,
+        lightEmissive: 0xfff5e6,
+        ambient: 0x404040,
+        fog: 0x1a1a1a,
+        trackBed: 0x2a2520,
+        rail: 0x4a4a4a,
+        sleeper: 0x3d2b1f,
+        yellowLine: 0xf4d03f,
+        tactileStrip: 0xc4a000,
+        gate: 0x5a5a5a,
+      },
+    },
+    assets: { textures: {}, models: {} },
+    collisionManifest: {
+      colliders: [
+        { id: 'floor', center: [0, -0.25, 0], size: [36, 0.5, 40] },
+      ],
+    },
+    spawnManifest: {
+      spawnPoints: [
+        { id: 'spawn_1', position: [-14, 0, -16] },
+        { id: 'spawn_2', position: [14, 0, 16] },
+      ],
+      arenaCenter: [0, 0, 0],
+    },
+    lightingConfig: {
+      ambient: { color: 0x606878, intensity: 1.2 },
+      hemisphere: { skyColor: 0x505868, groundColor: 0x8a8580, intensity: 0.9 },
+      keyLight: { color: 0xe8f0ff, intensity: 1.8, position: { x: 5, y: 20, z: -8 } },
+      fillLight: { color: 0xfff0e0, intensity: 0.8, position: { x: -8, y: 15, z: 10 } },
+      pointLights: [],
+    },
+    props: [],
+  };
+
+  return {
+    definition: mockDefinition,
+    textures: {},
+    models: {},
+  };
+}
 
 
 /**
@@ -806,7 +897,7 @@ describe('Reconnection Flow', () => {
     });
 
     it('should handle connection loss gracefully', async () => {
-      await clientOrchestrator.initialize(container);
+      await clientOrchestrator.initialize(container, createMockLoadedMap());
       const systems = clientOrchestrator.getSystems()!;
       
       let connectionLost = false;
@@ -826,7 +917,7 @@ describe('Reconnection Flow', () => {
     });
 
     it('should clear pending inputs via acknowledgment on reconnection', async () => {
-      await clientOrchestrator.initialize(container);
+      await clientOrchestrator.initialize(container, createMockLoadedMap());
       const systems = clientOrchestrator.getSystems()!;
       
       // Apply some inputs

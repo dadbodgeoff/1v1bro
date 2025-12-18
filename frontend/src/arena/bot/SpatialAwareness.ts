@@ -28,15 +28,6 @@ export interface PathResult {
   hasCover: boolean;
 }
 
-/**
- * Raycast result for LOS
- */
-interface RaycastResult {
-  hit: boolean;
-  distance: number;
-  point: Vector3 | null;
-}
-
 export class SpatialAwareness {
   private coverPositions: CoverPosition[] = [];
   private mapBounds: AABB | null = null;

@@ -30,12 +30,15 @@ import { AudioSystem, DEFAULT_AUDIO_CONFIG } from '@/arena/presentation/AudioSys
 import { CombatSystem, DEFAULT_COMBAT_CONFIG } from '@/arena/game/CombatSystem'
 import { SpawnSystem } from '@/arena/game/SpawnSystem'
 import { DebugOverlay, DEFAULT_DEBUG_CONFIG } from '@/arena/debug/DebugOverlay'
-import { ABANDONED_TERMINAL_COLLISION_MANIFEST, ABANDONED_TERMINAL_SPAWN_MANIFEST } from '@/arena/config/AbandonedTerminalManifest'
+import { MapLoader } from '@/arena/maps/MapLoader'
+import { MapRegistry } from '@/arena/maps/MapRegistry'
+import '@/arena/maps/definitions' // Register maps
 import { Vector3 } from '@/arena/math/Vector3'
 import { Capsule } from '@/arena/physics/Capsule'
 import { arenaCharacterLoader } from '@/arena/player/ArenaCharacterLoader'
 import type { LoadedCharacter } from '@/arena/player/ArenaCharacterLoader'
 import type { PlayerPhysicsState } from '@/arena/physics/Physics3D'
+import type { LoadedMap } from '@/arena/maps/MapLoader'
 
 interface DebugInfo {
   fps: number

@@ -29,7 +29,8 @@ import { HUDRenderer } from '../presentation/HUDRenderer';
 import { AudioSystem } from '../presentation/AudioSystem';
 import { DebugOverlay } from '../debug/DebugOverlay';
 import { DiagnosticsRecorder } from '../debug/DiagnosticsRecorder';
-import { ABANDONED_TERMINAL_COLLISION_MANIFEST } from '../config/AbandonedTerminalManifest';
+import { SpawnSystem } from '../game/SpawnSystem';
+import type { LoadedMap } from '../maps/MapLoader';
 import { Vector3 } from '../math/Vector3';
 
 // ============================================================================
@@ -48,6 +49,7 @@ export type ClientState =
 export interface ClientSystems {
   eventBus: IEventBus;
   collisionWorld: CollisionWorld;
+  spawnSystem: SpawnSystem;
   physics: Physics3D;
   inputManager: InputManager;
   cameraController: CameraController;
@@ -64,7 +66,7 @@ export interface ClientSystems {
 // ============================================================================
 
 export interface IClientOrchestrator {
-  initialize(container: HTMLElement): Promise<Result<void, InitializationError>>;
+  initialize(container: HTMLElement, loadedMap: LoadedMap): Promise<Result<void, InitializationError>>;
   dispose(): void;
   getState(): ClientState;
   getSystems(): ClientSystems | null;
@@ -90,7 +92,7 @@ export class ClientOrchestrator implements IClientOrchestrator {
     this.config = config;
   }
 
-  async initialize(container: HTMLElement): Promise<Result<void, InitializationError>> {
+  async initialize(container: HTMLElement, loadedMap: LoadedMap): Promise<Result<void, InitializationError>> {
     if (this.state !== 'uninitialized') {
       return Err(createInitializationError(
         'SYSTEM_INIT_FAILED',
@@ -105,9 +107,9 @@ export class ClientOrchestrator implements IClientOrchestrator {
       const eventBus = new EventBus();
       this.emitSystemReady(eventBus, 'EventBus');
 
-      // 2. Create CollisionWorld and load manifest
+      // 2. Create CollisionWorld and load manifest from LoadedMap
       const collisionWorld = new CollisionWorld(4);
-      const loadResult = collisionWorld.loadManifest(ABANDONED_TERMINAL_COLLISION_MANIFEST);
+      const loadResult = collisionWorld.loadManifest(loadedMap.definition.collisionManifest);
       if (!isOk(loadResult)) {
         return Err(createInitializationError(
           'ASSET_LOAD_FAILED',
@@ -117,16 +119,21 @@ export class ClientOrchestrator implements IClientOrchestrator {
       }
       this.emitSystemReady(eventBus, 'CollisionWorld');
 
-      // 3. Create Physics3D
+      // 3. Create SpawnSystem and load manifest from LoadedMap
+      const spawnSystem = new SpawnSystem(eventBus);
+      spawnSystem.loadManifest(loadedMap.definition.spawnManifest);
+      this.emitSystemReady(eventBus, 'SpawnSystem');
+
+      // 4. Create Physics3D
       const physics = new Physics3D(this.config.physics, collisionWorld, eventBus);
       this.emitSystemReady(eventBus, 'Physics3D');
 
-      // 4. Create InputManager
+      // 5. Create InputManager
       const inputManager = new InputManager({ mouseSensitivity: this.config.camera.sensitivity, maxLookDelta: 32767 }, eventBus);
       inputManager.initialize(container as HTMLCanvasElement);
       this.emitSystemReady(eventBus, 'InputManager');
 
-      // 5. Create CameraController
+      // 6. Create CameraController
       const cameraController = new CameraController({
         sensitivity: this.config.camera.sensitivity,
         pitchLimit: this.config.camera.maxPitch,
@@ -135,7 +142,7 @@ export class ClientOrchestrator implements IClientOrchestrator {
       });
       this.emitSystemReady(eventBus, 'CameraController');
 
-      // 6. Create PredictionSystem
+      // 7. Create PredictionSystem
       const predictionSystem = new PredictionSystem(
         {
           reconciliationThreshold: this.config.prediction.reconciliationThreshold,
@@ -148,7 +155,7 @@ export class ClientOrchestrator implements IClientOrchestrator {
       );
       this.emitSystemReady(eventBus, 'PredictionSystem');
 
-      // 7. Create InterpolationBuffer
+      // 8. Create InterpolationBuffer
       const interpolationBuffer = new InterpolationBuffer(
         {
           bufferSize: this.config.interpolation.bufferSize,
@@ -160,21 +167,21 @@ export class ClientOrchestrator implements IClientOrchestrator {
       );
       this.emitSystemReady(eventBus, 'InterpolationBuffer');
 
-      // 8. Create HUDRenderer
+      // 9. Create HUDRenderer
       const hudRenderer = new HUDRenderer(this.config.hud, eventBus);
       hudRenderer.initialize(container);
       this.emitSystemReady(eventBus, 'HUDRenderer');
 
-      // 9. Create AudioSystem
+      // 10. Create AudioSystem
       const audioSystem = new AudioSystem(this.config.audio, eventBus);
       await audioSystem.initialize();
       this.emitSystemReady(eventBus, 'AudioSystem');
 
-      // 10. Create DebugOverlay
+      // 11. Create DebugOverlay
       const debugOverlay = new DebugOverlay(this.config.debug);
       this.emitSystemReady(eventBus, 'DebugOverlay');
 
-      // 11. Create DiagnosticsRecorder
+      // 12. Create DiagnosticsRecorder
       const diagnosticsRecorder = new DiagnosticsRecorder(this.config.diagnostics);
       this.emitSystemReady(eventBus, 'DiagnosticsRecorder');
 
@@ -182,6 +189,7 @@ export class ClientOrchestrator implements IClientOrchestrator {
       this.systems = {
         eventBus,
         collisionWorld,
+        spawnSystem,
         physics,
         inputManager,
         cameraController,

@@ -58,7 +58,7 @@ export class CombatConductor {
   private currentPhrase: EngagementPhrase | null = null;
   private phrasePatternIndex: number = 0;
   private currentExecution: PatternExecution | null = null;
-  private lastUpdateTime: number = 0;
+  private _lastUpdateTime: number = 0;
   private matchStartTime: number = 0;
 
   // Config
@@ -83,7 +83,7 @@ export class CombatConductor {
     this.spatialAwareness = new SpatialAwareness();
 
     this.matchStartTime = Date.now();
-    this.lastUpdateTime = Date.now();
+    this._lastUpdateTime = Date.now();
   }
 
   /**
@@ -91,7 +91,7 @@ export class CombatConductor {
    */
   conduct(input: BotInput, deltaMs: number): BotOutput {
     const now = Date.now();
-    const matchTimeMs = now - this.matchStartTime;
+    const _matchTimeMs = now - this.matchStartTime;
 
     // Initialize spatial awareness with input data
     this.spatialAwareness.setCoverPositions(input.coverPositions);
@@ -104,7 +104,7 @@ export class CombatConductor {
       recentDamageDealt: this.mercySystem.getRecentDamageDealt(),
       recentDamageTaken: this.mercySystem.getRecentDamageTaken(),
     };
-    const aggressionState = this.aggressionCurve.getState(matchTimeMs, aggressionMods);
+    const aggressionState = this.aggressionCurve.getState(_matchTimeMs, aggressionMods);
 
     // 2. Check mercy system
     this.mercySystem.update(now);
@@ -118,7 +118,7 @@ export class CombatConductor {
     const hasCover = this.spatialAwareness.isInCover(input.botPosition, input.playerPosition);
 
     // 5. Select/continue tactical pattern
-    const pattern = this.selectPattern(input, effectiveAggression, matchTimeMs, hasCover);
+    const pattern = this.selectPattern(input, effectiveAggression, _matchTimeMs, hasCover);
 
     // 6. Execute pattern to get movement
     const movement = this.executePattern(pattern, input, deltaMs, now);
@@ -145,7 +145,7 @@ export class CombatConductor {
       currentState: this.currentState,
     };
 
-    this.lastUpdateTime = now;
+    this._lastUpdateTime = now;
     return output;
   }
 
@@ -292,7 +292,7 @@ export class CombatConductor {
   private executePattern(
     pattern: TacticalPattern,
     input: BotInput,
-    deltaMs: number,
+    _deltaMs: number,
     now: number
   ): { direction: Vector3; speed: number } {
     // Start new execution if needed
