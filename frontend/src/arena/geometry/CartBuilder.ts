@@ -12,12 +12,14 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { ARENA_CONFIG } from '../config/ArenaConfig'
+import { DRACO_DECODER_PATH, type PropPlacement, type ArenaConfig } from '../maps/types'
 
 // Cart model URL - optimized with WebP textures and Draco compression
+// @deprecated Use MapLoader to load models instead
 const CART_URL = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/underground-cart-optimized.glb'
 
-// Draco decoder path
-const DRACO_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+// @deprecated Use DRACO_DECODER_PATH from maps/types.ts
+const DRACO_PATH = DRACO_DECODER_PATH
 
 // Cart positioning config
 const CART_CONFIG = {
@@ -140,4 +142,74 @@ export function createCartPlaceholders(): THREE.Group {
   })
   
   return group
+}
+
+
+/**
+ * Place pre-loaded cart models using positions from props config
+ * 
+ * This is the preferred method when using MapLoader to pre-load assets.
+ * 
+ * @param preloadedModel - The cart model from LoadedMap.models.cart
+ * @param propPlacement - The cart placement config from MapDefinition.props
+ * @param config - Arena configuration for track depth
+ * @returns Array of positioned cart groups
+ */
+export function placeCarts(
+  preloadedModel: THREE.Group | undefined,
+  propPlacement: PropPlacement | undefined,
+  _config: ArenaConfig // Reserved for future use
+): THREE.Group[] {
+  if (!preloadedModel) {
+    console.warn('[CartBuilder] No pre-loaded cart model provided')
+    return []
+  }
+
+  if (!propPlacement || propPlacement.positions.length === 0) {
+    console.warn('[CartBuilder] No cart positions provided')
+    return []
+  }
+
+  const carts: THREE.Group[] = []
+
+  // Get cart dimensions for logging
+  const box = new THREE.Box3().setFromObject(preloadedModel)
+  const size = box.getSize(new THREE.Vector3())
+  console.log('[CartBuilder] Cart dimensions:', size)
+
+  for (let i = 0; i < propPlacement.positions.length; i++) {
+    const pos = propPlacement.positions[i]
+
+    // Clone the cart
+    const cart = preloadedModel.clone()
+    cart.name = `underground-cart-${i}`
+
+    // Apply scale from prop config
+    cart.scale.setScalar(pos.scale)
+
+    // Position the cart
+    const cartBox = new THREE.Box3().setFromObject(cart)
+    const cartCenter = cartBox.getCenter(new THREE.Vector3())
+
+    cart.position.x = pos.x - cartCenter.x
+    cart.position.y = pos.y - cartBox.min.y
+    cart.position.z = pos.z - cartCenter.z
+
+    // Apply rotation
+    cart.rotation.y = pos.rotationY
+
+    // Setup shadows
+    cart.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+
+    carts.push(cart)
+    console.log(`[CartBuilder] Cart ${i} placed at (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)})`)
+  }
+
+  console.log(`[CartBuilder] Placed ${carts.length} underground carts`)
+  return carts
 }

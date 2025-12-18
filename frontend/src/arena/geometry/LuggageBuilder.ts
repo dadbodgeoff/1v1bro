@@ -10,13 +10,15 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { DRACO_DECODER_PATH, type PropPlacement, type ArenaConfig } from '../maps/types'
 
 // Luggage model URL from Supabase
+// @deprecated Use MapLoader to load models instead
 const LUGGAGE_URL =
   'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/lost-luggage.glb'
 
-// Draco decoder path
-const DRACO_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+// @deprecated Use DRACO_DECODER_PATH from maps/types.ts
+const DRACO_PATH = DRACO_DECODER_PATH
 
 // Luggage positioning config
 const LUGGAGE_CONFIG = {
@@ -113,4 +115,75 @@ export async function loadLuggageStacks(scene: THREE.Scene): Promise<THREE.Group
     console.error('[LuggageBuilder] Failed to load luggage GLB:', error)
     return []
   }
+}
+
+
+/**
+ * Place pre-loaded luggage models using positions from props config
+ * 
+ * This is the preferred method when using MapLoader to pre-load assets.
+ * 
+ * @param preloadedModel - The luggage model from LoadedMap.models.luggage
+ * @param propPlacement - The luggage placement config from MapDefinition.props
+ * @param _config - Arena configuration (reserved for future use)
+ * @returns Array of positioned luggage groups
+ */
+export function placeLuggageStacks(
+  preloadedModel: THREE.Group | undefined,
+  propPlacement: PropPlacement | undefined,
+  _config: ArenaConfig // Reserved for future use
+): THREE.Group[] {
+  if (!preloadedModel) {
+    console.warn('[LuggageBuilder] No pre-loaded luggage model provided')
+    return []
+  }
+
+  if (!propPlacement || propPlacement.positions.length === 0) {
+    console.warn('[LuggageBuilder] No luggage positions provided')
+    return []
+  }
+
+  const luggageStacks: THREE.Group[] = []
+
+  // Get dimensions for logging
+  const box = new THREE.Box3().setFromObject(preloadedModel)
+  const size = box.getSize(new THREE.Vector3())
+  console.log('[LuggageBuilder] Luggage dimensions:', size)
+
+  for (let i = 0; i < propPlacement.positions.length; i++) {
+    const pos = propPlacement.positions[i]
+
+    // Clone the luggage
+    const luggage = preloadedModel.clone()
+    luggage.name = `luggage-stack-${i}`
+
+    // Apply scale from prop config
+    luggage.scale.setScalar(pos.scale)
+
+    // Position the luggage
+    const luggageBox = new THREE.Box3().setFromObject(luggage)
+
+    luggage.position.x = pos.x
+    luggage.position.y = pos.y - luggageBox.min.y
+    luggage.position.z = pos.z
+
+    // Apply rotation
+    luggage.rotation.y = pos.rotationY
+
+    // Setup shadows
+    luggage.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+
+    luggageStacks.push(luggage)
+    console.log(
+      `[LuggageBuilder] Luggage ${i} placed at (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)})`
+    )
+  }
+
+  console.log(`[LuggageBuilder] Placed ${luggageStacks.length} luggage stacks`)
+  return luggageStacks
 }

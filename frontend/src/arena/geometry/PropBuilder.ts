@@ -10,15 +10,18 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { DRACO_DECODER_PATH, type PropPlacement, type ArenaConfig } from '../maps/types'
 
 // Asset URLs (Supabase CDN)
+// @deprecated Use MapLoader to load models instead
 const ASSETS = {
   wallExpression: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/wall-expression.glb',
   bench: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/weathered-bench.glb',
   luggage: 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/lost-luggage.glb',
 }
 
-const DRACO_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+// @deprecated Use DRACO_DECODER_PATH from maps/types.ts
+const DRACO_PATH = DRACO_DECODER_PATH
 
 // Prop placement config
 const PROP_CONFIG = {
@@ -171,4 +174,115 @@ export async function loadArenaProps(scene: THREE.Scene): Promise<void> {
   ])
 
   console.log('[PropBuilder] All props loaded')
+}
+
+
+/**
+ * Place pre-loaded wall expression models using positions from props config
+ * 
+ * @param preloadedModel - The wall expression model from LoadedMap.models.wallExpression
+ * @param propPlacement - The wall expression placement config from MapDefinition.props
+ * @returns Array of positioned wall groups
+ */
+export function placeWallExpressions(
+  preloadedModel: THREE.Group | undefined,
+  propPlacement: PropPlacement | undefined
+): THREE.Group[] {
+  if (!preloadedModel) {
+    console.warn('[PropBuilder] No pre-loaded wall expression model provided')
+    return []
+  }
+
+  if (!propPlacement || propPlacement.positions.length === 0) {
+    console.warn('[PropBuilder] No wall expression positions provided')
+    return []
+  }
+
+  const walls: THREE.Group[] = []
+
+  // Log dimensions
+  const box = new THREE.Box3().setFromObject(preloadedModel)
+  const size = box.getSize(new THREE.Vector3())
+  console.log('[PropBuilder] Wall dimensions:', size)
+
+  for (let i = 0; i < propPlacement.positions.length; i++) {
+    const pos = propPlacement.positions[i]
+    const wall = preloadedModel.clone()
+    wall.name = `wall-expression-${i}`
+
+    wall.scale.setScalar(pos.scale)
+    wall.position.set(pos.x, pos.y, pos.z)
+    wall.rotation.y = pos.rotationY
+
+    // Center on ground
+    const wallBox = new THREE.Box3().setFromObject(wall)
+    wall.position.y = pos.y - wallBox.min.y
+
+    // Shadows
+    wall.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+
+    walls.push(wall)
+    console.log(`[PropBuilder] Wall ${i} at (${pos.x}, ${pos.y}, ${pos.z})`)
+  }
+
+  return walls
+}
+
+/**
+ * Place pre-loaded bench models using positions from props config
+ * 
+ * @param preloadedModel - The bench model from LoadedMap.models.bench
+ * @param propPlacement - The bench placement config from MapDefinition.props
+ * @returns Array of positioned bench groups
+ */
+export function placeBenches(
+  preloadedModel: THREE.Group | undefined,
+  propPlacement: PropPlacement | undefined
+): THREE.Group[] {
+  if (!preloadedModel) {
+    console.warn('[PropBuilder] No pre-loaded bench model provided')
+    return []
+  }
+
+  if (!propPlacement || propPlacement.positions.length === 0) {
+    console.warn('[PropBuilder] No bench positions provided')
+    return []
+  }
+
+  const benches: THREE.Group[] = []
+
+  const box = new THREE.Box3().setFromObject(preloadedModel)
+  const size = box.getSize(new THREE.Vector3())
+  console.log('[PropBuilder] Bench dimensions:', size)
+
+  for (let i = 0; i < propPlacement.positions.length; i++) {
+    const pos = propPlacement.positions[i]
+    const bench = preloadedModel.clone()
+    bench.name = `bench-${i}`
+
+    bench.scale.setScalar(pos.scale)
+    bench.position.set(pos.x, pos.y, pos.z)
+    bench.rotation.y = pos.rotationY
+
+    // Place on floor
+    const benchBox = new THREE.Box3().setFromObject(bench)
+    bench.position.y = pos.y - benchBox.min.y
+
+    bench.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+
+    benches.push(bench)
+    console.log(`[PropBuilder] Bench ${i} at (${pos.x}, ${pos.y}, ${pos.z})`)
+  }
+
+  return benches
 }

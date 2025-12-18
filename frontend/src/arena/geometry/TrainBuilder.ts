@@ -11,15 +11,17 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { ARENA_CONFIG } from '../config/ArenaConfig'
+import { DRACO_DECODER_PATH, type ArenaConfig } from '../maps/types'
 
 // Train model - optimized with WebP textures and Draco compression (2.1MB vs 23MB)
+// @deprecated Use MapLoader to load models instead
 const TRAIN_URL = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/train2-optimized.glb'
 
 // Scale factor to adjust train size (1.0 = original, 0.5 = half size)
 const TRAIN_SCALE = 0.5
 
-// Draco decoder path (use CDN)
-const DRACO_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+// @deprecated Use DRACO_DECODER_PATH from maps/types.ts
+const DRACO_PATH = DRACO_DECODER_PATH
 
 /**
  * Create a placeholder train while GLB loads
@@ -128,4 +130,73 @@ export async function loadSubwayTrainGLB(
     console.error('[TrainBuilder] Failed to load train GLB:', error)
     return null
   }
+}
+
+
+/**
+ * Place a pre-loaded train model in the scene
+ * 
+ * This is the preferred method when using MapLoader to pre-load assets.
+ * The model is cloned, scaled, and positioned based on the config.
+ * 
+ * @param preloadedModel - The train model from LoadedMap.models.train
+ * @param config - Arena configuration for positioning
+ * @returns The positioned train group, or null if model is undefined
+ */
+export function placeSubwayTrain(
+  preloadedModel: THREE.Group | undefined,
+  _config: ArenaConfig // Reserved for future use (e.g., track-specific positioning)
+): THREE.Group | null {
+  if (!preloadedModel) {
+    console.warn('[TrainBuilder] No pre-loaded train model provided')
+    return null
+  }
+
+  // Clone the model so we don't modify the original
+  const train = preloadedModel.clone()
+  train.name = 'subway-train-glb'
+
+  // Apply scale factor
+  train.scale.setScalar(TRAIN_SCALE)
+
+  // Recalculate bounds after scaling
+  const box = new THREE.Box3().setFromObject(train)
+  const size = box.getSize(new THREE.Vector3())
+  const center = box.getCenter(new THREE.Vector3())
+  console.log('[TrainBuilder] Train size after scaling:', size)
+
+  // Center horizontally and along track
+  train.position.x = -center.x
+  train.position.z = -center.z
+
+  // Position train so its FLOOR is at Y=0 (level with main floor)
+  // Train floor is ~15% up from bottom (wheels/undercarriage below)
+  const trainFloorOffset = size.y * 0.15
+  train.position.y = -box.min.y - trainFloorOffset
+
+  console.log('[TrainBuilder] Train Y position:', train.position.y)
+
+  // Count triangles and meshes for debugging
+  let triangleCount = 0
+  let meshCount = 0
+
+  train.traverse((child) => {
+    if (child instanceof THREE.Mesh) {
+      meshCount++
+      child.castShadow = false
+      child.receiveShadow = true
+
+      // Count triangles
+      const geometry = child.geometry
+      if (geometry.index) {
+        triangleCount += geometry.index.count / 3
+      } else if (geometry.attributes.position) {
+        triangleCount += geometry.attributes.position.count / 3
+      }
+    }
+  })
+
+  console.log(`[TrainBuilder] Train stats: ${meshCount} meshes, ${triangleCount.toLocaleString()} triangles`)
+
+  return train
 }

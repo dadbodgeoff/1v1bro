@@ -11,12 +11,14 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import { DRACO_DECODER_PATH, type PropPlacement, type ArenaConfig } from '../maps/types'
 
 // Fare terminal model URL - optimized with WebP textures and Draco compression
+// @deprecated Use MapLoader to load models instead
 const TERMINAL_URL = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/cosmetics/arena/fare-terminal-optimized.glb'
 
-// Draco decoder path
-const DRACO_PATH = 'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+// @deprecated Use DRACO_DECODER_PATH from maps/types.ts
+const DRACO_PATH = DRACO_DECODER_PATH
 
 // Terminal positioning config
 const TERMINAL_CONFIG = {
@@ -103,4 +105,74 @@ export async function loadFareTerminals(scene: THREE.Scene): Promise<THREE.Group
     console.error('[FareTerminalBuilder] Failed to load terminal GLB:', error)
     return []
   }
+}
+
+
+/**
+ * Place pre-loaded fare terminal models using positions from props config
+ * 
+ * This is the preferred method when using MapLoader to pre-load assets.
+ * 
+ * @param preloadedModel - The fare terminal model from LoadedMap.models.fareTerminal
+ * @param propPlacement - The fare terminal placement config from MapDefinition.props
+ * @param _config - Arena configuration (reserved for future use)
+ * @returns Array of positioned terminal groups
+ */
+export function placeFareTerminals(
+  preloadedModel: THREE.Group | undefined,
+  propPlacement: PropPlacement | undefined,
+  _config: ArenaConfig // Reserved for future use
+): THREE.Group[] {
+  if (!preloadedModel) {
+    console.warn('[FareTerminalBuilder] No pre-loaded terminal model provided')
+    return []
+  }
+
+  if (!propPlacement || propPlacement.positions.length === 0) {
+    console.warn('[FareTerminalBuilder] No terminal positions provided')
+    return []
+  }
+
+  const terminals: THREE.Group[] = []
+
+  // Get terminal dimensions for logging
+  const box = new THREE.Box3().setFromObject(preloadedModel)
+  const size = box.getSize(new THREE.Vector3())
+  console.log('[FareTerminalBuilder] Terminal dimensions:', size)
+
+  for (let i = 0; i < propPlacement.positions.length; i++) {
+    const pos = propPlacement.positions[i]
+
+    // Clone the terminal
+    const terminal = preloadedModel.clone()
+    terminal.name = `fare-terminal-${i}`
+
+    // Apply scale from prop config
+    terminal.scale.setScalar(pos.scale)
+
+    // Position the terminal
+    const terminalBox = new THREE.Box3().setFromObject(terminal)
+    const terminalCenter = terminalBox.getCenter(new THREE.Vector3())
+
+    terminal.position.x = pos.x - terminalCenter.x
+    terminal.position.y = pos.y - terminalBox.min.y
+    terminal.position.z = pos.z - terminalCenter.z
+
+    // Apply rotation
+    terminal.rotation.y = pos.rotationY
+
+    // Setup shadows
+    terminal.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+
+    terminals.push(terminal)
+    console.log(`[FareTerminalBuilder] Terminal ${i} placed at (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}, ${pos.z.toFixed(1)})`)
+  }
+
+  console.log(`[FareTerminalBuilder] Placed ${terminals.length} fare terminals`)
+  return terminals
 }
