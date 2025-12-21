@@ -86,16 +86,16 @@ export interface PostProcessingConfig {
 const DEFAULT_CONFIG: PostProcessingConfig = {
   bloom: {
     enabled: true,
-    strength: 0.4,
-    radius: 0.5,
-    threshold: 0.8,
+    strength: 0.3,      // Reduced for subtler glow - avoids "cheap" look
+    radius: 0.35,       // Tighter radius for controlled glow
+    threshold: 0.88,    // Higher threshold - only true emissives bloom
   },
   colorGrading: {
     enabled: true,
-    contrast: 1.1,
-    saturation: 1.05,
+    contrast: 1.06,     // Slight contrast boost without crushing blacks
+    saturation: 1.0,    // Neutral saturation for realistic underground feel
     brightness: 0.0,
-    vignette: 0.25,
+    vignette: 0.18,     // Lighter vignette - heavy vignette obscures corners
   },
   antialiasing: true,
 }

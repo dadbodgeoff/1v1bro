@@ -24,11 +24,15 @@ export type {
   AmbientLightConfig,
   DirectionalLightConfig,
   PointLightConfig,
+  PointLightType,
   LightingConfig,
   PropPlacement,
   PropInstance,
   MapDefinition,
 } from './types';
+
+// Constants
+export { POINT_LIGHT_PRIORITY } from './types';
 
 export type {
   LoadedTextures,

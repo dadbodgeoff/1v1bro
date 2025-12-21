@@ -57,6 +57,16 @@ const lightingConfigGen: fc.Arbitrary<LightingConfig> = fc.record({
     intensity: fc.double({ min: 0, max: 2, noNaN: true }),
     position: vector3ConfigGen,
   }),
+  // Optional rim light
+  rimLight: fc.option(
+    fc.record({
+      color: fc.integer({ min: 0, max: 0xffffff }),
+      intensity: fc.double({ min: 0, max: 2, noNaN: true }),
+      position: vector3ConfigGen,
+      castShadow: fc.option(fc.boolean(), { nil: undefined }),
+    }),
+    { nil: undefined }
+  ),
   pointLights: fc.array(pointLightConfigGen, { minLength: 0, maxLength: 20 }),
 });
 
@@ -94,10 +104,12 @@ describe('LightingBuilder', () => {
       );
     });
 
-    it('should create exactly 4 base lights (ambient, hemisphere, key, fill)', () => {
+    it('should create exactly 4 base lights (ambient, hemisphere, key, fill) without rim light', () => {
       fc.assert(
         fc.property(lightingConfigGen, (config) => {
-          const lightGroup = createAmbientLighting(config);
+          // Remove rim light for this test
+          const configWithoutRim = { ...config, rimLight: undefined };
+          const lightGroup = createAmbientLighting(configWithoutRim);
 
           // Count each type of base light
           let ambientCount = 0;
@@ -114,6 +126,41 @@ describe('LightingBuilder', () => {
           expect(ambientCount).toBe(1);
           expect(hemisphereCount).toBe(1);
           expect(directionalCount).toBe(2);
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should create 5 base lights when rim light is present', () => {
+      fc.assert(
+        fc.property(lightingConfigGen, (config) => {
+          // Ensure rim light is present
+          const configWithRim = {
+            ...config,
+            rimLight: {
+              color: 0xc8d8ff,
+              intensity: 0.7,
+              position: { x: 0, y: 12, z: 15 },
+              castShadow: false,
+            },
+          };
+          const lightGroup = createAmbientLighting(configWithRim);
+
+          // Count each type of base light
+          let ambientCount = 0;
+          let hemisphereCount = 0;
+          let directionalCount = 0;
+
+          lightGroup.traverse((obj) => {
+            if (obj instanceof THREE.AmbientLight) ambientCount++;
+            if (obj instanceof THREE.HemisphereLight) hemisphereCount++;
+            if (obj instanceof THREE.DirectionalLight) directionalCount++;
+          });
+
+          // Should have exactly 1 ambient, 1 hemisphere, and 3 directional (key + fill + rim)
+          expect(ambientCount).toBe(1);
+          expect(hemisphereCount).toBe(1);
+          expect(directionalCount).toBe(3);
         }),
         { numRuns: 100 }
       );
@@ -336,8 +383,82 @@ describe('LightingBuilder', () => {
 
       expect(keyLight).not.toBeNull();
       expect(keyLight!.castShadow).toBe(true); // Default
-      expect(keyLight!.shadow.mapSize.width).toBe(1024); // Default
-      expect(keyLight!.shadow.bias).toBe(-0.0001); // Default
+      expect(keyLight!.shadow.mapSize.width).toBe(2048); // Updated default
+      expect(keyLight!.shadow.bias).toBe(-0.00025); // Updated default
+    });
+
+    it('should cull point lights when maxLights is specified', () => {
+      const config: LightingConfig = {
+        ambient: { color: 0x606878, intensity: 1.2 },
+        hemisphere: { skyColor: 0x505868, groundColor: 0x8a8580, intensity: 0.9 },
+        keyLight: {
+          color: 0xe8f0ff,
+          intensity: 1.8,
+          position: { x: 5, y: 20, z: -8 },
+        },
+        fillLight: {
+          color: 0xfff0e0,
+          intensity: 0.8,
+          position: { x: -8, y: 15, z: 10 },
+        },
+        pointLights: [
+          { type: 'utility', color: 0xffffff, intensity: 10, position: { x: 0, y: 2, z: 0 }, distance: 15, decay: 1.5, name: 'utility-1' },
+          { type: 'utility', color: 0xffffff, intensity: 10, position: { x: 5, y: 2, z: 0 }, distance: 15, decay: 1.5, name: 'utility-2' },
+          { type: 'wallWash', color: 0xffffff, intensity: 6, position: { x: 0, y: 2, z: 10 }, distance: 15, decay: 1.5, name: 'wall-1' },
+          { type: 'emergency', color: 0xff0000, intensity: 3, position: { x: 10, y: 2, z: 0 }, distance: 10, decay: 2.0, name: 'emergency-1' },
+          { type: 'trackGlow', color: 0x66aacc, intensity: 3, position: { x: 0, y: -1, z: 0 }, distance: 12, decay: 1.8, name: 'track-1' },
+          { type: 'tunnelGlow', color: 0x445566, intensity: 3, position: { x: 0, y: 1, z: 20 }, distance: 12, decay: 1.6, name: 'tunnel-1' },
+        ],
+      };
+
+      // maxLights: 6 means 6 - 4 (base lights) = 2 point lights allowed
+      const lightGroup = createAmbientLighting(config, 6);
+
+      let pointLightCount = 0;
+      lightGroup.traverse((obj) => {
+        if (obj instanceof THREE.PointLight) pointLightCount++;
+      });
+
+      // Should only have 2 point lights (utility lights have highest priority)
+      expect(pointLightCount).toBe(2);
+    });
+
+    it('should create rim light when specified', () => {
+      const config: LightingConfig = {
+        ambient: { color: 0x606878, intensity: 1.2 },
+        hemisphere: { skyColor: 0x505868, groundColor: 0x8a8580, intensity: 0.9 },
+        keyLight: {
+          color: 0xe8f0ff,
+          intensity: 1.8,
+          position: { x: 5, y: 20, z: -8 },
+        },
+        fillLight: {
+          color: 0xfff0e0,
+          intensity: 0.8,
+          position: { x: -8, y: 15, z: 10 },
+        },
+        rimLight: {
+          color: 0xc8d8ff,
+          intensity: 0.7,
+          position: { x: 0, y: 12, z: 15 },
+          castShadow: false,
+        },
+        pointLights: [],
+      };
+
+      const lightGroup = createAmbientLighting(config);
+
+      let rimLight: THREE.DirectionalLight | null = null;
+      lightGroup.traverse((obj) => {
+        if (obj instanceof THREE.DirectionalLight && obj.name === 'rim-light') {
+          rimLight = obj;
+        }
+      });
+
+      expect(rimLight).not.toBeNull();
+      expect(rimLight!.color.getHex()).toBe(0xc8d8ff);
+      expect(rimLight!.intensity).toBe(0.7);
+      expect(rimLight!.castShadow).toBe(false);
     });
   });
 });

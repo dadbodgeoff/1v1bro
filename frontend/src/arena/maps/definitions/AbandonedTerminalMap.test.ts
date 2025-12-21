@@ -201,12 +201,19 @@ describe('AbandonedTerminalMap Migration', () => {
       expect(AbandonedTerminalMap.lightingConfig.fillLight.position).toBeDefined();
     });
 
+    it('should have rim light for player silhouette separation', () => {
+      expect(AbandonedTerminalMap.lightingConfig.rimLight).toBeDefined();
+      expect(AbandonedTerminalMap.lightingConfig.rimLight!.color).toBeDefined();
+      expect(AbandonedTerminalMap.lightingConfig.rimLight!.intensity).toBeGreaterThan(0);
+      expect(AbandonedTerminalMap.lightingConfig.rimLight!.position).toBeDefined();
+    });
+
     it('should have point lights array with expected count', () => {
       const pointLights = AbandonedTerminalMap.lightingConfig.pointLights;
       expect(pointLights).toBeDefined();
       expect(Array.isArray(pointLights)).toBe(true);
-      // Original has: 4 emergency + 5 utility + 2 trackGlow + 2 tunnelGlow + 4 wallWash = 17
-      expect(pointLights.length).toBe(17);
+      // Optimized: 3 utility + 4 wallWash + 2 emergency + 1 trackGlow + 2 tunnelGlow = 12
+      expect(pointLights.length).toBe(12);
     });
 
     it('should have all point light types', () => {

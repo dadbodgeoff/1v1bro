@@ -9,3 +9,8 @@ export {
   type ProjectileEffectType,
   type ProjectileSpawnConfig,
 } from './ProjectileParticles'
+
+export {
+  HitstopSystem,
+  type HitstopConfig,
+} from './HitstopSystem'

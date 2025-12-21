@@ -5,7 +5,7 @@
  * - Procedural textures
  * - Environment mapping for reflections
  * - Optimized geometry batching
- * - Proper lighting setup
+ * - Proper lighting setup with quality-based culling
  * - Data-driven map configuration via LoadedMap
  */
 
@@ -39,6 +39,12 @@ import {
   applyPreloadedTrackTextures,
 } from './geometry';
 import { GeometryBatcher } from './rendering/GeometryBatcher';
+import { getArenaQualityProfile } from './config/quality';
+
+export interface ArenaSceneOptions {
+  /** Override max lights (defaults to quality profile) */
+  maxLights?: number;
+}
 
 export class ArenaScene {
   public readonly scene: THREE.Scene;
@@ -47,9 +53,11 @@ export class ArenaScene {
   private envMap: THREE.CubeTexture | null = null;
   private loadedMap: LoadedMap;
   private trainModel: THREE.Group | null = null;
+  private options: ArenaSceneOptions;
 
-  constructor(loadedMap: LoadedMap) {
+  constructor(loadedMap: LoadedMap, options: ArenaSceneOptions = {}) {
     this.loadedMap = loadedMap;
+    this.options = options;
     this.scene = new THREE.Scene();
     this.setupScene();
 
@@ -196,6 +204,10 @@ export class ArenaScene {
     const { definition, textures, models } = this.loadedMap;
     const { arenaConfig, lightingConfig, props } = definition;
 
+    // Get max lights from options or quality profile
+    const qualityProfile = getArenaQualityProfile();
+    const maxLights = this.options.maxLights ?? qualityProfile.renderer.maxLights;
+
     // Create geometry using config from LoadedMap
     const floor = createFloor(this.materials, arenaConfig);
     const ceiling = createCeiling(this.materials, arenaConfig);
@@ -204,7 +216,8 @@ export class ArenaScene {
     const platformEdges = createPlatformEdges(this.materials, arenaConfig);
     const subwayTrain = createSubwayTrain();
     const lights = createHangingLights(this.materials);
-    const ambientLighting = createAmbientLighting(lightingConfig);
+    // Pass maxLights for quality-based point light culling
+    const ambientLighting = createAmbientLighting(lightingConfig, maxLights);
 
     // Batch static geometry for fewer draw calls
     // NOTE: Floor, walls, ceiling are NOT batched so we can apply textures to them

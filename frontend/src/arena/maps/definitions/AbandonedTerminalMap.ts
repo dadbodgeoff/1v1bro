@@ -39,65 +39,78 @@ const MODEL_URLS = {
 };
 
 // ============================================================================
-// Lighting Configuration (extracted from LightingBuilder.ts)
+// Lighting Configuration (Enterprise AAA-grade v2)
 // ============================================================================
 
 const LIGHTING_CONFIG: LightingConfig = {
   ambient: {
-    color: 0x606878,
-    intensity: 1.2,
+    color: 0x505868,  // Slightly cooler for underground feel
+    intensity: 0.9,   // Reduced from 1.2 - preserves contrast
   },
   hemisphere: {
-    skyColor: 0x505868,
+    skyColor: 0x404858,
     groundColor: 0x8a8580,
-    intensity: 0.9,
+    intensity: 0.65,  // Reduced from 0.9 - lets directional lights dominate
   },
   keyLight: {
-    color: 0xe8f0ff,
-    intensity: 1.8,
+    color: 0xe0ecff,  // 5500K daylight through vents
+    intensity: 1.5,   // Reduced from 1.8 - prevents overexposure
     position: { x: 5, y: 20, z: -8 },
-    shadowMapSize: 1024,
-    shadowBias: -0.0001,
+    shadowMapSize: 2048,  // Increased for crisp shadows
+    shadowBias: -0.00025, // Adjusted to reduce acne
     castShadow: true,
   },
   fillLight: {
-    color: 0xfff0e0,
-    intensity: 0.8,
+    color: 0xfff0e0,  // 4000K warm fill
+    intensity: 0.55,  // Reduced from 0.8 - softer fill
     position: { x: -8, y: 15, z: 10 },
   },
+  // NEW: Rim light for player silhouette separation - critical for PvP
+  rimLight: {
+    color: 0xc8d8ff,  // Cool blue-white
+    intensity: 0.7,
+    position: { x: 0, y: 12, z: 15 }, // Behind and above center
+    castShadow: false, // Performance: rim doesn't need shadows
+  },
   pointLights: [
-    // Emergency lights (exit signs, strips)
-    { type: 'emergency', color: 0xff3300, intensity: 4, position: { x: -17, y: 4, z: -18 }, distance: 10, decay: 1.8, name: 'emergency-0' },
-    { type: 'emergency', color: 0xff3300, intensity: 4, position: { x: 17, y: 4, z: 18 }, distance: 10, decay: 1.8, name: 'emergency-1' },
-    { type: 'emergency', color: 0xff3300, intensity: 4, position: { x: 0, y: 3.5, z: -19 }, distance: 10, decay: 1.8, name: 'emergency-2' },
-    { type: 'emergency', color: 0xff3300, intensity: 4, position: { x: 0, y: 3.5, z: 19 }, distance: 10, decay: 1.8, name: 'emergency-3' },
+    // ========================================
+    // UTILITY LIGHTS - Main visibility (Priority 1)
+    // Reduced from 5 lights @ intensity 24 to 3 lights @ intensity 10-12
+    // ========================================
+    { type: 'utility', color: 0xfff8e8, intensity: 10, position: { x: -10, y: 2.5, z: 0 }, distance: 18, decay: 1.5, name: 'utility-west' },
+    { type: 'utility', color: 0xfff8e8, intensity: 10, position: { x: 10, y: 2.5, z: 0 }, distance: 18, decay: 1.5, name: 'utility-east' },
+    { type: 'utility', color: 0xfff8e8, intensity: 12, position: { x: 0, y: 4, z: 0 }, distance: 20, decay: 1.5, name: 'utility-center' },
 
-    // Utility lights (work lights - main visibility)
-    { type: 'utility', color: 0xfff8e8, intensity: 24, position: { x: -10, y: 2.5, z: 0 }, distance: 20.8, decay: 1.4, name: 'utility-0' },
-    { type: 'utility', color: 0xfff8e8, intensity: 24, position: { x: 10, y: 2.5, z: 0 }, distance: 20.8, decay: 1.4, name: 'utility-1' },
-    { type: 'utility', color: 0xfff8e8, intensity: 24, position: { x: 0, y: 4, z: 0 }, distance: 20.8, decay: 1.4, name: 'utility-2' },
-    { type: 'utility', color: 0xfff8e8, intensity: 24, position: { x: 0, y: 3, z: -14 }, distance: 20.8, decay: 1.4, name: 'utility-3' },
-    { type: 'utility', color: 0xfff8e8, intensity: 24, position: { x: 0, y: 3, z: 14 }, distance: 20.8, decay: 1.4, name: 'utility-4' },
+    // ========================================
+    // WALL WASH - Texture visibility (Priority 2)
+    // Reduced from 8 lights to 4 cardinal directions
+    // ========================================
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: 0, y: 2.5, z: -18 }, distance: 18, decay: 1.6, name: 'wall-wash-north' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: 0, y: 2.5, z: 18 }, distance: 18, decay: 1.6, name: 'wall-wash-south' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: 16, y: 2.5, z: 0 }, distance: 18, decay: 1.6, name: 'wall-wash-east' },
+    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: -16, y: 2.5, z: 0 }, distance: 18, decay: 1.6, name: 'wall-wash-west' },
 
-    // Track pit glow (eerie underlight)
-    { type: 'trackGlow', color: 0x66aacc, intensity: 4.5, position: { x: 0, y: -1.5, z: -8 }, distance: 16, decay: 1.8, name: 'track-glow-0' },
-    { type: 'trackGlow', color: 0x66aacc, intensity: 4.5, position: { x: 0, y: -1.5, z: 8 }, distance: 16, decay: 1.8, name: 'track-glow-1' },
+    // ========================================
+    // EMERGENCY LIGHTS - Atmosphere (Priority 3)
+    // Reduced from 4 lights @ intensity 4 to 2 lights @ intensity 2.5
+    // ========================================
+    { type: 'emergency', color: 0xff3300, intensity: 2.5, position: { x: -17, y: 4, z: -18 }, distance: 8, decay: 2.0, name: 'emergency-nw' },
+    { type: 'emergency', color: 0xff3300, intensity: 2.5, position: { x: 17, y: 4, z: 18 }, distance: 8, decay: 2.0, name: 'emergency-se' },
 
-    // Tunnel mouth glow
-    { type: 'tunnelGlow', color: 0x445566, intensity: 5, position: { x: 0, y: 1, z: -22 }, distance: 15, decay: 1.5, name: 'tunnel-glow-0' },
-    { type: 'tunnelGlow', color: 0x445566, intensity: 5, position: { x: 0, y: 1, z: 22 }, distance: 15, decay: 1.5, name: 'tunnel-glow-1' },
+    // ========================================
+    // TRACK GLOW - Eerie underlight (Priority 4)
+    // Consolidated from 2 lights to 1 centered light
+    // ========================================
+    { type: 'trackGlow', color: 0x66aacc, intensity: 2.8, position: { x: 0, y: -1.5, z: 0 }, distance: 14, decay: 1.8, name: 'track-glow-center' },
 
-    // Wall wash (texture enhancement) - boosted for better texture visibility
-    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: 0, y: 2.5, z: -18 }, distance: 22, decay: 1.5, name: 'wall-wash-n' },
-    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: 0, y: 2.5, z: 18 }, distance: 22, decay: 1.5, name: 'wall-wash-s' },
-    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: 16, y: 2.5, z: 0 }, distance: 22, decay: 1.5, name: 'wall-wash-e' },
-    { type: 'wallWash', color: 0xfff8f0, intensity: 10, position: { x: -16, y: 2.5, z: 0 }, distance: 22, decay: 1.5, name: 'wall-wash-w' },
-    // Additional corner wall washes for better coverage
-    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: -14, y: 2, z: -16 }, distance: 14, decay: 1.6, name: 'wall-wash-nw' },
-    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: 14, y: 2, z: -16 }, distance: 14, decay: 1.6, name: 'wall-wash-ne' },
-    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: -14, y: 2, z: 16 }, distance: 14, decay: 1.6, name: 'wall-wash-sw' },
-    { type: 'wallWash', color: 0xfff8f0, intensity: 6, position: { x: 14, y: 2, z: 16 }, distance: 14, decay: 1.6, name: 'wall-wash-se' },
+    // ========================================
+    // TUNNEL GLOW - Depth cue (Priority 5)
+    // Reduced intensity from 5 to 3.5
+    // ========================================
+    { type: 'tunnelGlow', color: 0x445566, intensity: 3.5, position: { x: 0, y: 1, z: -22 }, distance: 12, decay: 1.6, name: 'tunnel-glow-north' },
+    { type: 'tunnelGlow', color: 0x445566, intensity: 3.5, position: { x: 0, y: 1, z: 22 }, distance: 12, decay: 1.6, name: 'tunnel-glow-south' },
   ],
+  // Total: 12 point lights (down from 21) - fits within Ultra tier budget with priority culling
 };
 
 // ============================================================================

@@ -30,3 +30,9 @@ export {
   type DiagnosticsMetadata,
   type SerializableSnapshot
 } from './DiagnosticsRecorder';
+
+export {
+  ArenaMemoryMonitor,
+  type MemoryBudget,
+  type MemoryStats
+} from './MemoryMonitor';

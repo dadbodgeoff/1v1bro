@@ -194,8 +194,19 @@ export interface LightingConfig {
   hemisphere: HemisphereLightConfig;
   keyLight: DirectionalLightConfig;
   fillLight: DirectionalLightConfig;
+  /** Optional rim light for player silhouette separation */
+  rimLight?: DirectionalLightConfig;
   pointLights: PointLightConfig[];
 }
+
+/** Priority levels for point light culling based on quality tier */
+export const POINT_LIGHT_PRIORITY: Record<PointLightType, number> = {
+  utility: 1,    // Always on - main visibility
+  wallWash: 2,   // High priority - texture visibility
+  emergency: 3,  // Medium priority - atmosphere
+  trackGlow: 4,  // Low priority - ambient effect
+  tunnelGlow: 5, // Lowest priority - depth cue
+};
 
 // ============================================================================
 // Prop Placement

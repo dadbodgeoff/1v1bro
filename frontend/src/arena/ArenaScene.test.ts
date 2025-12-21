@@ -253,12 +253,26 @@ describe('ArenaScene', () => {
       arenaScene.dispose();
     });
 
-    it('should pass lightingConfig to createAmbientLighting', async () => {
+    it('should pass lightingConfig and maxLights to createAmbientLighting', async () => {
       const geometry = await import('./geometry');
       const arenaScene = new ArenaScene(mockLoadedMap);
 
+      // Should be called with lightingConfig and maxLights from quality profile
       expect(geometry.createAmbientLighting).toHaveBeenCalledWith(
-        mockLoadedMap.definition.lightingConfig
+        mockLoadedMap.definition.lightingConfig,
+        expect.any(Number) // maxLights from quality profile
+      );
+
+      arenaScene.dispose();
+    });
+
+    it('should use custom maxLights when provided in options', async () => {
+      const geometry = await import('./geometry');
+      const arenaScene = new ArenaScene(mockLoadedMap, { maxLights: 4 });
+
+      expect(geometry.createAmbientLighting).toHaveBeenCalledWith(
+        mockLoadedMap.definition.lightingConfig,
+        4
       );
 
       arenaScene.dispose();

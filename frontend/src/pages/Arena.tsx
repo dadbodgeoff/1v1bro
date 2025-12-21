@@ -31,8 +31,10 @@ import { Capsule } from '@/arena/physics/Capsule';
 import { PLAYER_HITBOX, BOT_HITBOX, getEyePosition } from '@/arena/game/CharacterHitbox';
 import { WeaponBuilder, setupWeaponCamera } from '@/arena/player/WeaponBuilder';
 import { ProjectileParticles } from '@/arena/effects/ProjectileParticles';
+import { HitstopSystem } from '@/arena/effects/HitstopSystem';
 import { DrawCallMonitor, optimizeRenderOrder } from '@/arena/rendering/PerformanceOptimizer';
 import { DEFAULT_GAME_CONFIG } from '@/arena/config/GameConfig';
+import { getArenaQualityProfile } from '@/arena/config/quality';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // UI components
@@ -87,6 +89,7 @@ export default function Arena() {
   const sceneRef = useRef<ArenaScene | null>(null);
   const rendererRef = useRef<ArenaRenderer | null>(null);
   const playerStateRef = useRef<PlayerPhysicsState | null>(null);
+  const hitstopRef = useRef<HitstopSystem | null>(null);
 
   // Start game - hide instructions and request pointer lock
   const startGame = useCallback(() => {
@@ -161,23 +164,27 @@ export default function Arena() {
       sceneRef.current = new ArenaScene(loadedMap);
       const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 
-      // Create renderer
+      // Create renderer with adaptive quality
+      const qualityProfile = getArenaQualityProfile();
       rendererRef.current = new ArenaRenderer(null, {
-        antialias: true,
-        shadows: true,
-        shadowMapSize: 1024,
+        antialias: qualityProfile.renderer.antialias,
+        shadows: qualityProfile.renderer.shadows,
+        shadowMapSize: qualityProfile.renderer.shadowMapSize,
+        pixelRatio: qualityProfile.renderer.pixelRatio,
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.0,
-        postProcessing: {
-          bloom: { enabled: true, strength: 0.3, radius: 0.4, threshold: 0.9 },
+        useAdaptiveQuality: true,
+        postProcessing: qualityProfile.renderer.postProcessing ? {
+          bloom: { enabled: qualityProfile.effects.bloomEnabled, strength: qualityProfile.effects.bloomStrength, radius: 0.4, threshold: 0.9 },
           colorGrading: { enabled: true, contrast: 1.05, saturation: 1.0, brightness: 0.0, vignette: 0.15 },
           antialiasing: true,
-        },
+        } : undefined,
       });
 
       containerRef.current.appendChild(rendererRef.current.renderer.domElement);
       rendererRef.current.setSize(window.innerWidth, window.innerHeight);
       rendererRef.current.initialize(sceneRef.current.scene, camera);
+      rendererRef.current.setupContainer(containerRef.current); // Setup ResizeObserver
       sceneRef.current.generateEnvMap(rendererRef.current.renderer);
       rendererRef.current.renderer.compile(sceneRef.current.scene, camera);
       optimizeRenderOrder(sceneRef.current.scene);
@@ -282,6 +289,15 @@ export default function Arena() {
       // Projectile particles
       const projectileParticles = new ProjectileParticles(sceneRef.current.scene);
       const drawCallMonitor = new DrawCallMonitor();
+      
+      // Hitstop system for impact feel
+      hitstopRef.current = new HitstopSystem({
+        playerHitFrames: 2,
+        killFrames: 4,
+        headshotFrames: 5,
+        intensity: 0.05,
+        enabled: true,
+      });
 
       // Initialize HUD
       systems.hudRenderer.initialize(containerRef.current!);
@@ -320,13 +336,29 @@ export default function Arena() {
       let currentFps = 0;
       let lastDebugUpdate = 0;
       const DEBUG_UPDATE_INTERVAL = 100; // Update debug info every 100ms, not every frame
+      
+      // Hitstop state
+      let hitstopTimer = 0;
+      let hitstopIntensity = 0.05;
+      
+      // Wire hitstop callback
+      hitstopRef.current?.setTriggerCallback((frames, intensity) => {
+        hitstopTimer = frames * (1 / 60); // Convert frames to seconds
+        hitstopIntensity = intensity;
+      });
 
       const gameLoop = () => {
         animationId = requestAnimationFrame(gameLoop);
 
         const now = performance.now();
-        const deltaTime = Math.min((now - lastTime) / 1000, 0.1);
+        let deltaTime = Math.min((now - lastTime) / 1000, 0.1);
         lastTime = now;
+        
+        // Apply hitstop time scaling
+        if (hitstopTimer > 0) {
+          hitstopTimer -= deltaTime; // Hitstop timer uses real time
+          deltaTime *= hitstopIntensity; // Slow down game time
+        }
 
         // FPS counter
         frameCount++;
@@ -435,6 +467,8 @@ export default function Arena() {
               // Only increment score if bot just died (was alive before, dead now)
               if (wasAlive && botManagerRef.current?.getBotState()?.isDead) {
                 playerScore++;
+                // Trigger hitstop on kill for satisfying feedback
+                hitstopRef.current?.onKill();
               }
             }
 
@@ -616,6 +650,9 @@ export default function Arena() {
                     now
                   );
                   bot.recordHit(botDamage);
+                  
+                  // Trigger hitstop on player taking damage
+                  hitstopRef.current?.onPlayerHit();
 
                   const newCombatState = systems.combatSystem.getPlayerState(LOCAL_PLAYER_ID);
                   // Only count kill if player just died (was alive before)
