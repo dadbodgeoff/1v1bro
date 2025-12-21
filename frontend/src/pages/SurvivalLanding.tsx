@@ -22,20 +22,16 @@ import {
   SurvivalHUD,
   EnterpriseLoadingScreen,
   EnterpriseButton,
-  TriviaStatsBar,
   ErrorDisplay,
-  TriviaPanel,
   TRIVIA_PANEL_HEIGHT,
   PauseOverlay,
   GameOverOverlay,
   PerformanceOverlay,
   type GuestRunStats,
-  type TriviaQuestion,
 } from '@/survival/components'
 import { useTriviaBillboards } from '@/survival/hooks/useTriviaBillboards'
 import { leaderboardService } from '@/survival/services/LeaderboardService'
 import { getSurvivalGuestSession, type SurvivalRunResult } from '@/survival/guest'
-import { getRandomQuestions } from '@/data/fortnite-quiz-data'
 import type { TriviaStats } from '@/survival/hooks/useSurvivalTrivia'
 import type { TriviaCategory } from '@/survival/world/TriviaQuestionProvider'
 import { analytics } from '@/services/analytics'
@@ -220,8 +216,11 @@ function SurvivalLandingContent() {
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
   
-  // Calculate if mobile trivia should show
-  const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
+  // TRIVIA DISABLED for landing page - pure obstacle runner experience
+  const TRIVIA_ENABLED = false
+  
+  // Calculate if mobile trivia should show (disabled for landing)
+  const showMobileTrivia = false // TRIVIA_ENABLED && isMobile && !enableTriviaBillboards && phase === 'running'
   
   // Trigger resize when trivia panel shows/hides
   useEffect(() => {
@@ -249,10 +248,10 @@ function SurvivalLandingContent() {
     setTriviaStats?.(triviaStatsRef.current.questionsCorrect, triviaStatsRef.current.questionsAnswered)
   }, [setTriviaStats])
 
-  // Desktop billboards
+  // Desktop billboards - DISABLED for landing page
   const billboards = useTriviaBillboards(engine, {
     category: DEFAULT_CATEGORY,
-    enabled: enableTriviaBillboards && bootComplete,
+    enabled: false, // TRIVIA_ENABLED && enableTriviaBillboards && bootComplete,
     onCorrectAnswer: (points) => {
       updateTriviaStats(true, points)
       addScore?.(points)
@@ -267,9 +266,9 @@ function SurvivalLandingContent() {
     },
   })
 
-  // Start/stop billboards based on game phase
+  // Start/stop billboards based on game phase - DISABLED
   useEffect(() => {
-    if (!enableTriviaBillboards) return
+    if (!TRIVIA_ENABLED || !enableTriviaBillboards) return
     
     if (phase === 'running' && !billboards.isActive) {
       billboards.start()
@@ -277,48 +276,6 @@ function SurvivalLandingContent() {
       billboards.stop()
     }
   }, [phase, billboards, enableTriviaBillboards])
-
-  // Mobile: get next question
-  const getNextMobileQuestion = useCallback((): TriviaQuestion | null => {
-    const allQuestions = getRandomQuestions(50)
-    const unusedQuestions = allQuestions.filter(q => !usedQuestionsRef.current.has(q.id))
-    
-    if (unusedQuestions.length === 0) {
-      usedQuestionsRef.current.clear()
-      if (allQuestions.length === 0) return null
-    }
-    
-    const pool = unusedQuestions.length > 0 ? unusedQuestions : allQuestions
-    const quizQ = pool[Math.floor(Math.random() * pool.length)]
-    usedQuestionsRef.current.add(quizQ.id)
-    
-    return {
-      id: quizQ.id,
-      question: quizQ.question,
-      answers: quizQ.options,
-      correctIndex: quizQ.correctAnswer,
-      category: quizQ.category,
-      difficulty: quizQ.difficulty === 'casual' ? 'easy' : quizQ.difficulty === 'moderate' ? 'medium' : 'hard',
-    }
-  }, [])
-
-  // Mobile: handle answer
-  const handleMobileTriviaAnswer = useCallback((_questionId: string, _selectedIndex: number, isCorrect: boolean) => {
-    const points = isCorrect ? 100 + (triviaStatsRef.current.currentStreak * 25) : 0
-    updateTriviaStats(isCorrect, points)
-    
-    if (isCorrect) {
-      addScore?.(points)
-    } else {
-      loseLife?.()
-    }
-  }, [updateTriviaStats, addScore, loseLife])
-
-  // Mobile: handle timeout
-  const handleMobileTriviaTimeout = useCallback((_questionId: string) => {
-    updateTriviaStats(false)
-    loseLife?.()
-  }, [updateTriviaStats, loseLife])
 
   // Track max combo
   useEffect(() => {
@@ -485,8 +442,8 @@ function SurvivalLandingContent() {
           </div>
         )}
 
-        {/* Trivia Stats (desktop) */}
-        {enableTriviaBillboards && !isLoading && !error && gameState && bootComplete && (phase === 'running' || phase === 'paused') && (
+        {/* Trivia Stats (desktop) - DISABLED for landing page */}
+        {/* {TRIVIA_ENABLED && enableTriviaBillboards && !isLoading && !error && gameState && bootComplete && (phase === 'running' || phase === 'paused') && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
             <TriviaStatsBar
               timeRemaining={billboards.stats?.timeRemaining}
@@ -496,7 +453,7 @@ function SurvivalLandingContent() {
               streak={billboards.streak}
             />
           </div>
-        )}
+        )} */}
         
         {/* Performance Stats */}
         {!isLoading && performanceMetrics && bootComplete && (
@@ -538,7 +495,7 @@ function SurvivalLandingContent() {
                 🏃 Survival Run
               </h1>
               <p className="text-neutral-400 mb-8">
-                Dodge obstacles, answer trivia, see how far you can go!
+                Dodge obstacles and see how far you can go!
               </p>
               
               <div className="flex flex-col gap-3">
@@ -579,8 +536,8 @@ function SurvivalLandingContent() {
           </div>
         )}
 
-        {/* Mobile Trivia Panel */}
-        {showMobileTrivia && bootComplete && (
+        {/* Mobile Trivia Panel - DISABLED for landing page */}
+        {/* {showMobileTrivia && bootComplete && (
           <div className="flex-shrink-0 z-20">
             <TriviaPanel
               isActive={phase === 'running'}
@@ -590,7 +547,7 @@ function SurvivalLandingContent() {
               onTimeout={handleMobileTriviaTimeout}
             />
           </div>
-        )}
+        )} */}
         
         {/* Pause Overlay */}
         {phase === 'paused' && !showGameOver && bootComplete && (
