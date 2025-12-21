@@ -81,6 +81,48 @@ export {
   type PlayerDimensions,
 } from './WorldConfig'
 
+// Theme system
+export {
+  // Types
+  type MapTheme,
+  type ThemeAssets,
+  type ObstacleVisualConfig,
+  type CollisionBoxConfig,
+  type BackgroundConfig,
+  type LightingConfig,
+  type ThemeRegistry,
+  // Built-in themes
+  SPACE_HIGHWAY_THEME,
+  // Registry functions
+  getTheme,
+  getDefaultTheme,
+  getAvailableThemeIds,
+  registerTheme,
+  THEME_REGISTRY,
+  // Adapter functions
+  setActiveTheme,
+  getActiveTheme,
+  getThemeAssets,
+  getObstacleVisual,
+  getCollisionBox,
+  createCollisionBoxFromTheme,
+  getSpaceBackgroundConfig,
+  getCityScapeConfig,
+  getTrackScale,
+  getObstacleScale,
+  getBackgroundColor,
+  getFogConfig,
+  getLightingConfig,
+  getThemeColors,
+  shouldShowStars,
+  getBackgroundImage,
+  hasImageBackground,
+  getCelestialKeys,
+  shouldForceThemeCharacter,
+  getThemeCharacterSkin,
+  getCharacterRotationY,
+} from './themes'
+
 /**
  * Initialize configuration system
  * Call this early in app startup to ensure device detection runs

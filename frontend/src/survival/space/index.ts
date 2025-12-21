@@ -7,6 +7,10 @@
 export { SpaceBackground } from './SpaceBackground'
 export type { SpaceBackgroundConfig, SpaceBackgroundEvents } from './SpaceBackground'
 
+// Static image background (for non-space themes)
+export { ImageBackground } from './ImageBackground'
+export type { ImageBackgroundConfig } from './ImageBackground'
+
 // Components
 export { StarField, DEFAULT_STAR_LAYERS } from './StarField'
 export { NebulaBackground } from './NebulaBackground'

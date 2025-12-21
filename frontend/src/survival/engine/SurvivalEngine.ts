@@ -47,6 +47,7 @@ import { MilestoneSystem } from '../systems/MilestoneSystem'
 import { AchievementSystem } from '../systems/AchievementSystem'
 import { LoadingOrchestrator, type LoadingProgress } from '../core/LoadingOrchestrator'
 import { WorldConfig } from '../config/WorldConfig'
+import { shouldForceThemeCharacter, getThemeCharacterSkin } from '../config/themes'
 
 // Modular subsystems (enterprise pattern)
 import { GameStateManager } from './GameStateManager'
@@ -149,7 +150,14 @@ export class SurvivalEngine {
     this.assetLoader = new AssetLoader()
     
     // Set custom runner skin if provided (from equipped cosmetic)
-    if (runnerSkin) {
+    // BUT: if theme forces its own character, use theme's character instead
+    if (shouldForceThemeCharacter()) {
+      const themeSkin = getThemeCharacterSkin()
+      if (themeSkin) {
+        console.log('[SurvivalEngine] Theme forces character skin - overriding equipped cosmetic')
+        this.assetLoader.setCustomRunnerSkin(themeSkin)
+      }
+    } else if (runnerSkin) {
       this.assetLoader.setCustomRunnerSkin(runnerSkin)
     }
     

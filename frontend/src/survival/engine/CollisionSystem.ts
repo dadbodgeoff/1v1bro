@@ -131,7 +131,11 @@ export class CollisionSystem {
 
     if (isSliding) {
       // Sliding reduces collision height significantly
-      height = playerDimensions.height * this.SLIDE_HEIGHT_RATIO
+      // CRITICAL: Cap at 0.7m to ensure player fits under highBarrier
+      // The barrier minY is 1.0 above track, but player feet are ~0.3 above track
+      // So player maxY when sliding must be < 1.0 + trackSurface
+      // With feet at ~0.3, height of 0.7 gives maxY of ~1.0 which just clears
+      height = Math.min(playerDimensions.height * this.SLIDE_HEIGHT_RATIO, 0.7)
     }
 
     // Y position already includes jump height from physics

@@ -7,6 +7,7 @@
  * - Score/timeout callbacks
  * - Sound integration
  * - Stats for UI display
+ * - Theme-based enable/disable (respects theme.triviaEnabled flag)
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react'
@@ -18,6 +19,7 @@ import {
 } from '../systems/TriviaBillboardSubsystem'
 import type { TriviaCategory } from '../world/TriviaQuestionProvider'
 import { useSurvivalAnalytics } from './useSurvivalAnalytics'
+import { isTriviaEnabled } from '../config/themes'
 
 export interface UseTriviaBillboardsOptions {
   category?: TriviaCategory
@@ -52,6 +54,10 @@ export function useTriviaBillboards(
   options: UseTriviaBillboardsOptions = {}
 ): UseTriviaBillboardsReturn {
   const { category = 'fortnite', enabled = true } = options
+  
+  // Check if trivia is enabled for the current theme
+  const themeAllowsTrivia = isTriviaEnabled()
+  const effectiveEnabled = enabled && themeAllowsTrivia
 
   const subsystemRef = useRef<TriviaBillboardSubsystem | null>(null)
   const animationFrameRef = useRef<number | null>(null)
@@ -77,11 +83,12 @@ export function useTriviaBillboards(
 
   // Initialize subsystem ONCE when engine becomes available
   useEffect(() => {
-    // Only initialize once
-    if (!engine || !enabled || initializedRef.current) return
+    // Only initialize once, and only if trivia is enabled
+    if (!engine || !effectiveEnabled || initializedRef.current) return
     if (subsystemRef.current) return // Already have a subsystem
 
     initializedRef.current = true
+    console.log('[useTriviaBillboards] Initializing trivia system (theme allows:', themeAllowsTrivia, ')')
 
     const scene = engine.getScene()
     const subsystem = new TriviaBillboardSubsystem(scene, { category })

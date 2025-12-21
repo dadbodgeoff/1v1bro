@@ -14,6 +14,9 @@ import { ProgressionProvider } from '@/components/progression'
 import { Home, Login, Register, Lobby } from '@/pages'
 import { ArcadeLanding } from '@/pages/ArcadeLanding'
 
+// Survival Landing - arcade boot + survival runner (lazy loaded for code splitting)
+const SurvivalLanding = lazy(() => import('@/pages/SurvivalLanding'))
+
 // Lazy loaded pages - split by feature for optimal chunking
 // Game pages (heavy - Three.js, game engine)
 const ArenaGame = lazy(() => import('@/pages/ArenaGame').then(m => ({ default: m.ArenaGame })))
@@ -82,7 +85,7 @@ function PageLoader() {
   )
 }
 
-// Root route - shows CRT Arcade Landing for guests, redirects to dashboard for authenticated users
+// Root route - shows Survival Landing (arcade boot + runner) for guests, redirects to dashboard for authenticated users
 function RootRoute() {
   const { isAuthenticated, isLoading } = useAuthStore()
   
@@ -92,12 +95,13 @@ function RootRoute() {
     </div>
   }
   
-  // Use CRT Arcade Landing as the main landing page
+  // Authenticated users go to dashboard
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
   
-  return <ArcadeLanding />
+  // Guests get arcade boot sequence into survival runner
+  return <SurvivalLanding />
 }
 
 function App() {

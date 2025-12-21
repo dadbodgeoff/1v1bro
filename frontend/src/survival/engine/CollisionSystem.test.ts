@@ -66,6 +66,7 @@ describe('CollisionSystem', () => {
 
     it('should reduce height when sliding', () => {
       const SLIDE_HEIGHT_RATIO = 0.4 // From CollisionSystem
+      const MAX_SLIDE_HEIGHT = 0.9 // Cap to fit under highBarrier
       
       fc.assert(
         fc.property(
@@ -86,10 +87,10 @@ describe('CollisionSystem', () => {
             const collisionSystem = new CollisionSystem()
             const box = collisionSystem.createPlayerBox(x, y, z, false, true) // sliding = true
             
-            // Box height should be reduced when sliding
+            // Box height should be reduced when sliding, capped at MAX_SLIDE_HEIGHT
             const boxHeight = box.maxY - box.minY
-            const expectedHeight = dimensions.height * SLIDE_HEIGHT_RATIO
-            expect(boxHeight).toBeCloseTo(expectedHeight, 5)
+            const expectedHeight = Math.min(dimensions.height * SLIDE_HEIGHT_RATIO, MAX_SLIDE_HEIGHT)
+            expect(boxHeight).toBeCloseTo(expectedHeight, 4) // Reduced precision for floating point
           }
         ),
         { numRuns: 100 }

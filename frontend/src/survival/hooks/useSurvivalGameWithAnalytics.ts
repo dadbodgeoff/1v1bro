@@ -115,6 +115,7 @@ export function useSurvivalGameWithAnalytics(options: UseSurvivalGameWithAnalyti
         distance: gameState.distance,
         score: gameState.score,
         durationSeconds: gameState.distance / 10, // Approximate based on speed
+        themeId: 'zen-garden',  // Track the theme being played
         maxCombo: lastCombo.current,
         obstaclesCleared: obstaclesCleared.current,
         nearMisses: 0, // Would need to track this

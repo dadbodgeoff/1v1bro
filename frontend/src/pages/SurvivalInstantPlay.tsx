@@ -278,6 +278,7 @@ function SurvivalInstantPlayContent() {
     survivalAnalytics.trackRunEnd({
       distance, score, durationSeconds: 0, maxCombo: maxComboRef.current,
       obstaclesCleared: 0, nearMisses: 0, perfectDodges: 0, laneChanges: 0, jumps: 0, slides: 0,
+      themeId: 'zen-garden',  // Track the theme being played
     })
     
     if (isNewPB) survivalAnalytics.trackPersonalBest(distance, guestSession.current.getSession().bestDistance)

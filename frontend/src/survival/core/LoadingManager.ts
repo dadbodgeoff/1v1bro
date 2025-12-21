@@ -3,7 +3,7 @@
  * Provides loading states, progress, and error handling
  */
 
-import { SURVIVAL_ASSETS } from '../config/constants'
+import { getThemeAssets } from '../config/themes'
 import { ResourceManager, type LoadingProgress } from './ResourceManager'
 
 export type LoadingPhase = 
@@ -66,25 +66,29 @@ export class LoadingManager {
     this.state.phase = 'initializing'
     this.state.startTime = performance.now()
     this.abortController = new AbortController()
+    
+    // Get assets from active theme
+    const assets = getThemeAssets()
 
     try {
       // Phase 1: Core assets (track)
       await this.loadPhase('loading-core', [
-        SURVIVAL_ASSETS.track.longTile,
+        assets.track.longTile,
       ])
 
-      // Phase 2: Obstacles (highBarrier is now procedural - not loaded)
+      // Phase 2: Obstacles
       await this.loadPhase('loading-obstacles', [
-        SURVIVAL_ASSETS.obstacles.lowBarrier,
-        SURVIVAL_ASSETS.obstacles.laneBarrier,
-        SURVIVAL_ASSETS.obstacles.knowledgeGate,
+        assets.obstacles.highBarrier,
+        assets.obstacles.lowBarrier,
+        assets.obstacles.laneBarrier,
+        assets.obstacles.knowledgeGate,
       ])
 
       // Phase 3: Character (animated runner with run/jump/down poses)
       await this.loadPhase('loading-character', [
-        SURVIVAL_ASSETS.character.runner.run,
-        SURVIVAL_ASSETS.character.runner.jump,
-        SURVIVAL_ASSETS.character.runner.down,
+        assets.character.runner.run,
+        assets.character.runner.jump,
+        assets.character.runner.down,
       ])
 
       // Finalize

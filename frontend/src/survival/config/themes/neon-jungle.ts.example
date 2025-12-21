@@ -1,0 +1,205 @@
+/**
+ * Neon Jungle Theme (EXAMPLE)
+ * 
+ * A bioluminescent alien jungle with glowing plants and creatures.
+ * This is an example of how to create a completely different theme.
+ * 
+ * To use this:
+ * 1. Rename to neon-jungle.ts
+ * 2. Create/upload the GLB models
+ * 3. Register in index.ts
+ */
+
+import type { MapTheme } from './types'
+
+const STORAGE_BASE = 'https://YOUR_PROJECT.supabase.co/storage/v1/object/public/survival-assets'
+
+export const NEON_JUNGLE_THEME: MapTheme = {
+  id: 'neon-jungle',
+  name: 'Neon Jungle',
+  description: 'Race through a bioluminescent alien jungle with glowing flora',
+  previewImage: '/images/themes/neon-jungle-preview.jpg',
+  
+  assets: {
+    // Organic vine-covered bridge/path
+    track: `${STORAGE_BASE}/jungle-bridge.glb`,
+    
+    obstacles: {
+      // Giant glowing mushroom (slide under cap)
+      highBarrier: `${STORAGE_BASE}/giant-mushroom.glb`,
+      // Thorny vine barrier (jump over)
+      lowBarrier: `${STORAGE_BASE}/thorn-vine.glb`,
+      // Carnivorous plant (dodge)
+      laneBarrier: `${STORAGE_BASE}/venus-trap.glb`,
+      // Poison spore pods
+      spikes: `${STORAGE_BASE}/spore-pods.glb`,
+    },
+    
+    environment: {
+      // Dense jungle foliage on sides
+      scenery: `${STORAGE_BASE}/jungle-trees.glb`,
+      celestials: {
+        // Floating jellyfish-like creatures
+        jellyfish: `${STORAGE_BASE}/glow-jellyfish.glb`,
+        // Bioluminescent birds
+        glowBird: `${STORAGE_BASE}/glow-bird.glb`,
+        // Floating seed pods
+        seedPod: `${STORAGE_BASE}/floating-seed.glb`,
+        // Giant fireflies
+        firefly: `${STORAGE_BASE}/giant-firefly.glb`,
+      },
+    },
+    
+    collectibles: {
+      // Glowing nectar orb
+      gem: `${STORAGE_BASE}/nectar-orb.glb`,
+    },
+  },
+  
+  obstacleVisuals: {
+    highBarrier: {
+      scale: 0.4,
+      yOffset: 0.3,
+      rotationY: 0,
+      forceLane: 0,
+    },
+    lowBarrier: {
+      scale: 0.5,
+      yOffset: -0.2,
+      rotationY: Math.PI / 4, // Angled vines
+      forceLane: 0,
+    },
+    laneBarrier: {
+      scale: 0.5,
+      yOffset: -0.3,
+      rotationY: 0,
+      forceLane: null,
+    },
+    spikes: {
+      scale: 0.3,
+      yOffset: -0.4,
+      rotationY: 0,
+      forceLane: 0,
+    },
+    knowledgeGate: {
+      scale: 1.0,
+      yOffset: 0,
+      rotationY: 0,
+      forceLane: 0,
+    },
+    gap: {
+      scale: 1.0,
+      yOffset: 0,
+      rotationY: 0,
+      forceLane: null,
+    },
+  },
+  
+  collisionBoxes: {
+    highBarrier: {
+      halfWidth: 2.0,
+      minY: 0.9,
+      maxY: 4.5,
+      halfDepth: 0.6,
+    },
+    lowBarrier: {
+      halfWidth: 1.5,
+      minY: -0.5,
+      maxY: 1.0,
+      halfDepth: 0.8,
+      spansAllLanes: true,
+    },
+    laneBarrier: {
+      halfWidth: 0.7,
+      minY: -0.5,
+      maxY: 2.5,
+      halfDepth: 0.7,
+    },
+    spikes: {
+      halfWidth: 0.6,
+      minY: -0.5,
+      maxY: 1.2,
+      halfDepth: 0.4,
+    },
+    knowledgeGate: {
+      halfWidth: 2.25,
+      minY: 0,
+      maxY: 5.0,
+      halfDepth: 0.6,
+      spansAllLanes: true,
+    },
+    gap: {
+      halfWidth: 1.5,
+      minY: -10,
+      maxY: 0,
+      halfDepth: 2.0,
+      spansAllLanes: true,
+    },
+  },
+  
+  background: {
+    // Deep jungle night
+    backgroundColor: 0x0a1a0a,
+    
+    fog: {
+      color: 0x0a1a0a,
+      density: 0.012, // Thicker fog for jungle atmosphere
+    },
+    
+    // Green/cyan bioluminescent glow
+    skyColors: [0x0a2a1a, 0x00ff88, 0x001a0a],
+    
+    // Firefly-like particles instead of stars
+    stars: {
+      enabled: true,
+      count: 500, // Fewer, larger "fireflies"
+      color: 0x88ff88,
+    },
+    
+    particles: {
+      shootingStars: false, // No shooting stars in jungle
+      cosmicDust: true, // Pollen/spores
+      spawnRate: 0.5,
+    },
+    
+    scenery: {
+      enabled: true,
+      scale: 40,
+      yOffset: -15,
+      xOffset: 12,
+      zSpacing: 80,
+      instanceCount: 10,
+    },
+  },
+  
+  lighting: {
+    ambient: {
+      color: 0x88ffaa, // Green-tinted ambient
+      intensity: 0.6,
+    },
+    
+    directional: {
+      color: 0x00ffcc, // Cyan moonlight
+      intensity: 0.4,
+      position: { x: -5, y: 15, z: 5 },
+      castShadow: true,
+    },
+    
+    // Bioluminescent glow points
+    pointLights: [
+      { color: 0x00ff88, intensity: 0.3, position: { x: -8, y: 4, z: 0 }, distance: 15 },
+      { color: 0xff00ff, intensity: 0.2, position: { x: 8, y: 3, z: -10 }, distance: 12 },
+    ],
+  },
+  
+  track: {
+    scale: 8, // Slightly smaller organic path
+  },
+  
+  colors: {
+    primary: 0x00ff88,   // Bioluminescent green
+    secondary: 0xff00ff, // Magenta accent
+    accent: 0x00ffff,    // Cyan
+    danger: 0xff4444,    // Red (poison)
+  },
+}

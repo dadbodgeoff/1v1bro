@@ -20,6 +20,7 @@ import type { CameraController } from './CameraController'
 import type { LifecycleManager } from '../core/LifecycleManager'
 import type { PlayerManager } from './PlayerManager'
 import { getSoundManager } from '../audio'
+import { getTrackScale } from '../config/themes'
 
 export interface InitializationDeps {
   renderer: SurvivalRenderer
@@ -79,8 +80,9 @@ export class InitializationManager {
       const subsystemStart = performance.now()
       loadingOrchestrator.setTask('Initializing track...')
       
-      // Track initialization
-      trackManager.initialize(assets.track.longTile)
+      // Track initialization - use theme's track scale
+      const trackScale = getTrackScale()
+      trackManager.initialize(assets.track.longTile, trackScale)
       loadingOrchestrator.markReady('track', performance.now() - assetStart)
       
       // Obstacle initialization

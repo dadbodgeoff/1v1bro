@@ -14,9 +14,10 @@ import { COLORS } from '../config/constants'
 import { getRendererConfig } from '../config/constants'
 import { getQualityProfile, onQualityChange, recordFPSForQuality, type QualityProfile } from '../config/quality'
 import { getDeviceCapabilities } from '../config/device'
-import { SpaceBackground } from '../space'
+import { SpaceBackground, ImageBackground } from '../space'
 import type { CelestialType } from '../space'
 import { MemoryMonitor, type MemoryStats, type MemoryBudget } from '../debug/MemoryMonitor'
+import { getActiveTheme, hasImageBackground, getBackgroundImage } from '../config/themes'
 
 export class SurvivalRenderer {
   private container: HTMLElement
@@ -40,6 +41,9 @@ export class SurvivalRenderer {
 
   // Space background system
   private spaceBackground: SpaceBackground | null = null
+  
+  // Static image background (for non-space themes)
+  private imageBackground: ImageBackground | null = null
 
   // AAA Feature: Speed lines effect
   private speedLines: THREE.LineSegments | null = null
@@ -193,12 +197,13 @@ export class SurvivalRenderer {
       this.scene.fog.far = fogFar
     }
     
-    // Update space background quality
+    // Update space background quality (only if using space background)
     if (this.spaceBackground) {
       const spaceQuality = newProfile.tier === 'low' ? 'low' : 
                           newProfile.tier === 'medium' ? 'medium' : 'high'
       this.spaceBackground.setQuality(spaceQuality as 'low' | 'medium' | 'high')
     }
+    // Image background doesn't need quality adjustment
     
     // Toggle speed lines based on quality
     if (newProfile.animation.speedLines && !this.speedLines) {
@@ -274,8 +279,39 @@ export class SurvivalRenderer {
   /**
    * Setup the space background system
    * Quality-aware: adjusts particle counts and effects based on device
+   * Theme-aware: uses static image background for non-space themes
    */
   private setupSpaceBackground(): void {
+    const theme = getActiveTheme()
+    
+    // Check if theme uses static image background
+    if (hasImageBackground(theme)) {
+      const imageUrl = getBackgroundImage(theme)
+      if (imageUrl) {
+        console.log('[SurvivalRenderer] Using static image background:', imageUrl)
+        
+        // Use a plane at a distance within the far clipping plane
+        const bgDistance = this.rendererConfig.farPlane * 0.8
+        
+        this.imageBackground = new ImageBackground({
+          imageUrl,
+          distance: bgDistance,
+          rotationSpeed: 0, // Static background
+        })
+        this.scene.add(this.imageBackground.getObject())
+        console.log('[SurvivalRenderer] ImageBackground added to scene, distance:', bgDistance)
+        
+        // IMPORTANT: Remove scene.background so the plane is visible
+        this.scene.background = null
+        
+        // Disable fog for image backgrounds
+        this.scene.fog = null
+        
+        return // Don't create SpaceBackground
+      }
+    }
+    
+    // Default: use procedural space background
     const spaceQuality = this.qualityProfile.space
     
     // Map quality tier to space background preset
@@ -394,7 +430,12 @@ export class SurvivalRenderer {
    * Update space background (call each frame)
    */
   updateSpaceBackground(delta: number, playerZ: number, speed: number): void {
-    this.spaceBackground?.update(delta, playerZ, speed)
+    // Update whichever background is active
+    if (this.imageBackground) {
+      this.imageBackground.update(delta, playerZ)
+    } else {
+      this.spaceBackground?.update(delta, playerZ, speed)
+    }
   }
 
   /**
@@ -695,6 +736,13 @@ export class SurvivalRenderer {
     // Dispose space background
     this.spaceBackground?.dispose()
     this.spaceBackground = null
+    
+    // Dispose image background
+    if (this.imageBackground) {
+      this.scene.remove(this.imageBackground.getObject())
+      this.imageBackground.dispose()
+      this.imageBackground = null
+    }
     
     // Dispose speed lines
     this.disposeSpeedLines()

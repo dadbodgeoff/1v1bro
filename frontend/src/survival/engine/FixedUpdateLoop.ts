@@ -222,6 +222,10 @@ export class FixedUpdateLoop {
       )
     }
     
+    // Handle slide mechanics - MUST happen BEFORE collision check
+    // so that isSliding state is current when checking collisions
+    this.updateSlide(delta, state, wantsSlide, physicsState.isGrounded)
+    
     // Update visual state
     playerController.setVisualState({
       isRunning: true,
@@ -246,11 +250,16 @@ export class FixedUpdateLoop {
       this.lastPositionLogTime = now
       const trackSurface = WorldConfig.getInstance().getTrackSurfaceHeight()
       const playerDims = WorldConfig.getInstance().getPlayerDimensions()
+      // Calculate actual collision height (reduced when sliding)
+      const SLIDE_HEIGHT_RATIO = 0.4
+      const actualHeight = state.player.isSliding 
+        ? Math.min(playerDims.height * SLIDE_HEIGHT_RATIO, 0.9)
+        : playerDims.height
       console.log(`%c[Position] 📍 Player @ ${state.distance.toFixed(0)}m`, 'color: #88ff88')
       console.log(`  X: ${state.player.x.toFixed(3)} | Y: ${playerController.getY().toFixed(3)} | Z: ${state.player.z.toFixed(3)}`)
       console.log(`  Track surface Y: ${trackSurface.toFixed(3)} | Height above track: ${(playerController.getY() - trackSurface).toFixed(3)}`)
       console.log(`  Jumping: ${state.player.isJumping} | Sliding: ${state.player.isSliding} | Grounded: ${physicsState.isGrounded}`)
-      console.log(`  Player box: minY=${playerController.getY().toFixed(3)}, maxY=${(playerController.getY() + playerDims.height).toFixed(3)}`)
+      console.log(`  Player collision box: minY=${playerController.getY().toFixed(3)}, maxY=${(playerController.getY() + actualHeight).toFixed(3)} (height=${actualHeight.toFixed(3)})`)
     }
 
     // Update camera
@@ -305,8 +314,8 @@ export class FixedUpdateLoop {
       }
     }
 
-    // Handle slide mechanics
-    this.updateSlide(delta, state, wantsSlide, physicsState.isGrounded)
+    // Handle slide mechanics - MOVED EARLIER (before collision check)
+    // This is now handled before collision check to ensure slide state is current
   }
 
   /**

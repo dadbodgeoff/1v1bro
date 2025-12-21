@@ -1,12 +1,16 @@
 /**
  * AssetLoader - Handles loading GLB models for Survival Mode
  * Provides caching and progress tracking
+ * 
+ * Supports theme system - uses active theme's assets by default
  */
 
 import * as THREE from 'three'
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
-import { SURVIVAL_ASSETS } from '../config/constants'
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
+import { getThemeAssets, getTheme } from '../config/themes'
+import type { SurvivalAssets } from '../types/survival'
 import { getDeviceCapabilities } from '../config/device'
 
 export interface LoadedAssets {
@@ -63,6 +67,9 @@ export class AssetLoader {
   private onProgress?: (progress: LoadProgress) => void
   private isSafariMobile: boolean = false
   private maxTextureSize: number = 2048
+  
+  // Theme assets - defaults to active theme, can be overridden
+  private assets: SurvivalAssets
 
   constructor(onProgress?: (progress: LoadProgress) => void) {
     // Detect Safari/iOS for texture optimization
@@ -70,6 +77,10 @@ export class AssetLoader {
     this.isSafariMobile = caps.isSafari && caps.isMobile
     // Limit texture size on Safari mobile to prevent VRAM exhaustion
     this.maxTextureSize = this.isSafariMobile ? 512 : (caps.isIOS ? 1024 : 2048)
+    
+    // Use active theme's assets by default
+    this.assets = getThemeAssets()
+    
     // Setup Draco decoder for compressed GLB files
     this.dracoLoader = new DRACOLoader()
     this.dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
@@ -77,8 +88,30 @@ export class AssetLoader {
     
     this.loader = new GLTFLoader()
     this.loader.setDRACOLoader(this.dracoLoader)
+    // Add meshopt decoder for meshopt-compressed GLBs
+    this.loader.setMeshoptDecoder(MeshoptDecoder)
     
     this.onProgress = onProgress
+  }
+  
+  /**
+   * Set custom assets to load (overrides theme assets)
+   */
+  setAssets(assets: SurvivalAssets): void {
+    this.assets = assets
+  }
+  
+  /**
+   * Use a specific theme's assets
+   */
+  useTheme(themeId: string): void {
+    const theme = getTheme(themeId)
+    if (theme) {
+      this.assets = getThemeAssets(theme)
+      console.log(`[AssetLoader] Using theme: ${theme.name}`)
+    } else {
+      console.warn(`[AssetLoader] Theme '${themeId}' not found, using default`)
+    }
   }
 
   /**
@@ -232,8 +265,8 @@ export class AssetLoader {
    * Load all required assets for the game
    */
   async loadAll(): Promise<LoadedAssets> {
-    // Determine runner skin URLs (custom or default)
-    const runnerUrls = this.customRunnerSkin || SURVIVAL_ASSETS.character.runner
+    // Determine runner skin URLs (custom or default from theme)
+    const runnerUrls = this.customRunnerSkin || this.assets.character.runner
 
     // Load core assets first (required for gameplay)
     // NOTE: gapped and narrowBridge track tiles removed - not currently used, saves memory
@@ -248,12 +281,12 @@ export class AssetLoader {
       runnerJump,
       runnerDown,
     ] = await Promise.all([
-      this.loadModel(SURVIVAL_ASSETS.track.longTile, 'longTile'),
-      this.loadModel(SURVIVAL_ASSETS.obstacles.highBarrier, 'highBarrier'),
-      this.loadModel(SURVIVAL_ASSETS.obstacles.lowBarrier, 'lowBarrier'),
-      this.loadModel(SURVIVAL_ASSETS.obstacles.laneBarrier, 'laneBarrier'),
-      this.loadModel(SURVIVAL_ASSETS.obstacles.knowledgeGate, 'knowledgeGate'),
-      this.loadModel(SURVIVAL_ASSETS.obstacles.spikes, 'spikes'),
+      this.loadModel(this.assets.track.longTile, 'longTile'),
+      this.loadModel(this.assets.obstacles.highBarrier, 'highBarrier'),
+      this.loadModel(this.assets.obstacles.lowBarrier, 'lowBarrier'),
+      this.loadModel(this.assets.obstacles.laneBarrier, 'laneBarrier'),
+      this.loadModel(this.assets.obstacles.knowledgeGate, 'knowledgeGate'),
+      this.loadModel(this.assets.obstacles.spikes, 'spikes'),
       this.loadModelWithAnimations(runnerUrls.run, 'runner-run'),
       this.loadModelWithAnimations(runnerUrls.jump, 'runner-jump'),
       this.loadModelWithAnimations(runnerUrls.down, 'runner-down'),
@@ -363,11 +396,12 @@ export class AssetLoader {
       console.log('[AssetLoader] Skipping celestials on Safari mobile to save memory')
       return null
     }
-    if (!SURVIVAL_ASSETS.celestials) return null
+    if (!this.assets.celestials) return null
 
     // Celestial texture size - smaller since they're far away
     // 256px for mobile, 512px for desktop
     const celestialTextureSize = this.maxTextureSize <= 1024 ? 256 : 512
+    const celestials = this.assets.celestials
 
     try {
       const [
@@ -383,17 +417,17 @@ export class AssetLoader {
         orbitalDefense,
         derelictShip,
       ] = await Promise.all([
-        this.loadModel(SURVIVAL_ASSETS.celestials.planetVolcanic, 'planetVolcanic').then(m => { this.downscaleModelTextures(m, celestialTextureSize); return m }),
-        this.loadModel(SURVIVAL_ASSETS.celestials.planetIce, 'planetIce'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.planetGasGiant, 'planetGasGiant'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.asteroidCluster, 'asteroidCluster'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.spaceSatellite!, 'spaceSatellite'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.icyComet!, 'icyComet'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.spaceWhale!, 'spaceWhale'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.ringPortal!, 'ringPortal'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.crystalFormation!, 'crystalFormation'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.orbitalDefense!, 'orbitalDefense'),
-        this.loadModel(SURVIVAL_ASSETS.celestials.derelictShip!, 'derelictShip'),
+        celestials.planetVolcanic ? this.loadModel(celestials.planetVolcanic, 'planetVolcanic').then(m => { this.downscaleModelTextures(m, celestialTextureSize); return m }) : Promise.resolve(new THREE.Group()),
+        celestials.planetIce ? this.loadModel(celestials.planetIce, 'planetIce') : Promise.resolve(new THREE.Group()),
+        celestials.planetGasGiant ? this.loadModel(celestials.planetGasGiant, 'planetGasGiant') : Promise.resolve(new THREE.Group()),
+        celestials.asteroidCluster ? this.loadModel(celestials.asteroidCluster, 'asteroidCluster') : Promise.resolve(new THREE.Group()),
+        celestials.spaceSatellite ? this.loadModel(celestials.spaceSatellite, 'spaceSatellite') : Promise.resolve(new THREE.Group()),
+        celestials.icyComet ? this.loadModel(celestials.icyComet, 'icyComet') : Promise.resolve(new THREE.Group()),
+        celestials.spaceWhale ? this.loadModel(celestials.spaceWhale, 'spaceWhale') : Promise.resolve(new THREE.Group()),
+        celestials.ringPortal ? this.loadModel(celestials.ringPortal, 'ringPortal') : Promise.resolve(new THREE.Group()),
+        celestials.crystalFormation ? this.loadModel(celestials.crystalFormation, 'crystalFormation') : Promise.resolve(new THREE.Group()),
+        celestials.orbitalDefense ? this.loadModel(celestials.orbitalDefense, 'orbitalDefense') : Promise.resolve(new THREE.Group()),
+        celestials.derelictShip ? this.loadModel(celestials.derelictShip, 'derelictShip') : Promise.resolve(new THREE.Group()),
       ])
 
       return {
@@ -419,10 +453,10 @@ export class AssetLoader {
    * Load collectible models asynchronously
    */
   async loadCollectiblesAsync(): Promise<LoadedAssets['collectibles'] | null> {
-    if (!SURVIVAL_ASSETS.collectibles) return null
+    if (!this.assets.collectibles?.gem) return null
 
     try {
-      const gem = await this.loadModel(SURVIVAL_ASSETS.collectibles.gem, 'gem')
+      const gem = await this.loadModel(this.assets.collectibles.gem, 'gem')
       return { gem }
     } catch (error) {
       console.error('[AssetLoader] Collectibles loading failed:', error)
@@ -431,33 +465,27 @@ export class AssetLoader {
   }
 
   /**
-   * Load city model asynchronously (for skyline below track)
+   * Load city/scenery model asynchronously (for skyline below track)
    * 
    * NOTE: Texture downscaling DISABLED on mobile - it causes color shift (red tint)
    * due to iOS Safari canvas not properly handling sRGB colorSpace.
    * The city is a background element so original textures are acceptable.
    */
   async loadCityAsync(): Promise<THREE.Group | null> {
-    if (!SURVIVAL_ASSETS.environment?.city) return null
+    if (!this.assets.environment?.city) return null
 
     try {
-      const city = await this.loadModel(SURVIVAL_ASSETS.environment.city, 'city')
+      const city = await this.loadModel(this.assets.environment.city, 'city')
       
       // DISABLED: Texture downscaling causes red/pink color shift on iOS Safari
       // The canvas-based downscaling doesn't preserve sRGB colorSpace properly
       // City is a background element so original textures are fine
-      // 
-      // if (this.isSafariMobile) {
-      //   this.downscaleModelTextures(city, 256)
-      // } else if (this.maxTextureSize <= 1024) {
-      //   this.downscaleModelTextures(city, 512)
-      // }
       
-      console.log('[AssetLoader] City loaded (no texture downscaling to preserve colors)')
+      console.log('[AssetLoader] City/scenery loaded (no texture downscaling to preserve colors)')
       
       return city
     } catch (error) {
-      console.error('[AssetLoader] City loading failed:', error)
+      console.error('[AssetLoader] City/scenery loading failed:', error)
       return null
     }
   }

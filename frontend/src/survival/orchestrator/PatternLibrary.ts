@@ -3,22 +3,21 @@
  * Patterns are pre-designed sequences that create intentional gameplay moments
  * 
  * Obstacle types and behaviors:
- * - laneBarrier: Blocks ONE lane (vertical), dodge left/right to avoid
+ * - highBarrier: Spans ALL lanes, MUST slide/roll under (can't jump over)
  * - lowBarrier: Spans ALL lanes, MUST jump over (no dodging)
- * - spikes: Center lane hazard, can dodge left/right OR jump over
+ * - laneBarrier: Blocks ONE lane (vertical), dodge left/right to avoid
+ * - spikes: Ground hazard, can dodge left/right OR jump over
  * - knowledgeGate: Trivia trigger (not a damage obstacle)
- * 
- * NOTE: highBarrier removed - only using laneBarrier, lowBarrier, spikes, knowledgeGate
  */
 
 import type { ObstaclePattern, ObstaclePlacement } from './types'
-import type { Lane } from '../types/survival'
+import type { Lane, ObstacleType } from '../types/survival'
 
 /**
  * Helper to create placements more concisely
  */
 const placement = (
-  type: 'laneBarrier' | 'lowBarrier' | 'knowledgeGate' | 'spikes',
+  type: ObstacleType,
   lane: Lane,
   offsetZ: number
 ): ObstaclePlacement => ({ type, lane, offsetZ })
@@ -400,21 +399,78 @@ export const PATTERN_LIBRARY: ObstaclePattern[] = [
   },
 
   // ============================================
-  // KNOWLEDGE GATE PATTERNS
+  // KNOWLEDGE GATE PATTERNS - DISABLED (trivia off)
+  // ============================================
+  // Knowledge gates removed - using highBarrier (roll under) instead
+
+  // ============================================
+  // HIGH BARRIER PATTERNS - Roll/Slide under
   // ============================================
   {
-    id: 'knowledge-solo',
-    name: 'Knowledge Gate',
-    description: 'Single knowledge gate for trivia',
-    placements: [placement('knowledgeGate', 0, 0)],
-    length: 10,
+    id: 'single-roll',
+    name: 'Roll Under',
+    description: 'Torii gate spanning all lanes - MUST roll/slide under',
+    placements: [placement('highBarrier', 0, 0)],
+    length: 5,
     minDifficulty: 'rookie',
     maxDifficulty: null,
-    requiredActions: [],
+    requiredActions: ['slide'],
     allowedAfter: [],
-    forbiddenAfter: ['knowledge-solo'],
-    baseWeight: 0.15,
-    cooldownPatterns: 10,
+    forbiddenAfter: [],
+    baseWeight: 0.8,
+    cooldownPatterns: 2,
+  },
+  {
+    id: 'roll-then-jump',
+    name: 'Roll then Jump',
+    description: 'Roll under torii, then jump over fence',
+    placements: [
+      placement('highBarrier', 0, 0),
+      placement('lowBarrier', 0, 14),
+    ],
+    length: 19,
+    minDifficulty: 'intermediate',
+    maxDifficulty: null,
+    requiredActions: ['slide', 'jump'],
+    allowedAfter: [],
+    forbiddenAfter: [],
+    baseWeight: 0.6,
+    cooldownPatterns: 3,
+  },
+  {
+    id: 'jump-then-roll',
+    name: 'Jump then Roll',
+    description: 'Jump over fence, then roll under torii',
+    placements: [
+      placement('lowBarrier', 0, 0),
+      placement('highBarrier', 0, 14),
+    ],
+    length: 19,
+    minDifficulty: 'intermediate',
+    maxDifficulty: null,
+    requiredActions: ['jump', 'slide'],
+    allowedAfter: [],
+    forbiddenAfter: [],
+    baseWeight: 0.6,
+    cooldownPatterns: 3,
+  },
+  {
+    id: 'roll-dodge-roll',
+    name: 'Roll Dodge Roll',
+    description: 'Roll, dodge lane barrier, roll again',
+    placements: [
+      placement('highBarrier', 0, 0),
+      placement('laneBarrier', 0, 12),
+      placement('highBarrier', 0, 24),
+    ],
+    length: 29,
+    minDifficulty: 'advanced',
+    maxDifficulty: null,
+    requiredActions: ['slide', 'laneChange'],
+    allowedAfter: [],
+    forbiddenAfter: ['roll-dodge-roll'],
+    baseWeight: 0.4,
+    cooldownPatterns: 4,
   },
 ]
 

@@ -22,6 +22,7 @@ import { WorldConfig } from '../config/WorldConfig'
 import type { LoadedAssets } from '../renderer/AssetLoader'
 import type { Collidable, CollisionBox } from './CollisionSystem'
 import { ObstacleOrchestrator, type SpawnRequest, type DifficultyTier, type PacingPhase } from '../orchestrator'
+import { getObstacleVisual, createCollisionBoxFromTheme } from '../config/themes'
 
 // Enterprise: Instanced rendering data per obstacle type
 interface InstancedObstaclePool {
@@ -275,45 +276,22 @@ export class ObstacleManager {
     // Add TRACK_GEOMETRY_OFFSET to account for model's internal geometry offset
     const rawBaseY = WorldConfig.getInstance().getTrackSurfaceHeight()
     const baseY = rawBaseY + ObstacleManager.TRACK_GEOMETRY_OFFSET
-    let yOffset = 0
     
-    // High barrier (slideee.glb) - slide under it
-    // Positioned at chest/head height above track surface
-    if (request.type === 'highBarrier') {
-      request.lane = 0 // Force to center lane
-      mesh.rotation.y = Math.PI / 2
-      mesh.scale.multiplyScalar(0.35)
-      // Position above track surface at chest height (~0.5 units above surface)
-      yOffset = 0.5
+    // Get visual config from theme (scale, rotation, yOffset)
+    const visual = getObstacleVisual(request.type)
+    const yOffset = visual.yOffset
+    
+    // Apply theme-based scale
+    mesh.scale.multiplyScalar(visual.scale)
+    
+    // Apply theme-based rotation
+    if (visual.rotationY !== undefined) {
+      mesh.rotation.y = visual.rotationY
     }
     
-    // Low barrier (neon gate) - MUST jump over, spans ALL lanes
-    // Positioned horizontally across track - no dodging allowed
-    if (request.type === 'lowBarrier') {
-      request.lane = 0 // Always center (spans all lanes anyway)
-      mesh.rotation.y = Math.PI / 2 // Horizontal orientation
-      mesh.scale.multiplyScalar(0.5) // Slightly larger to visually span track
-      // Position slightly below track so it sits ON the track
-      yOffset = -0.3
-    }
-    
-    // Spikes - dodge obstacle (pass on sides, don't touch)
-    if (request.type === 'spikes') {
-      request.lane = 0 // Force to center lane
-      mesh.scale.multiplyScalar(0.35) // Reduced from 0.5 - was too large
-      // Position at track surface level
-      yOffset = -0.5
-    }
-    
-    // Lane barrier - dodge obstacle (change lanes to avoid)
-    // Vertical orientation - blocks ONE lane only
-    // Can spawn in any lane, player must be in different lane
-    if (request.type === 'laneBarrier') {
-      // No rotation - keep vertical to block single lane
-      mesh.rotation.y = 0
-      mesh.scale.multiplyScalar(0.45) // Increased from 0.35 for better visibility
-      // Position slightly below track so it sits ON the track
-      yOffset = -0.3
+    // Apply theme-based lane forcing
+    if (visual.forceLane !== undefined && visual.forceLane !== null) {
+      request.lane = visual.forceLane
     }
     
     mesh.position.set(
@@ -331,6 +309,7 @@ export class ObstacleManager {
     console.log(`  yOffset for type: ${yOffset.toFixed(3)}`)
     console.log(`  Final Y: ${(baseY + yOffset).toFixed(3)}`)
     console.log(`  Lane: ${request.lane}`)
+    console.log(`  Theme visual: scale=${visual.scale}, rotationY=${visual.rotationY}, forceLane=${visual.forceLane}`)
     
     // Add emissive glow and rim lighting for better visibility against track
     // This is zero-cost at runtime - emissive materials glow without lights
@@ -419,79 +398,13 @@ export class ObstacleManager {
    * Enterprise: Uses WorldConfig as single source of truth for track surface height
    */
   private createCollisionBox(type: ObstacleType, lane: Lane, z: number): CollisionBox {
-    const x = lane * this.laneWidth
-    
     // Use the same offset as visual positioning
     const worldConfig = WorldConfig.getInstance()
     const rawBaseY = worldConfig.getTrackSurfaceHeight()
     const baseY = rawBaseY + ObstacleManager.TRACK_GEOMETRY_OFFSET // Actual ground level
 
-    switch (type) {
-      case 'highBarrier':
-        // High barrier - must slide under
-        // Collision starts above slide height, extends high
-        return {
-          minX: x - 1.8,
-          maxX: x + 1.8,
-          minY: baseY + 0.8, // Above slide height (~0.8 units above surface)
-          maxY: baseY + 4.0, // Extends high - can't jump over
-          minZ: z - 0.5,
-          maxZ: z + 0.5,
-        }
-      case 'lowBarrier':
-        // Low barrier - MUST jump over (spans ALL lanes, no dodging)
-        // Collision box spans entire track width
-        // Player feet must be ABOVE maxY to clear (requires jumping)
-        return {
-          minX: -this.laneWidth * 1.5, // Spans all 3 lanes
-          maxX: this.laneWidth * 1.5,
-          minY: baseY - 0.5, // Start below track to catch any grounded player
-          maxY: baseY + 1.2, // Player must jump to clear
-          minZ: z - 0.8,
-          maxZ: z + 0.8,
-        }
-      case 'laneBarrier':
-        // Lane barrier - blocks ONE lane only (vertical orientation)
-        // Player must dodge to a different lane to avoid
-        // Collision box is narrow, only covers the lane it's in
-        return {
-          minX: x - this.laneWidth * 0.4, // Narrow - only blocks one lane
-          maxX: x + this.laneWidth * 0.4,
-          minY: baseY - 0.5, // Start below track to catch any player
-          maxY: baseY + 3.0, // Tall enough player can't jump over
-          minZ: z - 0.6,
-          maxZ: z + 0.6,
-        }
-      case 'knowledgeGate':
-        return {
-          minX: x - this.laneWidth * 1.5,
-          maxX: x + this.laneWidth * 1.5,
-          minY: baseY,
-          maxY: baseY + 5.0,
-          minZ: z - 0.6,
-          maxZ: z + 0.6,
-        }
-      case 'spikes':
-        // Ground spikes - can dodge left/right OR jump over
-        // Smaller collision box to match reduced visual scale (0.35)
-        return {
-          minX: x - 0.5,
-          maxX: x + 0.5,
-          minY: baseY - 0.5,
-          maxY: baseY + 1.5, // Reduced height - easier to jump over
-          minZ: z - 0.3,
-          maxZ: z + 0.3,
-        }
-      default:
-        return {
-          minX: x - 1,
-          maxX: x + 1,
-          minY: baseY,
-          maxY: baseY + 2,
-          minZ: z - 1,
-          maxZ: z + 1,
-        }
-    }
+    // Use theme-based collision boxes for consistent configuration
+    return createCollisionBoxFromTheme(type, lane, z, this.laneWidth, baseY)
   }
 
   /**

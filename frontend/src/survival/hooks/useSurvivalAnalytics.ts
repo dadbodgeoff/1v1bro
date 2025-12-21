@@ -23,6 +23,7 @@ export interface RunAnalytics {
   score: number
   durationSeconds: number
   seed?: number
+  themeId?: string  // Track which theme/map was played
   maxSpeed?: number
   avgSpeed?: number
   maxCombo?: number
@@ -420,6 +421,7 @@ export function useSurvivalAnalytics(options: UseSurvivalAnalyticsOptions = {}) 
       score: analytics.score,
       duration_seconds: analytics.durationSeconds,
       seed: analytics.seed,
+      theme_id: analytics.themeId,  // Track theme/map
       max_speed: analytics.maxSpeed,
       avg_speed: analytics.avgSpeed,
       max_combo: analytics.maxCombo,
