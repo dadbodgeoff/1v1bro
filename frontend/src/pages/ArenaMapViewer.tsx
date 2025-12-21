@@ -17,6 +17,8 @@ import { ArenaRenderer } from '@/arena/rendering/ArenaRenderer'
 import { MapLoader } from '@/arena/maps/MapLoader'
 import type { LoadedMap } from '@/arena/maps/MapLoader'
 import '@/arena/maps/definitions' // Register maps
+import { BOT_HITBOX } from '@/arena/game/CharacterHitbox'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 // Color map for different collider types
 const COLLIDER_COLORS: Record<string, number> = {
@@ -109,14 +111,17 @@ export default function ArenaMapViewer() {
   const [showGrid, setShowGrid] = useState(false)
   const [showAxes, setShowAxes] = useState(false)
   const [showColliders, setShowColliders] = useState(false)
+  const [showBot, setShowBot] = useState(false)
   const [cameraPos, setCameraPos] = useState({ x: 0, y: 0, z: 0 })
   const sceneRef = useRef<THREE.Scene | null>(null)
   const debugHelpersRef = useRef<THREE.Object3D[]>([])
   const colliderHelpersRef = useRef<THREE.Object3D[]>([])
+  const botGroupRef = useRef<THREE.Group | null>(null)
   // Refs to track current state for keyboard handler (avoids stale closures)
   const showGridRef = useRef(false)
   const showAxesRef = useRef(false)
   const showCollidersRef = useRef(false)
+  const showBotRef = useRef(false)
   
   // Camera preset handler
   const setCamera = useCallback((preset: keyof typeof CAMERA_PRESETS) => {
@@ -154,6 +159,122 @@ export default function ArenaMapViewer() {
       axesHelper.name = 'debug-axes'
       scene.add(axesHelper)
       debugHelpersRef.current.push(axesHelper)
+    }
+  }, [])
+  
+  // Toggle bot with hitbox visualization
+  const updateBotHelper = useCallback((scene: THREE.Scene, show: boolean) => {
+    // Remove existing bot
+    if (botGroupRef.current) {
+      scene.remove(botGroupRef.current)
+      botGroupRef.current.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.geometry.dispose()
+          if (child.material instanceof THREE.Material) {
+            child.material.dispose()
+          }
+        }
+      })
+      botGroupRef.current = null
+    }
+    
+    if (show) {
+      const botGroup = new THREE.Group()
+      botGroup.name = 'debug-bot'
+      
+      // Bot position (center of map, slightly elevated)
+      const botPos = new THREE.Vector3(0, 0, 5)
+      botGroup.position.copy(botPos)
+      
+      // Create bot capsule mesh (visual representation)
+      const capsuleGeo = new THREE.CapsuleGeometry(BOT_HITBOX.radius, BOT_HITBOX.height - BOT_HITBOX.radius * 2, 8, 16)
+      const capsuleMat = new THREE.MeshStandardMaterial({
+        color: 0xff4444,
+        emissive: 0x331111,
+        roughness: 0.7,
+      })
+      const capsuleMesh = new THREE.Mesh(capsuleGeo, capsuleMat)
+      capsuleMesh.position.y = BOT_HITBOX.height / 2
+      capsuleMesh.castShadow = true
+      botGroup.add(capsuleMesh)
+      
+      // Create hitbox wireframe (shows actual collision bounds)
+      const hitboxGeo = new THREE.CylinderGeometry(BOT_HITBOX.radius, BOT_HITBOX.radius, BOT_HITBOX.height, 16)
+      const hitboxMat = new THREE.MeshBasicMaterial({
+        color: 0x00ff00,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.8,
+      })
+      const hitboxMesh = new THREE.Mesh(hitboxGeo, hitboxMat)
+      hitboxMesh.position.y = BOT_HITBOX.height / 2
+      hitboxMesh.name = 'bot-hitbox'
+      botGroup.add(hitboxMesh)
+      
+      // Create eye level indicator
+      const eyeGeo = new THREE.SphereGeometry(0.1, 8, 8)
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffff00 })
+      const eyeMesh = new THREE.Mesh(eyeGeo, eyeMat)
+      eyeMesh.position.y = BOT_HITBOX.eyeHeight
+      eyeMesh.name = 'bot-eye-level'
+      botGroup.add(eyeMesh)
+      
+      // Create center point indicator (where raycast hits are calculated)
+      const centerGeo = new THREE.SphereGeometry(0.15, 8, 8)
+      const centerMat = new THREE.MeshBasicMaterial({ color: 0x00ffff })
+      const centerMesh = new THREE.Mesh(centerGeo, centerMat)
+      centerMesh.position.y = BOT_HITBOX.height / 2 // Center of capsule
+      centerMesh.name = 'bot-center'
+      botGroup.add(centerMesh)
+      
+      // Add label sprite
+      const canvas = document.createElement('canvas')
+      canvas.width = 256
+      canvas.height = 64
+      const ctx = canvas.getContext('2d')!
+      ctx.fillStyle = 'rgba(0,0,0,0.7)'
+      ctx.fillRect(0, 0, 256, 64)
+      ctx.fillStyle = '#ff4444'
+      ctx.font = 'bold 24px Arial'
+      ctx.textAlign = 'center'
+      ctx.fillText('BOT HITBOX', 128, 28)
+      ctx.fillStyle = '#aaaaaa'
+      ctx.font = '14px Arial'
+      ctx.fillText(`r=${BOT_HITBOX.radius}m h=${BOT_HITBOX.height}m`, 128, 50)
+      
+      const labelTexture = new THREE.CanvasTexture(canvas)
+      const labelMat = new THREE.SpriteMaterial({ map: labelTexture })
+      const labelSprite = new THREE.Sprite(labelMat)
+      labelSprite.position.y = BOT_HITBOX.height + 0.5
+      labelSprite.scale.set(2, 0.5, 1)
+      botGroup.add(labelSprite)
+      
+      // Load actual bot character model
+      const gltfLoader = new GLTFLoader()
+      const botModelUrl = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/arena-assets/animations/Run_and_Shoot_withSkin.glb'
+      gltfLoader.load(botModelUrl, (gltf) => {
+        const botCharModel = gltf.scene
+        botCharModel.scale.set(0.01, 0.01, 0.01)
+        botCharModel.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            child.castShadow = true
+            child.receiveShadow = true
+          }
+        })
+        botGroup.add(botCharModel)
+        
+        // Setup animation
+        const mixer = new THREE.AnimationMixer(botCharModel)
+        const runClip = gltf.animations.find(a => a.name.toLowerCase().includes('run'))
+        if (runClip) {
+          const action = mixer.clipAction(runClip)
+          action.play()
+        }
+        botGroup.userData.mixer = mixer
+      })
+      
+      scene.add(botGroup)
+      botGroupRef.current = botGroup
     }
   }, [])
   
@@ -264,9 +385,9 @@ export default function ArenaMapViewer() {
       postProcessing: {
         bloom: {
           enabled: true,
-          strength: 0.5,
-          radius: 0.4,
-          threshold: 0.85,
+          strength: 0.3,
+          radius: 0.3,
+          threshold: 0.92,
         },
         colorGrading: {
           enabled: true,
@@ -357,6 +478,12 @@ export default function ArenaMapViewer() {
           setShowColliders(showCollidersRef.current)
           updateColliderHelpers(arenaScene.scene, showCollidersRef.current, loadedMapRef.current)
           break
+        case 'b':
+          // Toggle bot with hitbox
+          showBotRef.current = !showBotRef.current
+          setShowBot(showBotRef.current)
+          updateBotHelper(arenaScene.scene, showBotRef.current)
+          break
       }
     }
     window.addEventListener('keydown', handleKeyDown)
@@ -365,13 +492,23 @@ export default function ArenaMapViewer() {
     let animationId: number
     let lastStatsUpdate = 0
     
+    let lastAnimTime = performance.now()
     const animate = () => {
       animationId = requestAnimationFrame(animate)
+      const now = performance.now()
+      const delta = (now - lastAnimTime) / 1000
+      lastAnimTime = now
+      
       controls.update()
+      
+      // Update bot animation if present
+      if (botGroupRef.current?.userData.mixer) {
+        botGroupRef.current.userData.mixer.update(delta)
+      }
+      
       arenaRenderer.render()
       
       // Update stats every 500ms
-      const now = performance.now()
       if (now - lastStatsUpdate > 500) {
         const info = arenaRenderer.getInfo()
         // Get browser memory if available
@@ -428,7 +565,7 @@ export default function ArenaMapViewer() {
     return () => {
       if (cleanup) cleanup()
     }
-  }, [setCamera, updateDebugHelpers, updateColliderHelpers])
+  }, [setCamera, updateDebugHelpers, updateColliderHelpers, updateBotHelper])
   
   return (
     <div className="relative w-full h-screen bg-black">
@@ -601,6 +738,21 @@ export default function ArenaMapViewer() {
               />
               <span className="text-gray-400">Colliders (C)</span>
             </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showBot}
+                onChange={(e) => {
+                  showBotRef.current = e.target.checked
+                  setShowBot(e.target.checked)
+                  if (sceneRef.current) {
+                    updateBotHelper(sceneRef.current, e.target.checked)
+                  }
+                }}
+                className="rounded accent-red-500"
+              />
+              <span className="text-gray-400">Bot Hitbox (B)</span>
+            </label>
           </div>
           
           {/* Collider legend */}
@@ -618,10 +770,24 @@ export default function ArenaMapViewer() {
             </div>
           )}
           
+          {/* Bot hitbox legend */}
+          {showBot && (
+            <div className="mb-3 pb-3 border-b border-white/10">
+              <p className="text-red-400/80 mb-1">Bot Hitbox Legend:</p>
+              <div className="grid grid-cols-1 gap-1 text-[10px]">
+                <p><span className="text-red-400">■</span> Bot Capsule (visual)</p>
+                <p><span className="text-green-400">○</span> Hitbox Wireframe (collision)</p>
+                <p><span className="text-yellow-400">●</span> Eye Level ({BOT_HITBOX.eyeHeight}m)</p>
+                <p><span className="text-cyan-400">●</span> Center Point (raycast target)</p>
+                <p className="mt-1 text-gray-500">Radius: {BOT_HITBOX.radius}m | Height: {BOT_HITBOX.height}m</p>
+              </div>
+            </div>
+          )}
+          
           {/* Keyboard shortcuts */}
           <div className="mb-3 pb-3 border-b border-white/10 text-gray-500">
             <p className="text-green-400/80 mb-1">Shortcuts:</p>
-            <p>D = Toggle debug | G = Grid | A = Axes | C = Colliders</p>
+            <p>D = Toggle debug | G = Grid | A = Axes | C = Colliders | B = Bot</p>
           </div>
           
           {/* Scene objects table */}

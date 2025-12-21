@@ -186,6 +186,24 @@ const PUSHING_LANES: TacticalLane[] = [
     ],
     combatStyle: 'aggressive',
   },
+
+  // Universal fallback lane - always matches, used when no other lane fits
+  {
+    id: 'center_patrol',
+    name: 'Center Patrol',
+    type: 'push',
+    trigger: {
+      // No requirements - always available as fallback
+    },
+    waypoints: [
+      // Patrol through center of map
+      { gridX: 10, gridZ: 15, pauseMs: 500, action: 'scan' },
+      { gridX: 18, gridZ: 20, pauseMs: 300, action: 'move' },
+      { gridX: 26, gridZ: 25, pauseMs: 500, action: 'scan' },
+      { gridX: 18, gridZ: 20, pauseMs: 300, action: 'move' },
+    ],
+    combatStyle: 'cautious',
+  },
 ];
 
 // ============================================================================

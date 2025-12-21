@@ -918,14 +918,14 @@ export default function ArenaPlayTest() {
             
             if (!bulletHitsWall) {
               // Check if bot hits player (with accuracy based on difficulty and distance)
-              // Base accuracy is much lower, and decreases with distance
+              // Balanced accuracy: competitive but not oppressive
               const difficultyAccuracy = bot.getDifficulty().accuracyMultiplier
-              const distancePenalty = Math.max(0, 1 - (distance / 40)) // 0% at 40m, 100% at 0m
-              const baseAccuracy = 0.25 // 25% base hit chance
+              const distancePenalty = Math.max(0.2, 1 - (distance / 50)) // 20% min at 50m, 100% at 0m
+              const baseAccuracy = 0.45 // 45% base hit chance
               const accuracy = baseAccuracy * difficultyAccuracy * distancePenalty
               const hitRoll = Math.random()
               
-              if (hitRoll < accuracy && distance < 30) {
+              if (hitRoll < accuracy && distance < 35) {
                 // Hit! Bot damage per shot
                 const botDamage = 8
                 combatSystem.applyDamage(

@@ -143,6 +143,9 @@ export class BotMatchManager {
 
   /**
    * Update match each tick
+   * 
+   * NOTE: Bot shooting is handled in Arena.tsx, not here.
+   * This method only updates bot AI state and movement.
    */
   update(
     deltaMs: number,
@@ -170,10 +173,8 @@ export class BotMatchManager {
     // Update visibility
     this.updateVisibility();
 
-    // Check bot respawn
-    if (this.bot.checkRespawn(Date.now())) {
-      this.spawnBot();
-    }
+    // NOTE: Bot respawn is now handled in Arena.tsx to ensure proper
+    // coordination with CombatSystem and visual updates
 
     // Build context for bot
     const context: BotMatchContext = {
@@ -188,13 +189,10 @@ export class BotMatchManager {
       mapBounds: this.config.mapBounds,
     };
 
-    // Update bot
-    const output = this.bot.update(deltaMs, context);
-
-    // Process bot shooting
-    if (output.shouldShoot && !this.bot.getState().isDead) {
-      this.processBotShot(output.aimTarget);
-    }
+    // Update bot AI (movement decisions, state machine)
+    // NOTE: Bot shooting is handled separately in Arena.tsx with proper
+    // line-of-sight checks and collision detection
+    this.bot.update(deltaMs, context);
   }
 
   /**
@@ -221,70 +219,18 @@ export class BotMatchManager {
   }
 
   /**
-   * Process bot shooting
-   */
-  private processBotShot(aimTarget: ThreeVector3): void {
-    if (!this.bot) return;
-
-    const botPos = this.bot.getPosition();
-    const direction = new Vector3(
-      aimTarget.x - botPos.x,
-      aimTarget.y - botPos.y,
-      aimTarget.z - botPos.z
-    ).normalize();
-
-    // Check if shot hits player (simplified)
-    const toPlayer = this.playerPosition.subtract(botPos);
-    const distance = toPlayer.magnitude();
-    const dot = direction.dot(toPlayer.normalize());
-
-    // Hit if aiming roughly at player and within range
-    const hitThreshold = 0.9; // cos(~25 degrees)
-    const isHit = dot > hitThreshold && distance < 50;
-
-    if (isHit) {
-      // Apply damage to player (8 damage per hit, same as player weapon)
-      const damage = 8;
-      const wasAlive = !this.combatSystem.getPlayerState(this.localPlayerId)?.isDead;
-      this.combatSystem.applyDamage(
-        this.localPlayerId,
-        BOT_PLAYER_ID,
-        damage,
-        this.playerPosition,
-        Date.now()
-      );
-
-      this.bot.recordHit(damage);
-
-      // Check if player just died (was alive before, dead now)
-      const playerState = this.combatSystem.getPlayerState(this.localPlayerId);
-      if (wasAlive && playerState?.isDead) {
-        this.bot.addKill();
-      }
-    } else {
-      this.bot.recordMiss();
-    }
-  }
-
-  /**
    * Player hit the bot
+   * 
+   * NOTE: Score tracking is handled in Arena.tsx to avoid double-counting.
+   * This method only applies damage to the bot.
    */
   onPlayerHitBot(damage: number): void {
     if (!this.bot) return;
 
     this.bot.applyDamage(damage, this.localPlayerId);
 
-    // Check if bot died
-    if (this.bot.getState().isDead) {
-      this.playerScore++;
-
-      this.eventBus.emit({
-        type: 'player_scored',
-        timestamp: Date.now(),
-        playerId: this.localPlayerId,
-        newScore: this.playerScore,
-      });
-    }
+    // NOTE: Score increment moved to Arena.tsx to prevent double-counting
+    // The caller (Arena.tsx) checks if bot died and increments playerScore there
   }
 
   /**
@@ -299,7 +245,8 @@ export class BotMatchManager {
     );
 
     this.bot.respawn(spawnPoint.position);
-    this.combatSystem.respawnPlayer(BOT_PLAYER_ID, Date.now());
+    // Use performance.now() to match CombatSystem's time base
+    this.combatSystem.respawnPlayer(BOT_PLAYER_ID, performance.now());
   }
 
   /**

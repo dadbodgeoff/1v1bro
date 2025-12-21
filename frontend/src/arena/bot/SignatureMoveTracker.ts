@@ -56,12 +56,12 @@ const SIGNATURE_MOVES: SignatureMove[] = [
     personalities: ['rusher'],
   },
 
-  // Sentinel signatures
+  // Sentinel signatures - now include movement phases
   {
     id: 'angle-hold',
     name: 'Angle Hold',
-    patterns: ['hold-angle', 'peek-slow', 'hold-crouch'],
-    cooldown: 8000,
+    patterns: ['strafe-left', 'hold-angle', 'strafe-right', 'peek-slow'], // Added movement
+    cooldown: 12000, // Increased cooldown
     triggerAggression: [0.2, 0.5],
     triggerHealthRatio: [0.3, 1.0],
     triggerScoreDiff: [0, 5],
@@ -70,8 +70,8 @@ const SIGNATURE_MOVES: SignatureMove[] = [
   {
     id: 'bait-peek',
     name: 'Bait Peek',
-    patterns: ['peek-quick', 'hold-crouch', 'peek-double'],
-    cooldown: 10000,
+    patterns: ['strafe-random', 'peek-quick', 'strafe-left', 'peek-double'], // Added movement
+    cooldown: 12000, // Increased cooldown
     triggerAggression: [0.25, 0.6],
     triggerHealthRatio: [0.25, 1.0],
     triggerScoreDiff: [-1, 4],
@@ -80,8 +80,8 @@ const SIGNATURE_MOVES: SignatureMove[] = [
   {
     id: 'punish-push',
     name: 'Punish Push',
-    patterns: ['hold-angle', 'strafe-left', 'push-angled'],
-    cooldown: 14000,
+    patterns: ['strafe-right', 'hold-angle', 'strafe-left', 'push-angled'], // Added movement
+    cooldown: 15000, // Increased cooldown
     triggerAggression: [0.4, 0.7],
     triggerHealthRatio: [0.5, 1.0],
     triggerScoreDiff: [1, 5],
@@ -185,8 +185,9 @@ export class SignatureMoveTracker {
         scoreDiff >= signature.triggerScoreDiff[0] &&
         scoreDiff <= signature.triggerScoreDiff[1]
       ) {
-        // Random chance to trigger (don't always use signature when conditions met)
-        if (Math.random() < 0.3) {
+        // Random chance to trigger - reduced from 30% to 10% to prevent bot from
+        // getting stuck in stationary signature patterns too often
+        if (Math.random() < 0.1) {
           return signature;
         }
       }

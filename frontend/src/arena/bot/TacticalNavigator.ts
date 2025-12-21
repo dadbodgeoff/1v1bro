@@ -283,7 +283,17 @@ export class TacticalNavigator {
       return this.executeAngle(ctx, now);
     }
 
-    return this.createIdleOutput();
+    // Fallback: if no angle found, try to select any pushing lane to get moving
+    // This prevents the bot from sitting idle at spawn
+    const fallbackLane = selectPushingLane(ctx, this.mercyActive);
+    if (fallbackLane) {
+      this.startLane(fallbackLane, now);
+      return this.executeLane(ctx, now);
+    }
+
+    // FINAL FALLBACK: Never return idle - always provide movement
+    // Move toward map center or a random direction
+    return this.createFallbackMovement(ctx.botPosition);
   }
 
   /**
@@ -607,7 +617,7 @@ export class TacticalNavigator {
   }
 
   /**
-   * Create idle output
+   * Create idle output (only used for EXECUTING_SIGNATURE state)
    */
   private createIdleOutput(): NavigatorOutput {
     return {
@@ -618,6 +628,49 @@ export class TacticalNavigator {
       aimOverride: null,
       currentAction: 'idle',
       debug: { laneName: null, waypointIndex: 0, angleName: null },
+    };
+  }
+
+  /**
+   * Create fallback movement when no lane/angle is available
+   * Ensures bot always has somewhere to go
+   */
+  private createFallbackMovement(botPosition: Vector3): NavigatorOutput {
+    // Move toward map center if far from it
+    const mapCenter = new Vector3(0, 0, 0);
+    const toCenter = new Vector3().subVectors(mapCenter, botPosition);
+    const distToCenter = toCenter.length();
+    
+    if (distToCenter > 5) {
+      // Move toward center
+      return {
+        targetPosition: mapCenter,
+        speedMultiplier: 0.5,
+        shouldPrefire: false,
+        shouldCrouch: false,
+        aimOverride: null,
+        currentAction: 'navigating',
+        debug: { laneName: 'fallback_center', waypointIndex: 0, angleName: null },
+      };
+    }
+    
+    // Near center - pick a random patrol point
+    const randomAngle = Math.random() * Math.PI * 2;
+    const randomDist = 8 + Math.random() * 6; // 8-14 units away
+    const randomTarget = new Vector3(
+      Math.cos(randomAngle) * randomDist,
+      0,
+      Math.sin(randomAngle) * randomDist
+    );
+    
+    return {
+      targetPosition: randomTarget,
+      speedMultiplier: 0.4,
+      shouldPrefire: false,
+      shouldCrouch: false,
+      aimOverride: null,
+      currentAction: 'navigating',
+      debug: { laneName: 'fallback_patrol', waypointIndex: 0, angleName: null },
     };
   }
 

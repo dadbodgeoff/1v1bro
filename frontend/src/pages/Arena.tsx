@@ -90,6 +90,9 @@ export default function Arena() {
 
   // Start game - hide instructions and request pointer lock
   const startGame = useCallback(() => {
+    // Prevent multiple calls if game already started
+    if (gameStartedRef.current) return;
+    
     console.log('[Arena] Starting game...');
     // Hide instructions immediately
     setShowInstructions(false);
@@ -99,11 +102,9 @@ export default function Arena() {
     // Request pointer lock after a brief delay to let React update
     setTimeout(() => {
       const canvas = containerRef.current?.querySelector('canvas');
-      if (canvas) {
+      if (canvas && !document.pointerLockElement) {
         console.log('[Arena] Requesting pointer lock on canvas');
         canvas.requestPointerLock();
-      } else {
-        console.warn('[Arena] No canvas found for pointer lock');
       }
     }, 50);
   }, [setMatchState]);
@@ -277,7 +278,6 @@ export default function Arena() {
         camera,
         weaponBuilder
       );
-      weaponBuilder.equipWeapon('ak-47');
 
       // Projectile particles
       const projectileParticles = new ProjectileParticles(sceneRef.current.scene);
@@ -287,7 +287,7 @@ export default function Arena() {
       systems.hudRenderer.initialize(containerRef.current!);
       systems.hudRenderer.setLocalPlayerId(LOCAL_PLAYER_ID);
 
-      // Ammo & reload tracking
+      // Ammo & reload tracking - MUST be declared before weaponBuilder.equipWeapon callback
       let currentAmmo = 30;
       let maxAmmo = 30;
       let lastFireTime = 0;
@@ -295,15 +295,31 @@ export default function Arena() {
       let reloadStartTime = 0;
       let reloadDuration = 2.5;
       let currentWeaponType: 'bullet' | 'plasma' = 'bullet';
+      let weaponSwitchPending = false; // Guard against race conditions during weapon switch
+      let wasFireButtonDown = false; // Track previous frame's fire button state for single-shot
       let playerScore = 0;
+      let lastSyncedPlayerScore = 0;
+      let lastSyncedBotScore = 0;
       let lastBotFireTime = 0;
       const BOT_FIRE_INTERVAL = 500; // 2 shots per second (was 333ms/3 shots)
+
+      // Equip initial weapon and sync ammo values (after variable declarations)
+      weaponBuilder.equipWeapon('ak-47').then(() => {
+        const weapon = weaponBuilder.getCurrentWeapon();
+        if (weapon) {
+          maxAmmo = weapon.magazineSize;
+          currentAmmo = maxAmmo;
+          reloadDuration = weapon.reloadTime;
+        }
+      });
 
       // Game loop
       let lastTime = performance.now();
       let frameCount = 0;
       let lastFpsUpdate = 0;
       let currentFps = 0;
+      let lastDebugUpdate = 0;
+      const DEBUG_UPDATE_INTERVAL = 100; // Update debug info every 100ms, not every frame
 
       const gameLoop = () => {
         animationId = requestAnimationFrame(gameLoop);
@@ -355,9 +371,10 @@ export default function Arena() {
           }
         }
 
-        // Check for player respawn
+        // Check for player respawn (automatic after respawn delay)
         const playersReadyToRespawn = systems.combatSystem.update(now);
         if (playersReadyToRespawn.includes(LOCAL_PLAYER_ID)) {
+          console.log('[Arena] Player respawning automatically');
           const spawn = systems.spawnSystem.selectSpawnPoint(LOCAL_PLAYER_ID, []);
           playerStateRef.current = createInitialPhysicsState(spawn.position);
           systems.combatSystem.respawnPlayer(LOCAL_PLAYER_ID, now);
@@ -365,17 +382,34 @@ export default function Arena() {
           currentAmmo = maxAmmo;
           isReloading = false;
         }
+        
+        // Also check bot respawn
+        if (botManagerRef.current) {
+          const bot = botManagerRef.current.getBot();
+          if (bot?.checkRespawn(Date.now())) {
+            console.log('[Arena] Bot respawning');
+            const botSpawn = systems.spawnSystem.selectSpawnPoint(BOT_PLAYER_ID, [playerStateRef.current.position]);
+            bot.respawn(botSpawn.position);
+            systems.combatSystem.respawnPlayer(BOT_PLAYER_ID, now);
+          }
+        }
 
-        // Handle shooting
-        const isFiring = (inputPacket.buttons & 0x02) !== 0;
+        // Handle shooting - single click = single shot, hold = auto-fire
+        const isFireButtonDown = (inputPacket.buttons & 0x02) !== 0;
         const currentWeapon = weaponBuilder.getCurrentWeapon();
         const fireInterval = currentWeapon ? 1000 / currentWeapon.fireRate : 100;
         const canFire = !isReloading && currentAmmo > 0 && (now - lastFireTime) >= fireInterval;
+        
+        // Fire on: new click (button just pressed) OR holding button down after fire interval
+        const isNewClick = isFireButtonDown && !wasFireButtonDown;
+        const isHoldingAndReady = isFireButtonDown && wasFireButtonDown && (now - lastFireTime) >= fireInterval;
+        const shouldFire = canFire && (isNewClick || isHoldingAndReady);
+        wasFireButtonDown = isFireButtonDown;
 
-        if (isFiring && systems.inputManager.isPointerLocked() && canFire) {
+        if (shouldFire && systems.inputManager.isPointerLocked()) {
           const combatState = systems.combatSystem.getPlayerState(LOCAL_PLAYER_ID);
           if (combatState && !combatState.isDead) {
-            currentAmmo--;
+            currentAmmo = Math.max(0, currentAmmo - 1);
             lastFireTime = now;
 
             const eyePos = getEyePosition(playerStateRef.current.position, PLAYER_HITBOX);
@@ -401,7 +435,6 @@ export default function Arena() {
               // Only increment score if bot just died (was alive before, dead now)
               if (wasAlive && botManagerRef.current?.getBotState()?.isDead) {
                 playerScore++;
-                setScores(playerScore, botManagerRef.current.getBotScore());
               }
             }
 
@@ -588,7 +621,7 @@ export default function Arena() {
                   // Only count kill if player just died (was alive before)
                   if (wasAlive && newCombatState?.isDead) {
                     bot.addKill();
-                    setScores(playerScore, botManagerRef.current.getBotScore());
+                    console.log('[Arena] Bot killed player! Bot score:', bot.getScore());
                   }
                 } else {
                   bot.recordMiss();
@@ -644,58 +677,70 @@ export default function Arena() {
           Vector3.UP
         );
 
-        // Update HUD
+        // Update HUD - clamp values to prevent display bugs
         const combatStateForHud = systems.combatSystem.getPlayerState(LOCAL_PLAYER_ID);
-        const botStateForHud = botManagerRef.current?.getBotState();
+        const botScore = botManagerRef.current?.getBotScore() ?? 0;
+        const displayHealth = Math.max(0, Math.min(100, combatStateForHud?.health ?? 100));
+        const displayAmmo = Math.max(0, Math.min(currentAmmo, maxAmmo));
         systems.hudRenderer.update({
-          health: combatStateForHud?.health ?? 100,
+          health: displayHealth,
           maxHealth: 100,
-          ammo: currentAmmo,
+          ammo: displayAmmo,
           maxAmmo: maxAmmo,
           score: playerScore,
-          opponentScore: botStateForHud?.score ?? 0,
+          opponentScore: botScore,
           rtt: 0,
           showNetworkWarning: false,
           damageIndicators: [],
           hitMarkerActive: false,
           hitMarkerEndTime: 0,
           killFeed: [],
-          lowHealthVignetteIntensity: combatStateForHud && combatStateForHud.health < 30 ? 0.5 : 0,
+          lowHealthVignetteIntensity: displayHealth < 30 ? 0.5 : 0,
         }, now);
+        
+        // Sync scores to store only when they change (for UI overlays)
+        if (playerScore !== lastSyncedPlayerScore || botScore !== lastSyncedBotScore) {
+          lastSyncedPlayerScore = playerScore;
+          lastSyncedBotScore = botScore;
+          setScores(playerScore, botScore);
+        }
 
         // Render
         rendererRef.current?.render();
         weaponSystem.renderWeapon();
 
-        // Update debug info
-        drawCallMonitor.update(rendererRef.current!.renderer);
-        const combatState = systems.combatSystem.getPlayerState(LOCAL_PLAYER_ID);
-        const botState = botManagerRef.current?.getBotState();
+        // Update debug info (throttled to reduce React re-renders)
+        if (now - lastDebugUpdate > DEBUG_UPDATE_INTERVAL) {
+          lastDebugUpdate = now;
+          drawCallMonitor.update(rendererRef.current!.renderer);
+          const combatStateDebug = systems.combatSystem.getPlayerState(LOCAL_PLAYER_ID);
+          const botStateDebug = botManagerRef.current?.getBotState();
 
-        setDebugInfo({
-          fps: currentFps,
-          position: {
-            x: Math.round(playerStateRef.current.position.x * 100) / 100,
-            y: Math.round(playerStateRef.current.position.y * 100) / 100,
-            z: Math.round(playerStateRef.current.position.z * 100) / 100,
-          },
-          velocity: {
-            x: Math.round(playerStateRef.current.velocity.x * 100) / 100,
-            y: Math.round(playerStateRef.current.velocity.y * 100) / 100,
-            z: Math.round(playerStateRef.current.velocity.z * 100) / 100,
-          },
-          isGrounded: playerStateRef.current.isGrounded,
-          pointerLocked: systems.inputManager.isPointerLocked(),
-          collisionCount: 0,
-          health: combatState?.health ?? 100,
-          ammo: currentAmmo,
-          drawCalls: drawCallMonitor.getCurrent(),
-          triangles: rendererRef.current?.getTriangles() ?? 0,
-          botHealth: botState?.health,
-          botState: botState?.currentState,
-          botScore: botManagerRef.current?.getBotScore(),
-          playerScore,
-        });
+          setDebugInfo({
+            fps: currentFps,
+            position: {
+              x: Math.round(playerStateRef.current.position.x * 100) / 100,
+              y: Math.round(playerStateRef.current.position.y * 100) / 100,
+              z: Math.round(playerStateRef.current.position.z * 100) / 100,
+            },
+            velocity: {
+              x: Math.round(playerStateRef.current.velocity.x * 100) / 100,
+              y: Math.round(playerStateRef.current.velocity.y * 100) / 100,
+              z: Math.round(playerStateRef.current.velocity.z * 100) / 100,
+            },
+            isGrounded: playerStateRef.current.isGrounded,
+            pointerLocked: systems.inputManager.isPointerLocked(),
+            collisionCount: 0,
+            health: combatStateDebug?.health ?? 100,
+            ammo: currentAmmo,
+            drawCalls: drawCallMonitor.getCurrent(),
+            triangles: rendererRef.current?.getTriangles() ?? 0,
+            botHealth: botStateDebug?.health,
+            botState: botStateDebug?.currentState,
+            botScore: botManagerRef.current?.getBotScore(),
+            playerScore,
+          });
+        }
       };
 
       // Start game loop
@@ -729,30 +774,34 @@ export default function Arena() {
             isReloading = false;
           }
         }
-        // Weapon switching
-        if (e.key === '1') {
+        // Weapon switching - guard against race conditions
+        if (e.key === '1' && !weaponSwitchPending) {
+          weaponSwitchPending = true;
+          currentWeaponType = 'bullet';
           weaponBuilder.equipWeapon('ak-47').then(() => {
             const weapon = weaponBuilder.getCurrentWeapon();
             if (weapon) {
               maxAmmo = weapon.magazineSize;
-              currentAmmo = maxAmmo;
+              currentAmmo = maxAmmo; // Full magazine on weapon switch
               reloadDuration = weapon.reloadTime;
               isReloading = false;
             }
-          });
-          currentWeaponType = 'bullet';
+            weaponSwitchPending = false;
+          }).catch(() => { weaponSwitchPending = false; });
         }
-        if (e.key === '2') {
+        if (e.key === '2' && !weaponSwitchPending) {
+          weaponSwitchPending = true;
+          currentWeaponType = 'plasma';
           weaponBuilder.equipWeapon('raygun').then(() => {
             const weapon = weaponBuilder.getCurrentWeapon();
             if (weapon) {
               maxAmmo = weapon.magazineSize;
-              currentAmmo = maxAmmo;
+              currentAmmo = maxAmmo; // Full magazine on weapon switch
               reloadDuration = weapon.reloadTime;
               isReloading = false;
             }
-          });
-          currentWeaponType = 'plasma';
+            weaponSwitchPending = false;
+          }).catch(() => { weaponSwitchPending = false; });
         }
       };
       document.addEventListener('keydown', handleKeyDown);
@@ -795,7 +844,8 @@ export default function Arena() {
     return () => {
       if (cleanup) cleanup();
     };
-  }, [mapId, mode, botPersonality, botDifficulty, setLoading, setScores]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapId, mode, botPersonality, botDifficulty, setLoading]);
 
   return (
     <div className="relative w-full h-screen bg-black">

@@ -26,15 +26,6 @@ import { SignatureMoveTracker } from './SignatureMoveTracker';
 import { EngagementComposer } from './EngagementComposer';
 import { AimController } from './AimController';
 import { SpatialAwareness } from './SpatialAwareness';
-import { 
-  createAbandonedTerminalNavGraph, 
-  findPath, 
-  findNearestWaypoint,
-  getRandomWaypoint,
-  type NavGraph,
-  type NavWaypoint 
-} from './NavigationGraph';
-import { Vector3 as MathVector3 } from '../math/Vector3';
 import { TacticalNavigator } from './TacticalNavigator';
 
 /**
@@ -72,13 +63,6 @@ export class CombatConductor {
   private lastUpdateTime: number = 0;
   private matchStartTime: number = 0;
 
-  // Navigation
-  private navGraph: NavGraph;
-  private currentPath: MathVector3[] = [];
-  private currentPathIndex: number = 0;
-  private patrolTarget: NavWaypoint | null = null;
-  private lastPatrolChange: number = 0;
-
   // Config
   private personality: BotPersonalityConfig;
   private difficulty: DifficultyPreset;
@@ -100,9 +84,6 @@ export class CombatConductor {
     this.aimController = new AimController(personality, difficulty);
     this.spatialAwareness = new SpatialAwareness();
     this.tacticalNavigator = new TacticalNavigator();
-    
-    // Initialize navigation graph
-    this.navGraph = createAbandonedTerminalNavGraph();
 
     this.matchStartTime = Date.now();
     this.lastUpdateTime = Date.now();
@@ -230,10 +211,10 @@ export class CombatConductor {
 
       case 'EXECUTING_SIGNATURE':
         // Signature tracker controls exit from this state
-        // Also add a timeout to prevent getting stuck (max 5 seconds per signature)
+        // Reduced timeout from 5s to 3s to prevent bot from appearing stuck
         const signatureElapsed = this.signatureTracker.getSignatureElapsedMs();
-        if (!this.signatureTracker.isExecuting() || signatureElapsed > 5000) {
-          if (signatureElapsed > 5000) {
+        if (!this.signatureTracker.isExecuting() || signatureElapsed > 3000) {
+          if (signatureElapsed > 3000) {
             this.signatureTracker.cancelSignature();
           }
           this.currentState = input.playerVisible ? 'ENGAGE' : 'PATROL';
@@ -362,7 +343,8 @@ export class CombatConductor {
 
     const rightOfPlayer = new Vector3(-toPlayer.z, 0, toPlayer.x);
 
-    // Priority 1: Use tactical navigator if it has an active lane/angle
+    // Priority 1: Use tactical navigator for all navigation
+    // TacticalNavigator now always returns valid movement (never truly idle except during signatures)
     if (navOutput && navOutput.currentAction !== 'idle') {
       const toTarget = new Vector3()
         .subVectors(navOutput.targetPosition, input.botPosition);
@@ -375,9 +357,21 @@ export class CombatConductor {
       // At target, let pattern handle micro-movement
     }
 
-    // Priority 2: If in PATROL state and player not visible, use waypoint navigation
+    // Priority 2: If navigator returned idle but we're in PATROL, use fallback
+    // This handles the case where TacticalNavigator couldn't find a lane/angle
     if (this.currentState === 'PATROL' && !input.playerVisible) {
-      return this.getPatrolMovement(input.botPosition, now);
+      // Move toward a random point to keep bot active
+      const randomAngle = Math.random() * Math.PI * 2;
+      const patrolTarget = new Vector3(
+        input.botPosition.x + Math.cos(randomAngle) * 8,
+        0,
+        input.botPosition.z + Math.sin(randomAngle) * 8
+      );
+      const toPatrol = new Vector3().subVectors(patrolTarget, input.botPosition);
+      if (toPatrol.length() > 0.5) {
+        direction.copy(toPatrol).normalize();
+        return { direction, speed: 0.4 };
+      }
     }
 
     switch (pattern.type) {
@@ -455,79 +449,6 @@ export class CombatConductor {
     }
 
     return { direction, speed };
-  }
-
-  /**
-   * Get patrol movement using waypoint navigation
-   */
-  private getPatrolMovement(
-    botPosition: Vector3,
-    now: number
-  ): { direction: Vector3; speed: number } {
-    const direction = new Vector3();
-    const botPos = new MathVector3(botPosition.x, botPosition.y, botPosition.z);
-    
-    // Pick a new patrol target every 8 seconds or if we reached current target
-    const shouldPickNewTarget = 
-      !this.patrolTarget || 
-      (now - this.lastPatrolChange > 8000) ||
-      (this.currentPath.length === 0 && this.patrolTarget);
-    
-    if (shouldPickNewTarget) {
-      // Pick a random waypoint as target
-      this.patrolTarget = getRandomWaypoint(this.navGraph);
-      this.lastPatrolChange = now;
-      
-      // Calculate path to target
-      this.currentPath = findPath(this.navGraph, botPos, this.patrolTarget.position);
-      this.currentPathIndex = 0;
-    }
-    
-    // Follow the path
-    if (this.currentPath.length > 0 && this.currentPathIndex < this.currentPath.length) {
-      const targetPos = this.currentPath[this.currentPathIndex];
-      const toTarget = new MathVector3(
-        targetPos.x - botPosition.x,
-        0,
-        targetPos.z - botPosition.z
-      );
-      const distToTarget = toTarget.magnitude();
-      
-      // If close to current waypoint, move to next
-      if (distToTarget < 1.5) {
-        this.currentPathIndex++;
-        if (this.currentPathIndex >= this.currentPath.length) {
-          // Reached destination, pick new target next frame
-          this.currentPath = [];
-          this.patrolTarget = null;
-        }
-      }
-      
-      // Move toward current path point
-      if (distToTarget > 0.1) {
-        const normalized = toTarget.normalize();
-        direction.set(normalized.x, 0, normalized.z);
-        return { direction, speed: 0.5 };
-      }
-    }
-    
-    // Fallback: find nearest waypoint and go there
-    const nearest = findNearestWaypoint(this.navGraph, botPos);
-    if (nearest) {
-      const toNearest = new MathVector3(
-        nearest.position.x - botPosition.x,
-        0,
-        nearest.position.z - botPosition.z
-      );
-      if (toNearest.magnitude() > 0.5) {
-        const normalized = toNearest.normalize();
-        direction.set(normalized.x, 0, normalized.z);
-        return { direction, speed: 0.5 };
-      }
-    }
-    
-    // No movement if at waypoint
-    return { direction, speed: 0 };
   }
 
   /**
@@ -672,12 +593,6 @@ export class CombatConductor {
     this.currentPhrase = null;
     this.phrasePatternIndex = 0;
     this.currentExecution = null;
-    
-    // Reset navigation
-    this.currentPath = [];
-    this.currentPathIndex = 0;
-    this.patrolTarget = null;
-    this.lastPatrolChange = 0;
 
     this.aggressionCurve.reset();
     this.mercySystem.reset();
