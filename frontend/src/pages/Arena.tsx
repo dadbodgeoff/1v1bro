@@ -319,7 +319,22 @@ export default function Arena() {
           
           gltfLoader.load(botModelUrl, (gltf) => {
             const botCharModel = gltf.scene;
-            botCharModel.scale.set(0.01, 0.01, 0.01);
+            
+            // Calculate bounding box to determine proper scale
+            const bbox = new THREE.Box3().setFromObject(botCharModel);
+            const size = new THREE.Vector3();
+            bbox.getSize(size);
+            
+            // Scale to ~1.8m tall (human height)
+            const targetHeight = 1.8;
+            const scaleFactor = targetHeight / size.y;
+            botCharModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            
+            // Recalculate after scaling and position feet at ground level
+            const bboxScaled = new THREE.Box3().setFromObject(botCharModel);
+            const modelMinY = bboxScaled.min.y;
+            botCharModel.position.y = -modelMinY - 0.9;
+            
             botCharModel.traverse((child) => {
               if ((child as THREE.Mesh).isMesh) {
                 child.castShadow = true;
