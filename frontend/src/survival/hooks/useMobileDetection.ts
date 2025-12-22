@@ -11,6 +11,8 @@ export interface MobileDetectionResult {
   isMobile: boolean
   isTouch: boolean
   enableTriviaBillboards: boolean
+  /** True when mobile should use 2D trivia panel instead of 3D billboards */
+  enableMobileTrivia: boolean
   /** True when running as installed PWA (no browser chrome) */
   isPWA: boolean
   /** True when running in iOS Safari (has bottom nav bar eating viewport) */
@@ -49,5 +51,7 @@ export function useMobileDetection(): MobileDetectionResult {
     isTouch,
     // Disable 3D trivia billboards on mobile - use 2D panel instead
     enableTriviaBillboards: !detection.isMobile,
+    // Enable 2D trivia panel on mobile devices
+    enableMobileTrivia: detection.isMobile,
   }
 }
