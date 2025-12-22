@@ -41,6 +41,7 @@ import { getSurvivalGuestSession, type SurvivalRunResult } from '@/survival/gues
 import { getRandomQuestions } from '@/data/fortnite-quiz-data'
 import { getRandomNflQuestions } from '@/data/nfl-quiz-data'
 import { getRandomMovieQuestions } from '@/data/movie-quiz-data'
+import { isTriviaEnabled } from '@/survival/config/themes'
 import type { TriviaStats } from '@/survival/hooks/useSurvivalTrivia'
 import type { TriviaCategory } from '@/survival/world/TriviaQuestionProvider'
 
@@ -313,8 +314,11 @@ function SurvivalInstantPlayContent() {
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
   
+  // Check if trivia is enabled for the current theme (feature flag)
+  const themeAllowsTrivia = isTriviaEnabled()
+  
   // Calculate if mobile trivia should show - respects theme-level trivia flag
-  const showMobileTrivia = enableMobileTrivia && phase === 'running'
+  const showMobileTrivia = enableMobileTrivia && themeAllowsTrivia && phase === 'running'
   
   // Trigger resize when trivia panel shows/hides
   // ResizeObserver should handle this, but we also trigger manually for reliability

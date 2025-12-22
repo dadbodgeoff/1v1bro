@@ -115,7 +115,7 @@ export interface SurvivalCallbacks {
   onDistanceUpdate?: (distance: number) => void
   onSpeedUpdate?: (speed: number) => void
   onLifeLost?: (livesRemaining: number) => void
-  onGameOver?: (finalScore: number, distance: number) => void
+  onGameOver?: (finalScore: number, distance: number, deathCause?: string) => void
   onKnowledgeGate?: (gateId: string) => Promise<boolean> // Returns true if answered correctly
   onScoreUpdate?: (score: number) => void
 }

@@ -47,7 +47,7 @@ export interface RunnerSkinConfig {
 
 interface UseSurvivalGameOptions {
   onKnowledgeGate?: (gateId: string) => Promise<boolean>
-  onGameOver?: (score: number, distance: number) => void
+  onGameOver?: (score: number, distance: number, deathCause?: string) => void
   ghostData?: string  // Serialized ghost recording to play back
   runnerSkin?: RunnerSkinConfig  // Custom runner skin URLs (from equipped cosmetic)
 }
@@ -168,9 +168,9 @@ export function useSurvivalGame(
           player: { ...prev.player, lives } 
         } : null)
       },
-      onGameOver: (score, distance) => {
+      onGameOver: (score, distance, deathCause) => {
         setGameState(prev => prev ? { ...prev, phase: 'gameover' } : null)
-        options.onGameOver?.(score, distance)
+        options.onGameOver?.(score, distance, deathCause)
       },
       onKnowledgeGate: options.onKnowledgeGate,
     }

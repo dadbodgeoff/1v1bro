@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useAuthStore } from '@/stores/authStore'
 import { useSurvivalGame } from '@/survival/hooks/useSurvivalGame'
 import { useSurvivalAnalytics } from '@/survival/hooks/useSurvivalAnalytics'
+import { useZenGardenAnalytics } from '@/survival/hooks/useZenGardenAnalytics'
 import { useMobileDetection } from '@/survival/hooks/useMobileDetection'
 import { SurvivalErrorBoundary } from '@/survival'
 import {
@@ -54,6 +55,7 @@ function SurvivalLandingContent() {
   const { isAuthenticated } = useAuthStore()
   const guestSession = useRef(getSurvivalGuestSession())
   const survivalAnalytics = useSurvivalAnalytics()
+  const zenAnalytics = useZenGardenAnalytics()
   const { isMobile, enableTriviaBillboards, isMobileBrowser } = useMobileDetection()
   const reducedMotion = useReducedMotion()
   
@@ -128,6 +130,7 @@ function SurvivalLandingContent() {
     analytics.init()
     analytics.trackPageView('/')
     survivalAnalytics.trackSessionStart()
+    zenAnalytics.trackLandingView()
     
     return () => {
       document.title = '1v1 Bro'
@@ -163,7 +166,7 @@ function SurvivalLandingContent() {
   }, [])
 
   // Game over handler
-  const handleGameOver = useCallback((score: number, distance: number) => {
+  const handleGameOver = useCallback((score: number, distance: number, deathCause?: string) => {
     const stats = triviaStatsRef.current
     const runResult: SurvivalRunResult = {
       distance,
@@ -182,6 +185,16 @@ function SurvivalLandingContent() {
       distance, score, durationSeconds: 0, maxCombo: maxComboRef.current,
       obstaclesCleared: 0, nearMisses: 0, perfectDodges: 0, laneChanges: 0, jumps: 0, slides: 0,
       themeId: 'zen-garden',  // Track the theme being played
+      deathObstacleType: deathCause,
+    })
+    
+    // Track with zen garden analytics - map obstacle type to death cause
+    const mappedDeathCause = (deathCause as 'highBarrier' | 'lowBarrier' | 'laneBarrier' | 'spikes') || 'unknown'
+    zenAnalytics.trackGameEnd({
+      distance,
+      score,
+      deathCause: mappedDeathCause,
+      maxCombo: maxComboRef.current,
     })
     
     if (isNewPB) survivalAnalytics.trackPersonalBest(distance, guestSession.current.getSession().bestDistance)
@@ -310,8 +323,10 @@ function SurvivalLandingContent() {
     setLastRunStats(null)
     setShowSavePrompt(false)
     resetTracking()
+    zenAnalytics.trackPlayAgain()
+    zenAnalytics.trackGameStart()
     quickRestart()
-  }, [quickRestart, resetTracking])
+  }, [quickRestart, resetTracking, zenAnalytics])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -331,16 +346,21 @@ function SurvivalLandingContent() {
     setShowReadyCard(false)
     resetTracking()
     survivalAnalytics.trackRunStart()
+    zenAnalytics.trackGameStart()
     start()
   }
 
   const handleBackToHome = () => navigate('/')
   const handleCreateAccount = () => {
     sessionStorage.setItem('survival_signup_source', 'landing')
+    zenAnalytics.trackSignUpClick()
     navigate('/register')
   }
   const handleViewLeaderboard = () => navigate('/survival/leaderboard')
-  const handleLogin = () => navigate('/login')
+  const handleLogin = () => {
+    zenAnalytics.trackLoginClick()
+    navigate('/login')
+  }
 
   if (isAuthenticated) return null
 

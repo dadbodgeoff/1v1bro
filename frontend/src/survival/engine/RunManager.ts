@@ -62,7 +62,7 @@ export interface RunManagerDeps {
 }
 
 export interface RunManagerCallbacks {
-  onGameOver?: (score: number, distance: number) => void
+  onGameOver?: (score: number, distance: number, deathCause?: string) => void
 }
 
 export class RunManager {
@@ -218,7 +218,7 @@ export class RunManager {
     }
     
     this.submitRun(runData)
-    this.callbacks.onGameOver?.(state.score, Math.round(state.distance))
+    this.callbacks.onGameOver?.(state.score, Math.round(state.distance), stateManager.lastDeathObstacleType ?? undefined)
   }
 
   /**
