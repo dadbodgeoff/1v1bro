@@ -311,35 +311,39 @@ export default function Arena() {
         const botPos = botManagerRef.current.getBot()?.getPosition() || Vector3.ZERO;
         botVisualRef.current.initialize(botMesh, botPos);
 
-        // Load bot character model asynchronously
+        // Load bot character model asynchronously (meshopt-compressed, needs decoder)
         const botModelUrl = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/arena-assets/animations/Run_and_Shoot_withSkin.glb';
-        const gltfLoader = new GLTFLoader();
-        gltfLoader.load(botModelUrl, (gltf) => {
-          const botCharModel = gltf.scene;
-          botCharModel.scale.set(0.01, 0.01, 0.01);
-          botCharModel.traverse((child) => {
-            if ((child as THREE.Mesh).isMesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
+        import('three/examples/jsm/libs/meshopt_decoder.module.js').then(({ MeshoptDecoder }) => {
+          const gltfLoader = new GLTFLoader();
+          gltfLoader.setMeshoptDecoder(MeshoptDecoder);
+          
+          gltfLoader.load(botModelUrl, (gltf) => {
+            const botCharModel = gltf.scene;
+            botCharModel.scale.set(0.01, 0.01, 0.01);
+            botCharModel.traverse((child) => {
+              if ((child as THREE.Mesh).isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+              }
+            });
+            botMesh.add(botCharModel);
+            botMesh.userData.characterModel = botCharModel;
+
+            // Setup animation mixer
+            const mixer = new THREE.AnimationMixer(botCharModel);
+            const runClip = gltf.animations.find(a => a.name.toLowerCase().includes('run'));
+            if (runClip) {
+              const action = mixer.clipAction(runClip);
+              action.play();
             }
+            botMesh.userData.mixer = mixer;
+
+            // Hide placeholder geometry
+            (botMesh.material as THREE.Material).visible = false;
+            setCharacterLoaded(true);
+          }, undefined, (err) => {
+            console.warn('[Arena] Failed to load bot model:', err);
           });
-          botMesh.add(botCharModel);
-          botMesh.userData.characterModel = botCharModel;
-
-          // Setup animation mixer
-          const mixer = new THREE.AnimationMixer(botCharModel);
-          const runClip = gltf.animations.find(a => a.name.toLowerCase().includes('run'));
-          if (runClip) {
-            const action = mixer.clipAction(runClip);
-            action.play();
-          }
-          botMesh.userData.mixer = mixer;
-
-          // Hide placeholder geometry
-          (botMesh.material as THREE.Material).visible = false;
-          setCharacterLoaded(true);
-        }, undefined, (err) => {
-          console.warn('[Arena] Failed to load bot model:', err);
         });
       }
 
