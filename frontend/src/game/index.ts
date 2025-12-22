@@ -21,8 +21,6 @@ export * from './assets'
 // KEEP: Systems used by arena hooks (PositionInterpolator)
 export * from './systems'
 
-// KEEP: Guest experience used by registration flow
-export * from './guest'
-
-// KEEP: Bot behavior (may be useful for 3D arena)
-export * from './bot'
+// REMOVED for mobile-app: guest and bot (2D arena specific)
+// export * from './guest'
+// export * from './bot'

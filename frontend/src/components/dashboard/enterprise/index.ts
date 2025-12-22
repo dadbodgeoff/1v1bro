@@ -23,7 +23,7 @@ export type { AnimatedWidgetProps } from './AnimatedWidget'
 
 // Components exported as they are created
 export { DashboardSection } from './DashboardSection'
-export { HeroPlaySection, formatCooldown } from './HeroPlaySection'
+export { HeroPlaySection } from './HeroPlaySection'
 export { BattlePassWidget, calculateXpProgress } from './BattlePassWidget'
 export { StatsSummaryWidget, calculateWinRate, getRankFromElo, formatTierName } from './StatsSummaryWidget'
 export { ShopPreviewWidget, isValidShopItem, getRarityColor, truncateItemName } from './ShopPreviewWidget'
@@ -31,8 +31,7 @@ export { LoadoutPreviewWidget, getSlotDisplayState, getSlotDisplayStateFromCosme
 export { MatchHistoryWidget, formatEloChange, getEloChangeColorClass, formatRelativeTime, getMatchResultDisplay } from './MatchHistoryWidget'
 export { FriendsWidget, filterOnlineFriends } from './FriendsWidget'
 
-// Game Mode Cards
-export { ArenaShooterCard } from './ArenaShooterCard'
+// Game Mode Cards (2D ArenaShooterCard removed for mobile-app branch)
 export { SurvivalRunnerCard } from './SurvivalRunnerCard'
 
 // Re-export from parent dashboard folder for convenience

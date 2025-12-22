@@ -15,12 +15,10 @@ import { cn } from '@/utils/helpers'
 import { useAuthStore } from '@/stores/authStore'
 import { BackgroundScene } from './BackgroundScene'
 import { CTAButton } from './CTAButton'
-import { LiveDemo } from './LiveDemo'
 import { SurvivalDemo } from './survival-demo'
 import { ChevronDownIcon } from './icons'
 import { trackSignupClick, trackDemoPlay } from '@/services/analytics'
 import { useSectionViewTracking } from '@/hooks/useSectionViewTracking'
-import { getInstantPlayManager } from '@/game/guest'
 
 export interface HeroSectionProps {
   /** Additional CSS classes */
@@ -29,8 +27,8 @@ export interface HeroSectionProps {
 
 const HERO_CONTENT = {
   headline: '1v1 Bro',
-  tagline: 'Trivia • Survival Runner • 2D Shooter',
-  subheadline: 'Outplay your friends in a live 1v1 arena where every question, dodge, and shot can swing the match.',
+  tagline: 'Survival Runner • 3D Arena',
+  subheadline: 'Test your reflexes and knowledge in our endless survival runner and 3D arena shooter.',
   primaryCTA: 'Try It Now',
   primaryCTALoggedIn: 'Play Now',
   secondaryCTA: 'Create Account',
@@ -68,18 +66,15 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   // Preload assets on CTA hover for instant play
   const handlePrimaryHover = useCallback(() => {
-    if (!isAuthenticated) {
-      const instantPlayManager = getInstantPlayManager()
-      instantPlayManager.preloadAssets()
-    }
-  }, [isAuthenticated])
+    // No preload needed for mobile version
+  }, [])
 
   const handlePrimaryCTA = () => {
-    // Primary CTA: Try the game immediately (instant play for guests, dashboard for logged in)
+    // Primary CTA: Try the game immediately (survival instant play for guests, dashboard for logged in)
     if (!isAuthenticated) {
       trackDemoPlay()
     }
-    navigate(isAuthenticated ? '/dashboard' : '/instant-play')
+    navigate(isAuthenticated ? '/dashboard' : '/survival/instant')
   }
 
   const handleSecondaryCTA = () => {
@@ -174,41 +169,13 @@ export function HeroSection({ className }: HeroSectionProps) {
           </motion.p>
         </div>
 
-        {/* Side-by-side demos */}
+        {/* Survival Demo - Full width for mobile */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"
+          className="max-w-2xl mx-auto"
         >
-          {/* Trivia Demo */}
-          <div className="relative">
-            {/* Outer glow - brand orange */}
-            <div 
-              className="absolute -inset-2 md:-inset-3 rounded-2xl opacity-40 blur-xl"
-              style={{
-                background: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
-              }}
-              aria-hidden="true"
-            />
-            
-            {/* Demo component */}
-            <div className="relative">
-              <LiveDemo 
-                autoPlay={true}
-                showHUD={true}
-                className="shadow-2xl rounded-xl"
-              />
-            </div>
-
-            {/* Badge */}
-            <div className="absolute -top-2 -right-2 md:-top-3 md:-right-3 z-20">
-              <div className="bg-[#F97316] text-white text-[10px] md:text-xs font-bold px-2 md:px-3 py-1 md:py-1.5 rounded-full shadow-lg">
-                TRIVIA DUEL
-              </div>
-            </div>
-          </div>
-
           {/* Survival Demo */}
           <div className="relative">
             {/* Outer glow - purple accent */}
@@ -248,7 +215,7 @@ export function HeroSection({ className }: HeroSectionProps) {
           {[
             { value: '60 FPS', label: 'Real-time' },
             { value: '2 Modes', label: 'Game Types' },
-            { value: '1v1', label: 'Battles' },
+            { value: '3D', label: 'Arena' },
             { value: 'Endless', label: 'Survival' },
           ].map((stat) => (
             <div key={stat.label} className="text-center">

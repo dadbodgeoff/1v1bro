@@ -1,13 +1,11 @@
 /**
- * Register - Clean registration page with guest session transfer
+ * Register - Clean registration page (Mobile App Version)
  */
 
 import { useState, useEffect, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { authAPI } from '@/services/api'
 import { useAuthStore } from '@/stores/authStore'
-import { getSessionTransferFlow, GuestSessionManager, type SessionTransferData } from '@/game/guest'
-import { SessionTransferPreview } from '@/components/auth/SessionTransferPreview'
 import { trackSignupFormStart, trackSignupFormComplete, trackSignupFormError } from '@/services/analytics'
 import { useAuthAnalytics } from '@/hooks/useAuthAnalytics'
 
@@ -23,21 +21,11 @@ export function Register() {
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  
-  // Guest session transfer state
-  const [hasGuestSession, setHasGuestSession] = useState(false)
-  const [transferData, setTransferData] = useState<SessionTransferData | null>(null)
-  const [transferMessage, setTransferMessage] = useState<string | null>(null)
 
-  // Check for guest session on mount and track form start
+  // Track form start on mount
   useEffect(() => {
     trackSignupFormStart()
     authAnalytics.trackSignupStart('email')
-    const transferFlow = getSessionTransferFlow()
-    if (transferFlow.hasTransferableSession()) {
-      setHasGuestSession(true)
-      setTransferData(transferFlow.getTransferPreview())
-    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async (e: FormEvent) => {
@@ -68,21 +56,9 @@ export function Register() {
         display_name: displayName || undefined,
       })
       
-      // Execute session transfer if guest session exists
-      if (hasGuestSession) {
-        const transferFlow = getSessionTransferFlow()
-        const result = await transferFlow.executeTransfer(response.user.id, response.access_token)
-        
-        if (result.success) {
-          setTransferMessage(result.welcomeMessage)
-          // Clear guest session after successful transfer
-          GuestSessionManager.getInstance().clearSession()
-        }
-      }
-      
       trackSignupFormComplete()
       authAnalytics.trackSignupComplete('email', response.user.id)
-      setUser(response.user, response.access_token, true) // true = new user for analytics
+      setUser(response.user, response.access_token, true)
       navigate('/dashboard')
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Registration failed'
@@ -105,25 +81,11 @@ export function Register() {
           <p className="text-sm text-neutral-500">Get started with 1v1 Bro</p>
         </div>
 
-        {/* Guest Session Transfer Preview */}
-        {hasGuestSession && transferData && (
-          <SessionTransferPreview
-            transferData={transferData}
-            className="mb-6"
-          />
-        )}
-
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
               <p className="text-red-400 text-sm text-center">{error}</p>
-            </div>
-          )}
-          
-          {transferMessage && (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-              <p className="text-emerald-400 text-sm text-center">{transferMessage}</p>
             </div>
           )}
 

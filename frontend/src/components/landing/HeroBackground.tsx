@@ -1,17 +1,9 @@
 /**
- * HeroBackground - Canvas-based animated backdrop
- * Reuses existing backdrop layer classes for visual consistency
- * 
- * Validates: Requirements 1.2, 1.3, 1.4, 1.10
+ * HeroBackground - Simple animated backdrop for mobile-app branch
+ * Simplified version without 2D game layer dependencies
  */
 
 import { useRef, useEffect } from 'react'
-import { DeepSpaceLayer } from '@/game/backdrop/layers/DeepSpaceLayer'
-import { HexGridLayer } from '@/game/backdrop/layers/HexGridLayer'
-import { StarFieldLayer } from '@/game/backdrop/layers/StarFieldLayer'
-import { NebulaLayer } from '@/game/backdrop/layers/NebulaLayer'
-import { ShootingStarLayer } from '@/game/backdrop/layers/ShootingStarLayer'
-import type { BackdropLayer, BackdropConfig } from '@/game/backdrop/types'
 
 interface HeroBackgroundProps {
   reducedMotion: boolean
@@ -21,8 +13,6 @@ interface HeroBackgroundProps {
 export function HeroBackground({ reducedMotion, parallaxOffset }: HeroBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number | null>(null)
-  const layersRef = useRef<BackdropLayer[]>([])
-  const configRef = useRef<BackdropConfig | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -39,55 +29,44 @@ export function HeroBackground({ reducedMotion, parallaxOffset }: HeroBackground
       canvas.style.width = `${window.innerWidth}px`
       canvas.style.height = `${window.innerHeight}px`
       ctx.scale(dpr, dpr)
-
-      // Update config and reinitialize layers
-      configRef.current = {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }
-      initializeLayers()
-    }
-
-    const initializeLayers = () => {
-      if (!configRef.current) return
-
-      const config = configRef.current
-
-      // Base layers always included
-      layersRef.current = [
-        new DeepSpaceLayer(config),
-        new HexGridLayer(config),
-        new StarFieldLayer(config),
-      ]
-
-      // Add animated layers only if not reduced motion
-      if (!reducedMotion) {
-        layersRef.current.push(new NebulaLayer(config))
-        layersRef.current.push(new ShootingStarLayer(config))
-      }
     }
 
     resize()
     window.addEventListener('resize', resize)
 
+    // Simple star field
+    const stars: { x: number; y: number; size: number; alpha: number }[] = []
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        size: Math.random() * 2 + 0.5,
+        alpha: Math.random() * 0.5 + 0.3,
+      })
+    }
+
     // Animation loop
-    let lastTime = performance.now()
-
     const animate = (time: number) => {
-      const deltaTime = (time - lastTime) / 1000
-      lastTime = time
-
-      // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Apply parallax transform
-      ctx.save()
-      ctx.translate(0, -parallaxOffset)
+      // Dark gradient background
+      const gradient = ctx.createLinearGradient(0, 0, 0, window.innerHeight)
+      gradient.addColorStop(0, '#0a0a0f')
+      gradient.addColorStop(1, '#0f0f1a')
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight)
 
-      // Update and render layers
-      for (const layer of layersRef.current) {
-        layer.update(deltaTime, time / 1000)
-        layer.render(ctx)
+      // Apply parallax
+      ctx.save()
+      ctx.translate(0, -parallaxOffset * 0.3)
+
+      // Draw stars
+      for (const star of stars) {
+        const twinkle = reducedMotion ? 1 : 0.7 + 0.3 * Math.sin(time / 1000 + star.x)
+        ctx.beginPath()
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha * twinkle})`
+        ctx.fill()
       }
 
       ctx.restore()
@@ -98,8 +77,7 @@ export function HeroBackground({ reducedMotion, parallaxOffset }: HeroBackground
     }
 
     if (reducedMotion) {
-      // Render once for reduced motion
-      animate(performance.now())
+      animate(0)
     } else {
       animationRef.current = requestAnimationFrame(animate)
     }

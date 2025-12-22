@@ -19,18 +19,14 @@ const SurvivalLanding = lazy(() => import('@/pages/SurvivalLanding'))
 
 // Lazy loaded pages - split by feature for optimal chunking
 // Game pages (heavy - Three.js, game engine)
-const ArenaGame = lazy(() => import('@/pages/ArenaGame').then(m => ({ default: m.ArenaGame })))
-const Game = lazy(() => import('@/pages/Game').then(m => ({ default: m.Game })))
-const BotGame = lazy(() => import('@/pages/BotGame').then(m => ({ default: m.BotGame })))
+// Note: 2D arena games removed for mobile-app branch
 const SurvivalGame = lazy(() => import('@/pages/SurvivalGame'))
 const SurvivalInstantPlay = lazy(() => import('@/pages/SurvivalInstantPlay'))
 const SurvivalTest = lazy(() => import('@/pages/SurvivalTest'))
 const SurvivalDemoTest = lazy(() => import('@/pages/SurvivalDemoTest'))
-const SimpleArenaTest = lazy(() => import('@/pages/SimpleArenaTest').then(m => ({ default: m.SimpleArenaTest })))
 const ArenaMapViewer = lazy(() => import('@/pages/ArenaMapViewer'))
 const ArenaPlayTest = lazy(() => import('@/pages/ArenaPlayTest'))
 const Arena = lazy(() => import('@/pages/Arena'))
-const CornfieldMapBuilder = lazy(() => import('@/pages/CornfieldMapBuilder').then(m => ({ default: m.CornfieldMapBuilder })))
 
 // Shop & Inventory (medium - cosmetics, 3D previews)
 const Shop = lazy(() => import('@/pages/Shop').then(m => ({ default: m.Shop })))
@@ -58,7 +54,6 @@ const Settings = lazy(() => import('@/pages/Settings').then(m => ({ default: m.S
 // Results & Quiz (light)
 const Results = lazy(() => import('@/pages/Results').then(m => ({ default: m.Results })))
 const FortniteQuiz = lazy(() => import('@/pages/FortniteQuiz').then(m => ({ default: m.FortniteQuiz })))
-const InstantPlay = lazy(() => import('@/pages/InstantPlay').then(m => ({ default: m.InstantPlay })))
 
 // Admin pages (rarely accessed)
 const AnalyticsDashboard = lazy(() => import('@/pages/AnalyticsDashboard'))
@@ -66,7 +61,6 @@ const ThumbnailGenerator = lazy(() => import('@/components/admin/ThumbnailGenera
 
 // Landing pages (light)
 const Landing = lazy(() => import('@/pages/Landing').then(m => ({ default: m.Landing })))
-const VolcanicLanding = lazy(() => import('@/pages/VolcanicLanding').then(m => ({ default: m.VolcanicLanding })))
 
 // Legal pages (light)
 const PrivacyPolicy = lazy(() => import('@/pages/legal').then(m => ({ default: m.PrivacyPolicy })))
@@ -147,16 +141,16 @@ function App() {
           path="/game/:code"
           element={
             <ProtectedRoute>
-              <ArenaGame />
+              <Navigate to="/survival" replace />
             </ProtectedRoute>
           }
         />
-        {/* Legacy quiz-only game route */}
+        {/* Legacy quiz-only game route - redirect to survival */}
         <Route
           path="/quiz/:code"
           element={
             <ProtectedRoute>
-              <Game />
+              <Navigate to="/survival" replace />
             </ProtectedRoute>
           }
         />
@@ -185,12 +179,12 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* Bot practice mode */}
+        {/* Bot practice mode - redirect to survival for mobile */}
         <Route
           path="/bot-game"
           element={
             <ProtectedRoute>
-              <BotGame />
+              <Navigate to="/survival" replace />
             </ProtectedRoute>
           }
         />
@@ -285,10 +279,10 @@ function App() {
         />
         {/* Fortnite Quiz - no auth required for testing */}
         <Route path="/fortnite-quiz" element={<FortniteQuiz />} />
-        {/* Guest play route - try the game without signup */}
-        <Route path="/play" element={<BotGame />} />
-        {/* Instant play route - zero-friction guest experience */}
-        <Route path="/instant-play" element={<InstantPlay />} />
+        {/* Guest play route - redirect to survival instant play */}
+        <Route path="/play" element={<Navigate to="/survival/instant" replace />} />
+        {/* Instant play route - redirect to survival instant play */}
+        <Route path="/instant-play" element={<Navigate to="/survival/instant" replace />} />
         {/* Legal pages - no auth required */}
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
@@ -297,14 +291,10 @@ function App() {
         <Route path="/landing-classic" element={<Landing />} />
         {/* Legacy landing route - redirect to root */}
         <Route path="/landing" element={<Navigate to="/" replace />} />
-        {/* Volcanic landing page prototype */}
-        <Route path="/promo" element={<VolcanicLanding />} />
+        {/* Volcanic landing page prototype - removed for mobile */}
+        <Route path="/promo" element={<Navigate to="/" replace />} />
         {/* CRT Arcade landing page - also available at /arcade */}
         <Route path="/arcade" element={<ArcadeLanding />} />
-        {/* Simple Arena Test - floor tile rendering test */}
-        <Route path="/simple-arena-test" element={<SimpleArenaTest />} />
-        {/* Cornfield Map Builder - map building/preview tool */}
-        <Route path="/cornfield-builder" element={<CornfieldMapBuilder />} />
         {/* Survival Mode 3D Test - asset loading prototype */}
         <Route path="/survival-test" element={<SurvivalTest />} />
         {/* Survival Demo Test - lightweight canvas demo for landing page */}

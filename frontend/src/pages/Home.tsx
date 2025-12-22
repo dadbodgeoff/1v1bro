@@ -27,7 +27,6 @@ import {
   MatchHistoryWidget,
 } from '@/components/dashboard/enterprise'
 import { OnboardingModal, useOnboarding } from '@/components/onboarding'
-import { ArenaShooterCard } from '@/components/dashboard/enterprise/ArenaShooterCard'
 import { SurvivalRunnerCard } from '@/components/dashboard/enterprise/SurvivalRunnerCard'
 import { ArenaCard } from '@/components/dashboard/ArenaCard'
 
@@ -62,12 +61,7 @@ export function Home() {
           </div>
 
           {/* Game Mode Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* 2D Arena Shooter Card */}
-            <WidgetErrorBoundary widgetName="Arena Shooter" isCritical>
-              <ArenaShooterCard />
-            </WidgetErrorBoundary>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Survival Runner Card */}
             <WidgetErrorBoundary widgetName="Survival Runner" isCritical>
               <SurvivalRunnerCard />
