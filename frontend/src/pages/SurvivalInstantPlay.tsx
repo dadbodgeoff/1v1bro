@@ -182,7 +182,7 @@ function SurvivalInstantPlayContent() {
   const { isAuthenticated } = useAuthStore()
   const guestSession = useRef(getSurvivalGuestSession())
   const survivalAnalytics = useSurvivalAnalytics()
-  const { isMobile, enableTriviaBillboards, isMobileBrowser } = useMobileDetection()
+  const { isMobile, enableTriviaBillboards, enableMobileTrivia, isMobileBrowser } = useMobileDetection()
   
   // Category selection state
   const [selectedCategory, setSelectedCategory] = useState<TriviaCategory | null>(null)
@@ -313,8 +313,8 @@ function SurvivalInstantPlayContent() {
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
   
-  // Calculate if mobile trivia should show
-  const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
+  // Calculate if mobile trivia should show - respects theme-level trivia flag
+  const showMobileTrivia = enableMobileTrivia && phase === 'running'
   
   // Trigger resize when trivia panel shows/hides
   // ResizeObserver should handle this, but we also trigger manually for reliability

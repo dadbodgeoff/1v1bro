@@ -1,11 +1,15 @@
 /**
- * Arena Core Primitives
- * 
- * Layer 0 of the arena 3D physics multiplayer system.
- * Contains foundational types and utilities used throughout the system.
+ * Arena Core Exports
  */
 
-export * from './Result';
-export * from './EventBus';
-export * from './GameEvents';
-export * from './Errors';
+export {
+  ViewportManager,
+  getViewportManager,
+  getViewportState,
+  requestFullscreen,
+  exitFullscreen,
+  requestWakeLock,
+  releaseWakeLock,
+  type ViewportState,
+  type ViewportCallbacks,
+} from './ViewportManager'
