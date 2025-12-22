@@ -241,7 +241,7 @@ export default function ArenaPlayTest() {
         botMesh.castShadow = true
         arenaScene.scene.add(botMesh)
         
-        // Load bot character model directly from Supabase (new optimized model with animation)
+        // Load bot character model directly from Supabase (meshopt-compressed Run_and_Shoot animation)
         const botModelUrl = 'https://ikbshpdvvkydbpirbahl.supabase.co/storage/v1/object/public/arena-assets/animations/Run_and_Shoot_withSkin.glb'
         
         import('three/examples/jsm/loaders/GLTFLoader.js').then(({ GLTFLoader }) => {
