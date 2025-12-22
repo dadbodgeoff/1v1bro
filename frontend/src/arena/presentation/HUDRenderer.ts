@@ -108,6 +108,13 @@ export class HUDRenderer implements IHUDRenderer {
   }
 
   initialize(container: HTMLElement): void {
+    // Prevent double initialization - remove existing HUD if present
+    const existingHud = container.querySelector('.arena-hud');
+    if (existingHud) {
+      console.warn('[HUDRenderer] Removing existing HUD before re-initialization');
+      existingHud.remove();
+    }
+    
     this.container = container;
     this.createHUDElements();
     this.subscribeToEvents();
@@ -305,7 +312,7 @@ export class HUDRenderer implements IHUDRenderer {
       font-weight: bold;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     `;
-    this.healthText.textContent = '100 / 100';
+    // Don't set initial text - will be set on first update()
 
     container.appendChild(barBg);
     container.appendChild(this.healthText);
@@ -323,7 +330,7 @@ export class HUDRenderer implements IHUDRenderer {
       font-weight: bold;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     `;
-    container.textContent = '30 / 30';
+    // Don't set initial text - will be set on first update()
     return container;
   }
 

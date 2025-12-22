@@ -25,7 +25,6 @@ import {
   createAmbientLighting,
   createTrackChannel,
   createPlatformEdges,
-  createSubwayTrain,
   placeSubwayTrain,
   placeSubwayEntrances,
   placeCarts,
@@ -214,19 +213,19 @@ export class ArenaScene {
     const walls = createWalls(this.materials, arenaConfig);
     const trackChannel = createTrackChannel(this.materials, arenaConfig);
     const platformEdges = createPlatformEdges(this.materials, arenaConfig);
-    const subwayTrain = createSubwayTrain();
+    // NOTE: Don't create placeholder train - we load GLB model directly
     const lights = createHangingLights(this.materials);
     // Pass maxLights for quality-based point light culling
     const ambientLighting = createAmbientLighting(lightingConfig, maxLights);
 
     // Batch static geometry for fewer draw calls
     // NOTE: Floor, walls, ceiling are NOT batched so we can apply textures to them
+    // NOTE: Train is NOT batched - we use the GLB model directly
     const batcher = new GeometryBatcher();
 
-    // Add static elements to batcher (excluding textured surfaces)
+    // Add static elements to batcher (excluding textured surfaces and train)
     batcher.addGroup(trackChannel);
     batcher.addGroup(platformEdges);
-    batcher.addGroup(subwayTrain);
 
     // Build batched mesh
     const batchedStatic = batcher.build();

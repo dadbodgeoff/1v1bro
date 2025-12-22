@@ -50,7 +50,7 @@ function SurvivalGameContent() {
   const { user, token, isAuthenticated } = useAuthStore()
   const { loadoutWithDetails, fetchLoadout } = useCosmeticsStore()
   const { leaderboard, refresh: refreshRank } = useLeaderboard({ autoStart: true })
-  const { isMobile, enableTriviaBillboards, isMobileBrowser } = useMobileDetection()
+  const { isMobile, enableTriviaBillboards, enableMobileTrivia, isMobileBrowser } = useMobileDetection()
   
   const playerRank = leaderboard?.playerEntry
   const [showGameOver, setShowGameOver] = useState(false)
@@ -132,19 +132,33 @@ function SurvivalGameContent() {
     const previousBest = previousBestRef.current ?? 0
     const isNewPB = distance > previousBest
     
+    // Set stats immediately so overlay can show
+    setLastRunStats({
+      distance, 
+      score, 
+      maxCombo: maxComboRef.current, 
+      isNewPB, 
+      newRank: undefined, // Will be updated after refresh
+      triviaStats: { ...stats },
+    })
+    setShowGameOver(true)
+    
+    // Refresh rank in background (don't block overlay display)
     setTimeout(async () => {
-      await refreshRank()
-      const newRank = leaderboard?.playerEntry?.rank
-      
-      previousRankRef.current = newRank
-      previousBestRef.current = Math.max(previousBest, distance)
-      
-      setLastRunStats({
-        distance, score, maxCombo: maxComboRef.current, isNewPB, newRank,
-        triviaStats: { ...stats },
-      })
-      setShowGameOver(true)
-    }, 1000)
+      try {
+        await refreshRank()
+        // Update with new rank after refresh
+        setLastRunStats(prev => prev ? {
+          ...prev,
+          newRank: leaderboard?.playerEntry?.rank,
+        } : null)
+        
+        previousRankRef.current = leaderboard?.playerEntry?.rank
+        previousBestRef.current = Math.max(previousBest, distance)
+      } catch (err) {
+        console.error('[SurvivalGame] Failed to refresh rank:', err)
+      }
+    }, 500)
   }, [refreshRank, leaderboard?.playerEntry?.rank])
 
   // Game hook
@@ -166,8 +180,8 @@ function SurvivalGameContent() {
   const phase = gameState?.phase ?? 'loading'
   const overlayState = useTransitionOverlay(transitionSystem)
   
-  // Calculate if mobile trivia should show
-  const showMobileTrivia = isMobile && !enableTriviaBillboards && phase === 'running'
+  // Calculate if mobile trivia should show - respects theme-level trivia flag
+  const showMobileTrivia = enableMobileTrivia && phase === 'running'
   
   // Trigger resize when trivia panel shows/hides
   // ResizeObserver should handle this, but we also trigger manually for reliability

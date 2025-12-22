@@ -1,8 +1,8 @@
 /**
- * Game module barrel export - MOBILE APP VERSION
+ * Game module barrel export - MOBILE FORK VERSION
  * 
- * The 2D GameEngine has been removed for the mobile fork.
- * Shared modules are kept for use by other systems.
+ * This is the updated version for the mobile fork.
+ * The 2D GameEngine has been removed, but shared modules are kept.
  */
 
 // REMOVED: GameEngine (2D canvas engine)

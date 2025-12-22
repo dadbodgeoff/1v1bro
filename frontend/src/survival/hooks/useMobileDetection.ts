@@ -6,11 +6,15 @@
 
 import { useMemo } from 'react'
 import { useMobileOptimization } from './useMobileOptimization'
+import { isTriviaEnabled } from '../config/themes'
 
 export interface MobileDetectionResult {
   isMobile: boolean
   isTouch: boolean
+  /** Whether 3D trivia billboards should be shown (desktop only, theme must allow) */
   enableTriviaBillboards: boolean
+  /** Whether mobile trivia panel should be shown (mobile only, theme must allow) */
+  enableMobileTrivia: boolean
   /** True when running as installed PWA (no browser chrome) */
   isPWA: boolean
   /** True when running in iOS Safari (has bottom nav bar eating viewport) */
@@ -41,13 +45,25 @@ export function useMobileDetection(): MobileDetectionResult {
     // Any mobile browser (not PWA) - needs extra space for browser UI
     const isMobileBrowser = isMobile && !isPWA
     
-    return { isMobile, isPWA, isIOSSafari, isMobileBrowser }
+    // Check if trivia is enabled at the theme level
+    const themeAllowsTrivia = isTriviaEnabled()
+    
+    return { 
+      isMobile, 
+      isPWA, 
+      isIOSSafari, 
+      isMobileBrowser,
+      themeAllowsTrivia,
+    }
   }, [deviceCapabilities.isMobile, isTouch])
   
   return {
     ...detection,
     isTouch,
     // Disable 3D trivia billboards on mobile - use 2D panel instead
-    enableTriviaBillboards: !detection.isMobile,
+    // Also respect theme-level trivia flag
+    enableTriviaBillboards: !detection.isMobile && detection.themeAllowsTrivia,
+    // Mobile trivia panel - only on mobile AND theme must allow trivia
+    enableMobileTrivia: detection.isMobile && detection.themeAllowsTrivia,
   }
 }

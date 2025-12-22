@@ -37,6 +37,11 @@ import { DEFAULT_GAME_CONFIG } from '@/arena/config/GameConfig';
 import { getArenaQualityProfile } from '@/arena/config/quality';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
+// Mobile optimization
+import { useMobileOptimization } from '@/arena/hooks/useMobileOptimization';
+import { TouchController, type JoystickState, type AimState } from '@/arena/engine/TouchController';
+import { getViewportManager } from '@/arena/core/ViewportManager';
+
 // UI components
 import { ArenaDebugHUD, ArenaOverlays, DEFAULT_DEBUG_INFO } from '@/arena/ui';
 import type { ArenaDebugInfo } from '@/arena/ui';
@@ -55,6 +60,32 @@ const BOT_PLAYER_ID = 999;
 export default function Arena() {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Mobile optimization hook
+  const {
+    isMobile,
+    isTouch,
+    mobileConfig,
+    requestWakeLock,
+    releaseWakeLock,
+    requestFullscreen,
+  } = useMobileOptimization();
+
+  // Touch controller ref
+  const touchControllerRef = useRef<TouchController | null>(null);
+  const touchInputRef = useRef<{
+    joystick: JoystickState;
+    aim: AimState;
+    fire: boolean;
+    reload: boolean;
+    weaponSwitch: boolean;
+  }>({
+    joystick: { active: false, x: 0, y: 0, angle: 0, magnitude: 0 },
+    aim: { active: false, deltaX: 0, deltaY: 0 },
+    fire: false,
+    reload: false,
+    weaponSwitch: false,
+  });
 
   // Store state
   const {
@@ -91,7 +122,7 @@ export default function Arena() {
   const playerStateRef = useRef<PlayerPhysicsState | null>(null);
   const hitstopRef = useRef<HitstopSystem | null>(null);
 
-  // Start game - hide instructions and request pointer lock
+  // Start game - hide instructions and request pointer lock (or setup touch on mobile)
   const startGame = useCallback(() => {
     // Prevent multiple calls if game already started
     if (gameStartedRef.current) return;
@@ -102,15 +133,22 @@ export default function Arena() {
     setMatchState('playing');
     gameStartedRef.current = true;
     
-    // Request pointer lock after a brief delay to let React update
-    setTimeout(() => {
-      const canvas = containerRef.current?.querySelector('canvas');
-      if (canvas && !document.pointerLockElement) {
-        console.log('[Arena] Requesting pointer lock on canvas');
-        canvas.requestPointerLock();
-      }
-    }, 50);
-  }, [setMatchState]);
+    // Mobile: request wake lock and fullscreen
+    if (isMobile || isTouch) {
+      requestWakeLock();
+      requestFullscreen();
+      console.log('[Arena] Mobile mode - touch controls active');
+    } else {
+      // Desktop: request pointer lock after a brief delay to let React update
+      setTimeout(() => {
+        const canvas = containerRef.current?.querySelector('canvas');
+        if (canvas && !document.pointerLockElement) {
+          console.log('[Arena] Requesting pointer lock on canvas');
+          canvas.requestPointerLock();
+        }
+      }, 50);
+    }
+  }, [setMatchState, isMobile, isTouch, requestWakeLock, requestFullscreen]);
 
   // Handle play again
   const handlePlayAgain = useCallback(() => {
@@ -209,6 +247,34 @@ export default function Arena() {
       systems.inputManager.dispose();
       systems.inputManager.initialize(canvas);
       console.log('[Arena] InputManager re-initialized with canvas element');
+
+      // Initialize touch controller for mobile
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isTouchDevice || isMobileDevice) {
+        console.log('[Arena] Initializing touch controller for mobile');
+        touchControllerRef.current = new TouchController();
+        touchControllerRef.current.attach(containerRef.current!);
+        
+        // Wire up touch input callbacks
+        touchControllerRef.current.onJoystick((state) => {
+          touchInputRef.current.joystick = state;
+        });
+        
+        touchControllerRef.current.onAim((state) => {
+          touchInputRef.current.aim = state;
+        });
+        
+        touchControllerRef.current.onInput((action) => {
+          if (action === 'fire') touchInputRef.current.fire = true;
+          if (action === 'reload') touchInputRef.current.reload = true;
+          if (action === 'weaponSwitch') touchInputRef.current.weaponSwitch = true;
+        });
+        
+        // Initialize viewport manager for wake lock
+        getViewportManager();
+      }
 
       // Get initial spawn
       const initialSpawn = systems.spawnSystem.selectSpawnPoint(LOCAL_PLAYER_ID, []);
@@ -373,9 +439,44 @@ export default function Arena() {
         // Capture input
         const inputPacket = systems.inputManager.captureFrame(0, 0, now);
 
-        // Apply mouse look when pointer is locked
+        // Merge touch input with keyboard/mouse input
+        let movementX = inputPacket.movementX;
+        let movementY = inputPacket.movementY;
+        let lookDeltaX = inputPacket.lookDeltaX;
+        let lookDeltaY = inputPacket.lookDeltaY;
+        let jumpPressed = (inputPacket.buttons & 0x01) !== 0;
+        let firePressed = (inputPacket.buttons & 0x02) !== 0;
+        
+        // Apply touch joystick input
+        const touchInput = touchInputRef.current;
+        if (touchInput.joystick.active) {
+          // Joystick Y is inverted (up = forward = negative Y in joystick coords)
+          movementY = -touchInput.joystick.y;
+          movementX = touchInput.joystick.x;
+        }
+        
+        // Apply touch aim input
+        if (touchInput.aim.active) {
+          const sensitivity = mobileConfig.balance.lookSensitivity;
+          lookDeltaX = touchInput.aim.deltaX * sensitivity;
+          lookDeltaY = touchInput.aim.deltaY * sensitivity;
+          // Reset aim delta after consuming
+          touchInput.aim.deltaX = 0;
+          touchInput.aim.deltaY = 0;
+        }
+        
+        // Apply touch fire button
+        if (touchInput.fire) {
+          firePressed = true;
+          touchInput.fire = false; // Reset after consuming
+        }
+
+        // Apply mouse look when pointer is locked OR touch aim is active
         if (systems.inputManager.isPointerLocked()) {
           systems.cameraController.applyLookDelta(inputPacket.lookDeltaX, inputPacket.lookDeltaY);
+        } else if (touchInput.aim.active || lookDeltaX !== 0 || lookDeltaY !== 0) {
+          // Touch aim - apply look delta directly
+          systems.cameraController.applyLookDelta(lookDeltaX, lookDeltaY);
         }
 
         const cameraState = systems.cameraController.getState();
@@ -384,14 +485,24 @@ export default function Arena() {
         playerStateRef.current = systems.physics.step(
           playerStateRef.current,
           {
-            forward: inputPacket.movementY,
-            right: inputPacket.movementX,
-            jump: (inputPacket.buttons & 0x01) !== 0,
+            forward: movementY,
+            right: movementX,
+            jump: jumpPressed,
             yaw: cameraState.yaw,
           },
           deltaTime,
           now
         );
+
+        // Handle touch reload input
+        if (touchInput.reload && currentAmmo < maxAmmo && !isReloading) {
+          const weapon = weaponBuilder.getCurrentWeapon();
+          isReloading = true;
+          reloadStartTime = now;
+          reloadDuration = weapon?.reloadTime ?? 2.5;
+          weaponBuilder.startReload();
+          touchInput.reload = false;
+        }
 
         // Handle reload progress
         if (isReloading) {
@@ -427,7 +538,8 @@ export default function Arena() {
         }
 
         // Handle shooting - single click = single shot, hold = auto-fire
-        const isFireButtonDown = (inputPacket.buttons & 0x02) !== 0;
+        // Use merged firePressed from keyboard/mouse + touch
+        const isFireButtonDown = firePressed;
         const currentWeapon = weaponBuilder.getCurrentWeapon();
         const fireInterval = currentWeapon ? 1000 / currentWeapon.fireRate : 100;
         const canFire = !isReloading && currentAmmo > 0 && (now - lastFireTime) >= fireInterval;
@@ -438,7 +550,9 @@ export default function Arena() {
         const shouldFire = canFire && (isNewClick || isHoldingAndReady);
         wasFireButtonDown = isFireButtonDown;
 
-        if (shouldFire && systems.inputManager.isPointerLocked()) {
+        // Allow firing when pointer locked (desktop) OR on touch device
+        const canShoot = systems.inputManager.isPointerLocked() || (isTouchDevice || isMobileDevice);
+        if (shouldFire && canShoot) {
           const combatState = systems.combatSystem.getPlayerState(LOCAL_PLAYER_ID);
           if (combatState && !combatState.isDead) {
             currentAmmo = Math.max(0, currentAmmo - 1);
@@ -860,6 +974,13 @@ export default function Arena() {
         if (document.pointerLockElement) {
           document.exitPointerLock();
         }
+
+        // Cleanup touch controller
+        touchControllerRef.current?.detach();
+        touchControllerRef.current = null;
+        
+        // Release wake lock on cleanup
+        releaseWakeLock();
 
         botManagerRef.current?.dispose();
         botVisualRef.current?.dispose();

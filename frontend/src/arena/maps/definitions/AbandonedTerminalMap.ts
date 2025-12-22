@@ -118,12 +118,12 @@ const LIGHTING_CONFIG: LightingConfig = {
 // ============================================================================
 
 const PROP_PLACEMENTS: PropPlacement[] = [
-  // Wall expressions (at track ends)
+  // Wall expressions (at track ends - on sunken track floor at Y=-0.6)
   {
     assetKey: 'wallExpression',
     positions: [
-      { x: 0, y: 0, z: -18, rotationY: 0, scale: 2.0 },
-      { x: 0, y: 0, z: 18, rotationY: Math.PI, scale: 2.0 },
+      { x: 0, y: -0.6, z: -18, rotationY: 0, scale: 2.0 },
+      { x: 0, y: -0.6, z: 18, rotationY: Math.PI, scale: 2.0 },
     ],
   },
   // Benches (along platform edges)

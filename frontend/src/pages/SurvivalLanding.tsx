@@ -219,8 +219,8 @@ function SurvivalLandingContent() {
   // TRIVIA DISABLED for landing page - pure obstacle runner experience
   const TRIVIA_ENABLED = false
   
-  // Calculate if mobile trivia should show (disabled for landing)
-  const showMobileTrivia = false // TRIVIA_ENABLED && isMobile && !enableTriviaBillboards && phase === 'running'
+  // Calculate if mobile trivia should show (disabled for landing - trivia is off globally)
+  const showMobileTrivia = false // enableMobileTrivia && phase === 'running'
   
   // Trigger resize when trivia panel shows/hides
   useEffect(() => {
