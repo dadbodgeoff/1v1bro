@@ -1384,3 +1384,403 @@ async def get_auth_analysis(
         return APIResponse.ok({"analysis": analysis})
     except Exception as e:
         return APIResponse.fail(str(e), "ANALYTICS_ERROR")
+
+
+# ============================================
+# ZEN GARDEN ANALYTICS (Focused tracking)
+# ============================================
+
+class ZenGardenLandingData(BaseModel):
+    """Track landing page view."""
+    visitor_id: str
+    session_id: str
+    is_returning: bool = False
+    referrer: Optional[str] = None
+    device: Optional[str] = None
+
+
+class ZenGardenExitData(BaseModel):
+    """Track landing page exit."""
+    visitor_id: str
+    session_id: str
+    exit_type: str  # back, external, close
+    time_on_page_ms: int
+    started_game: bool = False
+
+
+class ZenGardenStartData(BaseModel):
+    """Track game start."""
+    visitor_id: str
+    session_id: str
+    run_number: int
+    is_returning: bool = False
+    is_replay: bool = False
+
+
+class ZenGardenEndData(BaseModel):
+    """Track game end."""
+    visitor_id: str
+    session_id: str
+    run_number: int
+    distance: float
+    score: int
+    duration_ms: int
+    death_cause: str  # highBarrier, lowBarrier, laneBarrier, spikes, quit, unknown
+    death_lane: Optional[int] = None
+    max_combo: Optional[int] = None
+    is_returning: bool = False
+
+
+class ZenGardenReplayData(BaseModel):
+    """Track play again click."""
+    visitor_id: str
+    session_id: str
+    previous_runs: int
+    best_distance: float
+    total_time_ms: int
+
+
+class ZenGardenSignupClickData(BaseModel):
+    """Track signup button click."""
+    visitor_id: str
+    session_id: str
+    runs_before_signup: int
+    best_distance: float
+    time_to_signup_ms: int
+
+
+class ZenGardenSignupCompleteData(BaseModel):
+    """Track signup completion."""
+    visitor_id: str
+    session_id: str
+    runs_before_signup: int
+    best_distance: float
+
+
+class ZenGardenLoginClickData(BaseModel):
+    """Track login button click."""
+    visitor_id: str
+    session_id: str
+    runs_before_login: int
+
+
+class ZenGardenSessionEndData(BaseModel):
+    """Track full session end (sent via sendBeacon)."""
+    visitor_id: str
+    session_id: str
+    total_runs: int
+    total_time_ms: int
+    best_distance: float
+    signed_up: bool = False
+    is_returning: bool = False
+    runs: Optional[List[dict]] = None
+
+
+@router.post("/track/zen-garden/landing")
+async def track_zen_garden_landing(data: ZenGardenLandingData):
+    """Track zen garden landing page view."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "landing_view",
+            "is_returning": data.is_returning,
+            "referrer": data.referrer,
+            "device": data.device,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/exit")
+async def track_zen_garden_exit(data: ZenGardenExitData):
+    """Track zen garden landing page exit."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "landing_exit",
+            "exit_type": data.exit_type,
+            "time_on_page_ms": data.time_on_page_ms,
+            "started_game": data.started_game,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/start")
+async def track_zen_garden_start(data: ZenGardenStartData):
+    """Track zen garden game start."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "game_start",
+            "run_number": data.run_number,
+            "is_returning": data.is_returning,
+            "is_replay": data.is_replay,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/end")
+async def track_zen_garden_end(data: ZenGardenEndData):
+    """Track zen garden game end."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "game_end",
+            "run_number": data.run_number,
+            "distance": data.distance,
+            "score": data.score,
+            "duration_ms": data.duration_ms,
+            "death_cause": data.death_cause,
+            "death_lane": data.death_lane,
+            "max_combo": data.max_combo,
+            "is_returning": data.is_returning,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/replay")
+async def track_zen_garden_replay(data: ZenGardenReplayData):
+    """Track zen garden play again click."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "play_again",
+            "previous_runs": data.previous_runs,
+            "best_distance": data.best_distance,
+            "total_time_ms": data.total_time_ms,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/signup-click")
+async def track_zen_garden_signup_click(data: ZenGardenSignupClickData):
+    """Track zen garden signup button click."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "signup_click",
+            "runs_before_signup": data.runs_before_signup,
+            "best_distance": data.best_distance,
+            "time_to_signup_ms": data.time_to_signup_ms,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/signup-complete")
+async def track_zen_garden_signup_complete(data: ZenGardenSignupCompleteData):
+    """Track zen garden signup completion."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "signup_complete",
+            "runs_before_signup": data.runs_before_signup,
+            "best_distance": data.best_distance,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/login-click")
+async def track_zen_garden_login_click(data: ZenGardenLoginClickData):
+    """Track zen garden login button click."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "login_click",
+            "runs_before_login": data.runs_before_login,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.post("/track/zen-garden/session-end")
+async def track_zen_garden_session_end(data: ZenGardenSessionEndData):
+    """Track zen garden full session end (via sendBeacon)."""
+    try:
+        supabase = get_supabase_service_client()
+        
+        supabase.table("zen_garden_analytics").insert({
+            "visitor_id": data.visitor_id,
+            "session_id": data.session_id,
+            "event_type": "session_end",
+            "total_runs": data.total_runs,
+            "total_time_ms": data.total_time_ms,
+            "best_distance": data.best_distance,
+            "signed_up": data.signed_up,
+            "is_returning": data.is_returning,
+            "runs_data": data.runs,
+        }).execute()
+        
+        return APIResponse.ok({"tracked": True})
+    except Exception as e:
+        return APIResponse.ok({"tracked": False, "error": str(e)})
+
+
+@router.get("/dashboard/zen-garden")
+async def get_zen_garden_dashboard(
+    days: int = Query(default=7, ge=1, le=30),
+    _admin=Depends(require_admin)
+):
+    """Get zen garden analytics dashboard."""
+    try:
+        supabase = get_supabase_service_client()
+        start_date = (datetime.utcnow().date() - timedelta(days=days)).isoformat()
+        
+        result = supabase.table("zen_garden_analytics").select("*").gte(
+            "created_at", start_date
+        ).execute()
+        
+        data = result.data or []
+        if not data:
+            return APIResponse.ok({"analysis": None, "sample_size": 0})
+        
+        # Count events
+        landing_views = 0
+        landing_exits = 0
+        game_starts = 0
+        game_ends = 0
+        play_agains = 0
+        signup_clicks = 0
+        signup_completes = 0
+        login_clicks = 0
+        
+        # Track unique visitors
+        unique_visitors = set()
+        returning_visitors = set()
+        
+        # Death causes
+        death_causes = {}
+        
+        # Distance tracking
+        distances = []
+        
+        # Session data
+        sessions_with_game = 0
+        sessions_without_game = 0
+        
+        for row in data:
+            event = row.get("event_type")
+            visitor = row.get("visitor_id")
+            
+            if visitor:
+                unique_visitors.add(visitor)
+                if row.get("is_returning"):
+                    returning_visitors.add(visitor)
+            
+            if event == "landing_view":
+                landing_views += 1
+            elif event == "landing_exit":
+                landing_exits += 1
+                if row.get("started_game"):
+                    sessions_with_game += 1
+                else:
+                    sessions_without_game += 1
+            elif event == "game_start":
+                game_starts += 1
+            elif event == "game_end":
+                game_ends += 1
+                cause = row.get("death_cause", "unknown")
+                death_causes[cause] = death_causes.get(cause, 0) + 1
+                if row.get("distance"):
+                    distances.append(row["distance"])
+            elif event == "play_again":
+                play_agains += 1
+            elif event == "signup_click":
+                signup_clicks += 1
+            elif event == "signup_complete":
+                signup_completes += 1
+            elif event == "login_click":
+                login_clicks += 1
+        
+        # Calculate metrics
+        start_rate = round(game_starts / landing_views * 100, 2) if landing_views > 0 else 0
+        completion_rate = round(game_ends / game_starts * 100, 2) if game_starts > 0 else 0
+        replay_rate = round(play_agains / game_ends * 100, 2) if game_ends > 0 else 0
+        signup_rate = round(signup_completes / landing_views * 100, 2) if landing_views > 0 else 0
+        bounce_rate = round(sessions_without_game / (sessions_with_game + sessions_without_game) * 100, 2) if (sessions_with_game + sessions_without_game) > 0 else 0
+        
+        avg_distance = round(sum(distances) / len(distances), 2) if distances else 0
+        max_distance = max(distances) if distances else 0
+        
+        analysis = {
+            "sample_size": len(data),
+            "period_days": days,
+            
+            # Funnel
+            "landing_views": landing_views,
+            "game_starts": game_starts,
+            "game_ends": game_ends,
+            "play_agains": play_agains,
+            "signup_clicks": signup_clicks,
+            "signup_completes": signup_completes,
+            "login_clicks": login_clicks,
+            
+            # Rates
+            "start_rate": start_rate,
+            "completion_rate": completion_rate,
+            "replay_rate": replay_rate,
+            "signup_rate": signup_rate,
+            "bounce_rate": bounce_rate,
+            
+            # Visitors
+            "unique_visitors": len(unique_visitors),
+            "returning_visitors": len(returning_visitors),
+            "return_rate": round(len(returning_visitors) / len(unique_visitors) * 100, 2) if unique_visitors else 0,
+            
+            # Gameplay
+            "avg_distance": avg_distance,
+            "max_distance": max_distance,
+            "death_causes": sorted(death_causes.items(), key=lambda x: x[1], reverse=True),
+            
+            # Engagement
+            "avg_runs_per_session": round(game_ends / len(unique_visitors), 2) if unique_visitors else 0,
+        }
+        
+        return APIResponse.ok({"analysis": analysis})
+    except Exception as e:
+        return APIResponse.fail(str(e), "ANALYTICS_ERROR")
