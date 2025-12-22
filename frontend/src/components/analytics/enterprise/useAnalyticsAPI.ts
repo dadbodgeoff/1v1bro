@@ -123,6 +123,9 @@ export function useAnalyticsAPI() {
   const getTriviaAnalysis = (days = 7) =>
     fetchAPI(`/analytics/survival/dashboard/trivia-analysis?days=${days}`)
 
+  const getZenGardenAnalysis = (days = 7) =>
+    fetchAPI(`/analytics/survival/dashboard/zen-garden?days=${days}`)
+
   const getShopFunnel = (days = 7) =>
     fetchAPI(`/analytics/survival/dashboard/shop-funnel?days=${days}`)
 
@@ -198,6 +201,7 @@ export function useAnalyticsAPI() {
     getInputAnalysis,
     getComboAnalysis,
     getTriviaAnalysis,
+    getZenGardenAnalysis,
     getShopFunnel,
     getAuthAnalysis,
     // Additional Enterprise

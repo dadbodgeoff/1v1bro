@@ -175,6 +175,30 @@ interface Props {
   days?: number
 }
 
+interface ZenGardenAnalysis {
+  sample_size: number
+  period_days: number
+  landing_views: number
+  game_starts: number
+  game_ends: number
+  play_agains: number
+  signup_clicks: number
+  signup_completes: number
+  login_clicks: number
+  unique_visitors: number
+  returning_visitors: number
+  start_rate: number
+  completion_rate: number
+  replay_rate: number
+  signup_rate: number
+  bounce_rate: number
+  return_rate: number
+  avg_distance: number
+  max_distance: number
+  avg_runs_per_session: number
+  death_causes: Array<[string, number]>
+}
+
 export function SurvivalPanel({ days = 7 }: Props) {
   const api = useAnalyticsAPI()
   const [overview, setOverview] = useState<SurvivalOverview | null>(null)
@@ -184,13 +208,14 @@ export function SurvivalPanel({ days = 7 }: Props) {
   const [inputAnalysis, setInputAnalysis] = useState<InputAnalysis | null>(null)
   const [comboAnalysis, setComboAnalysis] = useState<ComboAnalysis | null>(null)
   const [triviaAnalysis, setTriviaAnalysis] = useState<TriviaAnalysis | null>(null)
+  const [zenGarden, setZenGarden] = useState<ZenGardenAnalysis | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeSection, setActiveSection] = useState<'overview' | 'inputs' | 'combos' | 'trivia'>('overview')
+  const [activeSection, setActiveSection] = useState<'overview' | 'inputs' | 'combos' | 'trivia' | 'zen-garden'>('overview')
 
   useEffect(() => {
     const load = async () => {
       setLoading(true)
-      const [ov, diff, obs, fun, inp, combo, trivia] = await Promise.all([
+      const [ov, diff, obs, fun, inp, combo, trivia, zen] = await Promise.all([
         api.getSurvivalOverview(days),
         api.getDifficultyCurve(days),
         api.getObstacleAnalysis(days),
@@ -198,6 +223,7 @@ export function SurvivalPanel({ days = 7 }: Props) {
         api.getInputAnalysis(days),
         api.getComboAnalysis(days),
         api.getTriviaAnalysis(days),
+        api.getZenGardenAnalysis(days),
       ])
       setOverview(ov as SurvivalOverview)
       setDifficulty(diff as DifficultyCurve)
@@ -206,6 +232,9 @@ export function SurvivalPanel({ days = 7 }: Props) {
       setInputAnalysis(inp as InputAnalysis)
       setComboAnalysis(combo as ComboAnalysis)
       setTriviaAnalysis(trivia as TriviaAnalysis)
+      if (zen && (zen as { analysis?: ZenGardenAnalysis }).analysis) {
+        setZenGarden((zen as { analysis: ZenGardenAnalysis }).analysis)
+      }
       setLoading(false)
     }
     load()
@@ -396,6 +425,7 @@ export function SurvivalPanel({ days = 7 }: Props) {
           { id: 'inputs', label: '🎮 Inputs', hasData: !!inputAnalysis?.analysis },
           { id: 'combos', label: '🔥 Combos', hasData: !!comboAnalysis?.analysis },
           { id: 'trivia', label: '❓ Trivia', hasData: !!triviaAnalysis?.analysis },
+          { id: 'zen-garden', label: '🌸 Zen Garden', hasData: !!zenGarden },
         ].map(tab => (
           <button
             key={tab.id}
@@ -703,6 +733,133 @@ export function SurvivalPanel({ days = 7 }: Props) {
       )}
       {activeSection === 'trivia' && !triviaAnalysis?.analysis && (
         <div className="text-center py-12 text-neutral-500">No trivia analysis data available</div>
+      )}
+
+      {/* Zen Garden Section */}
+      {activeSection === 'zen-garden' && zenGarden && (
+        <div className="space-y-6">
+          {/* Key Metrics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <MetricCard label="Landing Views" value={zenGarden.landing_views} icon={<span className="text-lg">👀</span>} />
+            <MetricCard label="Game Starts" value={zenGarden.game_starts} icon={<span className="text-lg">🎮</span>} />
+            <MetricCard label="Start Rate" value={zenGarden.start_rate?.toFixed(1)} unit="%" variant={zenGarden.start_rate > 50 ? 'success' : 'warning'} icon={<span className="text-lg">▶️</span>} />
+            <MetricCard label="Bounce Rate" value={zenGarden.bounce_rate?.toFixed(1)} unit="%" variant={zenGarden.bounce_rate < 50 ? 'success' : 'warning'} icon={<span className="text-lg">↩️</span>} />
+            <MetricCard label="Replay Rate" value={zenGarden.replay_rate?.toFixed(1)} unit="%" variant={zenGarden.replay_rate > 30 ? 'success' : 'warning'} icon={<span className="text-lg">🔄</span>} />
+            <MetricCard label="Signup Rate" value={zenGarden.signup_rate?.toFixed(1)} unit="%" variant={zenGarden.signup_rate > 5 ? 'success' : 'warning'} icon={<span className="text-lg">📝</span>} />
+            <MetricCard label="Unique Visitors" value={zenGarden.unique_visitors} icon={<span className="text-lg">👥</span>} />
+            <MetricCard label="Return Rate" value={zenGarden.return_rate?.toFixed(1)} unit="%" variant={zenGarden.return_rate > 20 ? 'success' : 'warning'} icon={<span className="text-lg">🔙</span>} />
+          </div>
+
+          {/* Conversion Funnel */}
+          <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+            <h3 className="text-sm font-medium text-neutral-400 mb-4">Conversion Funnel</h3>
+            <div className="space-y-3">
+              {[
+                { label: 'Landing Views', value: zenGarden.landing_views, rate: 100 },
+                { label: 'Game Starts', value: zenGarden.game_starts, rate: zenGarden.start_rate },
+                { label: 'Game Ends', value: zenGarden.game_ends, rate: zenGarden.completion_rate },
+                { label: 'Play Again', value: zenGarden.play_agains, rate: zenGarden.replay_rate },
+                { label: 'Signup Clicks', value: zenGarden.signup_clicks, rate: zenGarden.landing_views > 0 ? (zenGarden.signup_clicks / zenGarden.landing_views * 100) : 0 },
+                { label: 'Signups Complete', value: zenGarden.signup_completes, rate: zenGarden.signup_rate },
+              ].map((step, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <span className="text-sm text-neutral-400 w-32">{step.label}</span>
+                  <div className="flex-1 h-3 bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-pink-500 to-orange-500 rounded-full transition-all"
+                      style={{ width: `${Math.min(100, step.rate)}%` }}
+                    />
+                  </div>
+                  <span className="text-sm text-white w-16 text-right">{step.value.toLocaleString()}</span>
+                  <span className="text-xs text-neutral-500 w-12">{step.rate.toFixed(1)}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Gameplay Stats */}
+            <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+              <h3 className="text-sm font-medium text-neutral-400 mb-4">Gameplay Stats</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-400">Avg Distance</span>
+                  <span className="text-white font-medium">{zenGarden.avg_distance?.toFixed(0) || 0}m</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-400">Max Distance</span>
+                  <span className="text-green-400 font-medium">{zenGarden.max_distance?.toFixed(0) || 0}m</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-400">Avg Runs/Session</span>
+                  <span className="text-white font-medium">{zenGarden.avg_runs_per_session?.toFixed(1) || 0}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-400">Total Games</span>
+                  <span className="text-white font-medium">{zenGarden.game_ends?.toLocaleString() || 0}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Death Causes */}
+            <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+              <h3 className="text-sm font-medium text-neutral-400 mb-4">Death Causes</h3>
+              <div className="space-y-2">
+                {zenGarden.death_causes && zenGarden.death_causes.length > 0 ? (
+                  zenGarden.death_causes.map(([cause, count], i) => {
+                    const total = zenGarden.death_causes.reduce((sum, [, c]) => sum + c, 0)
+                    const pct = total > 0 ? (count / total * 100) : 0
+                    const label = cause === 'highBarrier' ? '🚧 Torii Gate (slide)' :
+                                  cause === 'lowBarrier' ? '⬇️ Low Barrier (jump)' :
+                                  cause === 'laneBarrier' ? '↔️ Lane Barrier' :
+                                  cause === 'spikes' ? '⚠️ Spikes' : cause
+                    return (
+                      <div key={i} className="flex items-center gap-3">
+                        <span className="text-sm text-neutral-300 w-36">{label}</span>
+                        <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-red-500 rounded-full"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="text-sm text-white w-12 text-right">{count}</span>
+                        <span className="text-xs text-neutral-500 w-12">{pct.toFixed(0)}%</span>
+                      </div>
+                    )
+                  })
+                ) : (
+                  <p className="text-neutral-500 text-sm">No death data yet</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Visitor Retention */}
+          <div className="bg-white/5 rounded-xl border border-white/10 p-5">
+            <h3 className="text-sm font-medium text-neutral-400 mb-4">Visitor Retention</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white/5 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-white">{zenGarden.unique_visitors}</div>
+                <div className="text-xs text-neutral-500">Unique Visitors</div>
+              </div>
+              <div className="bg-white/5 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-cyan-400">{zenGarden.returning_visitors}</div>
+                <div className="text-xs text-neutral-500">Returning Visitors</div>
+              </div>
+              <div className="bg-white/5 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-green-400">{zenGarden.return_rate?.toFixed(1) || 0}%</div>
+                <div className="text-xs text-neutral-500">Return Rate</div>
+              </div>
+              <div className="bg-white/5 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-purple-400">{zenGarden.login_clicks}</div>
+                <div className="text-xs text-neutral-500">Login Clicks</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {activeSection === 'zen-garden' && !zenGarden && (
+        <div className="text-center py-12 text-neutral-500">No Zen Garden analytics data available</div>
       )}
     </div>
   )
